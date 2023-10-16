@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const CuisineCard = ({ icon, title, description }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const maxLength = 100;
+  const maxLength = 80;
 
   const handleReadMoreClick = () => {
     setIsExpanded(!isExpanded);
