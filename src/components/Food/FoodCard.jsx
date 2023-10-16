@@ -11,7 +11,7 @@ const FoodCard = ({ food }) => {
     shareContent({
       title: food.title,
       text: `Check out this food: ${food.title}`,
-      url: window.location.href,
+      url: window.location.origin + "/" + food.id + "?type=" + food.type,
     });
   };
 

@@ -1,8 +1,8 @@
 import SingleFoodInfo from "./SingleFoodInfo";
 
-const SingleFoodCard = ({ singleFood }) => {
+const SingleFoodOverviewCard = ({ singleFood }) => {
   return (
-    <div className="shadow-lg rounded-xl border border-gray-300 border-opacity-50 px-4 py-6 bg-white absolute -top-10 w-full">
+    <div className="shadow-lg rounded-xl border border-gray-300 border-opacity-50 px-4 py-6 bg-white absolute -top-10">
       <span className="flex items-center gap-2 text-gray-800 text-2xl mb-4">
         <img
           src={singleFood.image}
@@ -11,7 +11,7 @@ const SingleFoodCard = ({ singleFood }) => {
         />
         <p className="font-bold">Overview</p>
       </span>
-      <article className="text-gray-800 mt-2 text-sm">
+      <article className="text-gray-800 mt-2 text-sm h-20 overflow-auto">
         {singleFood.description}
       </article>
       <SingleFoodInfo singleFood={singleFood} />
@@ -19,4 +19,4 @@ const SingleFoodCard = ({ singleFood }) => {
   );
 };
 
-export default SingleFoodCard;
+export default SingleFoodOverviewCard;

@@ -3,7 +3,7 @@ import React, { useState, useContext } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { LuUtensilsCrossed } from "react-icons/lu";
 import { GiCook } from "react-icons/gi";
-import SingleFoodCard from "@/components/SingleFood/SingleFoodCard";
+import SingleFoodOverviewCard from "@/components/SingleFood/SingleFoodOverviewCard";
 import IngredientsList from "@/components/Recipe/IngredientsList";
 import InstructionsList from "@/components/Recipe/InstructionsList";
 import RecipeHeader from "@/components/Recipe/RecipeHeader";
@@ -25,7 +25,7 @@ const SingleFood = () => {
 
   return (
     <div className="mt-4">
-      <h1 className="ml-4 text-gray-800 text-3xl mb-4 font-semibold">
+      <h1 className="mx-4 text-gray-800 text-3xl mb-4 font-semibold">
         {singleFood.title}
       </h1>
       <img
@@ -34,10 +34,10 @@ const SingleFood = () => {
         className="w-full h-72 object-cover"
       />
       <section className="relative mx-4 h-64">
-        <SingleFoodCard singleFood={singleFood} />
+        <SingleFoodOverviewCard singleFood={singleFood} />
       </section>
 
-      <section className="mt-4 ml-4">
+      <section className="mt-4 mx-4">
         <RecipeHeader Icon={LuUtensilsCrossed} text="Ingredients" />
         <IngredientsList
           singleFood={singleFood}
@@ -48,7 +48,7 @@ const SingleFood = () => {
           setShowAll={setShowAllIngredients}
         />
       </section>
-      <section className="mt-10 ml-4 mb-20">
+      <section className="mt-10 mx-4 mb-20">
         <RecipeHeader Icon={GiCook} text="Instructions" />
         <InstructionsList
           singleFood={singleFood}
