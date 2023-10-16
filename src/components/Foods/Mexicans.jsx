@@ -7,14 +7,7 @@ import FoodListHeader from "../Food/FoodListHeader";
 const Mexicans = () => {
   const { mexicanFoods } = useContext(DataContext);
   return (
-    <div>
-      <FoodListHeader foodName="Mexican" icon="mexican-food3" />
-      <FoodList
-        foodData={mexicanFoods}
-        foodName="Mexican"
-        icon="mexican-food3"
-      />
-    </div>
+    <FoodList foodData={mexicanFoods} foodName="Mexican" icon="mexican-food3" />
   );
 };
 
