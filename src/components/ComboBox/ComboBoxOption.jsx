@@ -17,7 +17,7 @@ export function ComboBoxOption({ food }) {
             <div className="flex items-center gap-2">
               <img
                 src={food.image}
-                alt=""
+                alt={food.title}
                 className="w-6 h-6 rounded-full"
                 loading="lazy"
               />

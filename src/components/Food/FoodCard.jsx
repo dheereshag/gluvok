@@ -3,14 +3,9 @@ import Link from "next/link";
 import DifficultyBadge from "./DifficultyBadge";
 import { FaRegHeart, FaShareFromSquare, FaHeart } from "react-icons/fa6";
 import { useFavorites } from "../../hooks/useFavorites";
-import Loader from "../Loader";
 
 const FoodCard = ({ food }) => {
-  const { liked, toggleLiked, favoritesLoading } = useFavorites(food);
-
-  if (favoritesLoading) {
-    <Loader />;
-  }
+  const { liked, toggleLiked } = useFavorites(food);
 
   return (
     <div className="h-72 shadow rounded-2xl ml-4 transform-gpu transition-all hover:shadow-md hover:scale-105">
@@ -37,7 +32,9 @@ const FoodCard = ({ food }) => {
               className="text-red-500 h-6 w-6 cursor-pointer hover:scale-110 transition-all transform-gpu"
             />
           )}
-          <FaShareFromSquare className="text-gray-500 h-5 w-5 cursor-pointer hover:scale-110 transition-all transform-gpu" />
+          <Link href={`/${food.id}?type=${food.type}`}>
+            <FaShareFromSquare className="text-gray-500 h-5 w-5 cursor-pointer hover:scale-110 transition-all transform-gpu" />
+          </Link>
         </div>
         <DifficultyBadge difficulty={food.difficulty} />
       </div>

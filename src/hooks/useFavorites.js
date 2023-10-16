@@ -2,8 +2,7 @@ import { useContext } from "react";
 import { DataContext } from "../context/DataContext";
 
 export const useFavorites = (food) => {
-  const { favorites, setFavorites, favoritesLoading } =
-    useContext(DataContext);
+  const { favorites, setFavorites } = useContext(DataContext);
 
   const liked = Boolean(favorites[food.image]);
 
@@ -17,5 +16,5 @@ export const useFavorites = (food) => {
     setFavorites(newFavorites);
   };
 
-  return { liked, toggleLiked, favoritesLoading };
+  return { liked, toggleLiked };
 };

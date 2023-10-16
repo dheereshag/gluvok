@@ -9,7 +9,7 @@ const Navbar = () => {
         <Link href="/">
           <GiFoodTruck className="h-8 w-8" />
         </Link>
-        <div className="flex items-center gap-3 w-full md:w-6/12 lg:w-4/12">
+        <div className="flex items-center gap-3 w-full">
           <ComboBox />
           <Link
             href="/#favorites"

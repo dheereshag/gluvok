@@ -5,11 +5,6 @@ import OverviewCard from "@/components/Overview/OverviewCard";
 export default function Home() {
   return (
     <div>
-      {/* <section className="ml-4 mt-4">
-        <h1 className="text-3xl sm:text-3xl text-gray-800 font-pacifico">
-          mex-chi
-        </h1>
-      </section> */}
       <section className="mt-6 mb-10">
         <OverviewCard />
       </section>

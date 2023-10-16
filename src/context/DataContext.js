@@ -30,6 +30,7 @@ export const DataProvider = ({ children }) => {
 
   // Save favorites to local storage when they change
   useEffect(() => {
+    if (favoritesLoading) return;
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 

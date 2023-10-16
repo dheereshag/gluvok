@@ -10,8 +10,8 @@ const IngredientsList = ({ singleFood, showAllIngredients }) => {
           className="bg-white shadow rounded-xl px-5 py-2 text-gray-800 drop-shadow-sm"
         >
           <div className="flex gap-3">
-            <span>{index + 1}.</span>
-            <span>{ingredient}</span>
+            <p>{index + 1}.</p>
+            <p>{ingredient}</p>
           </div>
         </li>
       ))}

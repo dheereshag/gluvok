@@ -5,7 +5,7 @@ import StatsCard from "./StatsCard";
 const OverviewCard = () => {
   return (
     <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 ml-4 mb-2">
+      <h1 className="text-2xl font-bold text-gray-800 ml-4 mb-2">
         Overview
       </h1>
       <article className="shadow-lg border rounded-xl mx-4 px-5 pt-5 pb-7">
