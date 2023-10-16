@@ -11,7 +11,7 @@ const SingleFoodOverviewCard = ({ singleFood }) => {
         />
         <h2 className="font-pacifico">Overview</h2>
       </span>
-      <article className="text-gray-800 mt-2 text-sm h-20 overflow-auto">
+      <article className="text-gray-800 mt-2 text-sm h-24 overflow-auto">
         {singleFood.description}
       </article>
       <SingleFoodInfo singleFood={singleFood} />

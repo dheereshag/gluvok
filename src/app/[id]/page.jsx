@@ -37,7 +37,7 @@ const SingleFood = () => {
         <SingleFoodOverviewCard singleFood={singleFood} />
       </section>
 
-      <section className="mt-4 mx-4">
+      <section className="mt-6 mx-4">
         <RecipeHeader Icon={LuUtensilsCrossed} text="Ingredients" />
         <IngredientsList
           singleFood={singleFood}
