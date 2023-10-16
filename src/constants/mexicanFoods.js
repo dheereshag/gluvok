@@ -20,7 +20,7 @@ export default [
         ],
         "method": [
             {
-                "Step 1": "inse the beans then put them in the pressure cooker with 1.6 litres water. Stir in the oregano, cumin and salt. Add the lid and bring to high pressure then cook for 30 minutes. Allow the steam to release naturally then open and check if they\u2019re done (they should be very tender). Return to high pressure and cook for another 5-10 minutes if needed."
+                "Step 1": "Rinse the beans then put them in the pressure cooker with 1.6 litres water. Stir in the oregano, cumin and salt. Add the lid and bring to high pressure then cook for 30 minutes. Allow the steam to release naturally then open and check if they\u2019re done (they should be very tender). Return to high pressure and cook for another 5-10 minutes if needed."
             },
             {
                 "Step 2": "Once the beans are cooked, drain them, reserving the cooking water in a jug. Return the pressure cooker to a medium heat (or set to the saut\u00e9 function if electric), add the oil or lard then cook the onion, jalapeno and garlic with a pinch of salt for about 5 minutes, until softened. Stir in the drained beans then cook for a few minutes, adding a little of their cooking water while mashing with a potato masher until you reach the desired consistency (if you prefer them smoother you can whizz with a hand blender then continue cooking). Season to taste then serve topped with tomatoes, pickled jalapenos and coriander."

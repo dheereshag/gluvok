@@ -25,7 +25,7 @@ const SingleFood = () => {
 
   return (
     <div className="mt-4">
-      <h1 className="mx-4 text-gray-800 text-3xl mb-4 font-semibold">
+      <h1 className="mx-4 text-gray-800 text-3xl mb-4 font-pacifico">
         {singleFood.title}
       </h1>
       <img

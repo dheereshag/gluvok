@@ -9,7 +9,7 @@ const SingleFoodOverviewCard = ({ singleFood }) => {
           alt={singleFood.title}
           className="w-8 h-8 rounded-full object-cover"
         />
-        <p className="font-bold">Overview</p>
+        <h2 className="font-pacifico">Overview</h2>
       </span>
       <article className="text-gray-800 mt-2 text-sm h-20 overflow-auto">
         {singleFood.description}

@@ -12,9 +12,9 @@ const InstructionsList = ({ singleFood, showAllInstructions }) => {
             key={stepNumber}
             className="bg-white shadow rounded-xl px-5 py-4 text-gray-800 drop-shadow-sm"
           >
-            <p className="font-semibold uppercase mb-2 text-base font-dm-sans">
+            <h3 className="uppercase mb-2 font-pacifico">
               {stepNumber}:
-            </p>
+            </h3>
             <p>{stepDescription}</p>
           </li>
         );

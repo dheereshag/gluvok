@@ -13,7 +13,7 @@ const CuisineCard = ({ icon, title, description }) => {
     <div>
       <span className="flex items-center gap-2 text-gray-800 text-lg mb-2">
         <i className={icon}></i>
-        <h2 className="font-bold">{title}</h2>
+        <h2 className="font-pacifico">{title}</h2>
       </span>
       <p className={`text-xs font-dm-sans`}>
         {isExpanded ? description : `${description.substring(0, maxLength)}...`}

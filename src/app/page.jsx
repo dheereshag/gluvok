@@ -6,6 +6,9 @@ export default function Home() {
   return (
     <div>
       <section className="mt-6 mb-10">
+        <h1 className="text-2xl text-gray-800 ml-4 mb-2 font-pacifico">
+          Overview
+        </h1>
         <OverviewCard />
       </section>
       <section className="my-2">

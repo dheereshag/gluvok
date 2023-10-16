@@ -6,7 +6,7 @@ const StatsCard = ({ time, difficulty }) => {
     <div>
       <span className="flex items-baseline gap-2 text-gray-800 text-lg mb-2">
         <ImStatsBars2 />
-        <h2 className="font-bold">Statistics</h2>
+        <h2 className="font-pacifico">Statistics</h2>
       </span>
       <span className="text-xs flex justify-between items-center font-dm-sans">
         <p>Avg. time</p>
