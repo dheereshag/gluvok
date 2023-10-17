@@ -1,6 +1,6 @@
 function NotFoundPage() {
   return (
-    <div className="mt-10 text-center mx-5">
+    <div className="mt-5 text-center mx-5">
       <img src="/404.jpg" alt="404" className="mb-10" />
       <h1 class="mt-6 text-2xl font-bold tracking-tight text-gray-900">
         Uh-oh!
