@@ -9,6 +9,7 @@ import InstructionsList from "@/components/Recipe/InstructionsList";
 import RecipeHeader from "@/components/Recipe/RecipeHeader";
 import ShowButton from "@/components/Recipe/ShowButton";
 import { DataContext } from "@/context/DataContext";
+import { notFound } from "next/navigation";
 
 const SingleFood = () => {
   const [showAllIngredients, setShowAllIngredients] = useState(false);
@@ -22,6 +23,8 @@ const SingleFood = () => {
   const singleFood = allFoods.find(
     (food) => food.id === id && food.type === type
   );
+
+  if (!singleFood) return notFound();
 
   return (
     <div className="mt-4">
