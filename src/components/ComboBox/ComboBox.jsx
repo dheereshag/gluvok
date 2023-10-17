@@ -44,7 +44,7 @@ export default function ComboBox() {
       <ComboBoxButton />
 
       {filteredFood.length > 0 && (
-        <Combobox.Options className="absolute mt-1 max-h-56 w-full rounded-xl py-1 text-sm drop-shadow-2xl overflow-auto z-10 shadow-2xl">
+        <Combobox.Options className="absolute mt-1 max-h-56 w-full rounded-xl py-1 text-sm drop-shadow-2xl overflow-auto z-10 shadow-2xl bg-white">
           {filteredFood.map((food) => (
             <ComboBoxOption food={food} key={food.image} />
           ))}
