@@ -6,7 +6,7 @@ const FoodList = ({ foodData, foodName, icon }) => {
   return (
     <div>
       <FoodListHeader foodName={foodName} icon={icon} />
-      <div className="flex overflow-x-auto max-lg:no-scrollbar py-4">
+      <div className="flex overflow-x-auto max-lg:no-scrollbar py-4 ml-4 gap-4">
         {foodData.map((food) => (
           <FoodCard key={food.image} food={food} />
         ))}

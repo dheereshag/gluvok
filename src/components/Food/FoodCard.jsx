@@ -16,7 +16,7 @@ const FoodCard = ({ food }) => {
   };
 
   return (
-    <div className="h-72 shadow rounded-2xl ml-4 transform-gpu transition-all hover:shadow-md hover:scale-105">
+    <div className="h-72 shadow rounded-2xl transform-gpu transition-all hover:shadow-md hover:scale-105 last:mr-4">
       <Link href={`/${food.id}?type=${food.type}`}>
         <img
           src={food.image}
