@@ -10,7 +10,7 @@ const InstructionsList = ({ singleFood, showAllInstructions }) => {
         return (
           <li
             key={stepNumber}
-            className="bg-white shadow rounded-xl px-5 py-4 text-gray-800 drop-shadow-sm"
+            className="shadow rounded-xl px-5 py-4 text-gray-800 drop-shadow-sm"
           >
             <h3 className="uppercase mb-2 font-pacifico">
               {stepNumber}:

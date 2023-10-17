@@ -31,12 +31,13 @@ const SingleFood = () => {
       <h1 className="mx-4 text-gray-800 text-3xl mb-4 font-pacifico">
         {singleFood.title}
       </h1>
+
       <img
         src={singleFood.image}
         alt={singleFood.title}
         className="w-full h-72 object-cover"
       />
-      <section className="relative mx-4 h-64">
+      <section className="mx-4 relative h-72">
         <SingleFoodOverviewCard singleFood={singleFood} />
       </section>
 
