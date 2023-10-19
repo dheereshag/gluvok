@@ -35,7 +35,7 @@ const SingleFood = () => {
       <img
         src={singleFood.image}
         alt={singleFood.title}
-        className="w-full h-72 object-cover"
+        className="w-full h-72 object-cover hover:mb-20 transition-all transform-gpu hover:scale-105"
       />
       <section className="mx-4 relative h-72">
         <SingleFoodOverviewCard singleFood={singleFood} />
