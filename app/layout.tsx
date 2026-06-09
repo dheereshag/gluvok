@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { Outfit, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  display: "swap",
-});
+const geist = Geist({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "gluvok",
@@ -22,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("h-full", "font-sans", geist.variable)}>
-      <body className={`${outfit.className} min-h-full flex flex-col antialiased`}>
+    <html lang="en" className={cn("h-full", geist.className)}>
+      <body className="min-h-full flex flex-col antialiased">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
