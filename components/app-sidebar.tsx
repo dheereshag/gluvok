@@ -38,42 +38,42 @@ const data = {
   projects: [
     {
       name: "Centers",
-      url: "#",
+      url: "/projects/centers",
       icon: <FrameIcon />,
     },
     {
       name: "Commodities",
-      url: "#",
+      url: "/projects/commodities",
       icon: <PieChartIcon />,
     },
     {
       name: "Customers",
-      url: "#",
+      url: "/projects/customers",
       icon: <MapIcon />,
     },
     {
       name: "Data Entries",
-      url: "#",
+      url: "/projects/data-entries",
       icon: <TerminalIcon />,
     },
     {
       name: "Factories",
-      url: "#",
+      url: "/projects/factories",
       icon: <TerminalSquareIcon />,
     },
     {
       name: "Operators",
-      url: "#",
+      url: "/projects/operators",
       icon: <BotIcon />,
     },
     {
       name: "Users",
-      url: "#",
+      url: "/projects/users",
       icon: <BookOpenIcon />,
     },
     {
       name: "Villages",
-      url: "#",
+      url: "/projects/villages",
       icon: <Settings2Icon />,
     },
   ],
