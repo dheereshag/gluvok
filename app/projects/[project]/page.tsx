@@ -13,6 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 function titleize(slug: string) {
   return slug
@@ -22,8 +23,13 @@ function titleize(slug: string) {
     .join(" ")
 }
 
-export default function ProjectPage({ params }: { params: { project: string } }) {
-  const projectSlug = params.project || "project";
+export default async function ProjectPage({
+  params,
+}: {
+  params: { project: string } | Promise<{ project: string }>;
+}) {
+  const resolvedParams = await params;
+  const projectSlug = resolvedParams?.project || "project";
   const projectName = titleize(projectSlug);
 
   return (
@@ -39,10 +45,12 @@ export default function ProjectPage({ params }: { params: { project: string } })
             />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/">Home</Link>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage>{projectName}</BreadcrumbPage>
                 </BreadcrumbItem>
@@ -53,7 +61,9 @@ export default function ProjectPage({ params }: { params: { project: string } })
 
         <main className="p-6">
           <h1 className="text-2xl font-semibold">{projectName}</h1>
-          <p className="mt-4 text-muted-foreground">Content for {projectName} goes here.</p>
+          <p className="mt-4 text-muted-foreground">
+            Content for {projectName} goes here.
+          </p>
         </main>
       </SidebarInset>
     </SidebarProvider>
