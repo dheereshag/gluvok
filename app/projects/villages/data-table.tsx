@@ -55,11 +55,10 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Village } from "@/data/villages"
+import { useVillagesStore } from "./store"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  onDataChange?: React.Dispatch<React.SetStateAction<TData[]>>
+interface DataTableProps<TValue> {
+  columns: ColumnDef<Village, TValue>[]
 }
 
 function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
@@ -87,11 +86,13 @@ const editSchema = z.object({
 
 type EditFormValues = z.infer<typeof editSchema>
 
-export function DataTable<TData, TValue>({
+export function DataTable<TValue>({
   columns,
-  data,
-  onDataChange,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TValue>) {
+  const data = useVillagesStore((state) => state.villages)
+  const updateVillage = useVillagesStore((state) => state.updateVillage)
+  const deleteVillage = useVillagesStore((state) => state.deleteVillage)
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -124,27 +125,14 @@ export function DataTable<TData, TValue>({
   }, [editingVillage, form])
 
   const onEditSubmit = (values: EditFormValues) => {
-    if (!editingVillage || !onDataChange) return
-    onDataChange((prev) =>
-      (prev as Village[]).map((item) =>
-        item.id === editingVillage.id
-          ? {
-              ...item,
-              name: values.name,
-              state: values.state,
-              updated_at: new Date().toISOString().replace("T", " ").substring(0, 26),
-            }
-          : item
-      ) as unknown as TData[]
-    )
+    if (!editingVillage) return
+    updateVillage(editingVillage.id, values.name, values.state)
     setEditingVillage(null)
   }
 
   const onDeleteConfirm = () => {
-    if (!deletingVillage || !onDataChange) return
-    onDataChange((prev) =>
-      (prev as Village[]).filter((item) => item.id !== deletingVillage.id) as unknown as TData[]
-    )
+    if (!deletingVillage) return
+    deleteVillage(deletingVillage.id)
     setDeletingVillage(null)
   }
 
