@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
@@ -16,9 +19,11 @@ import {
 import Link from "next/link"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { villages } from "@/data/villages"
+import { villages as initialVillages } from "@/data/villages"
 
 export default function VillagesPage() {
+  const [data, setData] = React.useState(initialVillages)
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -53,7 +58,7 @@ export default function VillagesPage() {
               Manage the directory of villages, edit records, and configure visibility.
             </p>
           </div>
-          <DataTable columns={columns} data={villages} />
+          <DataTable columns={columns} data={data} onDataChange={setData} />
         </main>
       </SidebarInset>
     </SidebarProvider>

@@ -116,7 +116,7 @@ export const columns: ColumnDef<Village>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const village = row.original
 
       return (
@@ -136,8 +136,34 @@ export const columns: ColumnDef<Village>[] = [
               Copy village ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-xs cursor-pointer">View details</DropdownMenuItem>
-            <DropdownMenuItem className="text-xs cursor-pointer">Edit village</DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-xs cursor-pointer"
+              onClick={() => {
+                const meta = table.options.meta as {
+                  onEdit?: (village: Village) => void
+                  onDelete?: (village: Village) => void
+                }
+                if (meta?.onEdit) {
+                  meta.onEdit(village)
+                }
+              }}
+            >
+              Edit village
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-xs cursor-pointer text-destructive focus:text-destructive"
+              onClick={() => {
+                const meta = table.options.meta as {
+                  onEdit?: (village: Village) => void
+                  onDelete?: (village: Village) => void
+                }
+                if (meta?.onDelete) {
+                  meta.onDelete(village)
+                }
+              }}
+            >
+              Delete village
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

@@ -12,6 +12,8 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -43,7 +45,17 @@ export function DataTablePagination<TData>({
             </SelectTrigger>
             <SelectContent side="top">
               <SelectGroup>
-                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectLabel>Small Rows</SelectLabel>
+                {[5, 10, 20].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectLabel>Large Rows</SelectLabel>
+                {[30, 40, 50].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
