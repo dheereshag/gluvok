@@ -114,11 +114,11 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className="text-xs font-semibold text-muted-foreground">
+            <label htmlFor="edit-village-name" className="text-xs font-semibold text-muted-foreground">
               Village Name
             </label>
             <Input
-              id="name"
+              id="edit-village-name"
               {...form.register("name")}
               placeholder="e.g. Ludhiana"
               className="h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
@@ -130,12 +130,13 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
             )}
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-muted-foreground">
+            <label htmlFor="edit-village-state-trigger" className="text-xs font-semibold text-muted-foreground">
               State
             </label>
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
+                  id="edit-village-state-trigger"
                   variant="outline"
                   role="combobox"
                   aria-expanded={isPopoverOpen}
@@ -150,7 +151,7 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[375px] p-0" align="start">
+              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
                 <Command className="max-h-[220px]">
                   <CommandInput placeholder="Search state..." className="h-9 text-xs" />
                   <CommandList className="max-h-[170px] overflow-y-auto">
@@ -159,6 +160,7 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
                       {STATES.map((state) => (
                         <CommandItem
                           key={state.value}
+                          id={`edit-village-state-option-${state.value}`}
                           value={state.label}
                           onSelect={() => {
                             form.setValue("state", state.value, { shouldValidate: true })
@@ -185,6 +187,7 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
           </div>
           <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
             <Button
+              id="edit-village-cancel"
               type="button"
               variant="ghost"
               size="sm"
@@ -195,6 +198,7 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
               Cancel
             </Button>
             <Button
+              id="edit-village-submit"
               type="submit"
               size="sm"
               className="gap-1.5 h-8 px-3 text-xs shadow-sm"

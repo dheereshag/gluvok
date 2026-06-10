@@ -49,7 +49,7 @@ export function VillagesStoreInitializer({ initialVillages }: StoreInitializerPr
   React.useEffect(() => {
     const timer = setTimeout(() => {
       useVillagesStore.setState({ isLoading: false })
-    }, 800)
+    }, 100)
     return () => clearTimeout(timer)
   }, [])
 

@@ -161,7 +161,11 @@ export const columns: ColumnDef<Village>[] = [
         <div className="text-right pr-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring">
+              <Button
+                id={`village-actions-trigger-${village.id}`}
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring"
+              >
                 <span className="sr-only">Open menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
@@ -169,6 +173,7 @@ export const columns: ColumnDef<Village>[] = [
             <DropdownMenuContent align="end" className="w-[160px]">
               <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Actions</DropdownMenuLabel>
               <DropdownMenuItem
+                id={`village-copy-id-${village.id}`}
                 className="text-xs cursor-pointer gap-2 py-2"
                 onClick={() => {
                   navigator.clipboard.writeText(village.id)
@@ -180,6 +185,7 @@ export const columns: ColumnDef<Village>[] = [
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
+                id={`village-edit-${village.id}`}
                 className="text-xs cursor-pointer gap-2 py-2"
                 onClick={() => table.options.meta?.onEdit?.(village)}
               >
@@ -187,6 +193,7 @@ export const columns: ColumnDef<Village>[] = [
                 Edit Village
               </DropdownMenuItem>
               <DropdownMenuItem
+                id={`village-delete-${village.id}`}
                 className="text-xs cursor-pointer gap-2 py-2 text-destructive focus:text-destructive focus:bg-destructive/10"
                 onClick={() => table.options.meta?.onDelete?.(village)}
               >

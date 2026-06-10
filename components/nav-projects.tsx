@@ -8,6 +8,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { MoreHorizontalIcon } from "lucide-react"
+import Link from "next/link"
 
 export function NavProjects({
   projects,
@@ -25,18 +26,21 @@ export function NavProjects({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
-                {item.icon}
-                <span>{item.name}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
+        {projects.map((item) => {
+          const linkId = `sidebar-link-${item.name.toLowerCase().replace(/\s+/g, "-")}`
+          return (
+            <SidebarMenuItem key={item.name}>
+              <SidebarMenuButton asChild>
+                <Link id={linkId} href={item.url}>
+                  {item.icon}
+                  <span>{item.name}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )
+        })}
         <SidebarMenuItem>
-          <SidebarMenuButton>
+          <SidebarMenuButton id="sidebar-link-more">
             <MoreHorizontalIcon />
             <span>More</span>
           </SidebarMenuButton>

@@ -1,4 +1,3 @@
-import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,11 +5,7 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import Link from "next/link"
 import {
   Home,
@@ -45,67 +40,70 @@ export default function Page() {
   ]
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-vertical:h-4 data-vertical:self-auto"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="flex items-center gap-1.5 font-medium">
-                    <LayoutDashboard className="h-3.5 w-3.5" />
-                    Home
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+        <div className="flex items-center gap-2 px-4">
+          <SidebarTrigger id="sidebar-trigger-home" className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="flex items-center gap-1.5 font-medium">
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  Home
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header>
 
-        <main className="p-8 max-w-6xl mx-auto space-y-8">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-              <Weight className="h-8 w-8 text-primary" />
-              gluvok Dashboard
-            </h1>
-            <p className="text-muted-foreground text-sm max-w-xl">
-              Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
-            </p>
-          </div>
+      <main className="p-8 max-w-6xl mx-auto space-y-8">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
+            <Weight className="h-8 w-8 text-primary" />
+            gluvok Dashboard
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-xl">
+            Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cards.map((card) => {
-              const Icon = card.icon
-              return (
-                <Link key={card.name} href={card.href} className="group block">
-                  <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
-                    <CardHeader className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${card.color}`}>
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {cards.map((card) => {
+            const Icon = card.icon
+            const cardId = `dashboard-card-${card.name.toLowerCase().replace(/\s+/g, "-")}`
+            return (
+              <Link
+                key={card.name}
+                href={card.href}
+                id={cardId}
+                className="group block"
+              >
+                <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
+                  <CardHeader className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${card.color}`}>
+                        <Icon className="h-5 w-5" />
                       </div>
-                      <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary leading-none">
-                        {card.name}
-                      </CardTitle>
-                      <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                        {card.desc}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              )
-            })}
-          </div>
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                    </div>
+                    <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary leading-none">
+                      {card.name}
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                      {card.desc}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      </main>
+    </>
   )
 }

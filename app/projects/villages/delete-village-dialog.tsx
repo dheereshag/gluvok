@@ -53,6 +53,7 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
         </DialogHeader>
         <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
           <Button
+            id="delete-village-cancel"
             type="button"
             variant="ghost"
             size="sm"
@@ -63,6 +64,7 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
             Cancel
           </Button>
           <Button
+            id="delete-village-confirm"
             type="button"
             variant="destructive"
             size="sm"
