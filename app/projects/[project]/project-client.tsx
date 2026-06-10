@@ -52,11 +52,11 @@ import {
   Mail,
   Car,
   Weight,
-  DollarSign,
   Building,
   ShieldCheck,
   Globe,
   Package,
+  IndianRupee,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -266,7 +266,7 @@ export function ProjectClient({
               column={column}
               title={
                 <span className="flex items-center gap-1">
-                  <DollarSign className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  <IndianRupee className="h-3.5 w-3.5 text-muted-foreground/70" />
                   Unit Price
                 </span>
               }
