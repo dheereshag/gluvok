@@ -23,6 +23,7 @@ import {
   UserCog,
   User,
   ArrowRight,
+  Weight,
 } from "lucide-react"
 import {
   Card,
@@ -70,7 +71,7 @@ export default function Page() {
         <main className="p-8 max-w-6xl mx-auto space-y-8">
           <div className="space-y-2">
             <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-              <LayoutDashboard className="h-8 w-8 text-primary" />
+              <Weight className="h-8 w-8 text-primary" />
               gluvok Dashboard
             </h1>
             <p className="text-muted-foreground text-sm max-w-xl">
@@ -83,15 +84,15 @@ export default function Page() {
               const Icon = card.icon
               return (
                 <Link key={card.name} href={card.href} className="group block">
-                  <Card className="h-full border bg-card hover:border-primary/50 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
+                  <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
                     <CardHeader className="p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-300 ${card.color}`}>
+                        <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${card.color}`}>
                           <Icon className="h-5 w-5" />
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
                       </div>
-                      <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary transition-colors duration-300 leading-none">
+                      <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary leading-none">
                         {card.name}
                       </CardTitle>
                       <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
