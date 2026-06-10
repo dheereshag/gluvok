@@ -12,28 +12,43 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Village } from "@/data/villages"
-import { useVillagesStore } from "./store"
+import { useEntitiesStore } from "@/lib/store"
 
-interface DeleteVillageDialogProps {
+interface DeleteEntityDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  village: Village | null
+  projectSlug: string
+  projectName: string
+  primaryIdKey: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  item: any | null
 }
 
-export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVillageDialogProps) {
-  const deleteVillage = useVillagesStore((state) => state.deleteVillage)
+export function DeleteEntityDialog({
+  open,
+  onOpenChange,
+  projectSlug,
+  projectName,
+  primaryIdKey,
+  item,
+}: DeleteEntityDialogProps) {
+  const deleteEntity = useEntitiesStore((state) => state.deleteEntity)
 
   const onDeleteConfirm = () => {
-    if (!village) return
+    if (!item) return
     try {
-      deleteVillage(village.id)
-      toast.success(`Village "${village.name}" deleted successfully`)
+      const itemId = item[primaryIdKey]
+      deleteEntity(projectSlug, primaryIdKey, itemId)
+      toast.success(`${projectName} deleted successfully`)
       onOpenChange(false)
     } catch {
-      toast.error("Failed to delete village")
+      toast.error(`Failed to delete ${projectName.toLowerCase()}`)
     }
   }
+
+  const displayName = item
+    ? item.name || item.email || item.vehicle_number || item[primaryIdKey]
+    : ""
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -43,17 +58,17 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
             <div className="p-1.5 rounded-lg bg-destructive/10">
               <AlertTriangle className="h-4 w-4 text-destructive" />
             </div>
-            Delete Village
+            Delete {projectName}
           </DialogTitle>
           <DialogDescription className="pt-2 text-xs leading-relaxed text-muted-foreground">
             Are you sure you want to delete{" "}
-            <span className="font-semibold text-foreground">{village?.name}</span>? This action
+            <span className="font-semibold text-foreground">{displayName}</span>? This action
             cannot be undone and will permanently remove this record.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
           <Button
-            id="delete-village-cancel"
+            id="delete-entity-cancel"
             type="button"
             variant="ghost"
             size="sm"
@@ -64,7 +79,7 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
             Cancel
           </Button>
           <Button
-            id="delete-village-confirm"
+            id="delete-entity-confirm"
             type="button"
             variant="destructive"
             size="sm"
