@@ -16,8 +16,8 @@ import {
 import { Village } from "@/data/villages"
 import { useVillagesStore } from "../store"
 
-interface UseVillagesTableProps {
-  columns: ColumnDef<Village, any>[]
+interface UseVillagesTableProps<TValue> {
+  columns: ColumnDef<Village, TValue>[]
 }
 
 function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
@@ -26,7 +26,7 @@ function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
   return useReactTable(options)
 }
 
-export function useVillagesTable({ columns }: UseVillagesTableProps) {
+export function useVillagesTable<TValue>({ columns }: UseVillagesTableProps<TValue>) {
   const data = useVillagesStore((state) => state.villages)
 
   const [sorting, setSorting] = React.useState<SortingState>([])

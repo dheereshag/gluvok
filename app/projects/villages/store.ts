@@ -42,11 +42,9 @@ interface StoreInitializerProps {
 }
 
 export function VillagesStoreInitializer({ initialVillages }: StoreInitializerProps) {
-  const initialized = React.useRef(false)
-  if (!initialized.current) {
+  React.useState(() => {
     useVillagesStore.setState({ villages: initialVillages, isLoading: true })
-    initialized.current = true
-  }
+  })
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
