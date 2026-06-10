@@ -14,7 +14,29 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Home, Folder } from "lucide-react";
+import {
+  Home,
+  LayoutDashboard,
+  Building,
+  Package,
+  Users,
+  ClipboardList,
+  Factory,
+  UserCog,
+  User,
+  Folder
+} from "lucide-react";
+
+const PROJECT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  centers: Building,
+  commodities: Package,
+  customers: Users,
+  "data-entries": ClipboardList,
+  factories: Factory,
+  operators: UserCog,
+  users: User,
+  villages: Home,
+};
 
 function titleize(slug: string) {
   return slug
@@ -32,6 +54,7 @@ export default async function ProjectPage({
   const resolvedParams = await params;
   const projectSlug = resolvedParams?.project || "project";
   const projectName = titleize(projectSlug);
+  const IconComponent = PROJECT_ICONS[projectSlug] || Folder;
 
   return (
     <SidebarProvider>
@@ -49,7 +72,7 @@ export default async function ProjectPage({
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild className="flex items-center gap-1">
                     <Link href="/" className="flex items-center gap-1">
-                      <Home className="h-3 w-3" />
+                      <LayoutDashboard className="h-3 w-3" />
                       Home
                     </Link>
                   </BreadcrumbLink>
@@ -57,7 +80,7 @@ export default async function ProjectPage({
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbPage className="flex items-center gap-1">
-                    <Folder className="h-3 w-3" />
+                    <IconComponent className="h-3 w-3" />
                     {projectName}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
@@ -68,7 +91,7 @@ export default async function ProjectPage({
 
         <main className="p-6">
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <Folder className="h-6 w-6 text-primary" />
+            <IconComponent className="h-6 w-6 text-primary" />
             {projectName}
           </h1>
           <p className="mt-4 text-muted-foreground">

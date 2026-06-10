@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, Copy, Pencil, Trash2 } from "lucide-react"
+import { MoreHorizontal, Copy, Pencil, Trash2, Hash, Globe, Calendar, CalendarClock, Home } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -44,28 +44,60 @@ export const columns: ColumnDef<Village>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Hash className="h-3.5 w-3.5 text-muted-foreground/70" />
+            ID
+          </span>
+        }
+      />
     ),
     cell: ({ row }) => <div className="w-[80px] font-mono">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Home className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Name
+          </span>
+        }
+      />
     ),
     cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "state",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="State" />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Globe className="h-3.5 w-3.5 text-muted-foreground/70" />
+            State
+          </span>
+        }
+      />
     ),
     cell: ({ row }) => <div className="w-[50px] font-medium">{row.getValue("state")}</div>,
   },
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Calendar className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Created At
+          </span>
+        }
+      />
     ),
     cell: ({ row }) => {
       const dateStr = row.getValue("created_at") as string
@@ -91,7 +123,15 @@ export const columns: ColumnDef<Village>[] = [
   {
     accessorKey: "updated_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <CalendarClock className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Updated At
+          </span>
+        }
+      />
     ),
     cell: ({ row }) => {
       const dateStr = row.getValue("updated_at") as string

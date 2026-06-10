@@ -31,6 +31,7 @@ import { Village } from "@/data/villages"
 import { useVillagesStore } from "./store"
 import { EditVillageDialog } from "./edit-village-dialog"
 import { DeleteVillageDialog } from "./delete-village-dialog"
+import { Search, SearchX } from "lucide-react"
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Village, TValue>[]
@@ -85,14 +86,17 @@ export function DataTable<TValue>({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Input
-          placeholder="Filter villages by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
-        />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Filter villages by name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="pl-9 pr-4 h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
+          />
+        </div>
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300">
@@ -137,9 +141,12 @@ export function DataTable<TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center text-xs text-muted-foreground"
+                  className="h-32 text-center text-xs text-muted-foreground"
                 >
-                  No results found.
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <SearchX className="h-8 w-8 text-muted-foreground/50" />
+                    <span>No results found.</span>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
