@@ -5,7 +5,7 @@ import { useForm, useWatch } from "react-hook-form"
 import { toast } from "sonner"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import * as z from "zod"
-import { ChevronsUpDown } from "lucide-react"
+import { ChevronsUpDown, Pencil, MapPin, Save, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -99,7 +99,10 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Village</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="h-4 w-4 text-primary" />
+            Edit Village
+          </DialogTitle>
           <DialogDescription>
             Update the name or state of the village. Click save when done.
           </DialogDescription>
@@ -132,9 +135,12 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
                   aria-expanded={isPopoverOpen}
                   className="h-9 w-full justify-between text-xs font-normal"
                 >
-                  {selectedState
-                    ? STATES.find((state) => state.value === selectedState)?.label || selectedState
-                    : "Select state..."}
+                  <span className="flex items-center gap-2">
+                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/70" />
+                    {selectedState
+                      ? STATES.find((state) => state.value === selectedState)?.label || selectedState
+                      : "Select state..."}
+                  </span>
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -168,10 +174,12 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
             )}
           </div>
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5">
+              <X className="h-3.5 w-3.5" />
               Cancel
             </Button>
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" className="gap-1.5">
+              <Save className="h-3.5 w-3.5" />
               Save changes
             </Button>
           </DialogFooter>

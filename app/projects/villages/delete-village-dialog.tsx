@@ -3,6 +3,7 @@
 import * as React from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { AlertTriangle, Trash2, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -38,7 +39,10 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Delete Village</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+            Delete Village
+          </DialogTitle>
           <DialogDescription>
             Are you sure you want to delete{" "}
             <span className="font-semibold text-foreground">{village?.name}</span>? This action
@@ -46,10 +50,12 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="pt-4 gap-2">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5">
+            <X className="h-3.5 w-3.5" />
             Cancel
           </Button>
-          <Button variant="destructive" size="sm" onClick={onDeleteConfirm}>
+          <Button variant="destructive" size="sm" onClick={onDeleteConfirm} className="gap-1.5">
+            <Trash2 className="h-3.5 w-3.5" />
             Delete
           </Button>
         </DialogFooter>

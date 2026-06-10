@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Copy, Pencil, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -133,6 +133,7 @@ export const columns: ColumnDef<Village>[] = [
               className="text-xs cursor-pointer"
               onClick={() => navigator.clipboard.writeText(village.id)}
             >
+              <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               Copy village ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -148,6 +149,7 @@ export const columns: ColumnDef<Village>[] = [
                 }
               }}
             >
+              <Pencil className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
               Edit village
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -162,6 +164,7 @@ export const columns: ColumnDef<Village>[] = [
                 }
               }}
             >
+              <Trash2 className="mr-2 h-3.5 w-3.5 text-destructive/70" />
               Delete village
             </DropdownMenuItem>
           </DropdownMenuContent>

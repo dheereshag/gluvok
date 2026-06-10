@@ -14,6 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Home, Folder } from "lucide-react";
 
 function titleize(slug: string) {
   return slug
@@ -46,13 +47,19 @@ export default async function ProjectPage({
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link href="/">Home</Link>
+                  <BreadcrumbLink asChild className="flex items-center gap-1">
+                    <Link href="/" className="flex items-center gap-1">
+                      <Home className="h-3 w-3" />
+                      Home
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{projectName}</BreadcrumbPage>
+                  <BreadcrumbPage className="flex items-center gap-1">
+                    <Folder className="h-3 w-3" />
+                    {projectName}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -60,7 +67,10 @@ export default async function ProjectPage({
         </header>
 
         <main className="p-6">
-          <h1 className="text-2xl font-semibold">{projectName}</h1>
+          <h1 className="text-2xl font-semibold flex items-center gap-2">
+            <Folder className="h-6 w-6 text-primary" />
+            {projectName}
+          </h1>
           <p className="mt-4 text-muted-foreground">
             Content for {projectName} goes here.
           </p>

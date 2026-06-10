@@ -14,7 +14,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, LifeBuoyIcon, SendIcon, FrameIcon, PieChartIcon, MapIcon, TerminalIcon } from "lucide-react"
+import {
+  Building,
+  Package,
+  Users,
+  ClipboardList,
+  Factory,
+  UserCog,
+  User,
+  Home,
+  LifeBuoy,
+  Send,
+  Terminal
+} from "lucide-react"
 import Link from "next/link";
 
 const data = {
@@ -27,54 +39,54 @@ const data = {
     {
       title: "Support",
       url: "#",
-      icon: <LifeBuoyIcon />,
+      icon: <LifeBuoy />,
     },
     {
       title: "Feedback",
       url: "#",
-      icon: <SendIcon />,
+      icon: <Send />,
     },
   ],
   projects: [
     {
       name: "Centers",
       url: "/projects/centers",
-      icon: <FrameIcon />,
+      icon: <Building />,
     },
     {
       name: "Commodities",
       url: "/projects/commodities",
-      icon: <PieChartIcon />,
+      icon: <Package />,
     },
     {
       name: "Customers",
       url: "/projects/customers",
-      icon: <MapIcon />,
+      icon: <Users />,
     },
     {
       name: "Data Entries",
       url: "/projects/data-entries",
-      icon: <TerminalIcon />,
+      icon: <ClipboardList />,
     },
     {
       name: "Factories",
       url: "/projects/factories",
-      icon: <TerminalSquareIcon />,
+      icon: <Factory />,
     },
     {
       name: "Operators",
       url: "/projects/operators",
-      icon: <BotIcon />,
+      icon: <UserCog />,
     },
     {
       name: "Users",
       url: "/projects/users",
-      icon: <BookOpenIcon />,
+      icon: <User />,
     },
     {
       name: "Villages",
       url: "/projects/villages",
-      icon: <Settings2Icon />,
+      icon: <Home />,
     },
   ],
 };
@@ -88,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <TerminalIcon className="size-4" />
+                  <Terminal className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">gluvok</span>

@@ -15,6 +15,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { Home, LayoutDashboard } from "lucide-react"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 
@@ -34,13 +35,19 @@ export default function VillagesPage() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link href="/">Home</Link>
+                  <BreadcrumbLink asChild className="flex items-center gap-1">
+                    <Link href="/" className="flex items-center gap-1">
+                      <LayoutDashboard className="h-3 w-3" />
+                      Home
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Villages</BreadcrumbPage>
+                  <BreadcrumbPage className="flex items-center gap-1">
+                    <Home className="h-3 w-3" />
+                    Villages
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -49,7 +56,10 @@ export default function VillagesPage() {
 
         <main className="p-6 max-w-7xl">
           <div className="flex flex-col gap-1 mb-6">
-            <h1 className="text-2xl font-bold tracking-tight">Villages</h1>
+            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+              <Home className="h-6 w-6 text-primary" />
+              Villages
+            </h1>
             <p className="text-sm text-muted-foreground">
               Manage the directory of villages, edit records, and configure visibility.
             </p>
