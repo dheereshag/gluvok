@@ -1,3 +1,6 @@
+"use client"
+
+import * as React from "react"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,8 +29,11 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card"
+import { StateCombobox } from "@/components/state-combobox"
 
 export default function Page() {
+  const [testState, setTestState] = React.useState("")
+
   const cards = [
     { name: "Centers", href: "/projects/centers", desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
     { name: "Commodities", href: "/projects/commodities", desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },
@@ -70,6 +76,12 @@ export default function Page() {
           <p className="text-muted-foreground text-sm max-w-xl">
             Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
           </p>
+
+          <div className="mt-8 p-4 border rounded-md max-w-sm bg-card">
+            <h2 className="text-sm font-semibold mb-2">Test State Combobox</h2>
+            <StateCombobox value={testState} onChange={setTestState} />
+            <p className="text-xs text-muted-foreground mt-2">Selected: {testState || "None"}</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
