@@ -75,7 +75,7 @@ export const columns: ColumnDef<Village>[] = [
       />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px] text-center font-mono text-muted-foreground text-xs">
+      <div className="font-mono text-muted-foreground text-xs">
         {row.getValue("id")}
       </div>
     ),
@@ -109,7 +109,7 @@ export const columns: ColumnDef<Village>[] = [
       />
     ),
     cell: ({ row }) => (
-      <div className="font-bold text-muted-foreground bg-muted border border-muted-foreground/10 rounded px-1.5 py-0.5 text-center tracking-wide inline-block">
+      <div className="font-bold text-xs text-muted-foreground bg-muted border border-muted-foreground/10 rounded px-1.5 py-0.5 inline-block">
         {row.getValue("state")}
       </div>
     ),
