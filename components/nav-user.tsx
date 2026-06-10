@@ -21,6 +21,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { Status, StatusIndicator, StatusLabel } from "@/components/kibo-ui/status"
 
 export function NavUser({
   user,
@@ -61,15 +62,24 @@ export function NavUser({
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm justify-between">
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
                 </div>
+                <Status
+                  status="online"
+                  className="text-[10px] h-5 py-0 px-2 rounded-full border-none bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                >
+                  <StatusIndicator />
+                  <StatusLabel />
+                </Status>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

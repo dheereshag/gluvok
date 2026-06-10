@@ -55,11 +55,13 @@ import {
   Building,
   ShieldCheck,
   Globe,
-  Loader2,
+  Package,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { useEntitiesStore } from "@/lib/store"
+import { Spinner } from "@/components/kibo-ui/spinner"
+import { Pill, PillIcon, PillIndicator, PillAvatar } from "@/components/kibo-ui/pill"
 import { EditEntityDialog } from "./edit-dialog"
 import { DeleteEntityDialog } from "./delete-dialog"
 
@@ -294,7 +296,21 @@ export function ProjectClient({
               }
             />
           ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue("name"))}</div>,
+          cell: ({ row }) => {
+            const name = String(row.getValue("name"))
+            const initials = name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()
+            return (
+              <Pill variant="secondary" className="font-semibold text-foreground text-xs py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
+                <PillAvatar fallback={initials} />
+                {name}
+              </Pill>
+            )
+          },
         },
         {
           accessorKey: "father_name",
@@ -357,21 +373,36 @@ export function ProjectClient({
               }
             />
           ),
-          cell: ({ row }) => <div className="font-mono text-xs font-semibold">{String(row.getValue("weight"))} tons</div>,
+          cell: ({ row }) => (
+            <Pill variant="secondary" className="font-mono text-xs font-semibold py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
+              <PillIcon icon={Weight} />
+              {String(row.getValue("weight"))} tons
+            </Pill>
+          ),
         },
         {
           accessorKey: "commodity_id",
           header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Commodity" />
           ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">ID: {String(row.getValue("commodity_id"))}</div>,
+          cell: ({ row }) => (
+            <Pill variant="secondary" className="font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
+              <PillIcon icon={Package} />
+              ID: {String(row.getValue("commodity_id"))}
+            </Pill>
+          ),
         },
         {
           accessorKey: "center_id",
           header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Center" />
           ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">ID: {String(row.getValue("center_id"))}</div>,
+          cell: ({ row }) => (
+            <Pill variant="outline" className="font-mono text-[10px] py-0.5 px-2">
+              <PillIcon icon={Building} />
+              ID: {String(row.getValue("center_id"))}
+            </Pill>
+          ),
         },
         {
           accessorKey: "operator_id",
@@ -451,7 +482,21 @@ export function ProjectClient({
               }
             />
           ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue("name"))}</div>,
+          cell: ({ row }) => {
+            const name = String(row.getValue("name"))
+            const initials = name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()
+            return (
+              <Pill variant="secondary" className="font-semibold text-foreground text-xs py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
+                <PillAvatar fallback={initials} />
+                {name}
+              </Pill>
+            )
+          },
         }
       )
     } else if (projectSlug === "users") {
@@ -485,9 +530,10 @@ export function ProjectClient({
             />
           ),
           cell: ({ row }) => (
-            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider inline-block">
+            <Pill variant="secondary" className="text-[10px] uppercase font-bold tracking-wider py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
+              <PillIndicator pulse variant="success" />
               {String(row.getValue("role"))}
-            </span>
+            </Pill>
           ),
         }
       )
@@ -522,9 +568,10 @@ export function ProjectClient({
             />
           ),
           cell: ({ row }) => (
-            <div className="font-bold text-xs text-muted-foreground bg-muted border border-muted-foreground/10 rounded px-1.5 py-0.5 inline-block">
+            <Pill variant="outline" className="font-bold text-xs text-muted-foreground py-0.5 px-2">
+              <PillIcon icon={Globe} />
               {String(row.getValue("state"))}
-            </div>
+            </Pill>
           ),
         }
       )
@@ -670,7 +717,7 @@ export function ProjectClient({
     return (
       <div className="space-y-4">
         <div className="rounded-xl border bg-card text-card-foreground shadow-sm h-64 flex flex-col items-center justify-center gap-3">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Spinner variant="circle-filled" className="size-6 text-primary" />
           <span className="text-xs font-semibold text-muted-foreground/80">
             Loading data...
           </span>
