@@ -76,12 +76,6 @@ export default function Page() {
           <p className="text-muted-foreground text-sm max-w-xl">
             Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
           </p>
-
-          <div className="mt-8 p-4 border rounded-md max-w-sm bg-card">
-            <h2 className="text-sm font-semibold mb-2">Test State Combobox</h2>
-            <StateCombobox value={testState} onChange={setTestState} />
-            <p className="text-xs text-muted-foreground mt-2">Selected: {testState || "None"}</p>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
