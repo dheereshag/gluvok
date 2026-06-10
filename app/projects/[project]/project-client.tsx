@@ -43,6 +43,7 @@ import {
   Copy,
   Pencil,
   Trash2,
+  Plus,
   Hash,
   Calendar,
   CalendarClock,
@@ -63,6 +64,7 @@ import { toast } from "sonner"
 import { useEntitiesStore } from "@/lib/store"
 import { Spinner } from "@/components/kibo-ui/spinner"
 import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
+import { CreateEntityDialog } from "./create-dialog"
 import { EditEntityDialog } from "./edit-dialog"
 import { DeleteEntityDialog } from "./delete-dialog"
 
@@ -139,6 +141,7 @@ export function ProjectClient({
   const [editingItem, setEditingItem] = React.useState<any | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [deletingItem, setDeletingItem] = React.useState<any | null>(null)
+  const [creating, setCreating] = React.useState(false)
 
   const getPrimaryIdKey = React.useCallback(() => {
     if (projectSlug === "customers") return "govt_id"
@@ -746,7 +749,13 @@ export function ProjectClient({
             />
           </div>
         )}
-        <DataTableViewOptions table={table} />
+        <div className="flex items-center gap-2">
+          <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
+            <Plus className="h-4 w-4" />
+            Add {projectName}
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
 
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300">
@@ -805,6 +814,14 @@ export function ProjectClient({
       <div className="pt-2">
         <DataTablePagination table={table} />
       </div>
+
+      <CreateEntityDialog
+        open={creating}
+        onOpenChange={setCreating}
+        projectSlug={projectSlug}
+        projectName={projectName}
+        primaryIdKey={primaryIdKey}
+      />
 
       <EditEntityDialog
         open={editingItem !== null}
