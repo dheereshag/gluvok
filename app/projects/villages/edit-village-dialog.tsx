@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
+import { toast } from "sonner"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import * as z from "zod"
 import { ChevronsUpDown } from "lucide-react"
@@ -85,8 +86,13 @@ export function EditVillageDialog({ open, onOpenChange, village }: EditVillageDi
 
   const onSubmit = (values: EditFormValues) => {
     if (!village) return
-    updateVillage(village.id, values.name, values.state)
-    onOpenChange(false)
+    try {
+      updateVillage(village.id, values.name, values.state)
+      toast.success("Village updated successfully")
+      onOpenChange(false)
+    } catch {
+      toast.error("Failed to update village")
+    }
   }
 
   return (

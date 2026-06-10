@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en" className={cn("h-full", geist.className)}>
       <body className="min-h-full flex flex-col antialiased">
         <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
       </body>
     </html>
   );

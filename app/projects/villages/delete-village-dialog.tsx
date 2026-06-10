@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,8 +25,13 @@ export function DeleteVillageDialog({ open, onOpenChange, village }: DeleteVilla
 
   const onDeleteConfirm = () => {
     if (!village) return
-    deleteVillage(village.id)
-    onOpenChange(false)
+    try {
+      deleteVillage(village.id)
+      toast.success("Village deleted successfully")
+      onOpenChange(false)
+    } catch {
+      toast.error("Failed to delete village")
+    }
   }
 
   return (
