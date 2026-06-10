@@ -29,11 +29,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card"
-import { StateCombobox } from "@/components/state-combobox"
 
 export default function Page() {
-  const [testState, setTestState] = React.useState("")
-
   const cards = [
     { name: "Centers", href: "/projects/centers", desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
     { name: "Commodities", href: "/projects/commodities", desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },

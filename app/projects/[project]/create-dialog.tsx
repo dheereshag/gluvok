@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { toast } from "sonner"
 import { Plus, Save, X } from "lucide-react"
 
@@ -78,7 +80,24 @@ export function CreateEntityDialog({
 }: CreateEntityDialogProps) {
   const addEntity = useEntitiesStore((state) => state.addEntity)
 
-  const form = useForm<Record<string, string>>({
+  const fields = React.useMemo(() => CREATABLE_FIELDS[projectSlug] || [], [projectSlug])
+
+  const formSchema = React.useMemo(() => {
+    const schemaShape: Record<string, z.ZodTypeAny> = {}
+    fields.forEach((f) => {
+      if (f.type === "number") {
+        schemaShape[f.key] = z.coerce.number()
+      } else {
+        schemaShape[f.key] = z.string().min(1, `${f.label} is required`)
+      }
+    })
+    return z.object(schemaShape)
+  }, [fields])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const form = useForm<Record<string, any>>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formSchema as any),
     defaultValues: {},
   })
 
@@ -93,9 +112,8 @@ export function CreateEntityDialog({
     }
   }, [open, form])
 
-  const fields = CREATABLE_FIELDS[projectSlug] || []
-
-  const onSubmit = (values: Record<string, string>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSubmit = (values: Record<string, any>) => {
     try {
       addEntity(projectSlug, primaryIdKey, values)
       toast.success(`${projectName} created successfully`)
@@ -135,7 +153,7 @@ export function CreateEntityDialog({
                   id={`field-${field.key}`}
                   type={field.type}
                   step={field.type === "number" ? "any" : undefined}
-                  {...form.register(field.key, { required: `${field.label} is required` })}
+                  {...form.register(field.key)}
                   placeholder={field.placeholder}
                   className="h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
                 />
@@ -143,7 +161,7 @@ export function CreateEntityDialog({
 
               {form.formState.errors[field.key] && (
                 <span className="text-destructive text-[11px] font-medium">
-                  {form.formState.errors[field.key]?.message}
+                  {form.formState.errors[field.key]?.message as string}
                 </span>
               )}
             </div>
