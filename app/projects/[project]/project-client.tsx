@@ -48,6 +48,7 @@ import {
   CalendarClock,
   Home,
   User,
+  Users,
   Mail,
   Car,
   Weight,
@@ -383,7 +384,15 @@ export function ProjectClient({
         {
           accessorKey: "commodity_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Commodity" />
+            <DataTableColumnHeader
+              column={column}
+              title={
+                <span className="flex items-center gap-1">
+                  <Package className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  Commodity
+                </span>
+              }
+            />
           ),
           cell: ({ row }) => (
             <Pill variant="secondary" className="font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
@@ -395,7 +404,15 @@ export function ProjectClient({
         {
           accessorKey: "center_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Center" />
+            <DataTableColumnHeader
+              column={column}
+              title={
+                <span className="flex items-center gap-1">
+                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  Center
+                </span>
+              }
+            />
           ),
           cell: ({ row }) => (
             <Pill variant="outline" className="font-mono text-[10px] py-0.5 px-2">
@@ -407,14 +424,30 @@ export function ProjectClient({
         {
           accessorKey: "operator_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Operator" />
+            <DataTableColumnHeader
+              column={column}
+              title={
+                <span className="flex items-center gap-1">
+                  <User className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  Operator
+                </span>
+              }
+            />
           ),
           cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue("operator_id"))}</div>,
         },
         {
           accessorKey: "customer_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Customer" />
+            <DataTableColumnHeader
+              column={column}
+              title={
+                <span className="flex items-center gap-1">
+                  <Users className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  Customer
+                </span>
+              }
+            />
           ),
           cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue("customer_id"))}</div>,
         }
