@@ -62,7 +62,7 @@ import { toast } from "sonner"
 
 import { useEntitiesStore } from "@/lib/store"
 import { Spinner } from "@/components/kibo-ui/spinner"
-import { Pill, PillIcon, PillIndicator, PillAvatar } from "@/components/kibo-ui/pill"
+import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
 import { EditEntityDialog } from "./edit-dialog"
 import { DeleteEntityDialog } from "./delete-dialog"
 
@@ -297,21 +297,7 @@ export function ProjectClient({
               }
             />
           ),
-          cell: ({ row }) => {
-            const name = String(row.getValue("name"))
-            const initials = name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()
-            return (
-              <Pill variant="secondary" className="font-semibold text-foreground text-xs py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
-                <PillAvatar fallback={initials} />
-                {name}
-              </Pill>
-            )
-          },
+          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue("name"))}</div>,
         },
         {
           accessorKey: "father_name",
@@ -515,21 +501,7 @@ export function ProjectClient({
               }
             />
           ),
-          cell: ({ row }) => {
-            const name = String(row.getValue("name"))
-            const initials = name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()
-            return (
-              <Pill variant="secondary" className="font-semibold text-foreground text-xs py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
-                <PillAvatar fallback={initials} />
-                {name}
-              </Pill>
-            )
-          },
+          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue("name"))}</div>,
         }
       )
     } else if (projectSlug === "users") {
