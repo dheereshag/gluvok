@@ -1,109 +1,65 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import Link from "next/link"
-import {
-  Home,
-  LayoutDashboard,
-  Building,
-  Package,
-  Users,
-  ClipboardList,
-  Factory,
-  UserCog,
-  User,
-  ArrowRight,
-  Weight,
-} from "lucide-react"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card"
+import Image from "next/image";
 
-export default function Page() {
-  const cards = [
-    { name: "Centers", href: "/projects/centers", desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
-    { name: "Commodities", href: "/projects/commodities", desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },
-    { name: "Customers", href: "/projects/customers", desc: "Directory of client accounts and details", icon: Users, color: "text-green-500" },
-    { name: "Data Entries", href: "/projects/data-entries", desc: "Input logs, sheets and record metrics", icon: ClipboardList, color: "text-purple-500" },
-    { name: "Factories", href: "/projects/factories", desc: "Configure manufacturing plants and lines", icon: Factory, color: "text-indigo-500" },
-    { name: "Operators", href: "/projects/operators", desc: "Manage workers and field operatives", icon: UserCog, color: "text-pink-500" },
-    { name: "Users", href: "/projects/users", desc: "Configure access control and team profiles", icon: User, color: "text-teal-500" },
-    { name: "Villages", href: "/projects/villages", desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
-  ]
-
+export default function Home() {
   return (
-    <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-        <div className="flex items-center gap-2 px-4">
-          <SidebarTrigger id="sidebar-trigger-home" className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
-          />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage className="flex items-center gap-1.5 font-medium">
-                  <LayoutDashboard className="h-3.5 w-3.5" />
-                  Home
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
-
-      <main className="p-8 max-w-6xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-            <Weight className="h-8 w-8 text-primary" />
-            gluvok Dashboard
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={100}
+          height={20}
+          priority
+        />
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To get started, edit the page.tsx file.
           </h1>
-          <p className="text-muted-foreground text-sm max-w-xl">
-            Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to{" "}
+            <a
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Templates
+            </a>{" "}
+            or the{" "}
+            <a
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Learning
+            </a>{" "}
+            center.
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cards.map((card) => {
-            const Icon = card.icon
-            const cardId = `dashboard-card-${card.name.toLowerCase().replace(/\s+/g, "-")}`
-            return (
-              <Link
-                key={card.name}
-                href={card.href}
-                id={cardId}
-                className="group block"
-              >
-                <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
-                  <CardHeader className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${card.color}`}>
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                    </div>
-                    <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary leading-none">
-                      {card.name}
-                    </CardTitle>
-                    <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                      {card.desc}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            )
-          })}
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
         </div>
       </main>
-    </>
-  )
+    </div>
+  );
 }
