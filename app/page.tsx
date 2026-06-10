@@ -1,17 +1,17 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
+} from "@/components/ui/sidebar"
+import Link from "next/link"
 import {
   Home,
   LayoutDashboard,
@@ -22,8 +22,14 @@ import {
   Factory,
   UserCog,
   User,
-  ArrowRight
-} from "lucide-react";
+  ArrowRight,
+} from "lucide-react"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card"
 
 export default function Page() {
   const cards = [
@@ -35,7 +41,7 @@ export default function Page() {
     { name: "Operators", href: "/projects/operators", desc: "Manage workers and field operatives", icon: UserCog, color: "text-pink-500" },
     { name: "Users", href: "/projects/users", desc: "Configure access control and team profiles", icon: User, color: "text-teal-500" },
     { name: "Villages", href: "/projects/villages", desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
-  ];
+  ]
 
   return (
     <SidebarProvider>
@@ -63,7 +69,7 @@ export default function Page() {
 
         <main className="p-8 max-w-6xl mx-auto space-y-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
+            <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
               <LayoutDashboard className="h-8 w-8 text-primary" />
               gluvok Dashboard
             </h1>
@@ -74,31 +80,31 @@ export default function Page() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {cards.map((card) => {
-              const Icon = card.icon;
+              const Icon = card.icon
               return (
-                <Link
-                  key={card.name}
-                  href={card.href}
-                  className="group relative block rounded-2xl border bg-card p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/50"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-300 ${card.color}`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
-                  </div>
-                  <h3 className="font-bold text-sm text-card-foreground group-hover:text-primary transition-colors duration-300">
-                    {card.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                    {card.desc}
-                  </p>
+                <Link key={card.name} href={card.href} className="group block">
+                  <Card className="h-full border bg-card hover:border-primary/50 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
+                    <CardHeader className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-300 ${card.color}`}>
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                      </div>
+                      <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary transition-colors duration-300 leading-none">
+                        {card.name}
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                        {card.desc}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
                 </Link>
-              );
+              )
             })}
           </div>
         </main>
       </SidebarInset>
     </SidebarProvider>
-  );
+  )
 }

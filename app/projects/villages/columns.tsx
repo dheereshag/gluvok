@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Copy, Pencil, Trash2, Hash, Globe, Calendar, CalendarClock, Home } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -15,6 +16,25 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
 import { Village } from "@/data/villages"
+import "./types" // Import table meta types augmentation
+
+function formatDateTime(dateStr: string) {
+  if (!dateStr) return "-"
+  try {
+    const date = new Date(dateStr.replace(" ", "T"))
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    }
+  } catch {}
+  return dateStr
+}
 
 export const columns: ColumnDef<Village>[] = [
   {
@@ -54,7 +74,11 @@ export const columns: ColumnDef<Village>[] = [
         }
       />
     ),
-    cell: ({ row }) => <div className="w-[80px] font-mono">{row.getValue("id")}</div>,
+    cell: ({ row }) => (
+      <div className="w-[80px] text-center font-mono text-muted-foreground text-xs">
+        {row.getValue("id")}
+      </div>
+    ),
   },
   {
     accessorKey: "name",
@@ -69,7 +93,7 @@ export const columns: ColumnDef<Village>[] = [
         }
       />
     ),
-    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "state",
@@ -84,7 +108,11 @@ export const columns: ColumnDef<Village>[] = [
         }
       />
     ),
-    cell: ({ row }) => <div className="w-[50px] font-medium">{row.getValue("state")}</div>,
+    cell: ({ row }) => (
+      <div className="font-bold text-muted-foreground bg-muted border border-muted-foreground/10 rounded px-1.5 py-0.5 text-center tracking-wide inline-block">
+        {row.getValue("state")}
+      </div>
+    ),
   },
   {
     accessorKey: "created_at",
@@ -99,26 +127,11 @@ export const columns: ColumnDef<Village>[] = [
         }
       />
     ),
-    cell: ({ row }) => {
-      const dateStr = row.getValue("created_at") as string
-      try {
-        const date = new Date(dateStr.replace(" ", "T"))
-        if (!isNaN(date.getTime())) {
-          return (
-            <span className="text-muted-foreground">
-              {date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          )
-        }
-      } catch {}
-      return <span className="text-muted-foreground">{dateStr}</span>
-    },
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-xs font-medium">
+        {formatDateTime(row.getValue("created_at"))}
+      </span>
+    ),
   },
   {
     accessorKey: "updated_at",
@@ -133,26 +146,11 @@ export const columns: ColumnDef<Village>[] = [
         }
       />
     ),
-    cell: ({ row }) => {
-      const dateStr = row.getValue("updated_at") as string
-      try {
-        const date = new Date(dateStr.replace(" ", "T"))
-        if (!isNaN(date.getTime())) {
-          return (
-            <span className="text-muted-foreground">
-              {date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          )
-        }
-      } catch {}
-      return <span className="text-muted-foreground">{dateStr}</span>
-    },
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-xs font-medium">
+        {formatDateTime(row.getValue("updated_at"))}
+      </span>
+    ),
   },
   {
     id: "actions",
@@ -160,55 +158,44 @@ export const columns: ColumnDef<Village>[] = [
       const village = row.original
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuLabel className="text-xs">Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className="text-xs cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(village.id)}
-            >
-              <Copy className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-              Copy village ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-xs cursor-pointer"
-              onClick={() => {
-                const meta = table.options.meta as {
-                  onEdit?: (village: Village) => void
-                  onDelete?: (village: Village) => void
-                }
-                if (meta?.onEdit) {
-                  meta.onEdit(village)
-                }
-              }}
-            >
-              <Pencil className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-              Edit village
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-xs cursor-pointer text-destructive focus:text-destructive"
-              onClick={() => {
-                const meta = table.options.meta as {
-                  onEdit?: (village: Village) => void
-                  onDelete?: (village: Village) => void
-                }
-                if (meta?.onDelete) {
-                  meta.onDelete(village)
-                }
-              }}
-            >
-              <Trash2 className="mr-2 h-3.5 w-3.5 text-destructive/70" />
-              Delete village
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="text-right pr-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted focus-visible:ring-1 focus-visible:ring-ring">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px]">
+              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer gap-2 py-2"
+                onClick={() => {
+                  navigator.clipboard.writeText(village.id)
+                  toast.success("Village ID copied to clipboard")
+                }}
+              >
+                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                Copy ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-xs cursor-pointer gap-2 py-2"
+                onClick={() => table.options.meta?.onEdit?.(village)}
+              >
+                <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                Edit Village
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer gap-2 py-2 text-destructive focus:text-destructive focus:bg-destructive/10"
+                onClick={() => table.options.meta?.onDelete?.(village)}
+              >
+                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                Delete Village
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )
     },
   },

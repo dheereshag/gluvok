@@ -1,16 +1,23 @@
+"use client"
+
+import * as React from "react"
 import { create } from "zustand"
-import { Village, villages as initialVillages } from "@/data/villages"
+import { Village } from "@/data/villages"
 
 interface VillagesState {
   villages: Village[]
+  isLoading: boolean
   setVillages: (villages: Village[]) => void
+  setIsLoading: (isLoading: boolean) => void
   updateVillage: (id: string, name: string, state: string) => void
   deleteVillage: (id: string) => void
 }
 
 export const useVillagesStore = create<VillagesState>((set) => ({
-  villages: initialVillages,
+  villages: [],
+  isLoading: true,
   setVillages: (villages) => set({ villages }),
+  setIsLoading: (isLoading) => set({ isLoading }),
   updateVillage: (id, name, state) =>
     set((storeState) => ({
       villages: storeState.villages.map((item) =>
@@ -29,3 +36,24 @@ export const useVillagesStore = create<VillagesState>((set) => ({
       villages: storeState.villages.filter((item) => item.id !== id),
     })),
 }))
+
+interface StoreInitializerProps {
+  initialVillages: Village[]
+}
+
+export function VillagesStoreInitializer({ initialVillages }: StoreInitializerProps) {
+  const initialized = React.useRef(false)
+  if (!initialized.current) {
+    useVillagesStore.setState({ villages: initialVillages, isLoading: true })
+    initialized.current = true
+  }
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      useVillagesStore.setState({ isLoading: false })
+    }, 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return null
+}

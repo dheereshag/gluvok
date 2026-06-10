@@ -1,20 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  TableOptions,
-} from "@tanstack/react-table"
-
+import { ColumnDef, flexRender } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -26,96 +13,85 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "@/components/data-table-pagination"
 import { DataTableViewOptions } from "@/components/data-table-view-options"
+import { Search, SearchX, Loader2 } from "lucide-react"
 
 import { Village } from "@/data/villages"
-import { useVillagesStore } from "./store"
+import { VillagesStoreInitializer, useVillagesStore } from "./store"
+import { useVillagesTable } from "./hooks/use-villages-table"
 import { EditVillageDialog } from "./edit-village-dialog"
 import { DeleteVillageDialog } from "./delete-village-dialog"
-import { Search, SearchX } from "lucide-react"
+
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Village, TValue>[]
-}
-
-function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
-  "use no memo"
-  // eslint-disable-next-line react-hooks/incompatible-library
-  return useReactTable(options)
+  initialData: Village[]
 }
 
 export function DataTable<TValue>({
   columns,
+  initialData,
 }: DataTableProps<TValue>) {
-  const data = useVillagesStore((state) => state.villages)
+  const {
+    table,
+    editingVillage,
+    setEditingVillage,
+    deletingVillage,
+    setDeletingVillage,
+  } = useVillagesTable({ columns })
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const isLoading = useVillagesStore((state) => state.isLoading)
 
-  const [editingVillage, setEditingVillage] = React.useState<Village | null>(null)
-  const [deletingVillage, setDeletingVillage] = React.useState<Village | null>(null)
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {/* Hydrate/seed store with server-loaded data */}
+        <VillagesStoreInitializer initialVillages={initialData} />
 
-  const table = useCompilerSafeTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-    meta: {
-      onEdit: (village: Village) => {
-        setEditingVillage(village)
-      },
-      onDelete: (village: Village) => {
-        setDeletingVillage(village)
-      },
-    },
-  })
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm h-64 flex flex-col items-center justify-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <span className="text-xs font-semibold text-muted-foreground/80">Loading villages...</span>
+        </div>
+      </div>
+    )
+  }
+
+  const nameColumn = table.getColumn("name")
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Filter villages by name..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="pl-9 pr-4 h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
-          />
-        </div>
+      {/* Hydrate/seed store with server-loaded data */}
+      <VillagesStoreInitializer initialVillages={initialData} />
+
+      <div className="flex items-center justify-between gap-4">
+        {nameColumn && (
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Filter villages by name..."
+              value={(nameColumn.getFilterValue() as string) ?? ""}
+              onChange={(event) => nameColumn.setFilterValue(event.target.value)}
+              className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
+            />
+          </div>
+        )}
         <DataTableViewOptions table={table} />
       </div>
+
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300">
         <Table>
           <TableHeader className="bg-muted/30">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent border-b">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="h-10 text-xs py-2 font-medium">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="h-10 text-xs py-2 font-semibold">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -125,7 +101,7 @@ export function DataTable<TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-muted/20 transition-colors duration-200 border-b last:border-b-0 data-[state=selected]:bg-muted/30"
+                  className="hover:bg-muted/10 transition-colors duration-150 border-b last:border-b-0 data-[state=selected]:bg-muted/20"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3 text-xs">
@@ -144,8 +120,8 @@ export function DataTable<TValue>({
                   className="h-32 text-center text-xs text-muted-foreground"
                 >
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <SearchX className="h-8 w-8 text-muted-foreground/50" />
-                    <span>No results found.</span>
+                    <SearchX className="h-8 w-8 text-muted-foreground/40 animate-pulse" />
+                    <span className="font-medium">No results found.</span>
                   </div>
                 </TableCell>
               </TableRow>
@@ -153,6 +129,7 @@ export function DataTable<TValue>({
           </TableBody>
         </Table>
       </div>
+
       <div className="pt-2">
         <DataTablePagination table={table} />
       </div>
