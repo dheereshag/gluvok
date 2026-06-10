@@ -39,6 +39,7 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
       onValueChange={onChange}
       open={open}
       onOpenChange={setOpen}
+      modal={true}
     >
       <ComboboxTrigger
         id={id || "state-combobox-trigger"}
@@ -53,10 +54,7 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>
       <ComboboxContent
-        className="max-h-[300px]"
-        popoverOptions={{
-          align: "start",
-        }}
+        className="max-h-72"
       >
         <ComboboxInput placeholder="Search state..." className="h-9 text-xs" />
         <ComboboxList className="max-h-[250px] overflow-y-auto">
