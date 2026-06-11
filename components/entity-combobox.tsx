@@ -22,12 +22,12 @@ import { operators } from "@/data/operators"
 import { villages } from "@/data/villages"
 
 const FALLBACK_DATA: Record<string, Record<string, unknown>[]> = {
-  [ProjectSlug.CENTERS]: centers,
-  [ProjectSlug.COMMODITIES]: commodities,
-  [ProjectSlug.CUSTOMERS]: customers,
-  [ProjectSlug.FACTORIES]: factories,
-  [ProjectSlug.OPERATORS]: operators,
-  [ProjectSlug.VILLAGES]: villages,
+  [ProjectSlug.CENTERS]: centers as unknown as Record<string, unknown>[],
+  [ProjectSlug.COMMODITIES]: commodities as unknown as Record<string, unknown>[],
+  [ProjectSlug.CUSTOMERS]: customers as unknown as Record<string, unknown>[],
+  [ProjectSlug.FACTORIES]: factories as unknown as Record<string, unknown>[],
+  [ProjectSlug.OPERATORS]: operators as unknown as Record<string, unknown>[],
+  [ProjectSlug.VILLAGES]: villages as unknown as Record<string, unknown>[],
 }
 
 interface EntityComboboxProps {
