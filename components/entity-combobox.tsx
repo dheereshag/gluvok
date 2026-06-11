@@ -13,7 +13,7 @@ import {
   ComboboxItem,
 } from "@/components/kibo-ui/combobox"
 import { useEntitiesStore } from "@/lib/store"
-import { getPrimaryIdKey } from "@/lib/fields"
+import { getPrimaryIdKey, ProjectSlug } from "@/lib/fields"
 import { centers } from "@/data/centers"
 import { commodities } from "@/data/commodities"
 import { customers } from "@/data/customers"
@@ -22,23 +22,23 @@ import { operators } from "@/data/operators"
 import { villages } from "@/data/villages"
 
 const FALLBACK_DATA: Record<string, any[]> = {
-  centers,
-  commodities,
-  customers,
-  factories,
-  operators,
-  villages,
+  [ProjectSlug.CENTERS]: centers,
+  [ProjectSlug.COMMODITIES]: commodities,
+  [ProjectSlug.CUSTOMERS]: customers,
+  [ProjectSlug.FACTORIES]: factories,
+  [ProjectSlug.OPERATORS]: operators,
+  [ProjectSlug.VILLAGES]: villages,
 }
 
 interface EntityComboboxProps {
-  entitySlug: string
+  entitySlug: string | ProjectSlug
   value: string
   onChange: (value: string) => void
   placeholder?: string
   id?: string
 }
 
-export function useEntityOptions(entitySlug: string) {
+export function useEntityOptions(entitySlug: string | ProjectSlug) {
   const storeData = useEntitiesStore((state) => state.entities[entitySlug])
   const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
   const primaryIdKey = getPrimaryIdKey(entitySlug)

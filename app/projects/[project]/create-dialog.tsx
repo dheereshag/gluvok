@@ -20,7 +20,7 @@ import {
 import { useEntitiesStore } from "@/lib/store"
 import { StateCombobox } from "@/components/state-combobox"
 import { EntityCombobox } from "@/components/entity-combobox"
-import { PROJECT_FIELDS, getReferencedEntitySlug, getFieldsSchema } from "@/lib/fields"
+import { PROJECT_FIELDS, getReferencedEntitySlug, getFieldsSchema, FieldType } from "@/lib/fields"
 
 interface CreateEntityDialogProps {
   open: boolean
@@ -91,7 +91,7 @@ export function CreateEntityDialog({
                 {field.label}
               </label>
 
-              {field.type === "state" ? (
+              {field.type === FieldType.STATE ? (
                 <StateCombobox
                   id="create-entity-state-trigger"
                   value={selectedState}
@@ -109,7 +109,7 @@ export function CreateEntityDialog({
                 <Input
                   id={`field-${field.key}`}
                   type={field.type}
-                  step={field.type === "number" ? "any" : undefined}
+                  step={field.type === FieldType.NUMBER ? "any" : undefined}
                   {...form.register(field.key)}
                   placeholder={field.placeholder}
                   className="h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
