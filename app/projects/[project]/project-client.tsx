@@ -639,7 +639,7 @@ export function ProjectClient({
 
         return (
           <div className="text-right pr-4">
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
                   id={`actions-trigger-${projectSlug}-${itemId}`}
@@ -736,9 +736,9 @@ export function ProjectClient({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {filterColumn && (
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative w-full sm:max-w-xs md:max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               id={`search-input-${projectSlug}`}
@@ -749,7 +749,7 @@ export function ProjectClient({
             />
           </div>
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end">
           <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
             <Plus className="h-4 w-4" />
             Add {projectName}

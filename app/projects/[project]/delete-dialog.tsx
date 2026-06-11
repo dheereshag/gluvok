@@ -52,7 +52,7 @@ export function DeleteEntityDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="w-[92vw] max-w-100 sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <div className="p-1.5 rounded-lg bg-destructive/10">

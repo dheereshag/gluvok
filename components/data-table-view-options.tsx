@@ -43,14 +43,15 @@ export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
+          id="view-options-trigger"
           variant="outline"
           size="sm"
-          className="ml-auto hidden h-8 lg:flex text-xs font-medium"
+          className="h-9 text-xs font-medium gap-1.5"
         >
-          <Settings2 className="mr-2 h-4 w-4" />
+          <Settings2 className="h-4 w-4" />
           View
         </Button>
       </DropdownMenuTrigger>

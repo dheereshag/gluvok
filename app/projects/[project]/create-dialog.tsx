@@ -125,7 +125,7 @@ export function CreateEntityDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-[92vw] max-w-104 sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
             <Plus className="h-4 w-4 text-primary" />
