@@ -13,6 +13,7 @@ import {
   ComboboxItem,
 } from "@/components/kibo-ui/combobox"
 import { useEntitiesStore } from "@/lib/store"
+import { getPrimaryIdKey } from "@/lib/fields"
 import { centers } from "@/data/centers"
 import { commodities } from "@/data/commodities"
 import { customers } from "@/data/customers"
@@ -37,10 +38,21 @@ interface EntityComboboxProps {
   id?: string
 }
 
-function getPrimaryIdKey(slug: string) {
-  if (slug === "customers") return "govt_id"
-  if (slug === "operators") return "aadhar_number"
-  return "id"
+export function useEntityOptions(entitySlug: string) {
+  const storeData = useEntitiesStore((state) => state.entities[entitySlug])
+  const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
+  const primaryIdKey = getPrimaryIdKey(entitySlug)
+
+  return React.useMemo(() => {
+    return dataList.map((item) => {
+      const idVal = String(item[primaryIdKey] ?? "")
+      const nameVal = String(item.name || item.email || "")
+      return {
+        value: idVal,
+        label: nameVal ? `${nameVal} (ID: ${idVal})` : idVal,
+      }
+    })
+  }, [dataList, primaryIdKey])
 }
 
 export function EntityCombobox({
@@ -51,22 +63,7 @@ export function EntityCombobox({
   id,
 }: EntityComboboxProps) {
   const [open, setOpen] = React.useState(false)
-
-  const storeData = useEntitiesStore((state) => state.entities[entitySlug])
-  const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
-
-  const primaryIdKey = getPrimaryIdKey(entitySlug)
-
-  const comboboxData = React.useMemo(() => {
-    return dataList.map((item) => {
-      const idVal = String(item[primaryIdKey] ?? "")
-      const nameVal = String(item.name || item.email || "")
-      return {
-        value: idVal,
-        label: nameVal ? `${nameVal} (ID: ${idVal})` : idVal,
-      }
-    })
-  }, [dataList, primaryIdKey])
+  const comboboxData = useEntityOptions(entitySlug)
 
   const selectedItem = React.useMemo(() => {
     return comboboxData.find((item) => String(item.value) === String(value))

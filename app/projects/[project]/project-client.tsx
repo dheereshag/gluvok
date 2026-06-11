@@ -62,6 +62,7 @@ import {
 import { toast } from "sonner"
 
 import { useEntitiesStore } from "@/lib/store"
+import { getPrimaryIdKey } from "@/lib/fields"
 import { Spinner } from "@/components/kibo-ui/spinner"
 import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
 import { CreateEntityDialog } from "./create-dialog"
@@ -143,13 +144,7 @@ export function ProjectClient({
   const [deletingItem, setDeletingItem] = React.useState<any | null>(null)
   const [creating, setCreating] = React.useState(false)
 
-  const getPrimaryIdKey = React.useCallback(() => {
-    if (projectSlug === "customers") return "govt_id"
-    if (projectSlug === "operators") return "aadhar_number"
-    return "id"
-  }, [projectSlug])
-
-  const primaryIdKey = getPrimaryIdKey()
+  const primaryIdKey = getPrimaryIdKey(projectSlug)
 
   // Generate columns dynamically based on the project type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
