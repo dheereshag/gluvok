@@ -15,20 +15,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
-  Building,
-  Package,
-  Users,
-  ClipboardList,
-  Factory,
-  UserCog,
-  User,
-  Home,
   LifeBuoy,
   Send,
   Weight
 } from "lucide-react"
 import Link from "next/link";
-import { ProjectSlug } from "@/lib/fields"
+import { PROJECTS } from "@/lib/projects"
 
 const data = {
   user: {
@@ -48,48 +40,14 @@ const data = {
       icon: <Send />,
     },
   ],
-  navMain: [
-    {
-      title: "Centers",
-      url: `/projects/${ProjectSlug.CENTERS}`,
-      icon: <Building />,
-    },
-    {
-      title: "Commodities",
-      url: `/projects/${ProjectSlug.COMMODITIES}`,
-      icon: <Package />,
-    },
-    {
-      title: "Customers",
-      url: `/projects/${ProjectSlug.CUSTOMERS}`,
-      icon: <Users />,
-    },
-    {
-      title: "Data Entries",
-      url: `/projects/${ProjectSlug.DATA_ENTRIES}`,
-      icon: <ClipboardList />,
-    },
-    {
-      title: "Factories",
-      url: `/projects/${ProjectSlug.FACTORIES}`,
-      icon: <Factory />,
-    },
-    {
-      title: "Operators",
-      url: `/projects/${ProjectSlug.OPERATORS}`,
-      icon: <UserCog />,
-    },
-    {
-      title: "Users",
-      url: `/projects/${ProjectSlug.USERS}`,
-      icon: <User />,
-    },
-    {
-      title: "Villages",
-      url: `/projects/${ProjectSlug.VILLAGES}`,
-      icon: <Home />,
-    },
-  ],
+  navMain: PROJECTS.map((project) => {
+    const Icon = project.icon;
+    return {
+      title: project.name,
+      url: `/projects/${project.slug}`,
+      icon: <Icon />,
+    };
+  }),
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
