@@ -19,6 +19,17 @@ import {
 } from "@/components/ui/dialog"
 import { useEntitiesStore } from "@/lib/store"
 import { StateCombobox } from "@/components/state-combobox"
+import { EntityCombobox } from "@/components/entity-combobox"
+
+function getReferencedEntitySlug(key: string): string | null {
+  if (key === "factory_id") return "factories"
+  if (key === "village_id") return "villages"
+  if (key === "commodity_id") return "commodities"
+  if (key === "center_id") return "centers"
+  if (key === "operator_id") return "operators"
+  if (key === "customer_id") return "customers"
+  return null
+}
 
 const CREATABLE_FIELDS: Record<
   string,
@@ -147,6 +158,14 @@ export function CreateEntityDialog({
                   id="create-entity-state-trigger"
                   value={selectedState}
                   onChange={(val) => form.setValue("state", val, { shouldValidate: true })}
+                />
+              ) : getReferencedEntitySlug(field.key) ? (
+                <EntityCombobox
+                  id={`field-${field.key}`}
+                  entitySlug={getReferencedEntitySlug(field.key)!}
+                  value={form.watch(field.key)}
+                  onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
+                  placeholder={field.placeholder}
                 />
               ) : (
                 <Input
