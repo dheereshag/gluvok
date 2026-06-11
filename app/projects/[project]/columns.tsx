@@ -36,7 +36,6 @@ import {
 import { toast } from "sonner"
 import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
 import { ProjectSlug } from "@/lib/fields"
-import { STATES } from "@/data/states"
 
 interface ColumnActionsCallbacks<T = Record<string, unknown>> {
   onEdit: (item: T) => void
@@ -489,13 +488,10 @@ export function getProjectColumns<T extends Record<string, unknown> = Record<str
         ),
         cell: ({ row }) => {
           const stateValue = String(row.getValue("state"))
-          const stateObj = STATES.find((s) => s.value === stateValue)
-          const stateLabel = stateObj ? stateObj.label : stateValue
-          
           return (
             <Pill variant="outline" className="font-bold text-xs text-muted-foreground py-0.5 px-2">
               <PillIcon icon={Globe} />
-              {stateLabel}
+              {stateValue}
             </Pill>
           )
         },

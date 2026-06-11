@@ -13,21 +13,23 @@ import {
   ComboboxItem,
 } from "@/components/kibo-ui/combobox"
 import { useEntitiesStore } from "@/lib/store"
-import { getPrimaryIdKey, ProjectSlug } from "@/lib/fields"
-import { centers } from "@/data/centers"
-import { commodities } from "@/data/commodities"
-import { customers } from "@/data/customers"
-import { factories } from "@/data/factories"
-import { operators } from "@/data/operators"
-import { villages } from "@/data/villages"
+import { ProjectSlug } from "@/lib/fields"
+import { centers, type Center } from "@/data/centers"
+import { commodities, type Commodity } from "@/data/commodities"
+import { customers, type Customer } from "@/data/customers"
+import { factories, type Factory } from "@/data/factories"
+import { operators, type Operator } from "@/data/operators"
+import { villages, type Village } from "@/data/villages"
 
-const FALLBACK_DATA: Record<string, Record<string, unknown>[]> = {
-  [ProjectSlug.CENTERS]: centers as unknown as Record<string, unknown>[],
-  [ProjectSlug.COMMODITIES]: commodities as unknown as Record<string, unknown>[],
-  [ProjectSlug.CUSTOMERS]: customers as unknown as Record<string, unknown>[],
-  [ProjectSlug.FACTORIES]: factories as unknown as Record<string, unknown>[],
-  [ProjectSlug.OPERATORS]: operators as unknown as Record<string, unknown>[],
-  [ProjectSlug.VILLAGES]: villages as unknown as Record<string, unknown>[],
+type Entity = Center | Commodity | Customer | Factory | Operator | Village
+
+const FALLBACK_DATA: Record<string, Entity[]> = {
+  [ProjectSlug.CENTERS]: centers,
+  [ProjectSlug.COMMODITIES]: commodities,
+  [ProjectSlug.CUSTOMERS]: customers,
+  [ProjectSlug.FACTORIES]: factories,
+  [ProjectSlug.OPERATORS]: operators,
+  [ProjectSlug.VILLAGES]: villages,
 }
 
 interface EntityComboboxProps {
@@ -39,20 +41,46 @@ interface EntityComboboxProps {
 }
 
 export function useEntityOptions(entitySlug: string | ProjectSlug) {
-  const storeData = useEntitiesStore((state) => state.entities[entitySlug])
-  const primaryIdKey = getPrimaryIdKey(entitySlug)
+  const storeData = useEntitiesStore((state) => state.entities[entitySlug]) as Entity[] | undefined
 
   return React.useMemo(() => {
     const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
     return dataList.map((item) => {
-      const idVal = String(item[primaryIdKey as keyof typeof item] ?? "")
-      const nameVal = String(item.name || item.email || "")
+      let idVal = ""
+      let nameVal = ""
+
+      if (entitySlug === ProjectSlug.CUSTOMERS) {
+        const customer = item as Customer
+        idVal = String(customer.govt_id ?? "")
+        nameVal = customer.name
+      } else if (entitySlug === ProjectSlug.OPERATORS) {
+        const operator = item as Operator
+        idVal = String(operator.aadhar_number ?? "")
+        nameVal = operator.name
+      } else if (entitySlug === ProjectSlug.CENTERS) {
+        const center = item as Center
+        idVal = String(center.id ?? "")
+        nameVal = center.name
+      } else if (entitySlug === ProjectSlug.COMMODITIES) {
+        const commodity = item as Commodity
+        idVal = String(commodity.id ?? "")
+        nameVal = commodity.name
+      } else if (entitySlug === ProjectSlug.FACTORIES) {
+        const factory = item as Factory
+        idVal = String(factory.id ?? "")
+        nameVal = factory.name
+      } else if (entitySlug === ProjectSlug.VILLAGES) {
+        const village = item as Village
+        idVal = String(village.id ?? "")
+        nameVal = village.name
+      }
+
       return {
         value: idVal,
         label: nameVal ? `${nameVal} (ID: ${idVal})` : idVal,
       }
     })
-  }, [storeData, entitySlug, primaryIdKey])
+  }, [storeData, entitySlug])
 }
 
 export function EntityCombobox({

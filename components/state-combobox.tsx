@@ -65,8 +65,8 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
             {STATES.map((s) => (
               <ComboboxItem
                 key={s.value}
-                id={`state-option-${s.value}`}
-                value={`${s.label.toLowerCase()} ${s.value.toLowerCase()}`}
+                id={`state-option-${s.code}`}
+                value={`${s.label.toLowerCase()} ${s.code.toLowerCase()}`}
                 onSelect={() => {
                   onChange(s.value)
                   setOpen(false)
@@ -75,7 +75,7 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
               >
                 <span className="font-medium text-foreground">{s.label}</span>
                 <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">
-                  {s.value}
+                  {s.code}
                 </span>
               </ComboboxItem>
             ))}
