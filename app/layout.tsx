@@ -22,12 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("h-full", geist.className)}>
       <body className="min-h-full flex flex-col antialiased">
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <TooltipProvider>{children}</TooltipProvider>
-          </SidebarInset>
-        </SidebarProvider>
+        <TooltipProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
+        </TooltipProvider>
         <Toaster />
       </body>
     </html>

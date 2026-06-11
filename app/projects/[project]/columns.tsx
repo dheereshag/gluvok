@@ -36,29 +36,61 @@ import { toast } from "sonner"
 import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
+import { formatDateTime } from "@/lib/utils"
 
 interface ColumnActionsCallbacks<T = Record<string, unknown>> {
   onEdit: (item: T) => void
   onDelete: (item: T) => void
 }
 
-function formatDateTime(dateStr: string) {
-  if (!dateStr) return "-"
-  try {
-    const date = new Date(dateStr.replace(" ", "T"))
-    if (!isNaN(date.getTime())) {
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    }
-  } catch {}
-  return dateStr
+function createCustomColumn<T>(
+  key: EntityKey,
+  label: ColumnLabel,
+  Icon: React.ComponentType<{ className?: string }>,
+  renderCell: (value: string) => React.ReactNode
+): ColumnDef<T> {
+  return {
+    accessorKey: key,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
+            {label}
+          </span>
+        }
+      />
+    ),
+    cell: ({ row }) => renderCell(String(row.getValue(key))),
+  }
 }
+
+function createTextColumn<T>(
+  key: EntityKey,
+  label: ColumnLabel,
+  Icon: React.ComponentType<{ className?: string }>,
+  className = "font-semibold text-foreground text-xs"
+): ColumnDef<T> {
+  return createCustomColumn(key, label, Icon, (val) => (
+    <div className={className}>{val}</div>
+  ))
+}
+
+function createPillColumn<T>(
+  key: EntityKey,
+  label: ColumnLabel,
+  Icon: React.ComponentType<{ className?: string }>,
+  renderContent: (value: string) => React.ReactNode,
+  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string }
+): ColumnDef<T> {
+  return createCustomColumn(key, label, Icon, (val) => (
+    <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
+      {renderContent(val)}
+    </Pill>
+  ))
+}
+
 
 export function getProjectColumns<T extends Record<string, unknown> = Record<string, unknown>>(
   projectSlug: string,
@@ -94,470 +126,135 @@ export function getProjectColumns<T extends Record<string, unknown> = Record<str
   ]
 
   // Primary Identifier Column
-  cols.push({
-    accessorKey: primaryIdKey,
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={
-          <span className="flex items-center gap-1">
-            {primaryIdKey === EntityKey.GOVT_ID || primaryIdKey === EntityKey.AADHAR_NUMBER ? (
-              <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground/70" />
-            ) : (
-              <Hash className="h-3.5 w-3.5 text-muted-foreground/70" />
-            )}
-            {primaryIdKey === EntityKey.GOVT_ID
-              ? ColumnLabel.GOVT_ID
-              : primaryIdKey === EntityKey.AADHAR_NUMBER
-              ? ColumnLabel.AADHAR_NUMBER
-              : ColumnLabel.ID}
-          </span>
-        }
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="font-mono text-muted-foreground text-xs">
-        {String(row.getValue(primaryIdKey))}
-      </div>
-    ),
-  })
+  cols.push(
+    createCustomColumn(
+      primaryIdKey as EntityKey,
+      primaryIdKey === EntityKey.GOVT_ID
+        ? ColumnLabel.GOVT_ID
+        : primaryIdKey === EntityKey.AADHAR_NUMBER
+        ? ColumnLabel.AADHAR_NUMBER
+        : ColumnLabel.ID,
+      primaryIdKey === EntityKey.GOVT_ID || primaryIdKey === EntityKey.AADHAR_NUMBER
+        ? ShieldCheck
+        : Hash,
+      (val) => <div className="font-mono text-muted-foreground text-xs">{val}</div>
+    )
+  )
 
   // Conditional columns depending on entity type
   switch (projectSlug) {
     case ProjectSlug.CENTERS:
       cols.push(
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.FACTORY_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.FACTORY_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.FACTORY_ID))}</div>,
-        }
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Building),
+        createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Building, "font-mono text-muted-foreground text-xs")
       )
       break
 
     case ProjectSlug.COMMODITIES:
       cols.push(
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.UNIT_PRICE,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <IndianRupee className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.UNIT_PRICE}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => {
-            const price = parseFloat(String(row.getValue(EntityKey.UNIT_PRICE)))
-            const formatted = new Intl.NumberFormat("en-IN", {
-              style: "currency",
-              currency: "INR",
-            }).format(price)
-            return <div className="font-medium text-xs text-emerald-600 dark:text-emerald-500 font-mono">{formatted}</div>
-          },
-        }
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Building),
+        createCustomColumn(EntityKey.UNIT_PRICE, ColumnLabel.UNIT_PRICE, IndianRupee, (val) => {
+          const price = parseFloat(val)
+          const formatted = new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: "INR",
+          }).format(price)
+          return <div className="font-medium text-xs text-emerald-600 dark:text-emerald-500 font-mono">{formatted}</div>
+        })
       )
       break
 
     case ProjectSlug.CUSTOMERS:
       cols.push(
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <User className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.FATHER_NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <User className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.FATHER_NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="text-muted-foreground text-xs">{String(row.getValue(EntityKey.FATHER_NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.VILLAGE_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Home className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.VILLAGE_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.VILLAGE_ID))}</div>,
-        }
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, User),
+        createTextColumn(EntityKey.FATHER_NAME, ColumnLabel.FATHER_NAME, User, "text-muted-foreground text-xs"),
+        createTextColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home, "font-mono text-muted-foreground text-xs")
       )
       break
 
     case ProjectSlug.DATA_ENTRIES:
       cols.push(
-        {
-          accessorKey: EntityKey.VEHICLE_NUMBER,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Car className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.VEHICLE_NUMBER}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.VEHICLE_NUMBER))}</div>,
-        },
-        {
-          accessorKey: EntityKey.WEIGHT,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Weight className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.WEIGHT}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => (
-            <Pill variant="secondary" className="font-mono text-xs font-semibold py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
-              <PillIcon icon={Weight} />
-              {String(row.getValue(EntityKey.WEIGHT))} tons
-            </Pill>
-          ),
-        },
-        {
-          accessorKey: EntityKey.COMMODITY_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Package className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.COMMODITY_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => (
-            <Pill variant="secondary" className="font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
-              <PillIcon icon={Package} />
-              ID: {String(row.getValue(EntityKey.COMMODITY_ID))}
-            </Pill>
-          ),
-        },
-        {
-          accessorKey: EntityKey.CENTER_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.CENTER_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => (
-            <Pill variant="outline" className="font-mono text-[10px] py-0.5 px-2">
-              <PillIcon icon={Building} />
-              ID: {String(row.getValue(EntityKey.CENTER_ID))}
-            </Pill>
-          ),
-        },
-        {
-          accessorKey: EntityKey.OPERATOR_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <User className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.OPERATOR_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.OPERATOR_ID))}</div>,
-        },
-        {
-          accessorKey: EntityKey.CUSTOMER_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.CUSTOMER_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.CUSTOMER_ID))}</div>,
-        }
+        createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
+        createPillColumn(
+          EntityKey.WEIGHT,
+          ColumnLabel.WEIGHT,
+          Weight,
+          (val) => <><PillIcon icon={Weight} />{val} tons</>,
+          { className: "font-mono text-xs font-semibold py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
+        ),
+        createPillColumn(
+          EntityKey.COMMODITY_ID,
+          ColumnLabel.COMMODITY_ID,
+          Package,
+          (val) => <><PillIcon icon={Package} />ID: {val}</>,
+          { className: "font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
+        ),
+        createPillColumn(
+          EntityKey.CENTER_ID,
+          ColumnLabel.CENTER_ID,
+          Building,
+          (val) => <><PillIcon icon={Building} />ID: {val}</>,
+          { variant: "outline", className: "font-mono text-[10px] py-0.5 px-2" }
+        ),
+        createTextColumn(EntityKey.OPERATOR_ID, ColumnLabel.OPERATOR_ID, User, "font-mono text-muted-foreground text-xs"),
+        createTextColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users, "font-mono text-muted-foreground text-xs")
       )
       break
 
     case ProjectSlug.FACTORIES:
       cols.push(
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.VILLAGE_ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Home className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.VILLAGE_ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.VILLAGE_ID))}</div>,
-        }
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Building),
+        createTextColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home, "font-mono text-muted-foreground text-xs")
       )
       break
 
     case ProjectSlug.OPERATORS:
       cols.push(
-        {
-          accessorKey: EntityKey.ID,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Hash className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.ID}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-mono text-muted-foreground text-xs">{String(row.getValue(EntityKey.ID))}</div>,
-        },
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <User className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        }
+        createTextColumn(EntityKey.ID, ColumnLabel.ID, Hash, "font-mono text-muted-foreground text-xs"),
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, User)
       )
       break
 
     case ProjectSlug.USERS:
       cols.push(
-        {
-          accessorKey: EntityKey.EMAIL,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Mail className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.EMAIL}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.EMAIL))}</div>,
-        },
-        {
-          accessorKey: EntityKey.ROLE,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.ROLE}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => (
-            <Pill variant="secondary" className="text-[10px] uppercase font-bold tracking-wider py-0.5 px-2 bg-muted/60 border border-muted-foreground/10">
-              <PillIndicator pulse variant="success" />
-              {String(row.getValue(EntityKey.ROLE))}
-            </Pill>
-          ),
-        }
+        createTextColumn(EntityKey.EMAIL, ColumnLabel.EMAIL, Mail),
+        createPillColumn(
+          EntityKey.ROLE,
+          ColumnLabel.ROLE,
+          ShieldCheck,
+          (val) => <><PillIndicator pulse variant="success" />{val}</>,
+          { className: "text-[10px] uppercase font-bold tracking-wider py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
+        )
       )
       break
 
     case ProjectSlug.VILLAGES:
       cols.push(
-        {
-          accessorKey: EntityKey.NAME,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Home className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.NAME}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => <div className="font-semibold text-foreground text-xs">{String(row.getValue(EntityKey.NAME))}</div>,
-        },
-        {
-          accessorKey: EntityKey.STATE,
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={
-                <span className="flex items-center gap-1">
-                  <Globe className="h-3.5 w-3.5 text-muted-foreground/70" />
-                  {ColumnLabel.STATE}
-                </span>
-              }
-            />
-          ),
-          cell: ({ row }) => {
-            const stateValue = String(row.getValue(EntityKey.STATE))
-            return (
-              <Pill variant="outline" className="font-bold text-xs text-muted-foreground py-0.5 px-2">
-                <PillIcon icon={Globe} />
-                {stateValue}
-              </Pill>
-            )
-          },
-        }
+        createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Home),
+        createPillColumn(
+          EntityKey.STATE,
+          ColumnLabel.STATE,
+          Globe,
+          (val) => <><PillIcon icon={Globe} />{val}</>,
+          { variant: "outline", className: "font-bold text-xs text-muted-foreground py-0.5 px-2" }
+        )
       )
       break
   }
 
   // Timestamps
   cols.push(
-    {
-      accessorKey: EntityKey.CREATED_AT,
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={
-            <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-muted-foreground/70" />
-              {ColumnLabel.CREATED_AT}
-            </span>
-          }
-        />
-      ),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-xs font-medium">
-          {formatDateTime(String(row.getValue(EntityKey.CREATED_AT)))}
-        </span>
-      ),
-    }
+    createCustomColumn(EntityKey.CREATED_AT, ColumnLabel.CREATED_AT, Calendar, (val) => (
+      <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
+    ))
   )
 
   if (projectSlug !== ProjectSlug.DATA_ENTRIES) {
-    cols.push({
-      accessorKey: EntityKey.UPDATED_AT,
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={
-            <span className="flex items-center gap-1">
-              <CalendarClock className="h-3.5 w-3.5 text-muted-foreground/70" />
-              {ColumnLabel.UPDATED_AT}
-            </span>
-          }
-        />
-      ),
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-xs font-medium">
-          {formatDateTime(String(row.getValue(EntityKey.UPDATED_AT)))}
-        </span>
-      ),
-    })
+    cols.push(
+      createCustomColumn(EntityKey.UPDATED_AT, ColumnLabel.UPDATED_AT, CalendarClock, (val) => (
+        <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
+      ))
+    )
   }
 
   // Actions dropdown column

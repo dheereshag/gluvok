@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { NavProjects } from "@/components/nav-projects"
+import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -28,6 +28,7 @@ import {
   Weight
 } from "lucide-react"
 import Link from "next/link";
+import { ProjectSlug } from "@/lib/fields"
 
 const data = {
   user: {
@@ -47,45 +48,45 @@ const data = {
       icon: <Send />,
     },
   ],
-  projects: [
+  navMain: [
     {
-      name: "Centers",
-      url: "/projects/centers",
+      title: "Centers",
+      url: `/projects/${ProjectSlug.CENTERS}`,
       icon: <Building />,
     },
     {
-      name: "Commodities",
-      url: "/projects/commodities",
+      title: "Commodities",
+      url: `/projects/${ProjectSlug.COMMODITIES}`,
       icon: <Package />,
     },
     {
-      name: "Customers",
-      url: "/projects/customers",
+      title: "Customers",
+      url: `/projects/${ProjectSlug.CUSTOMERS}`,
       icon: <Users />,
     },
     {
-      name: "Data Entries",
-      url: "/projects/data-entries",
+      title: "Data Entries",
+      url: `/projects/${ProjectSlug.DATA_ENTRIES}`,
       icon: <ClipboardList />,
     },
     {
-      name: "Factories",
-      url: "/projects/factories",
+      title: "Factories",
+      url: `/projects/${ProjectSlug.FACTORIES}`,
       icon: <Factory />,
     },
     {
-      name: "Operators",
-      url: "/projects/operators",
+      title: "Operators",
+      url: `/projects/${ProjectSlug.OPERATORS}`,
       icon: <UserCog />,
     },
     {
-      name: "Users",
-      url: "/projects/users",
+      title: "Users",
+      url: `/projects/${ProjectSlug.USERS}`,
       icon: <User />,
     },
     {
-      name: "Villages",
-      url: "/projects/villages",
+      title: "Villages",
+      url: `/projects/${ProjectSlug.VILLAGES}`,
       icon: <Home />,
     },
   ],
@@ -111,7 +112,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} label="Platform" />
+        <NavMain items={data.navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

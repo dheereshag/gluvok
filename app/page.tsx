@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,17 +28,18 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card"
+import { ProjectSlug } from "@/lib/fields"
 
 export default function Page() {
   const cards = [
-    { name: "Centers", href: "/projects/centers", desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
-    { name: "Commodities", href: "/projects/commodities", desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },
-    { name: "Customers", href: "/projects/customers", desc: "Directory of client accounts and details", icon: Users, color: "text-green-500" },
-    { name: "Data Entries", href: "/projects/data-entries", desc: "Input logs, sheets and record metrics", icon: ClipboardList, color: "text-purple-500" },
-    { name: "Factories", href: "/projects/factories", desc: "Configure manufacturing plants and lines", icon: Factory, color: "text-indigo-500" },
-    { name: "Operators", href: "/projects/operators", desc: "Manage workers and field operatives", icon: UserCog, color: "text-pink-500" },
-    { name: "Users", href: "/projects/users", desc: "Configure access control and team profiles", icon: User, color: "text-teal-500" },
-    { name: "Villages", href: "/projects/villages", desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
+    { name: "Centers", href: `/projects/${ProjectSlug.CENTERS}`, desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
+    { name: "Commodities", href: `/projects/${ProjectSlug.COMMODITIES}`, desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },
+    { name: "Customers", href: `/projects/${ProjectSlug.CUSTOMERS}`, desc: "Directory of client accounts and details", icon: Users, color: "text-green-500" },
+    { name: "Data Entries", href: `/projects/${ProjectSlug.DATA_ENTRIES}`, desc: "Input logs, sheets and record metrics", icon: ClipboardList, color: "text-purple-500" },
+    { name: "Factories", href: `/projects/${ProjectSlug.FACTORIES}`, desc: "Configure manufacturing plants and lines", icon: Factory, color: "text-indigo-500" },
+    { name: "Operators", href: `/projects/${ProjectSlug.OPERATORS}`, desc: "Manage workers and field operatives", icon: UserCog, color: "text-pink-500" },
+    { name: "Users", href: `/projects/${ProjectSlug.USERS}`, desc: "Configure access control and team profiles", icon: User, color: "text-teal-500" },
+    { name: "Villages", href: `/projects/${ProjectSlug.VILLAGES}`, desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
   ]
 
   return (
