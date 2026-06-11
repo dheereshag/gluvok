@@ -3,7 +3,6 @@
 import * as React from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { toast } from "sonner"
 import { Plus, Save, X } from "lucide-react"
 
@@ -101,6 +100,7 @@ export function CreateEntityDialog({
                 <EntityCombobox
                   id={`field-${field.key}`}
                   entitySlug={getReferencedEntitySlug(field.key)!}
+                  // eslint-disable-next-line react-hooks/incompatible-library
                   value={form.watch(field.key)}
                   onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
                   placeholder={field.placeholder}

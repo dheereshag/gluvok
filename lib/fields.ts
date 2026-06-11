@@ -17,8 +17,31 @@ export enum FieldType {
   STATE = "state",
 }
 
+export enum EntityKey {
+  ID = "id",
+  NAME = "name",
+  STATE = "state",
+  FACTORY_ID = "factory_id",
+  UNIT_PRICE = "unit_price",
+  FATHER_NAME = "father_name",
+  VILLAGE_ID = "village_id",
+  VEHICLE_NUMBER = "vehicle_number",
+  WEIGHT = "weight",
+  COMMODITY_ID = "commodity_id",
+  CENTER_ID = "center_id",
+  OPERATOR_ID = "operator_id",
+  CUSTOMER_ID = "customer_id",
+  EMAIL = "email",
+  ROLE = "role",
+  CREATED_AT = "created_at",
+  UPDATED_AT = "updated_at",
+  AADHAR_NUMBER = "aadhar_number",
+  GOVT_ID = "govt_id",
+  IMAGES = "images"
+}
+
 export interface FieldConfig {
-  key: string
+  key: EntityKey
   label: string
   placeholder: string
   type: FieldType
@@ -26,57 +49,57 @@ export interface FieldConfig {
 
 export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.CENTERS]: [
-    { key: "name", label: "Center Name", placeholder: "e.g. Center F", type: FieldType.TEXT },
-    { key: "factory_id", label: "Factory ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.NAME, label: "Center Name", placeholder: "e.g. Center F", type: FieldType.TEXT },
+    { key: EntityKey.FACTORY_ID, label: "Factory ID", placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.COMMODITIES]: [
-    { key: "name", label: "Commodity Name", placeholder: "e.g. Barley", type: FieldType.TEXT },
-    { key: "unit_price", label: "Unit Price (INR)", placeholder: "e.g. 15000", type: FieldType.NUMBER },
+    { key: EntityKey.NAME, label: "Commodity Name", placeholder: "e.g. Barley", type: FieldType.TEXT },
+    { key: EntityKey.UNIT_PRICE, label: "Unit Price (INR)", placeholder: "e.g. 15000", type: FieldType.NUMBER },
   ],
   [ProjectSlug.CUSTOMERS]: [
-    { key: "name", label: "Customer Name", placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT },
-    { key: "father_name", label: "Father's Name", placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT },
-    { key: "village_id", label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.NAME, label: "Customer Name", placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT },
+    { key: EntityKey.FATHER_NAME, label: "Father's Name", placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT },
+    { key: EntityKey.VILLAGE_ID, label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.DATA_ENTRIES]: [
-    { key: "vehicle_number", label: "Vehicle Number", placeholder: "e.g. PB10XY1234", type: FieldType.TEXT },
-    { key: "weight", label: "Weight (tons)", placeholder: "e.g. 15.5", type: FieldType.NUMBER },
-    { key: "commodity_id", label: "Commodity ID", placeholder: "e.g. 1", type: FieldType.TEXT },
-    { key: "center_id", label: "Center ID", placeholder: "e.g. 1", type: FieldType.TEXT },
-    { key: "operator_id", label: "Operator ID", placeholder: "e.g. 123456789012", type: FieldType.TEXT },
-    { key: "customer_id", label: "Customer ID", placeholder: "e.g. GOV1001", type: FieldType.TEXT },
+    { key: EntityKey.VEHICLE_NUMBER, label: "Vehicle Number", placeholder: "e.g. PB10XY1234", type: FieldType.TEXT },
+    { key: EntityKey.WEIGHT, label: "Weight (tons)", placeholder: "e.g. 15.5", type: FieldType.NUMBER },
+    { key: EntityKey.COMMODITY_ID, label: "Commodity ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.CENTER_ID, label: "Center ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.OPERATOR_ID, label: "Operator ID", placeholder: "e.g. 123456789012", type: FieldType.TEXT },
+    { key: EntityKey.CUSTOMER_ID, label: "Customer ID", placeholder: "e.g. GOV1001", type: FieldType.TEXT },
   ],
   [ProjectSlug.FACTORIES]: [
-    { key: "name", label: "Factory Name", placeholder: "e.g. Factory C", type: FieldType.TEXT },
-    { key: "village_id", label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.NAME, label: "Factory Name", placeholder: "e.g. Factory C", type: FieldType.TEXT },
+    { key: EntityKey.VILLAGE_ID, label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.OPERATORS]: [
-    { key: "id", label: "System ID", placeholder: "e.g. operator-id", type: FieldType.TEXT },
-    { key: "name", label: "Operator Name", placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },
+    { key: EntityKey.ID, label: "System ID", placeholder: "e.g. operator-id", type: FieldType.TEXT },
+    { key: EntityKey.NAME, label: "Operator Name", placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },
   ],
   [ProjectSlug.USERS]: [
-    { key: "email", label: "Email Address", placeholder: "e.g. user@example.com", type: FieldType.TEXT },
-    { key: "role", label: "User Role", placeholder: "e.g. operator", type: FieldType.TEXT },
+    { key: EntityKey.EMAIL, label: "Email Address", placeholder: "e.g. user@example.com", type: FieldType.TEXT },
+    { key: EntityKey.ROLE, label: "User Role", placeholder: "e.g. operator", type: FieldType.TEXT },
   ],
   [ProjectSlug.VILLAGES]: [
-    { key: "name", label: "Village Name", placeholder: "e.g. Ludhiana", type: FieldType.TEXT },
-    { key: "state", label: "State", placeholder: "Select state...", type: FieldType.STATE },
+    { key: EntityKey.NAME, label: "Village Name", placeholder: "e.g. Ludhiana", type: FieldType.TEXT },
+    { key: EntityKey.STATE, label: "State", placeholder: "Select state...", type: FieldType.STATE },
   ],
 }
 
-export function getPrimaryIdKey(slug: string | ProjectSlug): string {
-  if (slug === ProjectSlug.CUSTOMERS) return "govt_id"
-  if (slug === ProjectSlug.OPERATORS) return "aadhar_number"
-  return "id"
+export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
+  if (slug === ProjectSlug.CUSTOMERS) return EntityKey.GOVT_ID
+  if (slug === ProjectSlug.OPERATORS) return EntityKey.AADHAR_NUMBER
+  return EntityKey.ID
 }
 
-export function getReferencedEntitySlug(key: string): ProjectSlug | null {
-  if (key === "factory_id") return ProjectSlug.FACTORIES
-  if (key === "village_id") return ProjectSlug.VILLAGES
-  if (key === "commodity_id") return ProjectSlug.COMMODITIES
-  if (key === "center_id") return ProjectSlug.CENTERS
-  if (key === "operator_id") return ProjectSlug.OPERATORS
-  if (key === "customer_id") return ProjectSlug.CUSTOMERS
+export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | null {
+  if (key === EntityKey.FACTORY_ID) return ProjectSlug.FACTORIES
+  if (key === EntityKey.VILLAGE_ID) return ProjectSlug.VILLAGES
+  if (key === EntityKey.COMMODITY_ID) return ProjectSlug.COMMODITIES
+  if (key === EntityKey.CENTER_ID) return ProjectSlug.CENTERS
+  if (key === EntityKey.OPERATOR_ID) return ProjectSlug.OPERATORS
+  if (key === EntityKey.CUSTOMER_ID) return ProjectSlug.CUSTOMERS
   return null
 }
 

@@ -43,24 +43,6 @@ interface ProjectClientProps {
   initialData: any[]
 }
 
-function formatDateTime(dateStr: string) {
-  if (!dateStr) return "-"
-  try {
-    const date = new Date(dateStr.replace(" ", "T"))
-    if (!isNaN(date.getTime())) {
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    }
-  } catch {}
-  return dateStr
-}
-
 function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
   "use no memo"
   // eslint-disable-next-line react-hooks/incompatible-library

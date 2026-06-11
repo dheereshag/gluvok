@@ -1,69 +1,69 @@
 export interface DataEntry {
-  id: string
+  id: number
   vehicle_number: string
   weight: string
   images: string[]
-  commodity_id: string
-  center_id: string
+  commodity_id: number
+  center_id: number
   operator_id: string
-  customer_id: string
+  customer_id: number
   created_at: string
 }
 
 export const dataEntries: DataEntry[] = [
   {
-    id: "1",
+    id: 1,
     vehicle_number: "PB10AB1234",
     weight: "12.500",
     images: ["uploads/wheat1.jpg"],
-    commodity_id: "1",
-    center_id: "1",
+    commodity_id: 1,
+    center_id: 1,
     operator_id: "123456789012",
-    customer_id: "GOV1001",
+    customer_id: 1001,
     created_at: "2026-06-07 11:50:14.658144",
   },
   {
-    id: "2",
+    id: 2,
     vehicle_number: "PB02XY9876",
     weight: "18.750",
     images: ["uploads/copper1.jpg", "uploads/copper2.jpg"],
-    commodity_id: "2",
-    center_id: "2",
+    commodity_id: 2,
+    center_id: 2,
     operator_id: "123456789012",
-    customer_id: "GOV1002",
+    customer_id: 1002,
     created_at: "2026-06-07 11:50:14.658144",
   },
   {
-    id: "3",
+    id: 3,
     vehicle_number: "RJ14CD4567",
     weight: "25.200",
     images: ["uploads/corn1.jpg"],
-    commodity_id: "3",
-    center_id: "4",
+    commodity_id: 3,
+    center_id: 4,
     operator_id: "234567890123",
-    customer_id: "GOV1003",
+    customer_id: 1003,
     created_at: "2026-06-07 11:50:14.658144",
   },
   {
-    id: "4",
+    id: 4,
     vehicle_number: "HR20EF1111",
     weight: "30.450",
     images: ["uploads/oil1.jpg"],
-    commodity_id: "4",
-    center_id: "5",
+    commodity_id: 4,
+    center_id: 5,
     operator_id: "345678901234",
-    customer_id: "GOV1004",
+    customer_id: 1004,
     created_at: "2026-06-07 11:50:14.658144",
   },
   {
-    id: "5",
+    id: 5,
     vehicle_number: "PB91GH2222",
     weight: "10.000",
     images: [],
-    commodity_id: "1",
-    center_id: "3",
+    commodity_id: 1,
+    center_id: 3,
     operator_id: "234567890123",
-    customer_id: "GOV1005",
+    customer_id: 1005,
     created_at: "2026-06-07 11:50:14.658144",
   },
 ]

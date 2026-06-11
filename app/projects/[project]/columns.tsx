@@ -36,10 +36,11 @@ import {
 import { toast } from "sonner"
 import { Pill, PillIcon, PillIndicator } from "@/components/kibo-ui/pill"
 import { ProjectSlug } from "@/lib/fields"
+import { STATES } from "@/data/states"
 
-interface ColumnActionsCallbacks {
-  onEdit: (item: any) => void
-  onDelete: (item: any) => void
+interface ColumnActionsCallbacks<T = Record<string, unknown>> {
+  onEdit: (item: T) => void
+  onDelete: (item: T) => void
 }
 
 function formatDateTime(dateStr: string) {
@@ -60,13 +61,13 @@ function formatDateTime(dateStr: string) {
   return dateStr
 }
 
-export function getProjectColumns(
+export function getProjectColumns<T extends Record<string, unknown> = Record<string, unknown>>(
   projectSlug: string,
   primaryIdKey: string,
   projectName: string,
-  callbacks: ColumnActionsCallbacks
-): ColumnDef<any>[] {
-  const cols: ColumnDef<any>[] = [
+  callbacks: ColumnActionsCallbacks<T>
+): ColumnDef<T>[] {
+  const cols: ColumnDef<T>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -486,12 +487,18 @@ export function getProjectColumns(
             }
           />
         ),
-        cell: ({ row }) => (
-          <Pill variant="outline" className="font-bold text-xs text-muted-foreground py-0.5 px-2">
-            <PillIcon icon={Globe} />
-            {String(row.getValue("state"))}
-          </Pill>
-        ),
+        cell: ({ row }) => {
+          const stateValue = String(row.getValue("state"))
+          const stateObj = STATES.find((s) => s.value === stateValue)
+          const stateLabel = stateObj ? stateObj.label : stateValue
+          
+          return (
+            <Pill variant="outline" className="font-bold text-xs text-muted-foreground py-0.5 px-2">
+              <PillIcon icon={Globe} />
+              {stateLabel}
+            </Pill>
+          )
+        },
       }
     )
   }

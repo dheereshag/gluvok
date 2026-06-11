@@ -21,7 +21,7 @@ import { factories } from "@/data/factories"
 import { operators } from "@/data/operators"
 import { villages } from "@/data/villages"
 
-const FALLBACK_DATA: Record<string, any[]> = {
+const FALLBACK_DATA: Record<string, Record<string, unknown>[]> = {
   [ProjectSlug.CENTERS]: centers,
   [ProjectSlug.COMMODITIES]: commodities,
   [ProjectSlug.CUSTOMERS]: customers,
@@ -40,19 +40,19 @@ interface EntityComboboxProps {
 
 export function useEntityOptions(entitySlug: string | ProjectSlug) {
   const storeData = useEntitiesStore((state) => state.entities[entitySlug])
-  const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
   const primaryIdKey = getPrimaryIdKey(entitySlug)
 
   return React.useMemo(() => {
+    const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
     return dataList.map((item) => {
-      const idVal = String(item[primaryIdKey] ?? "")
+      const idVal = String(item[primaryIdKey as keyof typeof item] ?? "")
       const nameVal = String(item.name || item.email || "")
       return {
         value: idVal,
         label: nameVal ? `${nameVal} (ID: ${idVal})` : idVal,
       }
     })
-  }, [dataList, primaryIdKey])
+  }, [storeData, entitySlug, primaryIdKey])
 }
 
 export function EntityCombobox({
