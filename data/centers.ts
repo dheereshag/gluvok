@@ -1,10 +1,4 @@
-export interface Center {
-  id: number
-  name: string
-  factory_id: number
-  created_at: string
-  updated_at: string
-}
+import { type Center } from "@/types"
 
 export const centers: Center[] = [
   {

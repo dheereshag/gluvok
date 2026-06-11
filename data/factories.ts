@@ -1,10 +1,4 @@
-export interface Factory {
-  id: number
-  name: string
-  village_id: number
-  created_at: string
-  updated_at: string
-}
+import { type Factory } from "@/types";
 
 export const factories: Factory[] = [
   {

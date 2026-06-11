@@ -13,7 +13,7 @@ import {
   ComboboxGroup,
   ComboboxItem,
 } from "@/components/kibo-ui/combobox"
-import { STATES } from "@/data/states"
+import { State } from "@/lib/constants"
 
 interface StateComboboxProps {
   value: string
@@ -25,9 +25,10 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
   const [open, setOpen] = React.useState(false)
 
   const comboboxData = React.useMemo(() => {
-    return STATES.map((s) => ({
-      label: s.label,
-      value: s.value,
+    return Object.entries(State).map(([code, name]) => ({
+      label: name,
+      value: name,
+      code: code,
     }))
   }, [])
 
@@ -47,9 +48,7 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
       >
         <span className="flex items-center gap-2">
           <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-          {value
-            ? STATES.find((s) => s.value === value)?.label || value
-            : "Select state..."}
+          {value ? value : "Select state..."}
         </span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>
@@ -62,7 +61,7 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
             No state found.
           </ComboboxEmpty>
           <ComboboxGroup>
-            {STATES.map((s) => (
+            {comboboxData.map((s) => (
               <ComboboxItem
                 key={s.value}
                 id={`state-option-${s.code}`}

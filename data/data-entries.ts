@@ -1,14 +1,4 @@
-export interface DataEntry {
-  id: number
-  vehicle_number: string
-  weight: string
-  images: string[]
-  commodity_id: number
-  center_id: number
-  operator_id: string
-  customer_id: number
-  created_at: string
-}
+import { type DataEntry } from "@/types";
 
 export const dataEntries: DataEntry[] = [
   {

@@ -1,12 +1,5 @@
+import { type Village } from "@/types";
 import { State } from "@/lib/constants";
-
-export interface Village {
-  id: number
-  name: string
-  state: State
-  created_at: string
-  updated_at: string
-}
 
 export const villages: Village[] = [
   {

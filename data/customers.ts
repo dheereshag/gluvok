@@ -1,11 +1,4 @@
-export interface Customer {
-  govt_id: number
-  name: string
-  father_name: string
-  village_id: number
-  created_at: string
-  updated_at: string
-}
+import { type Customer } from "@/types";
 
 export const customers: Customer[] = [
   {

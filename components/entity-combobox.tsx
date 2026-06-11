@@ -14,12 +14,20 @@ import {
 } from "@/components/kibo-ui/combobox"
 import { useEntitiesStore } from "@/lib/store"
 import { ProjectSlug } from "@/lib/fields"
-import { centers, type Center } from "@/data/centers"
-import { commodities, type Commodity } from "@/data/commodities"
-import { customers, type Customer } from "@/data/customers"
-import { factories, type Factory } from "@/data/factories"
-import { operators, type Operator } from "@/data/operators"
-import { villages, type Village } from "@/data/villages"
+import { centers } from "@/data/centers"
+import { commodities } from "@/data/commodities"
+import { customers } from "@/data/customers"
+import { factories } from "@/data/factories"
+import { operators } from "@/data/operators"
+import { villages } from "@/data/villages"
+import {
+  type Center,
+  type Commodity,
+  type Customer,
+  type Factory,
+  type Operator,
+  type Village,
+} from "@/types"
 
 type Entity = Center | Commodity | Customer | Factory | Operator | Village
 

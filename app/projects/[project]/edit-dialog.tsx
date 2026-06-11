@@ -57,6 +57,10 @@ export function EditEntityDialog({
     name: "state",
   })
 
+  const watchedValues = useWatch({
+    control: form.control,
+  })
+
   React.useEffect(() => {
     if (item) {
       const defaults: Record<string, string> = {}
@@ -110,8 +114,7 @@ export function EditEntityDialog({
                 <EntityCombobox
                   id={`field-${field.key}`}
                   entitySlug={getReferencedEntitySlug(field.key)!}
-                  // eslint-disable-next-line react-hooks/incompatible-library
-                  value={form.watch(field.key)}
+                  value={watchedValues?.[field.key] ?? ""}
                   onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
                   placeholder={field.placeholder}
                 />

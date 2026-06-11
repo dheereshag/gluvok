@@ -1,10 +1,4 @@
-export interface Operator {
-  aadhar_number: string
-  id: string
-  name: string
-  created_at: string
-  updated_at: string
-}
+import { type Operator } from "@/types";
 
 export const operators: Operator[] = [
   {

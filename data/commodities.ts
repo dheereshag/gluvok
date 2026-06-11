@@ -1,12 +1,5 @@
 import { CommodityName } from "@/lib/constants";
-
-export interface Commodity {
-  id: number
-  name: CommodityName
-  unit_price: string
-  created_at: string
-  updated_at: string
-}
+import { type Commodity } from "@/types";
 
 export const commodities: Commodity[] = [
   {

@@ -1,12 +1,5 @@
+import { type User } from "@/types";
 import { Role } from "@/lib/constants";
-
-export interface User {
-  id: string
-  email: string
-  role: Role
-  created_at: string
-  updated_at: string
-}
 
 export const users: User[] = [
   {
