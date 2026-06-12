@@ -7,7 +7,7 @@ import { type EntityRecord } from "@/types"
 export function getField(entity: EntityRecord, key: string): string | number | string[] | undefined {
   // EntityRecord is a union of typed interfaces without index signatures,
   // so we go through unknown for safe dynamic key access
-  return (entity as unknown as Record<string, string | number | string[] | undefined>)[key]
+  return (entity as EntityRecord & Record<string, string | number | string[] | undefined>)[key]
 }
 
 
@@ -40,7 +40,7 @@ export const useEntitiesStore = create<EntitiesState>((set) => ({
         ...newEntity,
         created_at: new Date().toISOString().replace("T", " ").substring(0, 26),
         updated_at: new Date().toISOString().replace("T", " ").substring(0, 26),
-      } as unknown as EntityRecord
+      } as EntityRecord
       return {
         entities: { ...state.entities, [slug]: [entityToAdd, ...currentList] },
       }
@@ -54,7 +54,7 @@ export const useEntitiesStore = create<EntitiesState>((set) => ({
               ...item,
               ...updatedFields,
               updated_at: new Date().toISOString().replace("T", " ").substring(0, 26),
-            } as unknown as EntityRecord
+            } as EntityRecord
           : item
       )
       return {

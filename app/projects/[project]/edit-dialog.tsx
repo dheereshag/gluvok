@@ -48,8 +48,8 @@ export function EditEntityDialog({
   }, [projectSlug])
 
   const form = useForm<FieldValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(formSchema as any),
+    // @ts-expect-error - Zod version mismatch between app and hookform resolver
+    resolver: zodResolver(formSchema),
     defaultValues: {},
   })
 
