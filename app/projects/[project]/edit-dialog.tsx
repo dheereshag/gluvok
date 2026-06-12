@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm, type FieldValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { Pencil, Save, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -17,9 +16,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useEntitiesStore } from "@/lib/store"
-import { StateCombobox } from "@/components/state-combobox"
-import { EntityCombobox } from "@/components/entity-combobox"
-import { PROJECT_FIELDS, getReferencedEntitySlug, getFieldsSchema, FieldType } from "@/lib/fields"
+import { FormFieldInput } from "@/components/form-field-input"
+import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
+import { ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
 
 interface EditEntityDialogProps {
   open: boolean
@@ -43,22 +42,16 @@ export function EditEntityDialog({
 
   const fields = React.useMemo(() => PROJECT_FIELDS[projectSlug] || [], [projectSlug])
 
-  const formSchema = React.useMemo(() => getFieldsSchema(fields), [fields])
+  const formSchema = React.useMemo(() => {
+    return ENTITY_EDIT_SCHEMAS[projectSlug as ProjectSlug]
+  }, [projectSlug])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const form = useForm<Record<string, any>>({
+  const form = useForm({
+    // Cast to any is required here due to type definition incompatibilities between
+    // Zod v4 (in package.json) and the internal Zod v3 typings expected by @hookform/resolvers
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(formSchema as any),
     defaultValues: {},
-  })
-
-  const selectedState = useWatch({
-    control: form.control,
-    name: "state",
-  })
-
-  const watchedValues = useWatch({
-    control: form.control,
   })
 
   React.useEffect(() => {
@@ -73,8 +66,7 @@ export function EditEntityDialog({
     }
   }, [item, fields, form])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSubmit = (values: Record<string, any>) => {
+  const onSubmit = (values: FieldValues) => {
     if (!item) return
     try {
       updateEntity(projectSlug, primaryIdKey, item[primaryIdKey], values)
@@ -104,30 +96,11 @@ export function EditEntityDialog({
                 {field.label}
               </label>
 
-              {field.type === FieldType.STATE ? (
-                <StateCombobox
-                  id="edit-entity-state-trigger"
-                  value={selectedState}
-                  onChange={(val) => form.setValue("state", val, { shouldValidate: true })}
-                />
-              ) : getReferencedEntitySlug(field.key) ? (
-                <EntityCombobox
-                  id={`field-${field.key}`}
-                  entitySlug={getReferencedEntitySlug(field.key)!}
-                  value={watchedValues?.[field.key] ?? ""}
-                  onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
-                  placeholder={field.placeholder}
-                />
-              ) : (
-                <Input
-                  id={`field-${field.key}`}
-                  type={field.type}
-                  step={field.type === FieldType.NUMBER ? "any" : undefined}
-                  {...form.register(field.key)}
-                  placeholder={field.placeholder}
-                  className="h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
-                />
-              )}
+              <FormFieldInput
+                field={field}
+                form={form}
+                idPrefix="edit-entity"
+              />
 
               {form.formState.errors[field.key] && (
                 <span className="text-destructive text-[11px] font-medium">

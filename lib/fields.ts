@@ -1,4 +1,3 @@
-import * as z from "zod"
 
 export enum ProjectSlug {
   CENTERS = "centers",
@@ -101,16 +100,4 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
   if (key === EntityKey.OPERATOR_ID) return ProjectSlug.OPERATORS
   if (key === EntityKey.CUSTOMER_ID) return ProjectSlug.CUSTOMERS
   return null
-}
-
-export function getFieldsSchema(fields: FieldConfig[]) {
-  const schemaShape: Record<string, z.ZodTypeAny> = {}
-  fields.forEach((f) => {
-    if (f.type === FieldType.NUMBER) {
-      schemaShape[f.key] = z.coerce.number()
-    } else {
-      schemaShape[f.key] = z.string().min(1, `${f.label} is required`)
-    }
-  })
-  return z.object(schemaShape)
 }
