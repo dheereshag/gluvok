@@ -1,5 +1,5 @@
 import { Role } from "@/lib/constants"
-import { Center, Commodity, Customer, Factory, Village } from "./entities"
+import { Center, Commodity, CommodityPrice, Customer, Factory, Village } from "./entities"
 
 export * from "./entities"
 
@@ -8,7 +8,7 @@ export interface Weighment {
   vehicle_number: string
   weight: string
   images: string[]
-  commodity_id: number
+  commodity_price_id: number
   center_id: number
   operator_id: string
   customer_id: number
@@ -33,4 +33,4 @@ export interface User {
 }
 
 /** Union of all entity types used across the app */
-export type EntityRecord = Center | Commodity | Customer | Weighment | Factory | Operator | User | Village
+export type EntityRecord = Center | Commodity | CommodityPrice | Customer | Weighment | Factory | Operator | User | Village

@@ -1,12 +1,5 @@
 export { State } from "./states"
 
-export enum CommodityName {
-  WHEAT = "Wheat",
-  SCRAP_COPPER = "Scrap Copper",
-  CORN = "Corn",
-  CRUDE_OIL = "Crude Oil",
-}
-
 export enum Role {
   ADMIN = "Admin",
   OPERATOR = "Operator",
@@ -27,6 +20,8 @@ export enum ColumnLabel {
   VEHICLE_NUMBER = "Vehicle Number",
   WEIGHT = "Weight",
   COMMODITY_ID = "Commodity ID",
+  COMMODITY_NAME = "Commodity Name",
+  COMMODITY_PRICE_ID = "Commodity Price ID",
   CENTER_ID = "Center ID",
   OPERATOR_ID = "Operator ID",
   CUSTOMER_ID = "Customer ID",

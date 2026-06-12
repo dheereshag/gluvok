@@ -1,6 +1,7 @@
 import {
   Building,
   Package,
+  Coins,
   Users,
   ClipboardList,
   Factory,
@@ -14,6 +15,7 @@ import { ProjectSlug } from "@/lib/fields";
 
 import { centers } from "@/data/centers";
 import { commodities } from "@/data/commodities";
+import { commodityPrices } from "@/data/commodity-prices";
 import { customers } from "@/data/customers";
 import { weighments } from "@/data/weighments";
 import { factories } from "@/data/factories";
@@ -30,6 +32,7 @@ export interface ProjectConfig {
 export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
   [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Package, data: commodities },
+  [ProjectSlug.COMMODITY_PRICES]: { name: ProjectName.COMMODITY_PRICES, icon: Coins, data: commodityPrices },
   [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
   [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList, data: weighments },
   [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory, data: factories },

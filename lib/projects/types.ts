@@ -4,6 +4,7 @@ import { ProjectSlug } from "../fields"
 export enum ProjectName {
   CENTERS = "Centers",
   COMMODITIES = "Commodities",
+  COMMODITY_PRICES = "Commodity Prices",
   CUSTOMERS = "Customers",
   WEIGHMENTS = "Weighments",
   FACTORIES = "Factories",

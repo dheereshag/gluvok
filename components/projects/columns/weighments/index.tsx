@@ -1,8 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Car, Weight, Package, Building, User, Users, Image } from "lucide-react"
-import { EntityKey } from "@/lib/fields"
+import { EntityKey, ProjectSlug } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
+import { useEntitiesStore } from "@/lib/store"
+import { commodityPrices } from "@/data/commodity-prices"
+import { type CommodityPrice } from "@/types"
 import { createTextColumn, createPillColumn, createBaseColumn } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
@@ -27,10 +30,16 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       { className: "font-mono text-xs font-semibold py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
     ),
     createPillColumn(
-      EntityKey.COMMODITY_ID,
-      ColumnLabel.COMMODITY_ID,
+      EntityKey.COMMODITY_PRICE_ID,
+      ColumnLabel.COMMODITY_PRICE_ID,
       Package,
-      (val) => <><PillIcon icon={Package} />ID: {val}</>,
+      (val) => {
+        const storeState = useEntitiesStore.getState()
+        const prices = (storeState.entities[ProjectSlug.COMMODITY_PRICES] || commodityPrices) as CommodityPrice[]
+        const priceRec = prices.find((p) => String(p.id) === String(val))
+        const displayName = priceRec ? `${priceRec.commodity_name}` : `Price ID: ${val}`
+        return <><PillIcon icon={Package} />{displayName}</>
+      },
       { className: "font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
     ),
     createPillColumn(

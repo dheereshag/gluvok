@@ -1,5 +1,6 @@
 export * from "./centers"
 export * from "./commodities"
+export * from "./commodity-prices"
 export * from "./customers"
 export * from "./weighments"
 export * from "./factories"

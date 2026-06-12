@@ -38,9 +38,19 @@
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
-| `id` | `SERIAL` | Primary Key | Surrogate key for stable references. |
-| `name` | `ENUM('Wheat','Scrap Copper','Corn','Crude Oil')` | Not Null | Commodity type. |
-| `unit_price` | `DECIMAL(12,2)` | Not Null | Price per metric ton at effective date. |
+| `name` | `VARCHAR(255)` | Primary Key | Display name and unique identifier of the commodity (e.g., "Wheat", "Corn"). |
+| `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
+| `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
+
+---
+
+### Entity H: commodity_prices
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | `SERIAL` | Primary Key | Unique price record identifier. |
+| `commodity_name` | `VARCHAR(255)` | FK → `commodities.name`, Not Null, On Delete Cascade, On Update Cascade | Associated commodity name. |
+| `unit_price` | `DECIMAL(12,2)` | Not Null | Price per metric ton. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 
@@ -81,7 +91,7 @@ Employees who manage the scale/vehicle. Have email/password login via Supabase A
 | `vehicle_number` | `VARCHAR(10)` | Indexed, Non-Unique | Plate or tag of the transport unit. |
 | `weight` | `DECIMAL` | Not Null | Precise measured weight. |
 | `images` | `JSONB` | Nullable | Array of object-storage paths. |
-| `commodity_id` | `INTEGER` | FK → `commodities.id`, Not Null | Load material type. |
+| `commodity_price_id` | `INTEGER` | FK → `commodity_prices.id`, Not Null | Link to the specific commodity price rate. |
 | `center_id` | `INTEGER` | FK → `centers.id`, Not Null | Physical location where weighing occurred. |
 | `operator_id` | `CHAR(12)` | FK → `operators.aadhar_number`, Not Null | Operator who managed the scale/vehicle. |
 | `customer_id` | `INTEGER` | FK → `customers.govt_id`, Not Null | Customer who was there. |

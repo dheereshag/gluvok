@@ -1,6 +1,7 @@
 import { ProjectSlug } from "../fields"
 import { addCenterSchema, editCenterSchema } from "./centers"
 import { addCommoditySchema, editCommoditySchema } from "./commodities"
+import { addCommodityPriceSchema, editCommodityPriceSchema } from "./commodity-prices"
 import { addCustomerSchema, editCustomerSchema } from "./customers"
 import { addWeighmentSchema, editWeighmentSchema } from "./weighments"
 import { addFactorySchema, editFactorySchema } from "./factories"
@@ -11,6 +12,7 @@ import { addVillageSchema, editVillageSchema } from "./villages"
 export type EntityAddSchema =
   | typeof addCenterSchema
   | typeof addCommoditySchema
+  | typeof addCommodityPriceSchema
   | typeof addCustomerSchema
   | typeof addWeighmentSchema
   | typeof addFactorySchema
@@ -21,6 +23,7 @@ export type EntityAddSchema =
 export type EntityEditSchema =
   | typeof editCenterSchema
   | typeof editCommoditySchema
+  | typeof editCommodityPriceSchema
   | typeof editCustomerSchema
   | typeof editWeighmentSchema
   | typeof editFactorySchema
@@ -31,6 +34,7 @@ export type EntityEditSchema =
 export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.CENTERS]: addCenterSchema,
   [ProjectSlug.COMMODITIES]: addCommoditySchema,
+  [ProjectSlug.COMMODITY_PRICES]: addCommodityPriceSchema,
   [ProjectSlug.CUSTOMERS]: addCustomerSchema,
   [ProjectSlug.WEIGHMENTS]: addWeighmentSchema,
   [ProjectSlug.FACTORIES]: addFactorySchema,
@@ -42,6 +46,7 @@ export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
 export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
   [ProjectSlug.CENTERS]: editCenterSchema,
   [ProjectSlug.COMMODITIES]: editCommoditySchema,
+  [ProjectSlug.COMMODITY_PRICES]: editCommodityPriceSchema,
   [ProjectSlug.CUSTOMERS]: editCustomerSchema,
   [ProjectSlug.WEIGHMENTS]: editWeighmentSchema,
   [ProjectSlug.FACTORIES]: editFactorySchema,

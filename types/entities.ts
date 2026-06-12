@@ -1,4 +1,4 @@
-import { State, CommodityName } from "@/lib/constants"
+import { State } from "@/lib/constants"
 
 export interface Center {
   id: number
@@ -9,8 +9,14 @@ export interface Center {
 }
 
 export interface Commodity {
+  name: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CommodityPrice {
   id: number
-  name: CommodityName
+  commodity_name: string
   unit_price: string
   created_at: string
   updated_at: string

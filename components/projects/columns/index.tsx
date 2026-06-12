@@ -8,6 +8,7 @@ import { getActionsColumn } from "./actions"
 
 import { getCentersColumns } from "./centers"
 import { getCommoditiesColumns } from "./commodities"
+import { getCommodityPricesColumns } from "./commodity-prices"
 import { getCustomersColumns } from "./customers"
 import { getWeighmentsColumns } from "./weighments"
 import { getFactoriesColumns } from "./factories"
@@ -24,6 +25,7 @@ function getSpecificColumns<T>(projectSlug: string): ColumnDef<T>[] {
   switch (projectSlug) {
     case ProjectSlug.CENTERS: return getCentersColumns<T>()
     case ProjectSlug.COMMODITIES: return getCommoditiesColumns<T>()
+    case ProjectSlug.COMMODITY_PRICES: return getCommodityPricesColumns<T>()
     case ProjectSlug.CUSTOMERS: return getCustomersColumns<T>()
     case ProjectSlug.WEIGHMENTS: return getWeighmentsColumns<T>()
     case ProjectSlug.FACTORIES: return getFactoriesColumns<T>()

@@ -1,6 +1,7 @@
 export enum ProjectSlug {
   CENTERS = "centers",
   COMMODITIES = "commodities",
+  COMMODITY_PRICES = "commodity_prices",
   CUSTOMERS = "customers",
   WEIGHMENTS = "weighments",
   FACTORIES = "factories",
@@ -26,6 +27,8 @@ export enum EntityKey {
   VEHICLE_NUMBER = "vehicle_number",
   WEIGHT = "weight",
   COMMODITY_ID = "commodity_id",
+  COMMODITY_NAME = "commodity_name",
+  COMMODITY_PRICE_ID = "commodity_price_id",
   CENTER_ID = "center_id",
   OPERATOR_ID = "operator_id",
   CUSTOMER_ID = "customer_id",

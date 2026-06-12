@@ -7,6 +7,9 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   ],
   [ProjectSlug.COMMODITIES]: [
     { key: EntityKey.NAME, label: "Commodity Name", placeholder: "e.g. Barley", type: FieldType.TEXT },
+  ],
+  [ProjectSlug.COMMODITY_PRICES]: [
+    { key: EntityKey.COMMODITY_NAME, label: "Commodity Name", placeholder: "Select commodity...", type: FieldType.TEXT },
     { key: EntityKey.UNIT_PRICE, label: "Unit Price (INR)", placeholder: "e.g. 15000", type: FieldType.NUMBER },
   ],
   [ProjectSlug.CUSTOMERS]: [
@@ -17,7 +20,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.WEIGHMENTS]: [
     { key: EntityKey.VEHICLE_NUMBER, label: "Vehicle Number", placeholder: "e.g. PB10XY1234", type: FieldType.TEXT },
     { key: EntityKey.WEIGHT, label: "Weight (tons)", placeholder: "e.g. 15.5", type: FieldType.NUMBER },
-    { key: EntityKey.COMMODITY_ID, label: "Commodity ID", placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.COMMODITY_PRICE_ID, label: "Commodity Price ID", placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.CENTER_ID, label: "Center ID", placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.OPERATOR_ID, label: "Operator ID", placeholder: "e.g. 123456789012", type: FieldType.TEXT },
     { key: EntityKey.CUSTOMER_ID, label: "Customer ID", placeholder: "e.g. GOV1001", type: FieldType.TEXT },
@@ -43,6 +46,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   if (slug === ProjectSlug.CUSTOMERS) return EntityKey.GOVT_ID
   if (slug === ProjectSlug.OPERATORS) return EntityKey.AADHAR_NUMBER
+  if (slug === ProjectSlug.COMMODITIES) return EntityKey.NAME
   return EntityKey.ID
 }
 
@@ -50,6 +54,8 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
   if (key === EntityKey.FACTORY_ID) return ProjectSlug.FACTORIES
   if (key === EntityKey.VILLAGE_ID) return ProjectSlug.VILLAGES
   if (key === EntityKey.COMMODITY_ID) return ProjectSlug.COMMODITIES
+  if (key === EntityKey.COMMODITY_NAME) return ProjectSlug.COMMODITIES
+  if (key === EntityKey.COMMODITY_PRICE_ID) return ProjectSlug.COMMODITY_PRICES
   if (key === EntityKey.CENTER_ID) return ProjectSlug.CENTERS
   if (key === EntityKey.OPERATOR_ID) return ProjectSlug.OPERATORS
   if (key === EntityKey.CUSTOMER_ID) return ProjectSlug.CUSTOMERS
