@@ -86,3 +86,4 @@ Employees who manage the scale/vehicle. Have email/password login via Supabase A
 | `operator_id` | `CHAR(12)` | FK → `operators.aadhar_number`, Not Null | Operator who managed the scale/vehicle. |
 | `customer_id` | `INTEGER` | FK → `customers.govt_id`, Not Null | Customer who was there. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Immutable transaction timestamp. |
+| `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |

@@ -73,4 +73,7 @@ export enum ColumnLabel {
   CREATED_AT = "Created At",
   UPDATED_AT = "Updated At",
 }
-
+export enum DialogMode {
+  CREATE = "create",
+  EDIT = "edit",
+}

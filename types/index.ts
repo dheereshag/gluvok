@@ -35,6 +35,7 @@ export interface DataEntry {
   operator_id: string
   customer_id: number
   created_at: string
+  updated_at: string
 }
 
 export interface Factory {

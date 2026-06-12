@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useEntitiesStore, getField } from "@/lib/store"
+import { useEntitiesStore, getField, getEntityDisplayName } from "@/lib/store"
 
 interface DeleteEntityDialogProps {
   open: boolean
@@ -45,11 +45,7 @@ export function DeleteEntityDialog({
     }
   }
 
-  const displayName = item
-    ? String(
-        getField(item, "name") || getField(item, "email") || getField(item, "vehicle_number") || getField(item, primaryIdKey) || ""
-      )
-    : ""
+  const displayName = getEntityDisplayName(item, projectSlug, primaryIdKey)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

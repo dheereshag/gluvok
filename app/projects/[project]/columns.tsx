@@ -45,11 +45,11 @@ interface ColumnActionsCallbacks<T = EntityRecord> {
   onDelete: (item: T) => void
 }
 
-function createCustomColumn<T>(
+function createBaseColumn<T>(
   key: EntityKey,
   label: ColumnLabel | string,
   Icon: React.ComponentType<{ className?: string }>,
-  renderCell: (value: string) => React.ReactNode
+  cell: ColumnDef<T>["cell"]
 ): ColumnDef<T> {
   return {
     accessorKey: key,
@@ -64,12 +64,21 @@ function createCustomColumn<T>(
         }
       />
     ),
-    cell: ({ row }) => renderCell(String(row.getValue(key))),
+    cell,
     meta: {
       icon: Icon,
       label: label,
     },
   }
+}
+
+function createCustomColumn<T>(
+  key: EntityKey,
+  label: ColumnLabel | string,
+  Icon: React.ComponentType<{ className?: string }>,
+  renderCell: (value: string) => React.ReactNode
+): ColumnDef<T> {
+  return createBaseColumn(key, label, Icon, ({ row }) => renderCell(String(row.getValue(key))))
 }
 
 function createTextColumn<T>(
@@ -78,25 +87,9 @@ function createTextColumn<T>(
   Icon: React.ComponentType<{ className?: string }>,
   className = "font-semibold text-foreground text-xs"
 ): ColumnDef<T> {
-  return {
-    accessorKey: key,
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={
-          <span className="flex items-center gap-1">
-            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
-            {label}
-          </span>
-        }
-      />
-    ),
-    cell: ({ row }) => <div className={className}>{String(row.getValue(key))}</div>,
-    meta: {
-      icon: Icon,
-      label: label,
-    },
-  }
+  return createBaseColumn(key, label, Icon, ({ row }) => (
+    <div className={className}>{String(row.getValue(key))}</div>
+  ))
 }
 
 function createPillColumn<T>(
@@ -106,29 +99,11 @@ function createPillColumn<T>(
   renderContent: (value: string) => React.ReactNode,
   pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string }
 ): ColumnDef<T> {
-  return {
-    accessorKey: key,
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={
-          <span className="flex items-center gap-1">
-            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
-            {label}
-          </span>
-        }
-      />
-    ),
-    cell: ({ row }) => (
-      <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
-        {renderContent(String(row.getValue(key)))}
-      </Pill>
-    ),
-    meta: {
-      icon: Icon,
-      label: label,
-    },
-  }
+  return createBaseColumn(key, label, Icon, ({ row }) => (
+    <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
+      {renderContent(String(row.getValue(key)))}
+    </Pill>
+  ))
 }
 
 
@@ -289,13 +264,11 @@ export function getProjectColumns<T extends EntityRecord = EntityRecord>(
     ))
   )
 
-  if (projectSlug !== ProjectSlug.DATA_ENTRIES) {
-    cols.push(
-      createCustomColumn(EntityKey.UPDATED_AT, ColumnLabel.UPDATED_AT, CalendarClock, (val) => (
-        <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
-      ))
-    )
-  }
+  cols.push(
+    createCustomColumn(EntityKey.UPDATED_AT, ColumnLabel.UPDATED_AT, CalendarClock, (val) => (
+      <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
+    ))
+  )
 
   // Actions dropdown column
   cols.push({

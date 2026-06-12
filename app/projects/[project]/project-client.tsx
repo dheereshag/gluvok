@@ -32,6 +32,7 @@ import { useEntitiesStore } from "@/lib/store"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { Spinner } from "@/components/kibo-ui/spinner"
 import { EntityDialog } from "./entity-dialog"
+import { DialogMode } from "@/lib/constants"
 import { DeleteEntityDialog } from "./delete-dialog"
 import { getProjectColumns } from "./columns"
 
@@ -222,7 +223,7 @@ export function ProjectClient({
       </div>
 
       <EntityDialog
-        mode="create"
+        mode={DialogMode.CREATE}
         open={creating}
         onOpenChange={setCreating}
         projectSlug={projectSlug}
@@ -231,7 +232,7 @@ export function ProjectClient({
       />
 
       <EntityDialog
-        mode="edit"
+        mode={DialogMode.EDIT}
         open={editingItem !== null}
         onOpenChange={(open) => {
           if (!open) setEditingItem(null)

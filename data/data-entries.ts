@@ -11,6 +11,7 @@ export const dataEntries: DataEntry[] = [
     operator_id: "123456789012",
     customer_id: 1001,
     created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ export const dataEntries: DataEntry[] = [
     operator_id: "123456789012",
     customer_id: 1002,
     created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ export const dataEntries: DataEntry[] = [
     operator_id: "234567890123",
     customer_id: 1003,
     created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
   },
   {
     id: 4,
@@ -44,6 +47,7 @@ export const dataEntries: DataEntry[] = [
     operator_id: "345678901234",
     customer_id: 1004,
     created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
   },
   {
     id: 5,
@@ -55,5 +59,6 @@ export const dataEntries: DataEntry[] = [
     operator_id: "234567890123",
     customer_id: 1005,
     created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
   },
 ]

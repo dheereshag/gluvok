@@ -21,9 +21,10 @@ import { useEntitiesStore, getField } from "@/lib/store"
 import { FormFieldInput } from "@/components/form"
 import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
 import { ENTITY_ADD_SCHEMAS, ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
+import { DialogMode } from "@/lib/constants"
 
 interface EntityDialogProps {
-  mode: "create" | "edit"
+  mode: DialogMode
   open: boolean
   onOpenChange: (open: boolean) => void
   projectSlug: string
@@ -44,7 +45,7 @@ export function EntityDialog({
   const addEntity = useEntitiesStore((state) => state.addEntity)
   const updateEntity = useEntitiesStore((state) => state.updateEntity)
 
-  const isEdit = mode === "edit"
+  const isEdit = mode === DialogMode.EDIT
   const Icon = isEdit ? Pencil : Plus
   const titleText = isEdit ? `Edit ${projectName}` : `Add ${projectName}`
   const descriptionText = isEdit
