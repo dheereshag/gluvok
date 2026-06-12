@@ -15,7 +15,6 @@ import {
   useReactTable,
   TableOptions,
 } from "@tanstack/react-table"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -24,17 +23,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination, DataTableViewOptions } from "@/components/data-table"
-import { Button } from "@/components/ui/button"
-import { Search, SearchX, Plus } from "lucide-react"
+import { DataTablePagination } from "@/components/data-table"
+import { SearchX } from "lucide-react"
 
 import { useEntitiesStore } from "@/lib/store"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { Spinner } from "@/components/kibo-ui/spinner"
-import { EntityDialog } from "./entity-dialog"
-import { DialogMode } from "@/lib/constants"
-import { DeleteEntityDialog } from "./delete-dialog"
-import { getProjectColumns } from "./columns"
+
+import { ProjectToolbar } from "@/components/projects/project-toolbar"
+import { ProjectDialogs } from "@/components/projects/project-dialogs"
+import { getProjectColumns } from "@/components/projects/columns"
 
 interface ProjectClientProps {
   projectName: string
@@ -126,7 +124,6 @@ export function ProjectClient({
     return "name"
   }, [projectSlug])
 
-  const filterColumn = table.getColumn(filterKey)
 
   if (isLoading) {
     return (
@@ -143,27 +140,13 @@ export function ProjectClient({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {filterColumn && (
-          <div className="relative w-full sm:max-w-xs md:max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id={`search-input-${projectSlug}`}
-              placeholder={`Filter by ${filterKey.replace("_", " ")}...`}
-              value={(filterColumn.getFilterValue() as string) ?? ""}
-              onChange={(event) => filterColumn.setFilterValue(event.target.value)}
-              className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
-            />
-          </div>
-        )}
-        <div className="flex items-center gap-2 justify-end">
-          <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
-            <Plus className="h-4 w-4" />
-            Add {projectName}
-          </Button>
-          <DataTableViewOptions table={table} />
-        </div>
-      </div>
+      <ProjectToolbar
+        table={table}
+        projectSlug={projectSlug}
+        projectName={projectName}
+        filterKey={filterKey}
+        setCreating={setCreating}
+      />
 
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300">
         <Table>
@@ -222,36 +205,16 @@ export function ProjectClient({
         <DataTablePagination table={table} />
       </div>
 
-      <EntityDialog
-        mode={DialogMode.CREATE}
-        open={creating}
-        onOpenChange={setCreating}
+      <ProjectDialogs
+        creating={creating}
+        setCreating={setCreating}
+        editingItem={editingItem}
+        setEditingItem={setEditingItem}
+        deletingItem={deletingItem}
+        setDeletingItem={setDeletingItem}
         projectSlug={projectSlug}
         projectName={projectName}
         primaryIdKey={primaryIdKey}
-      />
-
-      <EntityDialog
-        mode={DialogMode.EDIT}
-        open={editingItem !== null}
-        onOpenChange={(open) => {
-          if (!open) setEditingItem(null)
-        }}
-        projectSlug={projectSlug}
-        projectName={projectName}
-        primaryIdKey={primaryIdKey}
-        item={editingItem}
-      />
-
-      <DeleteEntityDialog
-        open={deletingItem !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeletingItem(null)
-        }}
-        projectSlug={projectSlug}
-        projectName={projectName}
-        primaryIdKey={primaryIdKey}
-        item={deletingItem}
       />
     </div>
   )
