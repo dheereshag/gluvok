@@ -1,7 +1,7 @@
 "use client"
 
 import { type EntityRecord } from "@/types"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
 import { DeleteEntityDialogContent } from "./delete-dialog-content"
 
 interface DeleteEntityDialogProps {
@@ -19,10 +19,11 @@ export function DeleteEntityDialog({
   ...props
 }: DeleteEntityDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[92vw] max-w-100 sm:w-full">
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="w-[92vw] max-w-100 sm:w-full">
         <DeleteEntityDialogContent onOpenChange={onOpenChange} {...props} />
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
+
