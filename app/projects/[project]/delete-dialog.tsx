@@ -1,6 +1,7 @@
 "use client"
 
 import { toast } from "sonner"
+import { type EntityRecord } from "@/types"
 import { Button } from "@/components/ui/button"
 import { AlertTriangle, Trash2, X } from "lucide-react"
 import {
@@ -11,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useEntitiesStore } from "@/lib/store"
+import { useEntitiesStore, getField } from "@/lib/store"
 
 interface DeleteEntityDialogProps {
   open: boolean
@@ -19,8 +20,7 @@ interface DeleteEntityDialogProps {
   projectSlug: string
   projectName: string
   primaryIdKey: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any | null
+  item: EntityRecord | null
 }
 
 export function DeleteEntityDialog({
@@ -36,7 +36,7 @@ export function DeleteEntityDialog({
   const onDeleteConfirm = () => {
     if (!item) return
     try {
-      const itemId = item[primaryIdKey]
+      const itemId = String(getField(item, primaryIdKey))
       deleteEntity(projectSlug, primaryIdKey, itemId)
       toast.success(`${projectName} deleted successfully`)
       onOpenChange(false)
@@ -46,7 +46,9 @@ export function DeleteEntityDialog({
   }
 
   const displayName = item
-    ? item.name || item.email || item.vehicle_number || item[primaryIdKey]
+    ? String(
+        getField(item, "name") || getField(item, "email") || getField(item, "vehicle_number") || getField(item, primaryIdKey) || ""
+      )
     : ""
 
   return (

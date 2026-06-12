@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { type EntityRecord } from "@/types";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,8 +39,7 @@ const PROJECT_REGISTRY: Record<
   {
     name: string;
     icon: React.ComponentType<{ className?: string }>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any[];
+    data: EntityRecord[];
   }
 > = {
   centers: { name: "Centers", icon: Building, data: centers },

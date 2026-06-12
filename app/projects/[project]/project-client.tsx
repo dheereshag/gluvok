@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { type EntityRecord } from "@/types"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,8 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "@/components/data-table-pagination"
-import { DataTableViewOptions } from "@/components/data-table-view-options"
+import { DataTablePagination, DataTableViewOptions } from "@/components/data-table"
 import { Button } from "@/components/ui/button"
 import { Search, SearchX, Plus } from "lucide-react"
 
@@ -39,8 +39,7 @@ import { getProjectColumns } from "./columns"
 interface ProjectClientProps {
   projectName: string
   projectSlug: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initialData: any[]
+  initialData: EntityRecord[]
 }
 
 function useCompilerSafeTable<TData>(options: TableOptions<TData>) {
@@ -87,17 +86,14 @@ export function ProjectClient({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [editingItem, setEditingItem] = React.useState<any | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [deletingItem, setDeletingItem] = React.useState<any | null>(null)
+  const [editingItem, setEditingItem] = React.useState<EntityRecord | null>(null)
+  const [deletingItem, setDeletingItem] = React.useState<EntityRecord | null>(null)
   const [creating, setCreating] = React.useState(false)
 
   const primaryIdKey = getPrimaryIdKey(projectSlug)
 
   // Generate columns dynamically based on the project type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const columns = React.useMemo<ColumnDef<any>[]>(() => {
+  const columns = React.useMemo<ColumnDef<EntityRecord>[]>(() => {
     return getProjectColumns(projectSlug, primaryIdKey, projectName, {
       onEdit: setEditingItem,
       onDelete: setDeletingItem,

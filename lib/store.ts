@@ -1,13 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { create } from "zustand"
+import { type EntityRecord } from "@/types"
+
+/** Safe dynamic field access on entity records */
+export function getField(entity: EntityRecord, key: string): string | number | string[] | undefined {
+  // EntityRecord is a union of typed interfaces without index signatures,
+  // so we go through unknown for safe dynamic key access
+  return (entity as unknown as Record<string, string | number | string[] | undefined>)[key]
+}
+
+
 
 interface EntitiesState {
-  entities: Record<string, any[]>
-  setEntities: (slug: string, data: any[]) => void
-  addEntity: (slug: string, primaryIdKey: string, newEntity: Record<string, any>) => void
-  updateEntity: (slug: string, primaryIdKey: string, id: string, updatedFields: Record<string, any>) => void
+  entities: Record<string, EntityRecord[]>
+  setEntities: (slug: string, data: EntityRecord[]) => void
+  addEntity: (slug: string, primaryIdKey: string, newEntity: Record<string, string | number>) => void
+  updateEntity: (slug: string, primaryIdKey: string, id: string, updatedFields: Record<string, string | number>) => void
   deleteEntity: (slug: string, idKey: string, id: string) => void
 }
 
@@ -31,7 +40,7 @@ export const useEntitiesStore = create<EntitiesState>((set) => ({
         ...newEntity,
         created_at: new Date().toISOString().replace("T", " ").substring(0, 26),
         updated_at: new Date().toISOString().replace("T", " ").substring(0, 26),
-      }
+      } as unknown as EntityRecord
       return {
         entities: { ...state.entities, [slug]: [entityToAdd, ...currentList] },
       }
@@ -40,12 +49,12 @@ export const useEntitiesStore = create<EntitiesState>((set) => ({
     set((state) => {
       const currentList = state.entities[slug] || []
       const updatedList = currentList.map((item) =>
-        String(item[primaryIdKey]) === String(id)
+        String(getField(item, primaryIdKey)) === String(id)
           ? {
               ...item,
               ...updatedFields,
               updated_at: new Date().toISOString().replace("T", " ").substring(0, 26),
-            }
+            } as unknown as EntityRecord
           : item
       )
       return {
@@ -55,7 +64,7 @@ export const useEntitiesStore = create<EntitiesState>((set) => ({
   deleteEntity: (slug, idKey, id) =>
     set((state) => {
       const currentList = state.entities[slug] || []
-      const updatedList = currentList.filter((item) => String(item[idKey]) !== String(id))
+      const updatedList = currentList.filter((item) => String(getField(item, idKey)) !== String(id))
       return {
         entities: { ...state.entities, [slug]: updatedList },
       }

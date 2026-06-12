@@ -68,3 +68,6 @@ export interface Village {
   created_at: string
   updated_at: string
 }
+
+/** Union of all entity types used across the app */
+export type EntityRecord = Center | Commodity | Customer | DataEntry | Factory | Operator | User | Village

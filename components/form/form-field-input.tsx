@@ -2,8 +2,7 @@
 
 import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { StateCombobox } from "@/components/state-combobox"
-import { EntityCombobox } from "@/components/entity-combobox"
+import { StateCombobox, EntityCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
 
 interface FormFieldInputProps {

@@ -1,8 +1,10 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+import { type EntityRecord } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DataTableColumnHeader } from "@/components/data-table-column-header"
+import { getField } from "@/lib/store"
+import { DataTableColumnHeader } from "@/components/data-table"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -38,7 +40,7 @@ import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { formatDateTime } from "@/lib/utils"
 
-interface ColumnActionsCallbacks<T = Record<string, unknown>> {
+interface ColumnActionsCallbacks<T = EntityRecord> {
   onEdit: (item: T) => void
   onDelete: (item: T) => void
 }
@@ -92,7 +94,7 @@ function createPillColumn<T>(
 }
 
 
-export function getProjectColumns<T extends Record<string, unknown> = Record<string, unknown>>(
+export function getProjectColumns<T extends EntityRecord = EntityRecord>(
   projectSlug: string,
   primaryIdKey: string,
   projectName: string,
@@ -262,7 +264,7 @@ export function getProjectColumns<T extends Record<string, unknown> = Record<str
     id: "actions",
     cell: ({ row }) => {
       const item = row.original
-      const itemId = String(item[primaryIdKey])
+      const itemId = String(getField(item, primaryIdKey))
 
       return (
         <div className="text-right pr-4">

@@ -1,8 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { useForm, type FieldValues, type Resolver } from "react-hook-form"
+import { type EntityRecord } from "@/types"
+import { useForm, type FieldValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+
 import { toast } from "sonner"
 import { Pencil, Save, X } from "lucide-react"
 
@@ -15,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useEntitiesStore } from "@/lib/store"
-import { FormFieldInput } from "@/components/form-field-input"
+import { useEntitiesStore, getField } from "@/lib/store"
+import { FormFieldInput } from "@/components/form"
 import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
 import { ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
 
@@ -26,8 +28,7 @@ interface EditEntityDialogProps {
   projectSlug: string
   projectName: string
   primaryIdKey: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any | null
+  item: EntityRecord | null
 }
 
 export function EditEntityDialog({
@@ -47,7 +48,8 @@ export function EditEntityDialog({
   }, [projectSlug])
 
   const form = useForm<FieldValues>({
-    resolver: zodResolver(formSchema as unknown as Parameters<typeof zodResolver>[0]) as unknown as Resolver<FieldValues>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formSchema as any),
     defaultValues: {},
   })
 
@@ -55,7 +57,7 @@ export function EditEntityDialog({
     if (item) {
       const defaults: Record<string, string> = {}
       fields.forEach((field) => {
-        defaults[field.key] = String(item[field.key] ?? "")
+        defaults[field.key] = String(getField(item, field.key) ?? "")
       })
       form.reset(defaults)
     } else {
@@ -66,7 +68,7 @@ export function EditEntityDialog({
   const onSubmit = (values: FieldValues) => {
     if (!item) return
     try {
-      updateEntity(projectSlug, primaryIdKey, item[primaryIdKey], values)
+      updateEntity(projectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
       toast.success(`${projectName} updated successfully`)
       onOpenChange(false)
     } catch {

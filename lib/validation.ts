@@ -119,8 +119,30 @@ export const addDataEntrySchema = z.object({
 })
 export const editDataEntrySchema = addDataEntrySchema
 
-// Centralized schema registries preserving original Zod types via const assertion
-export const ENTITY_ADD_SCHEMAS = {
+/** Union of all add schemas */
+export type EntityAddSchema =
+  | typeof addCenterSchema
+  | typeof addCommoditySchema
+  | typeof addCustomerSchema
+  | typeof addDataEntrySchema
+  | typeof addFactorySchema
+  | typeof addOperatorSchema
+  | typeof addUserSchema
+  | typeof addVillageSchema
+
+/** Union of all edit schemas */
+export type EntityEditSchema =
+  | typeof editCenterSchema
+  | typeof editCommoditySchema
+  | typeof editCustomerSchema
+  | typeof editDataEntrySchema
+  | typeof editFactorySchema
+  | typeof editOperatorSchema
+  | typeof editUserSchema
+  | typeof editVillageSchema
+
+// Centralized schema registries
+export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.CENTERS]: addCenterSchema,
   [ProjectSlug.COMMODITIES]: addCommoditySchema,
   [ProjectSlug.CUSTOMERS]: addCustomerSchema,
@@ -129,9 +151,9 @@ export const ENTITY_ADD_SCHEMAS = {
   [ProjectSlug.OPERATORS]: addOperatorSchema,
   [ProjectSlug.USERS]: addUserSchema,
   [ProjectSlug.VILLAGES]: addVillageSchema,
-} as const
+}
 
-export const ENTITY_EDIT_SCHEMAS = {
+export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
   [ProjectSlug.CENTERS]: editCenterSchema,
   [ProjectSlug.COMMODITIES]: editCommoditySchema,
   [ProjectSlug.CUSTOMERS]: editCustomerSchema,
@@ -140,4 +162,5 @@ export const ENTITY_EDIT_SCHEMAS = {
   [ProjectSlug.OPERATORS]: editOperatorSchema,
   [ProjectSlug.USERS]: editUserSchema,
   [ProjectSlug.VILLAGES]: editVillageSchema,
-} as const
+}
+

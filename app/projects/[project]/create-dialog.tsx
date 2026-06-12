@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { useForm, type FieldValues, type Resolver } from "react-hook-form"
+import { useForm, type FieldValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+
 import { toast } from "sonner"
 import { Plus, Save, X } from "lucide-react"
 
@@ -16,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useEntitiesStore } from "@/lib/store"
-import { FormFieldInput } from "@/components/form-field-input"
+import { FormFieldInput } from "@/components/form"
 import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
 import { ENTITY_ADD_SCHEMAS } from "@/lib/validation"
 
@@ -44,7 +45,8 @@ export function CreateEntityDialog({
   }, [projectSlug])
 
   const form = useForm<FieldValues>({
-    resolver: zodResolver(formSchema as unknown as Parameters<typeof zodResolver>[0]) as unknown as Resolver<FieldValues>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formSchema as any),
     defaultValues: {},
   })
 
