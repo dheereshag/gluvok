@@ -47,7 +47,7 @@ interface ColumnActionsCallbacks<T = EntityRecord> {
 
 function createCustomColumn<T>(
   key: EntityKey,
-  label: ColumnLabel,
+  label: ColumnLabel | string,
   Icon: React.ComponentType<{ className?: string }>,
   renderCell: (value: string) => React.ReactNode
 ): ColumnDef<T> {
@@ -65,6 +65,10 @@ function createCustomColumn<T>(
       />
     ),
     cell: ({ row }) => renderCell(String(row.getValue(key))),
+    meta: {
+      icon: Icon,
+      label: label,
+    },
   }
 }
 

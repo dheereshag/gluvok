@@ -65,7 +65,9 @@ export function DataTableViewOptions<TData>({
               typeof column.accessorFn !== "undefined" && column.getCanHide()
           )
           .map((column) => {
-            const Icon = COLUMN_ICONS[column.id] || HelpCircle;
+            const meta = column.columnDef.meta as { icon?: React.ComponentType<{ className?: string }>, label?: string } | undefined;
+            const Icon = meta?.icon || COLUMN_ICONS[column.id] || HelpCircle;
+            const label = meta?.label || getColumnLabel(column.id);
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
@@ -74,7 +76,7 @@ export function DataTableViewOptions<TData>({
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
                 <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
-                <span>{getColumnLabel(column.id)}</span>
+                <span>{label}</span>
               </DropdownMenuCheckboxItem>
             )
           })}
