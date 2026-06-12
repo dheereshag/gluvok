@@ -50,6 +50,7 @@ export function useProjectTable({
   const filterKey = React.useMemo(() => {
     if (projectSlug === ProjectSlug.USERS) return EntityKey.EMAIL
     if (projectSlug === ProjectSlug.WEIGHMENTS) return EntityKey.VEHICLE_NUMBER
+    if (projectSlug === ProjectSlug.COMMODITY_PRICES) return EntityKey.COMMODITY_NAME
     return EntityKey.NAME
   }, [projectSlug])
 

@@ -1,7 +1,7 @@
 import {
   Building,
   Package,
-  Coins,
+  IndianRupee,
   Users,
   ClipboardList,
   Factory,
@@ -15,7 +15,7 @@ import { ProjectName, type ProjectMetadata } from "./types"
 export const PROJECTS: ProjectMetadata[] = [
   { slug: ProjectSlug.CENTERS, name: ProjectName.CENTERS, desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },
   { slug: ProjectSlug.COMMODITIES, name: ProjectName.COMMODITIES, desc: "Track trading products and goods catalog", icon: Package, color: "text-amber-500" },
-  { slug: ProjectSlug.COMMODITY_PRICES, name: ProjectName.COMMODITY_PRICES, desc: "Track price rates of registered commodities", icon: Coins, color: "text-yellow-500" },
+  { slug: ProjectSlug.COMMODITY_PRICES, name: ProjectName.COMMODITY_PRICES, desc: "Track price rates of registered commodities", icon: IndianRupee, color: "text-yellow-500" },
   { slug: ProjectSlug.CUSTOMERS, name: ProjectName.CUSTOMERS, desc: "Directory of client accounts and details", icon: Users, color: "text-green-500" },
   { slug: ProjectSlug.WEIGHMENTS, name: ProjectName.WEIGHMENTS, desc: "Input logs, sheets and record metrics", icon: ClipboardList, color: "text-purple-500" },
   { slug: ProjectSlug.FACTORIES, name: ProjectName.FACTORIES, desc: "Configure manufacturing plants and lines", icon: Factory, color: "text-indigo-500" },

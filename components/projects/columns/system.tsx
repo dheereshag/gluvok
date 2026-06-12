@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { ShieldCheck, Hash, Calendar, CalendarClock } from "lucide-react"
+import { ShieldCheck, Hash, Calendar, CalendarClock, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { formatDateTime } from "@/lib/utils"
@@ -7,8 +7,9 @@ import { createCustomColumn } from "./helpers"
 
 export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
   const isGovtOrAadhar = primaryIdKey === EntityKey.GOVT_ID || primaryIdKey === EntityKey.AADHAR_NUMBER
-  const label = primaryIdKey === EntityKey.GOVT_ID ? ColumnLabel.GOVT_ID : primaryIdKey === EntityKey.AADHAR_NUMBER ? ColumnLabel.AADHAR_NUMBER : ColumnLabel.ID
-  const icon = isGovtOrAadhar ? ShieldCheck : Hash
+  const isName = primaryIdKey === EntityKey.NAME
+  const label = isName ? ColumnLabel.NAME : (primaryIdKey === EntityKey.GOVT_ID ? ColumnLabel.GOVT_ID : primaryIdKey === EntityKey.AADHAR_NUMBER ? ColumnLabel.AADHAR_NUMBER : ColumnLabel.ID)
+  const icon = isName ? Tag : (isGovtOrAadhar ? ShieldCheck : Hash)
 
   return [
     createCustomColumn<T>(

@@ -1,7 +1,7 @@
 import {
   Building,
   Package,
-  Coins,
+  IndianRupee,
   Users,
   ClipboardList,
   Factory,
@@ -32,7 +32,7 @@ export interface ProjectConfig {
 export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
   [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Package, data: commodities },
-  [ProjectSlug.COMMODITY_PRICES]: { name: ProjectName.COMMODITY_PRICES, icon: Coins, data: commodityPrices },
+  [ProjectSlug.COMMODITY_PRICES]: { name: ProjectName.COMMODITY_PRICES, icon: IndianRupee, data: commodityPrices },
   [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
   [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList, data: weighments },
   [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory, data: factories },
