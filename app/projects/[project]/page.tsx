@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProjectClient } from "./project-client";
+import { ProjectClient } from "./client";
 import { PROJECT_REGISTRY } from "@/lib/registry";
 import { ProjectHeader } from "@/components/projects/project-header";
 import { ProjectTitle } from "@/components/projects/project-title";
