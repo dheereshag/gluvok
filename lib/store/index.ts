@@ -2,9 +2,9 @@
 
 import { create } from "zustand"
 import { type EntityRecord } from "@/types"
-import { getField } from "./store-helpers"
+import { getField } from "./helpers"
 
-export * from "./store-helpers"
+export * from "./helpers"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>

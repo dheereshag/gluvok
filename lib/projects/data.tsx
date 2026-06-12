@@ -9,7 +9,7 @@ import {
   Home,
 } from "lucide-react"
 import { ProjectSlug } from "../fields"
-import { ProjectName, type ProjectMetadata } from "./project-types"
+import { ProjectName, type ProjectMetadata } from "./types"
 
 export const PROJECTS: ProjectMetadata[] = [
   { slug: ProjectSlug.CENTERS, name: ProjectName.CENTERS, desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },

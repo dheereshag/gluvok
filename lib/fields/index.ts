@@ -1,2 +1,2 @@
-export * from "./fields-types"
-export * from "./fields-config"
+export * from "./types"
+export * from "./config"

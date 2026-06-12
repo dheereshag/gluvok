@@ -1,4 +1,4 @@
-export { State } from "./state-constants"
+export { State } from "./states"
 
 export enum CommodityName {
   WHEAT = "Wheat",

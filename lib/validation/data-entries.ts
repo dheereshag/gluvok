@@ -1,21 +1,6 @@
 import * as z from "zod"
-import { State, Role } from "../constants"
+import { State } from "../constants"
 
-// 6. Operators
-export const addOperatorSchema = z.object({
-  id: z.uuid("System ID must be a valid Supabase Auth UUID"),
-  name: z.string().min(3, "Operator full name must be at least 3 characters").max(255, "Operator name must be 255 characters or less"),
-})
-export const editOperatorSchema = addOperatorSchema
-
-// 7. Users
-export const addUserSchema = z.object({
-  email: z.string().email("Please provide a valid email format"),
-  role: z.enum(Role, { message: "Role selection is required" }),
-})
-export const editUserSchema = addUserSchema
-
-// 8. Data Entries
 export const addDataEntrySchema = z.object({
   vehicle_number: z
     .string()
@@ -31,4 +16,5 @@ export const addDataEntrySchema = z.object({
   operator_id: z.string().length(12, "Operator Aadhar number must be exactly 12 characters"),
   customer_id: z.coerce.number({ message: "Customer ID must be an integer" }).int("Customer ID must be an integer").positive("Customer ID must be a positive integer"),
 })
+
 export const editDataEntrySchema = addDataEntrySchema

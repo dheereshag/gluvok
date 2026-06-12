@@ -1,4 +1,4 @@
-import { ProjectSlug, EntityKey, FieldType, type FieldConfig } from "./fields-types"
+import { ProjectSlug, EntityKey, FieldType, type FieldConfig } from "./types"
 
 export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.CENTERS]: [
