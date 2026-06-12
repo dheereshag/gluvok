@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { type EntityRecord } from "@/types"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
@@ -21,7 +20,7 @@ export function ProjectClient({
   initialData,
 }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
-  
+
   const {
     table,
     isLoading,
