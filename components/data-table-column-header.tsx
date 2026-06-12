@@ -46,19 +46,37 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Asc
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Desc
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeOff className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
-          </DropdownMenuItem>
+          {[
+            {
+              label: "Asc",
+              icon: ArrowUp,
+              onClick: () => column.toggleSorting(false),
+            },
+            {
+              label: "Desc",
+              icon: ArrowDown,
+              onClick: () => column.toggleSorting(true),
+            },
+            {
+              separator: true,
+            },
+            {
+              label: "Hide",
+              icon: EyeOff,
+              onClick: () => column.toggleVisibility(false),
+            },
+          ].map((item, idx) => {
+            if (item.separator) {
+              return <DropdownMenuSeparator key={`sep-${idx}`} />
+            }
+            const Icon = item.icon!
+            return (
+              <DropdownMenuItem key={item.label} onClick={item.onClick}>
+                <Icon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+                {item.label}
+              </DropdownMenuItem>
+            )
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

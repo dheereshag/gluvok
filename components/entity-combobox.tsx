@@ -48,44 +48,68 @@ interface EntityComboboxProps {
   id?: string
 }
 
+const ENTITY_EXTRACTORS: Record<
+  string,
+  (item: Entity) => { id: string; name: string }
+> = {
+  [ProjectSlug.CUSTOMERS]: (item) => {
+    const customer = item as Customer
+    return {
+      id: String(customer.govt_id ?? ""),
+      name: customer.name,
+    }
+  },
+  [ProjectSlug.OPERATORS]: (item) => {
+    const operator = item as Operator
+    return {
+      id: String(operator.aadhar_number ?? ""),
+      name: operator.name,
+    }
+  },
+  [ProjectSlug.CENTERS]: (item) => {
+    const center = item as Center
+    return {
+      id: String(center.id ?? ""),
+      name: center.name,
+    }
+  },
+  [ProjectSlug.COMMODITIES]: (item) => {
+    const commodity = item as Commodity
+    return {
+      id: String(commodity.id ?? ""),
+      name: commodity.name,
+    }
+  },
+  [ProjectSlug.FACTORIES]: (item) => {
+    const factory = item as Factory
+    return {
+      id: String(factory.id ?? ""),
+      name: factory.name,
+    }
+  },
+  [ProjectSlug.VILLAGES]: (item) => {
+    const village = item as Village
+    return {
+      id: String(village.id ?? ""),
+      name: village.name,
+    }
+  },
+}
+
 export function useEntityOptions(entitySlug: string | ProjectSlug) {
   const storeData = useEntitiesStore((state) => state.entities[entitySlug]) as Entity[] | undefined
 
   return React.useMemo(() => {
     const dataList = storeData !== undefined ? storeData : (FALLBACK_DATA[entitySlug] || [])
+    const extractor = ENTITY_EXTRACTORS[entitySlug]
+    
+    if (!extractor) return []
+
     return dataList.map((item) => {
-      let idVal = ""
-      let nameVal = ""
-
-      if (entitySlug === ProjectSlug.CUSTOMERS) {
-        const customer = item as Customer
-        idVal = String(customer.govt_id ?? "")
-        nameVal = customer.name
-      } else if (entitySlug === ProjectSlug.OPERATORS) {
-        const operator = item as Operator
-        idVal = String(operator.aadhar_number ?? "")
-        nameVal = operator.name
-      } else if (entitySlug === ProjectSlug.CENTERS) {
-        const center = item as Center
-        idVal = String(center.id ?? "")
-        nameVal = center.name
-      } else if (entitySlug === ProjectSlug.COMMODITIES) {
-        const commodity = item as Commodity
-        idVal = String(commodity.id ?? "")
-        nameVal = commodity.name
-      } else if (entitySlug === ProjectSlug.FACTORIES) {
-        const factory = item as Factory
-        idVal = String(factory.id ?? "")
-        nameVal = factory.name
-      } else if (entitySlug === ProjectSlug.VILLAGES) {
-        const village = item as Village
-        idVal = String(village.id ?? "")
-        nameVal = village.name
-      }
-
+      const { id, name } = extractor(item)
       return {
-        value: idVal,
-        label: nameVal ? `${nameVal} (ID: ${idVal})` : idVal,
+        value: id,
+        label: name ? `${name} (ID: ${id})` : id,
       }
     })
   }, [storeData, entitySlug])

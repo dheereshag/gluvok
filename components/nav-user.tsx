@@ -23,14 +23,37 @@ import {
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 import { Status, StatusIndicator, StatusLabel } from "@/components/kibo-ui/status"
 
+interface UserInfo {
+  name: string
+  email: string
+  avatar: string
+}
+
+function UserAvatarInfo({ user }: { user: UserInfo }) {
+  return (
+    <>
+      <Avatar className="h-8 w-8 rounded-lg">
+        <AvatarImage src={user.avatar} alt={user.name} />
+        <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+      </Avatar>
+      <div className="grid flex-1 text-left text-sm leading-tight">
+        <span className="truncate font-medium">{user.name}</span>
+        <span className="truncate text-xs">{user.email}</span>
+      </div>
+    </>
+  )
+}
+
+const MENU_ITEMS = [
+  { id: "user-menu-account", label: "Account", icon: BadgeCheckIcon },
+  { id: "user-menu-billing", label: "Billing", icon: CreditCardIcon },
+  { id: "user-menu-notifications", label: "Notifications", icon: BellIcon },
+]
+
 export function NavUser({
   user,
 }: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
+  user: UserInfo
 }) {
   const { isMobile } = useSidebar()
 
@@ -44,14 +67,7 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
+              <UserAvatarInfo user={user} />
               <ChevronsUpDownIcon className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -64,14 +80,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm justify-between">
                 <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
-                  </div>
+                  <UserAvatarInfo user={user} />
                 </div>
                 <Status
                   status="online"
@@ -91,18 +100,15 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem id="user-menu-account">
-                <BadgeCheckIcon className="mr-2 h-4 w-4" />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem id="user-menu-billing">
-                <CreditCardIcon className="mr-2 h-4 w-4" />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem id="user-menu-notifications">
-                <BellIcon className="mr-2 h-4 w-4" />
-                Notifications
-              </DropdownMenuItem>
+              {MENU_ITEMS.map((item) => {
+                const Icon = item.icon
+                return (
+                  <DropdownMenuItem key={item.id} id={item.id}>
+                    <Icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                  </DropdownMenuItem>
+                )
+              })}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem id="user-menu-logout" className="text-destructive focus:text-destructive focus:bg-destructive/10">
