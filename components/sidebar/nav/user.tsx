@@ -3,8 +3,8 @@
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { ChevronsUpDownIcon } from "lucide-react"
-import { UserAvatarInfo, type UserInfo } from "./nav-user-info"
-import { NavUserDropdown } from "./nav-user-dropdown"
+import { UserAvatarInfo, type UserInfo } from "./user-info"
+import { NavUserDropdown } from "./user-dropdown"
 
 export function NavUser({ user }: { user: UserInfo }) {
   const { isMobile } = useSidebar()

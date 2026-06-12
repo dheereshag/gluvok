@@ -1,7 +1,7 @@
 import { type EntityRecord } from "@/types"
 import { DialogMode } from "@/lib/constants"
-import { EntityDialog } from "./entity-dialog"
-import { DeleteEntityDialog } from "./delete-dialog"
+import { EntityDialog } from "./dialog/entity"
+import { DeleteEntityDialog } from "./dialog/delete"
 
 interface ProjectDialogsProps {
   creating: boolean

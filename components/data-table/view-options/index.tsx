@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { COLUMN_ICONS, getColumnLabel } from "./view-options-helpers"
+import { COLUMN_ICONS, getColumnLabel } from "./helpers"
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>

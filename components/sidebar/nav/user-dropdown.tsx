@@ -3,16 +3,19 @@
 import { SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Status, StatusIndicator, StatusLabel } from "@/components/kibo-ui/status"
-import { UserAvatarInfo, type UserInfo } from "./nav-user-info"
+import { UserAvatarInfo, type UserInfo } from "./user-info"
+
 interface NavUserDropdownProps {
   user: UserInfo
   isMobile: boolean
 }
+
 const MENU_ITEMS = [
   { id: "user-menu-account", label: "Account", icon: BadgeCheckIcon },
   { id: "user-menu-billing", label: "Billing", icon: CreditCardIcon },
   { id: "user-menu-notifications", label: "Notifications", icon: BellIcon },
 ]
+
 export function NavUserDropdown({ user, isMobile }: NavUserDropdownProps) {
   return (
     <DropdownMenuContent

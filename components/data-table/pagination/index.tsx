@@ -1,7 +1,7 @@
 import { type Table } from "@tanstack/react-table"
-import { DataTablePaginationRowsCount } from "./pagination-rows-count"
-import { DataTablePaginationPageSize } from "./pagination-page-size"
-import { DataTablePaginationButtons } from "./pagination-buttons"
+import { DataTablePaginationRowsCount } from "./rows-count"
+import { DataTablePaginationPageSize } from "./page-size"
+import { DataTablePaginationButtons } from "./buttons"
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>

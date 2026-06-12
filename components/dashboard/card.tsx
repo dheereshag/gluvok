@@ -20,7 +20,7 @@ export function DashboardCard({ name, href, desc, icon: Icon, color }: Dashboard
             <div className={`p-2.5 rounded-xl bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${color}`}>
               <Icon className="h-5 w-5" />
             </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />
+            <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
           </div>
           <CardTitle className="font-bold text-sm text-card-foreground group-hover:text-primary leading-none">
             {name}

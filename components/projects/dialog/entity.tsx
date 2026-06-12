@@ -3,8 +3,8 @@
 import { type EntityRecord } from "@/types"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DialogMode } from "@/lib/constants"
-import { useEntityForm } from "./use-entity-form"
-import { EntityDialogContent } from "./entity-dialog-content"
+import { useEntityForm } from "../use-entity-form"
+import { EntityDialogContent } from "./entity-content"
 
 interface EntityDialogProps {
   mode: DialogMode

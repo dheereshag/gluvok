@@ -3,13 +3,15 @@ import { type EntityRecord } from "@/types"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
-import { useProjectStoreSync, useProjectDialogStates } from "./use-project-helpers"
+import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
+
 interface UseProjectTableProps {
   projectSlug: string
   primaryIdKey: string
   projectName: string
   initialData: EntityRecord[]
 }
+
 export function useProjectTable({
   projectSlug,
   primaryIdKey,

@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { LayoutDashboard, Weight } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
-import { DashboardCard } from "@/components/dashboard/dashboard-card"
+import { DashboardCard } from "@/components/dashboard"
 
 export default function Page() {
   return (

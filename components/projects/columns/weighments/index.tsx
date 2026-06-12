@@ -3,8 +3,8 @@ import { Car, Weight, Package, Building, User, Users, Image } from "lucide-react
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
-import { createTextColumn, createPillColumn, createBaseColumn } from "./helpers"
-import { WeighmentImagesCell } from "./weighments-cell"
+import { createTextColumn, createPillColumn, createBaseColumn } from "../helpers"
+import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [

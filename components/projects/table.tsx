@@ -1,7 +1,7 @@
 import { Table, flexRender } from "@tanstack/react-table"
 import { Table as TableGrid, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ProjectTableLoading } from "./project-table-loading"
-import { ProjectTableEmpty } from "./project-table-empty"
+import { ProjectTableLoading } from "./table-loading"
+import { ProjectTableEmpty } from "./table-empty"
 
 interface ProjectTableProps<TData> {
   table: Table<TData>
@@ -36,7 +36,7 @@ export function ProjectTable<TData>({ table, isLoading, columnsCount }: ProjectT
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="py-3 text-xs">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>

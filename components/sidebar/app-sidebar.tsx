@@ -4,10 +4,10 @@ import * as React from "react"
 import Link from "next/link"
 import { Weight } from "lucide-react"
 
-import { NavMain } from "./nav-main"
-import { NavSecondary } from "./nav-secondary"
-import { NavUser } from "./nav-user"
-import { SIDEBAR_DATA } from "./sidebar-data"
+import { NavMain } from "./nav/main"
+import { NavSecondary } from "./nav/secondary"
+import { NavUser } from "./nav/user"
+import { SIDEBAR_DATA } from "./data"
 import {
   Sidebar,
   SidebarContent,

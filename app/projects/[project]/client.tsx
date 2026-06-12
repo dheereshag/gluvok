@@ -3,10 +3,10 @@
 import { type EntityRecord } from "@/types"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
-import { ProjectToolbar } from "@/components/projects/project-toolbar"
-import { ProjectDialogs } from "@/components/projects/project-dialogs"
-import { ProjectTable } from "@/components/projects/project-table"
-import { useProjectTable } from "@/components/projects/use-project-table"
+import { ProjectToolbar } from "@/components/projects/toolbar"
+import { ProjectDialogs } from "@/components/projects/dialogs"
+import { ProjectTable } from "@/components/projects/table"
+import { useProjectTable } from "@/components/projects/use-table"
 
 interface ProjectClientProps {
   projectName: string; projectSlug: string; initialData: EntityRecord[]

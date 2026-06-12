@@ -1,2 +1,2 @@
-export * from "./entity-combobox"
-export * from "./state-combobox"
+export * from "./entity"
+export * from "./state"

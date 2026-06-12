@@ -2,9 +2,9 @@ import { ColumnDef } from "@tanstack/react-table"
 import { type EntityRecord } from "@/types"
 import { ProjectSlug } from "@/lib/fields"
 
-import { getSelectColumn } from "./select-column"
-import { getSystemColumns } from "./system-columns"
-import { getActionsColumn } from "./actions-column"
+import { getSelectColumn } from "./select"
+import { getSystemColumns } from "./system"
+import { getActionsColumn } from "./actions"
 
 import { getCentersColumns } from "./centers"
 import { getCommoditiesColumns } from "./commodities"

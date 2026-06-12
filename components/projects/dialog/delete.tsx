@@ -2,7 +2,7 @@
 
 import { type EntityRecord } from "@/types"
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
-import { DeleteEntityDialogContent } from "./delete-dialog-content"
+import { DeleteEntityDialogContent } from "./delete-content"
 
 interface DeleteEntityDialogProps {
   open: boolean
@@ -26,4 +26,3 @@ export function DeleteEntityDialog({
     </AlertDialog>
   )
 }
-

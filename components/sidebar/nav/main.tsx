@@ -1,7 +1,7 @@
 "use client"
 
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu } from "@/components/ui/sidebar"
-import { NavMainItem } from "./nav-main-item"
+import { NavMainItem } from "./main-item"
 
 export function NavMain({
   items,
