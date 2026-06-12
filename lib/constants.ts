@@ -1,42 +1,4 @@
-export enum State {
-  AN = "Andaman and Nicobar Islands",
-  AP = "Andhra Pradesh",
-  AR = "Arunachal Pradesh",
-  AS = "Assam",
-  BR = "Bihar",
-  CH = "Chandigarh",
-  CG = "Chhattisgarh",
-  DD = "Daman and Diu",
-  DL = "Delhi",
-  DN = "Dadra and Nagar Haveli and Daman and Diu",
-  GA = "Goa",
-  GJ = "Gujarat",
-  HR = "Haryana",
-  HP = "Himachal Pradesh",
-  JK = "Jammu and Kashmir",
-  JH = "Jharkhand",
-  KA = "Karnataka",
-  KL = "Kerala",
-  LA = "Ladakh",
-  LD = "Lakshadweep",
-  MP = "Madhya Pradesh",
-  MH = "Maharashtra",
-  MN = "Manipur",
-  ML = "Meghalaya",
-  MZ = "Mizoram",
-  NL = "Nagaland",
-  OD = "Odisha",
-  PY = "Puducherry",
-  PB = "Punjab",
-  RJ = "Rajasthan",
-  SK = "Sikkim",
-  TN = "Tamil Nadu",
-  TS = "Telangana",
-  TR = "Tripura",
-  UP = "Uttar Pradesh",
-  UK = "Uttarakhand",
-  WB = "West Bengal",
-}
+export { State } from "./state-constants"
 
 export enum CommodityName {
   WHEAT = "Wheat",
@@ -73,6 +35,7 @@ export enum ColumnLabel {
   CREATED_AT = "Created At",
   UPDATED_AT = "Updated At",
 }
+
 export enum DialogMode {
   CREATE = "create",
   EDIT = "edit",
