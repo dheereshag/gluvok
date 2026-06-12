@@ -31,8 +31,7 @@ import { Search, SearchX, Plus } from "lucide-react"
 import { useEntitiesStore } from "@/lib/store"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { Spinner } from "@/components/kibo-ui/spinner"
-import { CreateEntityDialog } from "./create-dialog"
-import { EditEntityDialog } from "./edit-dialog"
+import { EntityDialog } from "./entity-dialog"
 import { DeleteEntityDialog } from "./delete-dialog"
 import { getProjectColumns } from "./columns"
 
@@ -222,7 +221,8 @@ export function ProjectClient({
         <DataTablePagination table={table} />
       </div>
 
-      <CreateEntityDialog
+      <EntityDialog
+        mode="create"
         open={creating}
         onOpenChange={setCreating}
         projectSlug={projectSlug}
@@ -230,7 +230,8 @@ export function ProjectClient({
         primaryIdKey={primaryIdKey}
       />
 
-      <EditEntityDialog
+      <EntityDialog
+        mode="edit"
         open={editingItem !== null}
         onOpenChange={(open) => {
           if (!open) setEditingItem(null)

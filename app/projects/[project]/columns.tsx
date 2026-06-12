@@ -78,9 +78,25 @@ function createTextColumn<T>(
   Icon: React.ComponentType<{ className?: string }>,
   className = "font-semibold text-foreground text-xs"
 ): ColumnDef<T> {
-  return createCustomColumn(key, label, Icon, (val) => (
-    <div className={className}>{val}</div>
-  ))
+  return {
+    accessorKey: key,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
+            {label}
+          </span>
+        }
+      />
+    ),
+    cell: ({ row }) => <div className={className}>{String(row.getValue(key))}</div>,
+    meta: {
+      icon: Icon,
+      label: label,
+    },
+  }
 }
 
 function createPillColumn<T>(
@@ -90,11 +106,29 @@ function createPillColumn<T>(
   renderContent: (value: string) => React.ReactNode,
   pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string }
 ): ColumnDef<T> {
-  return createCustomColumn(key, label, Icon, (val) => (
-    <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
-      {renderContent(val)}
-    </Pill>
-  ))
+  return {
+    accessorKey: key,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={
+          <span className="flex items-center gap-1">
+            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
+            {label}
+          </span>
+        }
+      />
+    ),
+    cell: ({ row }) => (
+      <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
+        {renderContent(String(row.getValue(key)))}
+      </Pill>
+    ),
+    meta: {
+      icon: Icon,
+      label: label,
+    },
+  }
 }
 
 

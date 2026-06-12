@@ -6,7 +6,7 @@ import { useForm, type FieldValues } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 
 import { toast } from "sonner"
-import { Pencil, Save, X } from "lucide-react"
+import { Plus, Pencil, Save, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -20,32 +20,45 @@ import {
 import { useEntitiesStore, getField } from "@/lib/store"
 import { FormFieldInput } from "@/components/form"
 import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
-import { ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
+import { ENTITY_ADD_SCHEMAS, ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
 
-interface EditEntityDialogProps {
+interface EntityDialogProps {
+  mode: "create" | "edit"
   open: boolean
   onOpenChange: (open: boolean) => void
   projectSlug: string
   projectName: string
   primaryIdKey: string
-  item: EntityRecord | null
+  item?: EntityRecord | null
 }
 
-export function EditEntityDialog({
+export function EntityDialog({
+  mode,
   open,
   onOpenChange,
   projectSlug,
   projectName,
   primaryIdKey,
   item,
-}: EditEntityDialogProps) {
+}: EntityDialogProps) {
+  const addEntity = useEntitiesStore((state) => state.addEntity)
   const updateEntity = useEntitiesStore((state) => state.updateEntity)
+
+  const isEdit = mode === "edit"
+  const Icon = isEdit ? Pencil : Plus
+  const titleText = isEdit ? `Edit ${projectName}` : `Add ${projectName}`
+  const descriptionText = isEdit
+    ? "Update the attributes of this record. Click save when done."
+    : `Enter the details for the new ${projectName.toLowerCase()}. Click save when done.`
+  const submitText = isEdit ? "Save changes" : `Save ${projectName}`
 
   const fields = React.useMemo(() => PROJECT_FIELDS[projectSlug] || [], [projectSlug])
 
   const formSchema = React.useMemo(() => {
-    return ENTITY_EDIT_SCHEMAS[projectSlug as ProjectSlug]
-  }, [projectSlug])
+    return isEdit 
+      ? ENTITY_EDIT_SCHEMAS[projectSlug as ProjectSlug]
+      : ENTITY_ADD_SCHEMAS[projectSlug as ProjectSlug]
+  }, [projectSlug, isEdit])
 
   const form = useForm<FieldValues>({
     resolver: standardSchemaResolver(formSchema),
@@ -53,25 +66,32 @@ export function EditEntityDialog({
   })
 
   React.useEffect(() => {
-    if (item) {
-      const defaults: Record<string, string> = {}
-      fields.forEach((field) => {
-        defaults[field.key] = String(getField(item, field.key) ?? "")
-      })
-      form.reset(defaults)
-    } else {
-      form.reset({})
+    if (open) {
+      if (isEdit && item) {
+        const defaults: Record<string, string> = {}
+        fields.forEach((field) => {
+          defaults[field.key] = String(getField(item, field.key) ?? "")
+        })
+        form.reset(defaults)
+      } else {
+        form.reset({})
+      }
     }
-  }, [item, fields, form])
+  }, [open, isEdit, item, fields, form])
 
   const onSubmit = (values: FieldValues) => {
-    if (!item) return
     try {
-      updateEntity(projectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
-      toast.success(`${projectName} updated successfully`)
+      if (isEdit) {
+        if (!item) return
+        updateEntity(projectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
+        toast.success(`${projectName} updated successfully`)
+      } else {
+        addEntity(projectSlug, primaryIdKey, values)
+        toast.success(`${projectName} created successfully`)
+      }
       onOpenChange(false)
     } catch {
-      toast.error(`Failed to update ${projectName.toLowerCase()}`)
+      toast.error(`Failed to ${isEdit ? "update" : "create"} ${projectName.toLowerCase()}`)
     }
   }
 
@@ -80,11 +100,11 @@ export function EditEntityDialog({
       <DialogContent className="w-[92vw] max-w-104 sm:w-full">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-foreground">
-            <Pencil className="h-4 w-4 text-primary" />
-            Edit {projectName}
+            <Icon className="h-4 w-4 text-primary" />
+            {titleText}
           </DialogTitle>
           <DialogDescription>
-            Update the attributes of this record. Click save when done.
+            {descriptionText}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
@@ -97,7 +117,7 @@ export function EditEntityDialog({
               <FormFieldInput
                 field={field}
                 form={form}
-                idPrefix="edit-entity"
+                idPrefix={`${mode}-entity`}
               />
 
               {form.formState.errors[field.key] && (
@@ -110,7 +130,7 @@ export function EditEntityDialog({
 
           <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
             <Button
-              id="edit-entity-cancel"
+              id={`${mode}-entity-cancel`}
               type="button"
               variant="ghost"
               size="sm"
@@ -121,13 +141,13 @@ export function EditEntityDialog({
               Cancel
             </Button>
             <Button
-              id="edit-entity-submit"
+              id={`${mode}-entity-submit`}
               type="submit"
               size="sm"
               className="gap-1.5 h-8 px-3 text-xs shadow-sm"
             >
               <Save className="h-3.5 w-3.5" />
-              Save changes
+              {submitText}
             </Button>
           </DialogFooter>
         </form>
