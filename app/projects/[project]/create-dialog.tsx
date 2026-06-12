@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useForm, type FieldValues } from "react-hook-form"
+import { useForm, type FieldValues, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { Plus, Save, X } from "lucide-react"
@@ -43,11 +43,8 @@ export function CreateEntityDialog({
     return ENTITY_ADD_SCHEMAS[projectSlug as ProjectSlug]
   }, [projectSlug])
 
-  const form = useForm({
-    // Cast to any is required here due to type definition incompatibilities between
-    // Zod v4 (in package.json) and the internal Zod v3 typings expected by @hookform/resolvers
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(formSchema as any),
+  const form = useForm<FieldValues>({
+    resolver: zodResolver(formSchema as unknown as Parameters<typeof zodResolver>[0]) as unknown as Resolver<FieldValues>,
     defaultValues: {},
   })
 

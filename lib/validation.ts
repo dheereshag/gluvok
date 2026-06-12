@@ -86,11 +86,8 @@ export const editOperatorSchema = addOperatorSchema
 
 // 7. Users
 export const addUserSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email address is required")
-    .email("Please provide a valid email format"),
-  role: z.nativeEnum(Role, { message: "Role selection is required" }),
+  email: z.email("Please provide a valid email format"),
+  role: z.enum(Role, { message: "Role selection is required" }),
 })
 export const editUserSchema = addUserSchema
 
