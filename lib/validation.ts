@@ -2,16 +2,6 @@ import * as z from "zod"
 import { State, CommodityName, Role } from "./constants"
 import { ProjectSlug } from "./fields"
 
-// Preprocessor to handle empty string to undefined mapping for optional number inputs
-const optionalCoercedNumber = z.preprocess(
-  (val) => (val === "" || val === null || val === undefined ? undefined : val),
-  z.coerce
-    .number({ message: "Must be a number" })
-    .int("Must be an integer")
-    .positive("Must be a positive integer")
-    .optional()
-)
-
 // 1. Villages
 export const addVillageSchema = z.object({
   name: z
@@ -50,7 +40,7 @@ export const editCenterSchema = addCenterSchema
 
 // 4. Commodities
 export const addCommoditySchema = z.object({
-  name: z.nativeEnum(CommodityName, { message: "Commodity type selection is required" }),
+  name: z.enum(CommodityName, { message: "Commodity type selection is required" }),
   unit_price: z.coerce
     .number({ message: "Unit price must be a number" })
     .positive("Unit price must be a positive number"),
@@ -67,16 +57,16 @@ export const addCustomerSchema = z.object({
     .string()
     .min(3, "Father's name must be at least 3 characters")
     .max(255, "Father's name must be 255 characters or less"),
-  village_id: optionalCoercedNumber,
+  village_id: z.coerce
+    .number({ message: "Village ID must be an integer" })
+    .int("Village ID must be an integer")
+    .positive("Village ID must be a positive integer"),
 })
 export const editCustomerSchema = addCustomerSchema
 
 // 6. Operators
 export const addOperatorSchema = z.object({
-  id: z
-    .string()
-    .min(1, "System UUID identifier is required")
-    .uuid("System ID must be a valid Supabase Auth UUID"),
+  id: z.uuid("System ID must be a valid Supabase Auth UUID"),
   name: z
     .string()
     .min(3, "Operator full name must be at least 3 characters")
