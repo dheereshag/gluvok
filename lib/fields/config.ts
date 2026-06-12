@@ -14,7 +14,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.FATHER_NAME, label: "Father's Name", placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT },
     { key: EntityKey.VILLAGE_ID, label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
-  [ProjectSlug.DATA_ENTRIES]: [
+  [ProjectSlug.WEIGHMENTS]: [
     { key: EntityKey.VEHICLE_NUMBER, label: "Vehicle Number", placeholder: "e.g. PB10XY1234", type: FieldType.TEXT },
     { key: EntityKey.WEIGHT, label: "Weight (tons)", placeholder: "e.g. 15.5", type: FieldType.NUMBER },
     { key: EntityKey.COMMODITY_ID, label: "Commodity ID", placeholder: "e.g. 1", type: FieldType.TEXT },

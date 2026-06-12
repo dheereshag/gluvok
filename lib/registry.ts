@@ -15,7 +15,7 @@ import { ProjectSlug } from "@/lib/fields";
 import { centers } from "@/data/centers";
 import { commodities } from "@/data/commodities";
 import { customers } from "@/data/customers";
-import { dataEntries } from "@/data/data-entries";
+import { weighments } from "@/data/weighments";
 import { factories } from "@/data/factories";
 import { operators } from "@/data/operators";
 import { users } from "@/data/users";
@@ -31,7 +31,7 @@ export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
   [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Package, data: commodities },
   [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
-  [ProjectSlug.DATA_ENTRIES]: { name: ProjectName.DATA_ENTRIES, icon: ClipboardList, data: dataEntries },
+  [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList, data: weighments },
   [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory, data: factories },
   [ProjectSlug.OPERATORS]: { name: ProjectName.OPERATORS, icon: UserCog, data: operators },
   [ProjectSlug.USERS]: { name: ProjectName.USERS, icon: User, data: users },

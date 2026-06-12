@@ -2,7 +2,7 @@ export enum ProjectSlug {
   CENTERS = "centers",
   COMMODITIES = "commodities",
   CUSTOMERS = "customers",
-  DATA_ENTRIES = "data-entries",
+  WEIGHMENTS = "weighments",
   FACTORIES = "factories",
   OPERATORS = "operators",
   USERS = "users",

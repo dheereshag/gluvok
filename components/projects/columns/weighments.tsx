@@ -5,7 +5,7 @@ import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
 import { createTextColumn, createPillColumn } from "./helpers"
 
-export function getDataEntriesColumns<T>(): ColumnDef<T>[] {
+export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
     createPillColumn(

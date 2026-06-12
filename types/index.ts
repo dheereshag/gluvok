@@ -3,7 +3,7 @@ import { Center, Commodity, Customer, Factory, Village } from "./entities"
 
 export * from "./entities"
 
-export interface DataEntry {
+export interface Weighment {
   id: number
   vehicle_number: string
   weight: string
@@ -33,4 +33,4 @@ export interface User {
 }
 
 /** Union of all entity types used across the app */
-export type EntityRecord = Center | Commodity | Customer | DataEntry | Factory | Operator | User | Village
+export type EntityRecord = Center | Commodity | Customer | Weighment | Factory | Operator | User | Village

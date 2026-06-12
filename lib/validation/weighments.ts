@@ -1,7 +1,7 @@
 import * as z from "zod"
 import { State } from "../constants"
 
-export const addDataEntrySchema = z.object({
+export const addWeighmentSchema = z.object({
   vehicle_number: z
     .string()
     .min(1, "Vehicle plate number is required")
@@ -17,4 +17,4 @@ export const addDataEntrySchema = z.object({
   customer_id: z.coerce.number({ message: "Customer ID must be an integer" }).int("Customer ID must be an integer").positive("Customer ID must be a positive integer"),
 })
 
-export const editDataEntrySchema = addDataEntrySchema
+export const editWeighmentSchema = addWeighmentSchema

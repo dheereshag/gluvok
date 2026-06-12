@@ -5,7 +5,7 @@ export enum ProjectName {
   CENTERS = "Centers",
   COMMODITIES = "Commodities",
   CUSTOMERS = "Customers",
-  DATA_ENTRIES = "Data Entries",
+  WEIGHMENTS = "Weighments",
   FACTORIES = "Factories",
   OPERATORS = "Operators",
   USERS = "Users",

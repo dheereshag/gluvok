@@ -18,7 +18,7 @@ export function getEntityDisplayName(
     case ProjectSlug.USERS:
       key = EntityKey.EMAIL
       break
-    case ProjectSlug.DATA_ENTRIES:
+    case ProjectSlug.WEIGHMENTS:
       key = EntityKey.VEHICLE_NUMBER
       break
     default:

@@ -2,7 +2,7 @@ import { ProjectSlug } from "../fields"
 import { addCenterSchema, editCenterSchema } from "./centers"
 import { addCommoditySchema, editCommoditySchema } from "./commodities"
 import { addCustomerSchema, editCustomerSchema } from "./customers"
-import { addDataEntrySchema, editDataEntrySchema } from "./data-entries"
+import { addWeighmentSchema, editWeighmentSchema } from "./weighments"
 import { addFactorySchema, editFactorySchema } from "./factories"
 import { addOperatorSchema, editOperatorSchema } from "./operators"
 import { addUserSchema, editUserSchema } from "./users"
@@ -12,7 +12,7 @@ export type EntityAddSchema =
   | typeof addCenterSchema
   | typeof addCommoditySchema
   | typeof addCustomerSchema
-  | typeof addDataEntrySchema
+  | typeof addWeighmentSchema
   | typeof addFactorySchema
   | typeof addOperatorSchema
   | typeof addUserSchema
@@ -22,7 +22,7 @@ export type EntityEditSchema =
   | typeof editCenterSchema
   | typeof editCommoditySchema
   | typeof editCustomerSchema
-  | typeof editDataEntrySchema
+  | typeof editWeighmentSchema
   | typeof editFactorySchema
   | typeof editOperatorSchema
   | typeof editUserSchema
@@ -32,7 +32,7 @@ export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.CENTERS]: addCenterSchema,
   [ProjectSlug.COMMODITIES]: addCommoditySchema,
   [ProjectSlug.CUSTOMERS]: addCustomerSchema,
-  [ProjectSlug.DATA_ENTRIES]: addDataEntrySchema,
+  [ProjectSlug.WEIGHMENTS]: addWeighmentSchema,
   [ProjectSlug.FACTORIES]: addFactorySchema,
   [ProjectSlug.OPERATORS]: addOperatorSchema,
   [ProjectSlug.USERS]: addUserSchema,
@@ -43,7 +43,7 @@ export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
   [ProjectSlug.CENTERS]: editCenterSchema,
   [ProjectSlug.COMMODITIES]: editCommoditySchema,
   [ProjectSlug.CUSTOMERS]: editCustomerSchema,
-  [ProjectSlug.DATA_ENTRIES]: editDataEntrySchema,
+  [ProjectSlug.WEIGHMENTS]: editWeighmentSchema,
   [ProjectSlug.FACTORIES]: editFactorySchema,
   [ProjectSlug.OPERATORS]: editOperatorSchema,
   [ProjectSlug.USERS]: editUserSchema,
