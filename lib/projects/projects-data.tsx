@@ -8,7 +8,7 @@ import {
   User,
   Home,
 } from "lucide-react"
-import { ProjectSlug } from "./fields"
+import { ProjectSlug } from "../fields"
 import { ProjectName, type ProjectMetadata } from "./project-types"
 
 export const PROJECTS: ProjectMetadata[] = [

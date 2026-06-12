@@ -1,4 +1,4 @@
-import { ProjectSlug } from "./fields"
+import { ProjectSlug } from "../fields"
 import {
   addCenterSchema, editCenterSchema,
   addCommoditySchema, editCommoditySchema,

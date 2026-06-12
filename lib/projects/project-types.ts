@@ -1,5 +1,5 @@
 import { type LucideIcon } from "lucide-react"
-import { ProjectSlug } from "./fields"
+import { ProjectSlug } from "../fields"
 
 export enum ProjectName {
   CENTERS = "Centers",

@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { State, CommodityName } from "./constants"
+import { State, CommodityName } from "../constants"
 
 // 1. Villages
 export const addVillageSchema = z.object({

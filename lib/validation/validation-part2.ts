@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { State, Role } from "./constants"
+import { State, Role } from "../constants"
 
 // 6. Operators
 export const addOperatorSchema = z.object({
