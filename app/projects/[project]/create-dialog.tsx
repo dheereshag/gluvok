@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useForm, type FieldValues } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 
 import { toast } from "sonner"
 import { Plus, Save, X } from "lucide-react"
@@ -45,8 +45,7 @@ export function CreateEntityDialog({
   }, [projectSlug])
 
   const form = useForm<FieldValues>({
-    // @ts-expect-error - Zod version mismatch between app and hookform resolver
-    resolver: zodResolver(formSchema),
+    resolver: standardSchemaResolver(formSchema),
     defaultValues: {},
   })
 

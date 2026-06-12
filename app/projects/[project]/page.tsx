@@ -118,7 +118,7 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </header>
 
-      <main className="p-6">
+      <main className="p-6 w-full min-w-0">
         <div className="flex flex-col gap-1.5 mb-6">
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 text-foreground">
             <IconComponent className="h-6 w-6 text-primary" />
