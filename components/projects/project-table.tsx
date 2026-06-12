@@ -1,4 +1,3 @@
-import * as React from "react"
 import { Table, flexRender } from "@tanstack/react-table"
 import { Table as TableGrid, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ProjectTableLoading } from "./project-table-loading"

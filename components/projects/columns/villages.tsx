@@ -1,4 +1,3 @@
-import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Home, Globe } from "lucide-react"
 import { EntityKey } from "@/lib/fields"

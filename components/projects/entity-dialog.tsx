@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { type EntityRecord } from "@/types"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DialogMode } from "@/lib/constants"

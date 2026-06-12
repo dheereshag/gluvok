@@ -1,4 +1,3 @@
-import * as React from "react"
 import { type EntityRecord } from "@/types"
 import { DialogMode } from "@/lib/constants"
 import { EntityDialog } from "./entity-dialog"

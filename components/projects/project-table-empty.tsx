@@ -1,4 +1,3 @@
-import * as React from "react"
 import { SearchX } from "lucide-react"
 import { TableRow, TableCell } from "@/components/ui/table"
 

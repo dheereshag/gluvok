@@ -1,4 +1,3 @@
-import * as React from "react"
 import { LifeBuoy, Send } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 

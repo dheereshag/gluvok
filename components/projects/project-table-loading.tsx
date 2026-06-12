@@ -1,4 +1,3 @@
-import * as React from "react"
 import { Spinner } from "@/components/kibo-ui/spinner"
 
 export function ProjectTableLoading() {

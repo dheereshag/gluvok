@@ -9,29 +9,13 @@ import { ProjectTable } from "@/components/projects/project-table"
 import { useProjectTable } from "@/components/projects/use-project-table"
 
 interface ProjectClientProps {
-  projectName: string
-  projectSlug: string
-  initialData: EntityRecord[]
+  projectName: string; projectSlug: string; initialData: EntityRecord[]
 }
 
-export function ProjectClient({
-  projectName,
-  projectSlug,
-  initialData,
-}: ProjectClientProps) {
+export function ProjectClient({ projectName, projectSlug, initialData }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
-
-  const {
-    table,
-    isLoading,
-    filterKey,
-    creating,
-    setCreating,
-    editingItem,
-    setEditingItem,
-    deletingItem,
-    setDeletingItem,
-  } = useProjectTable({ projectSlug, primaryIdKey, projectName, initialData })
+  const pt = useProjectTable({ projectSlug, primaryIdKey, projectName, initialData })
+  const { table, isLoading, filterKey, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem } = pt
 
   return (
     <div className="space-y-4">
@@ -43,11 +27,7 @@ export function ProjectClient({
         setCreating={setCreating}
       />
 
-      <ProjectTable
-        table={table}
-        isLoading={isLoading}
-        columnsCount={table.getAllColumns().length}
-      />
+      <ProjectTable table={table} isLoading={isLoading} columnsCount={table.getAllColumns().length} />
 
       <div className="pt-2">
         <DataTablePagination table={table} />
@@ -67,3 +47,4 @@ export function ProjectClient({
     </div>
   )
 }
+
