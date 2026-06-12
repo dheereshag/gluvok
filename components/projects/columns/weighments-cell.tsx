@@ -1,0 +1,131 @@
+"use client"
+
+import * as React from "react"
+import Image from "next/image"
+import { Image as ImageIcon, ImageOff } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  type CarouselApi,
+} from "@/components/ui/carousel"
+
+interface WeighmentImagesCellProps {
+  images?: string[]
+  vehicleNumber: string
+}
+
+export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentImagesCellProps) {
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api, isOpen])
+
+  const hasImages = images && images.length > 0
+  const firstImage = hasImages ? (images[0].startsWith("/") ? images[0] : `/${images[0]}`) : null
+
+  return (
+    <>
+      {hasImages ? (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="group inline-flex items-center gap-1.5 py-0.5 pl-1.5 pr-2.5 rounded-full border border-muted-foreground/15 bg-muted/60 hover:bg-muted/90 text-[10px] font-mono font-semibold text-foreground transition-all duration-200 active:scale-[0.97] outline-none focus-visible:ring-1 focus-visible:ring-ring shadow-sm cursor-pointer select-none"
+          title="View images"
+        >
+          {/* Small thumbnail preview inside the pill */}
+          <div className="relative h-4 w-4 rounded-sm overflow-hidden border border-muted-foreground/10 shrink-0 bg-background/50">
+            <Image
+              src={firstImage!}
+              alt="Thumbnail"
+              fill
+              sizes="16px"
+              className="object-cover group-hover:scale-110 transition-transform duration-300 ease-out"
+              unoptimized
+            />
+          </div>
+          <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+            {images.length} {images.length === 1 ? "image" : "images"}
+          </span>
+        </button>
+      ) : (
+        <div className="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-full border border-dashed border-muted-foreground/20 bg-muted/10 text-[10px] font-mono font-medium text-muted-foreground/40 select-none cursor-default">
+          <ImageOff className="h-3 w-3 stroke-[1.5] text-muted-foreground/30" />
+          <span>No images</span>
+        </div>
+      )}
+
+      {hasImages && (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden bg-background/95 backdrop-blur-sm border-muted-foreground/15 shadow-2xl rounded-2xl gap-0">
+            <DialogHeader className="p-5 pb-4 border-b border-muted-foreground/10 bg-muted/20">
+              <DialogTitle className="flex items-center gap-2 text-foreground text-sm font-semibold">
+                <ImageIcon className="h-4 w-4 text-primary" />
+                <span>Weighment Photos</span>
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                Vehicle: <span className="font-mono font-medium text-foreground bg-muted px-1.5 py-0.5 rounded text-[10px]">{vehicleNumber}</span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="p-6 pb-2 flex flex-col items-center justify-center bg-black/5 dark:bg-black/20">
+              <Carousel setApi={setApi} className="w-full relative px-10">
+                <CarouselContent>
+                  {images.map((img, i) => {
+                    const src = img.startsWith("/") ? img : `/${img}`
+                    return (
+                      <CarouselItem key={i} className="flex items-center justify-center">
+                        <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/10 bg-card overflow-hidden shadow-md">
+                          <Image
+                            src={src}
+                            alt={`Weighment image ${i + 1}`}
+                            fill
+                            sizes="(max-width: 480px) 100vw, 480px"
+                            className="object-cover"
+                            priority={i === 0}
+                            unoptimized
+                          />
+                        </div>
+                      </CarouselItem>
+                    )
+                  })}
+                </CarouselContent>
+                {images.length > 1 && (
+                  <>
+                    <CarouselPrevious className="left-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform" />
+                    <CarouselNext className="right-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform" />
+                  </>
+                )}
+              </Carousel>
+            </div>
+
+            <div className="py-3 text-center text-xs font-mono font-medium text-muted-foreground border-t border-muted-foreground/5 bg-muted/10">
+              Slide {current} of {count}
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  )
+}

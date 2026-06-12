@@ -15,6 +15,7 @@ export const addWeighmentSchema = z.object({
   center_id: z.coerce.number({ message: "Center ID must be an integer" }).int("Center ID must be an integer").positive("Center ID must be a positive integer"),
   operator_id: z.string().length(12, "Operator Aadhar number must be exactly 12 characters"),
   customer_id: z.coerce.number({ message: "Customer ID must be an integer" }).int("Customer ID must be an integer").positive("Customer ID must be a positive integer"),
+  images: z.array(z.string()).optional(),
 })
 
 export const editWeighmentSchema = addWeighmentSchema

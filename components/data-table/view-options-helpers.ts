@@ -1,4 +1,4 @@
-import { Hash, Home, Globe, Calendar, CalendarClock } from "lucide-react"
+import { Hash, Home, Globe, Calendar, CalendarClock, Image } from "lucide-react"
 
 export const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   id: Hash,
@@ -6,6 +6,7 @@ export const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: stri
   state: Globe,
   created_at: Calendar,
   updated_at: CalendarClock,
+  images: Image,
 }
 
 export function getColumnLabel(id: string) {

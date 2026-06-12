@@ -34,6 +34,7 @@ export enum ColumnLabel {
   ROLE = "Role",
   CREATED_AT = "Created At",
   UPDATED_AT = "Updated At",
+  IMAGES = "Images",
 }
 
 export enum DialogMode {

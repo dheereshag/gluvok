@@ -1,13 +1,24 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Package, Building, User, Users } from "lucide-react"
+import { Car, Weight, Package, Building, User, Users, Image } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
-import { createTextColumn, createPillColumn } from "./helpers"
+import { createTextColumn, createPillColumn, createBaseColumn } from "./helpers"
+import { WeighmentImagesCell } from "./weighments-cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
+    createBaseColumn(
+      EntityKey.IMAGES,
+      ColumnLabel.IMAGES,
+      Image,
+      ({ row }) => {
+        const images = row.getValue(EntityKey.IMAGES) as string[] | undefined
+        const vehicleNumber = row.getValue(EntityKey.VEHICLE_NUMBER) as string
+        return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
+      }
+    ),
     createPillColumn(
       EntityKey.WEIGHT,
       ColumnLabel.WEIGHT,
