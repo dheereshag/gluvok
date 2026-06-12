@@ -11,18 +11,10 @@ interface FormFieldInputProps {
   idPrefix: string
 }
 
-export function FormFieldInput({
-  field,
-  form,
-  idPrefix,
-}: FormFieldInputProps) {
+export function FormFieldInput({ field, form, idPrefix }: FormFieldInputProps) {
   const referencedSlug = getReferencedEntitySlug(field.key)
   const fieldId = `${idPrefix}-field-${field.key}`
-
-  const value = useWatch({
-    control: form.control,
-    name: field.key,
-  })
+  const value = useWatch({ control: form.control, name: field.key })
 
   switch (field.type) {
     case FieldType.STATE:
@@ -33,7 +25,6 @@ export function FormFieldInput({
           onChange={(val) => form.setValue("state", val, { shouldValidate: true })}
         />
       )
-
     default:
       if (referencedSlug) {
         return (
@@ -46,7 +37,6 @@ export function FormFieldInput({
           />
         )
       }
-
       return (
         <Input
           id={fieldId}

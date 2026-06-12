@@ -1,6 +1,5 @@
 import { type Column } from "@tanstack/react-table"
 import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,30 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+interface DataTableColumnHeaderProps<TData, TValue> extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   column: Column<TData, TValue>
   title: React.ReactNode
 }
 
 export function DataTableColumnHeader<TData, TValue>({
-  column,
-  title,
-  className,
+  column, title, className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>
-  }
+  if (!column.getCanSort()) return <div className={cn(className)}>{title}</div>
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent text-xs font-semibold"
-          >
+          <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent text-xs font-semibold">
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (
               <ArrowDown className="ml-2 h-4 w-4" />
@@ -46,37 +36,16 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          {[
-            {
-              label: "Asc",
-              icon: ArrowUp,
-              onClick: () => column.toggleSorting(false),
-            },
-            {
-              label: "Desc",
-              icon: ArrowDown,
-              onClick: () => column.toggleSorting(true),
-            },
-            {
-              separator: true,
-            },
-            {
-              label: "Hide",
-              icon: EyeOff,
-              onClick: () => column.toggleVisibility(false),
-            },
-          ].map((item, idx) => {
-            if (item.separator) {
-              return <DropdownMenuSeparator key={`sep-${idx}`} />
-            }
-            const Icon = item.icon!
-            return (
-              <DropdownMenuItem key={item.label} onClick={item.onClick}>
-                <Icon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-                {item.label}
-              </DropdownMenuItem>
-            )
-          })}
+          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+            <ArrowUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" /> Asc
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+            <ArrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" /> Desc
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+            <EyeOff className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" /> Hide
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -1,0 +1,13 @@
+import * as React from "react"
+import { Spinner } from "@/components/kibo-ui/spinner"
+
+export function ProjectTableLoading() {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm h-64 flex flex-col items-center justify-center gap-3">
+        <Spinner variant="circle-filled" className="size-6 text-primary" />
+        <span className="text-xs font-semibold text-muted-foreground/80">Loading data...</span>
+      </div>
+    </div>
+  )
+}

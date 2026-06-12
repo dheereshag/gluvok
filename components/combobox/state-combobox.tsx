@@ -2,18 +2,8 @@
 
 import * as React from "react"
 import { ChevronsUpDown, MapPin } from "lucide-react"
-
-import {
-  Combobox,
-  ComboboxTrigger,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxEmpty,
-  ComboboxGroup,
-  ComboboxItem,
-} from "@/components/kibo-ui/combobox"
-import { State } from "@/lib/constants"
+import { Combobox, ComboboxTrigger, ComboboxContent, ComboboxInput, ComboboxList, ComboboxEmpty, ComboboxGroup, ComboboxItem } from "@/components/kibo-ui/combobox"
+import { STATES_DATA } from "./states-data"
 
 interface StateComboboxProps {
   value: string
@@ -24,24 +14,8 @@ interface StateComboboxProps {
 export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
   const [open, setOpen] = React.useState(false)
 
-  const comboboxData = React.useMemo(() => {
-    return Object.entries(State).map(([code, name]) => ({
-      label: name,
-      value: name,
-      code: code,
-    }))
-  }, [])
-
   return (
-    <Combobox
-      data={comboboxData}
-      type="state"
-      value={value}
-      onValueChange={onChange}
-      open={open}
-      onOpenChange={setOpen}
-      modal={true}
-    >
+    <Combobox data={STATES_DATA} type="state" value={value} onValueChange={onChange} open={open} onOpenChange={setOpen} modal={true}>
       <ComboboxTrigger
         id={id || "state-combobox-trigger"}
         className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors"
@@ -52,30 +26,21 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
         </span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>
-      <ComboboxContent
-        className="max-h-72"
-      >
+      <ComboboxContent className="max-h-72">
         <ComboboxInput placeholder="Search state..." className="h-9 text-xs" />
         <ComboboxList className="max-h-[250px] overflow-y-auto">
-          <ComboboxEmpty className="py-2 text-center text-xs text-muted-foreground">
-            No state found.
-          </ComboboxEmpty>
+          <ComboboxEmpty className="py-2 text-center text-xs text-muted-foreground">No state found.</ComboboxEmpty>
           <ComboboxGroup>
-            {comboboxData.map((s) => (
+            {STATES_DATA.map((s) => (
               <ComboboxItem
                 key={s.value}
                 id={`state-option-${s.code}`}
                 value={`${s.label.toLowerCase()} ${s.code.toLowerCase()}`}
-                onSelect={() => {
-                  onChange(s.value)
-                  setOpen(false)
-                }}
+                onSelect={() => { onChange(s.value); setOpen(false); }}
                 className="text-xs cursor-pointer py-2 hover:bg-muted transition-colors flex items-center justify-between"
               >
                 <span className="font-medium text-foreground">{s.label}</span>
-                <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">
-                  {s.code}
-                </span>
+                <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">{s.code}</span>
               </ComboboxItem>
             ))}
           </ComboboxGroup>

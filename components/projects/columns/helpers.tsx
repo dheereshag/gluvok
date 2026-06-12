@@ -6,57 +6,35 @@ import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 
 export function createBaseColumn<T>(
-  key: EntityKey,
-  label: ColumnLabel | string,
-  Icon: React.ComponentType<{ className?: string }>,
-  cell: ColumnDef<T>["cell"]
+  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"]
 ): ColumnDef<T> {
   return {
     accessorKey: key,
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title={
-          <span className="flex items-center gap-1">
-            <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
-            {label}
-          </span>
-        }
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
       />
     ),
     cell,
-    meta: {
-      icon: Icon,
-      label: label,
-    },
+    meta: { icon: Icon, label },
   }
 }
 
 export function createCustomColumn<T>(
-  key: EntityKey,
-  label: ColumnLabel | string,
-  Icon: React.ComponentType<{ className?: string }>,
-  renderCell: (value: string) => React.ReactNode
+  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, renderCell: (value: string) => React.ReactNode
 ): ColumnDef<T> {
   return createBaseColumn(key, label, Icon, ({ row }) => renderCell(String(row.getValue(key))))
 }
 
 export function createTextColumn<T>(
-  key: EntityKey,
-  label: ColumnLabel,
-  Icon: React.ComponentType<{ className?: string }>,
-  className = "font-semibold text-foreground text-xs"
+  key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, className = "font-semibold text-foreground text-xs"
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => (
-    <div className={className}>{String(row.getValue(key))}</div>
-  ))
+  return createBaseColumn(key, label, Icon, ({ row }) => <div className={className}>{String(row.getValue(key))}</div>)
 }
 
 export function createPillColumn<T>(
-  key: EntityKey,
-  label: ColumnLabel,
-  Icon: React.ComponentType<{ className?: string }>,
-  renderContent: (value: string) => React.ReactNode,
+  key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, renderContent: (value: string) => React.ReactNode,
   pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string }
 ): ColumnDef<T> {
   return createBaseColumn(key, label, Icon, ({ row }) => (

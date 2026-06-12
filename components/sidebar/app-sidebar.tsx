@@ -1,10 +1,13 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
+import { Weight } from "lucide-react"
 
 import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
+import { SIDEBAR_DATA } from "./sidebar-data"
 import {
   Sidebar,
   SidebarContent,
@@ -14,41 +17,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import {
-  LifeBuoy,
-  Send,
-  Weight
-} from "lucide-react"
-import Link from "next/link";
-import { PROJECTS } from "@/lib/projects"
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: <LifeBuoy />,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: <Send />,
-    },
-  ],
-  navMain: PROJECTS.map((project) => {
-    const Icon = project.icon;
-    return {
-      title: project.name,
-      url: `/projects/${project.slug}`,
-      icon: <Icon />,
-    };
-  }),
-};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -70,12 +38,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={SIDEBAR_DATA.navMain} />
+        <NavSecondary items={SIDEBAR_DATA.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={SIDEBAR_DATA.user} />
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }
