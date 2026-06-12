@@ -90,6 +90,13 @@ export const addDataEntrySchema = z.object({
     .regex(
       /^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/,
       "Must match standard Indian license plate format (e.g. PB10XY1234)"
+    )
+    .refine(
+      (val) => {
+        const stateCode = val.substring(0, 2);
+        return Object.keys(State).includes(stateCode);
+      },
+      { message: "First two characters must be a valid Indian state or union territory code" }
     ),
   weight: z.coerce
     .number({ message: "Weight must be a number" })
