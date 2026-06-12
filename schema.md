@@ -73,7 +73,7 @@ Employees who manage the scale/vehicle. Have email/password login via Supabase A
 
 ---
 
-### Entity G: data_entries
+### Entity G: weighments
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
