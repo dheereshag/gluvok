@@ -33,32 +33,26 @@ import { operators } from "@/data/operators";
 import { users } from "@/data/users";
 import { villages } from "@/data/villages";
 import { ProjectClient } from "./project-client";
+import { ProjectName } from "@/lib/projects";
+import { ProjectSlug } from "@/lib/fields";
 
 const PROJECT_REGISTRY: Record<
   string,
   {
-    name: string;
+    name: ProjectName;
     icon: React.ComponentType<{ className?: string }>;
     data: EntityRecord[];
   }
 > = {
-  centers: { name: "Centers", icon: Building, data: centers },
-  commodities: { name: "Commodities", icon: Package, data: commodities },
-  customers: { name: "Customers", icon: Users, data: customers },
-  "data-entries": { name: "Data Entries", icon: ClipboardList, data: dataEntries },
-  factories: { name: "Factories", icon: Factory, data: factories },
-  operators: { name: "Operators", icon: UserCog, data: operators },
-  users: { name: "Users", icon: User, data: users },
-  villages: { name: "Villages", icon: Home, data: villages },
+  [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
+  [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Package, data: commodities },
+  [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
+  [ProjectSlug.DATA_ENTRIES]: { name: ProjectName.DATA_ENTRIES, icon: ClipboardList, data: dataEntries },
+  [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory, data: factories },
+  [ProjectSlug.OPERATORS]: { name: ProjectName.OPERATORS, icon: UserCog, data: operators },
+  [ProjectSlug.USERS]: { name: ProjectName.USERS, icon: User, data: users },
+  [ProjectSlug.VILLAGES]: { name: ProjectName.VILLAGES, icon: Home, data: villages },
 };
-
-function titleize(slug: string) {
-  return slug
-    .replace(/[-_]+/g, " ")
-    .split(" ")
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(" ")
-}
 
 type Props = {
   params: Promise<{ project: string }>;
@@ -68,7 +62,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const projectSlug = resolvedParams?.project || "";
   const config = PROJECT_REGISTRY[projectSlug];
-  const projectName = config ? config.name : titleize(projectSlug);
+  
+  if (!config) {
+    return {
+      title: "Not Found | gluvok Dashboard",
+    };
+  }
+
+  const projectName = config.name;
 
   return {
     title: `${projectName} | gluvok Dashboard`,

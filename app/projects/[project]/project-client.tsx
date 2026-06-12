@@ -27,7 +27,7 @@ import { DataTablePagination } from "@/components/data-table"
 import { SearchX } from "lucide-react"
 
 import { useEntitiesStore } from "@/lib/store"
-import { getPrimaryIdKey } from "@/lib/fields"
+import { getPrimaryIdKey, ProjectSlug, EntityKey } from "@/lib/fields"
 import { Spinner } from "@/components/kibo-ui/spinner"
 
 import { ProjectToolbar } from "@/components/projects/project-toolbar"
@@ -119,9 +119,9 @@ export function ProjectClient({
 
   // Filter input key determination
   const filterKey = React.useMemo(() => {
-    if (projectSlug === "users") return "email"
-    if (projectSlug === "data-entries") return "vehicle_number"
-    return "name"
+    if (projectSlug === ProjectSlug.USERS) return EntityKey.EMAIL
+    if (projectSlug === ProjectSlug.DATA_ENTRIES) return EntityKey.VEHICLE_NUMBER
+    return EntityKey.NAME
   }, [projectSlug])
 
 
