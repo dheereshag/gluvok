@@ -27,7 +27,7 @@ export default function Page() {
         </div>
       </header>
 
-      <main className="p-8 max-w-6xl mx-auto space-y-8">
+      <main className="p-8 w-full min-w-0 space-y-8">
         <div className="space-y-2 flex flex-col items-start text-left">
           <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
             <Weight className="h-8 w-8 text-primary" />
@@ -38,7 +38,7 @@ export default function Page() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {PROJECTS.map((project) => (
             <DashboardCard
               key={project.name}
