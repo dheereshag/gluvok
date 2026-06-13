@@ -39,7 +39,8 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.OPERATORS]: [
-    { key: EntityKey.ID, label: ColumnLabel.ID, placeholder: "e.g. operator-id", type: FieldType.TEXT },
+    { key: EntityKey.AADHAR_NUMBER, label: ColumnLabel.AADHAR_NUMBER, placeholder: "e.g. 123456789012", type: FieldType.TEXT },
+    { key: EntityKey.ID, label: ColumnLabel.ID, placeholder: "Select user...", type: FieldType.TEXT },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },
   ],
   [ProjectSlug.USERS]: [
@@ -67,6 +68,8 @@ export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
 
 export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | null {
   switch (key) {
+    case EntityKey.ID:
+      return ProjectSlug.USERS
     case EntityKey.FACTORY_ID:
       return ProjectSlug.FACTORIES
     case EntityKey.VILLAGE_ID:

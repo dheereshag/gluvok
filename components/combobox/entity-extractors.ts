@@ -6,6 +6,7 @@ import { customers } from "@/data/customers"
 import { factories } from "@/data/factories"
 import { operators } from "@/data/operators"
 import { villages } from "@/data/villages"
+import { users } from "@/data/users"
 import {
   type Center,
   type Commodity,
@@ -13,10 +14,11 @@ import {
   type Customer,
   type Factory,
   type Operator,
+  type User,
   type Village,
 } from "@/types"
 
-export type Entity = Center | Commodity | CommodityPrice | Customer | Factory | Operator | Village
+export type Entity = Center | Commodity | CommodityPrice | Customer | Factory | Operator | User | Village
 
 export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.CENTERS]: centers,
@@ -26,6 +28,7 @@ export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.FACTORIES]: factories,
   [ProjectSlug.OPERATORS]: operators,
   [ProjectSlug.VILLAGES]: villages,
+  [ProjectSlug.USERS]: users,
 }
 
 export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; name: string }> = {
@@ -42,4 +45,5 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
   },
   [ProjectSlug.FACTORIES]: (item) => ({ id: String((item as Factory).id ?? ""), name: (item as Factory).name }),
   [ProjectSlug.VILLAGES]: (item) => ({ id: String((item as Village).id ?? ""), name: (item as Village).name }),
+  [ProjectSlug.USERS]: (item) => ({ id: (item as User).id, name: (item as User).email }),
 }
