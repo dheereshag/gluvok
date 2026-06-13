@@ -17,6 +17,7 @@ export function StandardInput({ field, form, fieldId, disabled }: StandardInputP
     <Input
       id={fieldId}
       type={field.type}
+      inputMode={field.inputMode}
       disabled={disabled}
       {...form.register(field.key, {
         onChange: (e) => {

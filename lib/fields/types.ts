@@ -42,6 +42,17 @@ export enum EntityKey {
   IMAGES = "images"
 }
 
+export enum InputMode {
+  NONE = "none",
+  TEXT = "text",
+  TEL = "tel",
+  URL = "url",
+  EMAIL = "email",
+  NUMERIC = "numeric",
+  DECIMAL = "decimal",
+  SEARCH = "search",
+}
+
 export interface FieldConfig {
   key: EntityKey
   label: string
@@ -49,4 +60,5 @@ export interface FieldConfig {
   type: FieldType
   className?: string
   transformOnChange?: (value: string) => string
+  inputMode?: InputMode
 }

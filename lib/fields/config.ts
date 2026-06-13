@@ -1,4 +1,4 @@
-import { ProjectSlug, EntityKey, FieldType, type FieldConfig } from "./types"
+import { ProjectSlug, EntityKey, FieldType, InputMode, type FieldConfig } from "./types"
 import { ColumnLabel } from "@/lib/constants"
 
 export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
@@ -33,7 +33,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.WEIGHT, label: ColumnLabel.WEIGHT, placeholder: "e.g. 15.5", type: FieldType.NUMBER },
     { key: EntityKey.COMMODITY_PRICE_ID, label: ColumnLabel.COMMODITY_PRICE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
-    { key: EntityKey.OPERATOR_ID, label: ColumnLabel.OPERATOR_ID, placeholder: "e.g. 123456789012", type: FieldType.TEXT },
+    {
+      key: EntityKey.OPERATOR_ID,
+      label: ColumnLabel.OPERATOR_ID,
+      placeholder: "e.g. 123456789012",
+      type: FieldType.TEXT,
+      inputMode: InputMode.NUMERIC,
+      transformOnChange: (v) => v.replace(/\D/g, "").slice(0, 12),
+    },
     { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER_ID, placeholder: "e.g. GOV1001", type: FieldType.TEXT },
   ],
   [ProjectSlug.FACTORIES]: [
@@ -41,7 +48,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.OPERATORS]: [
-    { key: EntityKey.AADHAR_NUMBER, label: ColumnLabel.AADHAR_NUMBER, placeholder: "e.g. 123456789012", type: FieldType.TEXT },
+    {
+      key: EntityKey.AADHAR_NUMBER,
+      label: ColumnLabel.AADHAR_NUMBER,
+      placeholder: "e.g. 123456789012",
+      type: FieldType.TEXT,
+      inputMode: InputMode.NUMERIC,
+      transformOnChange: (v) => v.replace(/\D/g, "").slice(0, 12),
+    },
     { key: EntityKey.ID, label: ColumnLabel.ID, placeholder: "Select user...", type: FieldType.TEXT },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },
   ],
