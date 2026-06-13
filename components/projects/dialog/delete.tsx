@@ -1,17 +1,8 @@
 "use client"
 
-import { type EntityRecord } from "@/types"
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
 import { DeleteEntityDialogContent } from "./delete-content"
-
-interface DeleteEntityDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  projectSlug: string
-  projectName: string
-  primaryIdKey: string
-  item: EntityRecord | null
-}
+import { type DeleteEntityDialogProps } from "./types"
 
 export function DeleteEntityDialog({
   open,

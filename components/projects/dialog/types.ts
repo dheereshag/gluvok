@@ -1,0 +1,36 @@
+import { type FieldValues, type UseFormReturn } from "react-hook-form"
+import { type FieldConfig } from "@/lib/fields"
+import { DialogMode } from "@/lib/constants"
+import { type EntityRecord } from "@/types"
+
+export interface EntityDialogContentProps {
+  mode: DialogMode
+  onOpenChange: (open: boolean) => void
+  projectName: string
+  isEdit: boolean
+  fields: FieldConfig[]
+  form: UseFormReturn<FieldValues>
+  onSubmit: (values: FieldValues) => void
+  primaryIdKey: string
+}
+
+export interface DeleteContentProps {
+  onOpenChange: (open: boolean) => void
+  projectSlug: string
+  projectName: string
+  primaryIdKey: string
+  item?: EntityRecord | null
+  items?: EntityRecord[]
+  onSuccess?: () => void
+}
+
+export interface DeleteEntityDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  projectSlug: string
+  projectName: string
+  primaryIdKey: string
+  item?: EntityRecord | null
+  items?: EntityRecord[]
+  onSuccess?: () => void
+}

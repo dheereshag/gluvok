@@ -1,37 +1,26 @@
 "use client"
 
-import { type FieldValues, type UseFormReturn } from "react-hook-form"
 import { Pencil, Plus, Save, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
-import { type FieldConfig } from "@/lib/fields"
-import { DialogMode } from "@/lib/constants"
-
-interface EntityDialogContentProps {
-  mode: DialogMode
-  onOpenChange: (open: boolean) => void
-  projectName: string
-  isEdit: boolean
-  fields: FieldConfig[]
-  form: UseFormReturn<FieldValues>
-  onSubmit: (values: FieldValues) => void
-  primaryIdKey: string
-}
+import { type EntityDialogContentProps } from "./types"
 
 export function EntityDialogContent({
   mode, onOpenChange, projectName, isEdit, fields, form, onSubmit, primaryIdKey
 }: EntityDialogContentProps) {
   const Icon = isEdit ? Pencil : Plus
-  const titleText = isEdit ? `Edit ${projectName}` : `Add ${projectName}`
-  const descriptionText = isEdit ? "Update the attributes of this record. Click save when done." : `Enter the details for the new ${projectName.toLowerCase()}. Click save when done.`
-  const submitText = isEdit ? "Save changes" : `Save ${projectName}`
+  const desc = isEdit
+    ? "Update the attributes of this record. Click save when done."
+    : `Enter the details for the new ${projectName.toLowerCase()}. Click save when done.`
 
   return (
     <>
       <DialogHeader>
-        <DialogTitle className="flex items-center gap-2 text-foreground"><Icon className="h-4 w-4 text-primary" /> {titleText}</DialogTitle>
-        <DialogDescription>{descriptionText}</DialogDescription>
+        <DialogTitle className="flex items-center gap-2 text-foreground">
+          <Icon className="h-4 w-4 text-primary" /> {isEdit ? "Edit" : "Add"} {projectName}
+        </DialogTitle>
+        <DialogDescription>{desc}</DialogDescription>
       </DialogHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fields.map((field) => (
@@ -53,7 +42,7 @@ export function EntityDialogContent({
             <X className="h-3.5 w-3.5" /> Cancel
           </Button>
           <Button id={`${mode}-entity-submit`} type="submit" size="sm" className="gap-1.5 h-8 px-3 text-xs shadow-sm">
-            <Save className="h-3.5 w-3.5" /> {submitText}
+            <Save className="h-3.5 w-3.5" /> {isEdit ? "Save changes" : `Save ${projectName}`}
           </Button>
         </DialogFooter>
       </form>

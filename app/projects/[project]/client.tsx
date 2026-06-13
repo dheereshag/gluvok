@@ -24,6 +24,7 @@ export function ProjectClient({ projectName, projectSlug, initialData }: Project
         projectSlug={projectSlug}
         projectName={projectName}
         filterKey={filterKey}
+        primaryIdKey={primaryIdKey}
         setCreating={setCreating}
       />
 
