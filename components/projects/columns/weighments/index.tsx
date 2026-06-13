@@ -6,7 +6,7 @@ import { PillIcon } from "@/components/kibo-ui/pill"
 import { useEntitiesStore } from "@/lib/store"
 import { commodityPrices } from "@/data/commodity-prices"
 import { type CommodityPrice } from "@/types"
-import { createTextColumn, createPillColumn, createBaseColumn } from "../helpers"
+import { createTextColumn, createPillColumn, createBaseColumn, getCommodityIcon } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -27,7 +27,7 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       ColumnLabel.WEIGHT,
       Weight,
       (val) => <><PillIcon icon={Weight} />{val} tons</>,
-      { className: "font-mono text-xs font-semibold py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
+      { className: "h-6 py-0.5 px-2.5 text-[11px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
     ),
     createPillColumn(
       EntityKey.COMMODITY_PRICE_ID,
@@ -38,16 +38,17 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         const prices = (storeState.entities[ProjectSlug.COMMODITY_PRICES] || commodityPrices) as CommodityPrice[]
         const priceRec = prices.find((p) => String(p.id) === String(val))
         const displayName = priceRec ? `${priceRec.commodity_name}` : `Price ID: ${val}`
-        return <><PillIcon icon={Package} />{displayName}</>
+        const Icon = getCommodityIcon(priceRec ? priceRec.commodity_name : "")
+        return <><PillIcon icon={Icon} />{displayName}</>
       },
-      { className: "font-mono text-[10px] py-0.5 px-2 bg-muted/60 border border-muted-foreground/10" }
+      { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
     ),
     createPillColumn(
       EntityKey.CENTER_ID,
       ColumnLabel.CENTER_ID,
       Building,
       (val) => <><PillIcon icon={Building} />ID: {val}</>,
-      { variant: "outline", className: "font-mono text-[10px] py-0.5 px-2" }
+      { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-transparent border border-border hover:bg-muted/20 text-muted-foreground transition-all duration-200" }
     ),
     createTextColumn(EntityKey.OPERATOR_ID, ColumnLabel.OPERATOR_ID, User, "font-mono text-muted-foreground text-xs"),
     createTextColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users, "font-mono text-muted-foreground text-xs"),

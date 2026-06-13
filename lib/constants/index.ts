@@ -8,6 +8,14 @@ export enum Role {
   BASE = "base",
 }
 
+export enum RoleLabel {
+  SUPER_ADMIN = "SUPER ADMIN",
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
+  OPERATOR = "OPERATOR",
+  BASE = "BASE",
+}
+
 export enum ColumnLabel {
   ID = "ID",
   GOVT_ID = "Govt ID",

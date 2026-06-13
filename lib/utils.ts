@@ -23,6 +23,7 @@ export function formatDateTime(dateStr: string) {
   return dateStr
 }
 
+
 export function getDisplayName(src: string, fileName: string | undefined, index: number): string {
   if (fileName) return fileName
   if (src.startsWith("data:")) return `Image ${index + 1}`

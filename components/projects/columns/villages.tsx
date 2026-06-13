@@ -13,7 +13,7 @@ export function getVillagesColumns<T>(): ColumnDef<T>[] {
       ColumnLabel.STATE,
       Globe,
       (val) => <><PillIcon icon={Globe} />{val}</>,
-      { variant: "outline", className: "font-bold text-xs text-muted-foreground py-0.5 px-2" }
+      { className: "h-6 py-0.5 px-2.5 text-[11px] font-semibold border bg-transparent text-foreground border-border hover:bg-muted/20 transition-all duration-200" }
     ),
   ]
 }

@@ -10,13 +10,19 @@ export function useProjectStoreSync(projectSlug: string, initialData: EntityReco
   const [localLoading, setLocalLoading] = React.useState(true)
 
   React.useEffect(() => {
+    let active = true
     if (storeData === undefined) {
-      setEntities(projectSlug, initialData)
+      Promise.resolve().then(() => {
+        if (active) setEntities(projectSlug, initialData)
+      })
     }
     const timer = setTimeout(() => {
-      setLocalLoading(false)
+      if (active) setLocalLoading(false)
     }, 600)
-    return () => clearTimeout(timer)
+    return () => {
+      active = false
+      clearTimeout(timer)
+    }
   }, [projectSlug, initialData, setEntities, storeData])
 
   return {

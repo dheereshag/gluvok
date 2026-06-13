@@ -4,6 +4,7 @@ import { DataTableColumnHeader } from "@/components/data-table"
 import { Pill } from "@/components/kibo-ui/pill"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
+import { Sprout, Wheat, Droplet, Hammer, Package, type LucideIcon } from "lucide-react"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"]
@@ -35,17 +36,34 @@ export function createTextColumn<T>(
 
 export function createPillColumn<T>(
   key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, renderContent: (value: string) => React.ReactNode,
-  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string }
+  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string | ((value: string) => string) }
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => (
-    <Pill variant={pillProps?.variant || "secondary"} className={pillProps?.className}>
-      {renderContent(String(row.getValue(key)))}
-    </Pill>
-  ))
+  return createBaseColumn(key, label, Icon, ({ row }) => {
+    const val = String(row.getValue(key))
+    const resolvedClassName = typeof pillProps?.className === "function"
+      ? pillProps.className(val)
+      : pillProps?.className
+
+    return (
+      <Pill variant={pillProps?.variant || "secondary"} className={resolvedClassName}>
+        {renderContent(val)}
+      </Pill>
+    )
+  })
 }
 
 export function truncateId(val: string): string {
-  return val && val !== "undefined" && val !== "null" && val.length > 8
-    ? `${val.substring(0, 8)}...`
-    : (val === "undefined" || val === "null" ? "" : val || "")
+  if (!val || val === "undefined" || val === "null") {
+    return "—"
+  }
+  return val.length > 8 ? `${val.substring(0, 8)}...` : val
+}
+
+export function getCommodityIcon(name: string): LucideIcon {
+  const norm = name?.toLowerCase().trim() || ""
+  if (norm.includes("wheat")) return Wheat
+  if (norm.includes("corn")) return Sprout
+  if (norm.includes("oil") || norm.includes("crude")) return Droplet
+  if (norm.includes("copper") || norm.includes("scrap") || norm.includes("metal")) return Hammer
+  return Package
 }

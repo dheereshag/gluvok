@@ -3,7 +3,7 @@ import { ShieldCheck, Hash, Calendar, CalendarClock, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { formatDateTime } from "@/lib/utils"
-import { createCustomColumn, truncateId } from "./helpers"
+import { createCustomColumn, truncateId, getCommodityIcon } from "./helpers"
 
 export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
   const isGovtOrAadhar = primaryIdKey === EntityKey.GOVT_ID || primaryIdKey === EntityKey.AADHAR_NUMBER
@@ -17,6 +17,15 @@ export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
       label,
       icon,
       (val) => {
+        if (primaryIdKey === EntityKey.NAME) {
+          const Icon = getCommodityIcon(val)
+          return (
+            <div className="flex items-center gap-1.5 font-semibold text-foreground text-xs">
+              <Icon className="h-3.5 w-3.5 text-muted-foreground/75" />
+              {val}
+            </div>
+          )
+        }
         const displayVal = primaryIdKey === EntityKey.ID ? truncateId(val) : (val === "undefined" || val === "null" ? "" : val || "")
         return <div className="font-mono text-muted-foreground text-xs">{displayVal}</div>
       }
