@@ -98,13 +98,13 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
                     const src = img.startsWith("/") ? img : `/${img}`
                     return (
                       <CarouselItem key={i} className="flex flex-col items-center justify-center min-w-0">
-                        <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/10 bg-card overflow-hidden shadow-md">
+                        <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/10 bg-card overflow-hidden shadow-md group">
                           <Image
                             src={src}
                             alt={`Weighment image ${i + 1}`}
                             fill
                             sizes="(max-width: 480px) 100vw, 480px"
-                            className="object-cover"
+                            className="object-cover transition-transform duration-500 ease-out group-hover:scale-125"
                             priority={i === 0}
                             unoptimized
                           />
