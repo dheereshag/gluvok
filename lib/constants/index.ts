@@ -1,10 +1,11 @@
 export { State } from "./states"
 
 export enum Role {
-  ADMIN = "Admin",
-  OPERATOR = "Operator",
-  MANAGER = "Manager",
-  AUTHENTICATED = "authenticated",
+  SUPER_ADMIN = "super_admin",
+  ADMIN = "admin",
+  MANAGER = "manager",
+  OPERATOR = "operator",
+  BASE = "base",
 }
 
 export enum ColumnLabel {
