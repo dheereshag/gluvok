@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { X, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dropzone, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
@@ -98,8 +97,14 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
             </CarouselContent>
             {value.length > 1 && (
               <>
-                <CarouselPrevious className="left-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform" />
-                <CarouselNext className="right-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform" />
+                <CarouselPrevious
+                  type="button"
+                  className="left-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform"
+                />
+                <CarouselNext
+                  type="button"
+                  className="right-0 h-8 w-8 rounded-full border bg-background/80 shadow hover:bg-background active:scale-95 transition-transform"
+                />
               </>
             )}
           </Carousel>
