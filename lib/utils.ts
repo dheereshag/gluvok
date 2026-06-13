@@ -22,3 +22,11 @@ export function formatDateTime(dateStr: string) {
   } catch {}
   return dateStr
 }
+
+export function getDisplayName(src: string, fileName: string | undefined, index: number): string {
+  if (fileName) return fileName
+  if (src.startsWith("data:")) return `Image ${index + 1}`
+  // extract basename from path
+  const parts = src.split("/")
+  return parts[parts.length - 1] || `Image ${index + 1}`
+}

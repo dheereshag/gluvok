@@ -18,7 +18,7 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
 
   const handleDownloadPDF = () => {
     const cols = table.getVisibleLeafColumns().filter(c => c.id !== "select" && c.id !== "actions")
-    const headersHtml = cols.map(c => `<th>${(c.columnDef.meta as any)?.label || c.id}</th>`).join("")
+    const headersHtml = cols.map(c => `<th>${(c.columnDef.meta as Record<string, unknown>)?.label || c.id}</th>`).join("")
     const rowsHtml = selectedRows.map(row => {
       const cells = cols.map(c => {
         const val = row.getValue(c.id)
@@ -44,7 +44,7 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
           projectSlug={projectSlug}
           projectName={projectName}
           primaryIdKey={primaryIdKey}
-          items={selectedRows.map(r => r.original as any)}
+          items={selectedRows.map(r => r.original as import("@/types").EntityRecord)}
           onSuccess={() => table.resetRowSelection()}
         />
       </div>

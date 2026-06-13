@@ -3,6 +3,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { Image as ImageIcon, ImageOff } from "lucide-react"
+import { getDisplayName } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -96,7 +97,7 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
                   {images.map((img, i) => {
                     const src = img.startsWith("/") ? img : `/${img}`
                     return (
-                      <CarouselItem key={i} className="flex items-center justify-center">
+                      <CarouselItem key={i} className="flex flex-col items-center justify-center min-w-0">
                         <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/10 bg-card overflow-hidden shadow-md">
                           <Image
                             src={src}
@@ -108,6 +109,12 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
                             unoptimized
                           />
                         </div>
+                        <p
+                          title={getDisplayName(img, undefined, i)}
+                          className="mt-2 text-center text-[11px] font-mono text-muted-foreground truncate max-w-full px-2"
+                        >
+                          {getDisplayName(img, undefined, i)}
+                        </p>
                       </CarouselItem>
                     )
                   })}

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
 import { Dropzone, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
-import { ImagePreviewCarousel } from "@/components/form/image-preview-carousel"
+import { ImagePreviewCarousel } from "@/components/form/image/preview-carousel"
 
 interface ImageUploadProps {
   id?: string
@@ -14,7 +14,7 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
-  const [fileNames, setFileNames] = useState<string[]>([])
+  const [fileNameMap, setFileNameMap] = useState<Record<string, string>>({})
 
   const handleDrop = (acceptedFiles: File[]) => {
     const promises = acceptedFiles.map(
@@ -35,8 +35,14 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
 
     Promise.all(promises)
       .then((base64Strings) => {
+        setFileNameMap((prev) => {
+          const next = { ...prev }
+          base64Strings.forEach((b64, i) => {
+            next[b64] = acceptedFiles[i].name
+          })
+          return next
+        })
         onChange([...value, ...base64Strings])
-        setFileNames((prev) => [...prev, ...acceptedFiles.map((f) => f.name)])
         toast.success(`Successfully uploaded ${acceptedFiles.length} image(s)`)
       })
       .catch((err) => {
@@ -47,7 +53,6 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
 
   const handleRemove = (indexToRemove: number) => {
     onChange(value.filter((_, i) => i !== indexToRemove))
-    setFileNames((prev) => prev.filter((_, i) => i !== indexToRemove))
   }
 
   return (
@@ -55,7 +60,7 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
       {value.length > 0 && (
         <ImagePreviewCarousel
           images={value}
-          fileNames={fileNames.length === value.length ? fileNames : undefined}
+          fileNames={value.map((v) => fileNameMap[v])}
           disabled={disabled}
           onRemove={handleRemove}
         />

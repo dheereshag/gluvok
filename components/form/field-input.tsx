@@ -4,7 +4,7 @@ import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { StateCombobox, EntityCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
 import { StandardInput } from "./standard-input"
-import { ImageUpload } from "./image-upload"
+import { ImageUpload } from "./image/upload"
 
 interface FormFieldInputProps {
   field: FieldConfig
