@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
-import { X } from "lucide-react"
+import { X as XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Carousel,
@@ -11,6 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { getDisplayName, splitFileName } from "@/lib/utils"
+import { DeleteEntityDialog } from "@/components/projects/dialog/delete"
 
 interface ImagePreviewCarouselProps {
   images: string[]
@@ -25,6 +27,9 @@ export function ImagePreviewCarousel({
   disabled,
   onRemove,
 }: ImagePreviewCarouselProps) {
+  const [imageToDelete, setImageToDelete] = useState<number | null>(null)
+
+  if (!images || images.length === 0) return null
   return (
     <div className="flex justify-center w-full px-2 sm:px-4 overflow-hidden">
       <Carousel opts={{ align: "start" }} className="w-full relative px-8 sm:px-10 max-w-[220px] sm:max-w-[260px]">
@@ -58,9 +63,9 @@ export function ImagePreviewCarousel({
                           variant="destructive"
                           size="icon"
                           className="h-6 w-6 rounded-full shadow-md active:scale-95 transition-transform"
-                          onClick={() => onRemove(index)}
+                          onClick={() => setImageToDelete(index)}
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <XIcon className="h-3.5 w-3.5" />
                         </Button>
                       )}
                     </div>
@@ -92,6 +97,22 @@ export function ImagePreviewCarousel({
           </>
         )}
       </Carousel>
+
+      {imageToDelete !== null && (
+        <DeleteEntityDialog
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) setImageToDelete(null)
+          }}
+          size="sm"
+          projectName="Image"
+          customDisplayName={fileNames?.[imageToDelete] || getDisplayName(images[imageToDelete], undefined, imageToDelete)}
+          onConfirm={() => {
+            onRemove(imageToDelete)
+            setImageToDelete(null)
+          }}
+        />
+      )}
     </div>
   )
 }

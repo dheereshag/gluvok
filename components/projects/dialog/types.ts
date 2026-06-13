@@ -14,23 +14,21 @@ export interface EntityDialogContentProps {
   primaryIdKey: string
 }
 
-export interface DeleteContentProps {
+export interface BaseDeleteDialogProps {
   onOpenChange: (open: boolean) => void
-  projectSlug: string
-  projectName: string
-  primaryIdKey: string
+  projectSlug?: string
+  projectName?: string
+  primaryIdKey?: string
   item?: EntityRecord | null
   items?: EntityRecord[]
   onSuccess?: () => void
+  customDisplayName?: string
+  onConfirm?: () => void
 }
 
-export interface DeleteEntityDialogProps {
+export interface DeleteContentProps extends BaseDeleteDialogProps {}
+
+export interface DeleteEntityDialogProps extends BaseDeleteDialogProps {
   open: boolean
-  onOpenChange: (open: boolean) => void
-  projectSlug: string
-  projectName: string
-  primaryIdKey: string
-  item?: EntityRecord | null
-  items?: EntityRecord[]
-  onSuccess?: () => void
+  size?: "default" | "sm"
 }
