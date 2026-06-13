@@ -21,7 +21,7 @@ export function EntityDialog(props: EntityDialogProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="w-[92vw] max-w-104 sm:w-full">
+      <DialogContent className="w-[92vw] max-w-104 sm:w-full max-h-[90vh] overflow-y-auto">
         <EntityDialogContent
           mode={props.mode}
           onOpenChange={props.onOpenChange}

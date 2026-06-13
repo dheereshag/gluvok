@@ -4,6 +4,7 @@ import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { StateCombobox, EntityCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
 import { StandardInput } from "./standard-input"
+import { ImageUpload } from "./image-upload"
 
 interface FormFieldInputProps {
   field: FieldConfig
@@ -18,6 +19,15 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
   const value = useWatch({ control: form.control, name: field.key })
 
   switch (field.type) {
+    case FieldType.IMAGES:
+      return (
+        <ImageUpload
+          id={fieldId}
+          value={Array.isArray(value) ? value : []}
+          onChange={(newImages) => form.setValue(field.key, newImages, { shouldValidate: true })}
+          disabled={disabled}
+        />
+      )
     case FieldType.STATE:
       return (
         <StateCombobox

@@ -14,6 +14,7 @@ export enum FieldType {
   TEXT = "text",
   NUMBER = "number",
   STATE = "state",
+  IMAGES = "images",
 }
 
 export enum EntityKey {

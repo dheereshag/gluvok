@@ -29,6 +29,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       className: "uppercase",
       transformOnChange: (v) => v.toUpperCase(),
     },
+    { key: EntityKey.IMAGES, label: ColumnLabel.IMAGES, placeholder: "Upload weighment photos...", type: FieldType.IMAGES },
     { key: EntityKey.WEIGHT, label: ColumnLabel.WEIGHT, placeholder: "e.g. 15.5", type: FieldType.NUMBER },
     { key: EntityKey.COMMODITY_PRICE_ID, label: ColumnLabel.COMMODITY_PRICE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER_ID, placeholder: "e.g. 1", type: FieldType.TEXT },

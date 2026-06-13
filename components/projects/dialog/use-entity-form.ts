@@ -30,8 +30,11 @@ export function useEntityForm({
   React.useEffect(() => {
     if (open) {
       if (isEdit && item) {
-        const defaults: Record<string, string> = {}
-        fields.forEach((field) => { defaults[field.key] = String(getField(item, field.key) ?? "") })
+        const defaults: Record<string, any> = {}
+        fields.forEach((field) => {
+          const rawVal = getField(item, field.key)
+          defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
+        })
         form.reset(defaults)
       } else form.reset({})
     }
