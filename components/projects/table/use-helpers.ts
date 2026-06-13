@@ -7,14 +7,7 @@ import { useEntitiesStore } from "@/lib/store"
 export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
   const storeData = useEntitiesStore((state) => state.entities[projectSlug])
   const setEntities = useEntitiesStore((state) => state.setEntities)
-
-  const [prevSlug, setPrevSlug] = React.useState(projectSlug)
   const [localLoading, setLocalLoading] = React.useState(true)
-
-  if (projectSlug !== prevSlug) {
-    setPrevSlug(projectSlug)
-    setLocalLoading(true)
-  }
 
   React.useEffect(() => {
     if (storeData === undefined) {

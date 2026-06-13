@@ -36,6 +36,7 @@ export default async function ProjectPage({ params }: Props) {
       <main className="p-6 w-full min-w-0">
         <ProjectTitle projectName={projectName} Icon={IconComponent} />
         <ProjectClient
+          key={projectSlug}
           projectName={projectName}
           projectSlug={projectSlug}
           initialData={data}

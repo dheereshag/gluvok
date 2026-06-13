@@ -43,3 +43,9 @@ export function createPillColumn<T>(
     </Pill>
   ))
 }
+
+export function truncateId(val: string): string {
+  return val && val !== "undefined" && val !== "null" && val.length > 8
+    ? `${val.substring(0, 8)}...`
+    : (val === "undefined" || val === "null" ? "" : val || "")
+}

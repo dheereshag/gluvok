@@ -3,7 +3,7 @@ import { ShieldCheck, Hash, Calendar, CalendarClock, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { formatDateTime } from "@/lib/utils"
-import { createCustomColumn } from "./helpers"
+import { createCustomColumn, truncateId } from "./helpers"
 
 export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
   const isGovtOrAadhar = primaryIdKey === EntityKey.GOVT_ID || primaryIdKey === EntityKey.AADHAR_NUMBER
@@ -16,7 +16,10 @@ export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
       primaryIdKey as EntityKey,
       label,
       icon,
-      (val) => <div className="font-mono text-muted-foreground text-xs">{val}</div>
+      (val) => {
+        const displayVal = primaryIdKey === EntityKey.ID ? truncateId(val) : (val === "undefined" || val === "null" ? "" : val || "")
+        return <div className="font-mono text-muted-foreground text-xs">{displayVal}</div>
+      }
     ),
     createCustomColumn<T>(EntityKey.CREATED_AT, ColumnLabel.CREATED_AT, Calendar, (val) => (
       <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
