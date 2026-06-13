@@ -5,8 +5,8 @@ import { type Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { FileDown, Trash2 } from "lucide-react"
 import { DeleteEntityDialog } from "@/components/projects/dialog/delete"
-import { generatePdfHtml } from "@/lib/pdf-template"
-import { printPdf } from "@/lib/pdf-exporter"
+import { generatePdfHtml } from "@/lib/pdf/template"
+import { printPdf } from "@/lib/pdf/exporter"
 
 interface BulkActionsProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; primaryIdKey: string

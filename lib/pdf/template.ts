@@ -1,4 +1,4 @@
-import { PDF_STYLES } from "./pdf-styles"
+import { PDF_STYLES } from "./styles"
 
 export function generatePdfHtml(
   projectName: string,

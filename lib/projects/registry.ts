@@ -10,8 +10,8 @@ import {
   Home,
 } from "lucide-react";
 import { type EntityRecord } from "@/types";
-import { ProjectName } from "@/lib/projects";
-import { ProjectSlug } from "@/lib/fields";
+import { ProjectName } from "./types";
+import { ProjectSlug } from "../fields";
 
 import { centers } from "@/data/centers";
 import { commodities } from "@/data/commodities";
