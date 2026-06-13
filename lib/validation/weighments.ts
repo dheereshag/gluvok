@@ -13,7 +13,11 @@ export const addWeighmentSchema = z.object({
   weight: z.coerce.number({ message: "Weight must be a number" }).positive("Measured weight must be a positive number"),
   commodity_price_id: z.coerce.number({ message: "Commodity Price ID must be an integer" }).int("Commodity Price ID must be an integer").positive("Commodity Price ID must be a positive integer"),
   center_id: z.coerce.number({ message: "Center ID must be an integer" }).int("Center ID must be an integer").positive("Center ID must be a positive integer"),
-  operator_id: z.string().length(12, "Operator Aadhar number must be exactly 12 characters"),
+  operator_id: z
+    .preprocess(
+      (val) => typeof val === "string" ? val.replace(/\s/g, "") : val,
+      z.string().length(12, "Operator Aadhar number must be exactly 12 characters")
+    ),
   customer_id: z.coerce.number({ message: "Customer ID must be an integer" }).int("Customer ID must be an integer").positive("Customer ID must be a positive integer"),
   images: z.array(z.string()).optional(),
 })

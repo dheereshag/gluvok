@@ -36,10 +36,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     {
       key: EntityKey.OPERATOR_ID,
       label: ColumnLabel.OPERATOR_ID,
-      placeholder: "e.g. 123456789012",
+      placeholder: "e.g. 1234 5678 9012",
       type: FieldType.TEXT,
       inputMode: InputMode.NUMERIC,
-      transformOnChange: (v) => v.replace(/\D/g, "").slice(0, 12),
+      transformOnChange: (v) => {
+        const digits = v.replace(/\D/g, "").slice(0, 12)
+        const match = digits.match(/(\d{1,4})/g)
+        return match ? match.join(" ") : digits
+      },
     },
     { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER_ID, placeholder: "e.g. GOV1001", type: FieldType.TEXT },
   ],
@@ -51,10 +55,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     {
       key: EntityKey.AADHAR_NUMBER,
       label: ColumnLabel.AADHAR_NUMBER,
-      placeholder: "e.g. 123456789012",
+      placeholder: "e.g. 1234 5678 9012",
       type: FieldType.TEXT,
       inputMode: InputMode.NUMERIC,
-      transformOnChange: (v) => v.replace(/\D/g, "").slice(0, 12),
+      transformOnChange: (v) => {
+        const digits = v.replace(/\D/g, "").slice(0, 12)
+        const match = digits.match(/(\d{1,4})/g)
+        return match ? match.join(" ") : digits
+      },
     },
     { key: EntityKey.ID, label: ColumnLabel.ID, placeholder: "Select user...", type: FieldType.TEXT },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },

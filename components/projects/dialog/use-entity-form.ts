@@ -32,7 +32,10 @@ export function useEntityForm({
       if (isEdit && item) {
         const defaults: Record<string, unknown> = {}
         fields.forEach((field) => {
-          const rawVal = getField(item, field.key)
+          let rawVal = getField(item, field.key)
+          if (field.transformOnChange && typeof rawVal === "string") {
+            rawVal = field.transformOnChange(rawVal)
+          }
           defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
         })
         form.reset(defaults)
