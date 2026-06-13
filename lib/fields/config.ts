@@ -18,7 +18,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.VILLAGE_ID, label: "Village ID", placeholder: "e.g. 1", type: FieldType.TEXT },
   ],
   [ProjectSlug.WEIGHMENTS]: [
-    { key: EntityKey.VEHICLE_NUMBER, label: "Vehicle Number", placeholder: "e.g. PB10XY1234", type: FieldType.TEXT },
+    {
+      key: EntityKey.VEHICLE_NUMBER,
+      label: "Vehicle Number",
+      placeholder: "e.g. PB10XY1234",
+      type: FieldType.TEXT,
+      className: "uppercase",
+      transformOnChange: (v) => v.toUpperCase(),
+    },
     { key: EntityKey.WEIGHT, label: "Weight (tons)", placeholder: "e.g. 15.5", type: FieldType.NUMBER },
     { key: EntityKey.COMMODITY_PRICE_ID, label: "Commodity Price ID", placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.CENTER_ID, label: "Center ID", placeholder: "e.g. 1", type: FieldType.TEXT },

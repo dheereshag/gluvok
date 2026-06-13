@@ -46,4 +46,6 @@ export interface FieldConfig {
   label: string
   placeholder: string
   type: FieldType
+  className?: string
+  transformOnChange?: (value: string) => string
 }

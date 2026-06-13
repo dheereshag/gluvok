@@ -4,6 +4,7 @@ import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { StateCombobox, EntityCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
+import { cn } from "@/lib/utils"
 
 interface FormFieldInputProps {
   field: FieldConfig
@@ -42,9 +43,18 @@ export function FormFieldInput({ field, form, idPrefix }: FormFieldInputProps) {
           id={fieldId}
           type={field.type}
           step={field.type === FieldType.NUMBER ? "any" : undefined}
-          {...form.register(field.key)}
+          {...form.register(field.key, {
+            onChange: (e) => {
+              if (field.transformOnChange) {
+                e.target.value = field.transformOnChange(e.target.value)
+              }
+            }
+          })}
           placeholder={field.placeholder}
-          className="h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
+          className={cn(
+            "h-9 text-xs focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow",
+            field.className
+          )}
         />
       )
   }
