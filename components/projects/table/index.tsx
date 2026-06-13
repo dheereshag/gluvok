@@ -1,7 +1,7 @@
 import { Table, flexRender } from "@tanstack/react-table"
 import { Table as TableGrid, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ProjectTableLoading } from "./table-loading"
-import { ProjectTableEmpty } from "./table-empty"
+import { ProjectTableLoading } from "./loading"
+import { ProjectTableEmpty } from "./empty"
 
 interface ProjectTableProps<TData> {
   table: Table<TData>

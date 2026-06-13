@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Plus } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
-import { BulkActions } from "./toolbar/bulk-actions"
+import { BulkActions } from "./bulk-actions"
 
 interface ProjectToolbarProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; filterKey: string
