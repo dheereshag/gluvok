@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
 import { Dropzone, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
@@ -13,6 +14,8 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
+  const [fileNames, setFileNames] = useState<string[]>([])
+
   const handleDrop = (acceptedFiles: File[]) => {
     const promises = acceptedFiles.map(
       (file) =>
@@ -33,6 +36,7 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
     Promise.all(promises)
       .then((base64Strings) => {
         onChange([...value, ...base64Strings])
+        setFileNames((prev) => [...prev, ...acceptedFiles.map((f) => f.name)])
         toast.success(`Successfully uploaded ${acceptedFiles.length} image(s)`)
       })
       .catch((err) => {
@@ -43,12 +47,18 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
 
   const handleRemove = (indexToRemove: number) => {
     onChange(value.filter((_, i) => i !== indexToRemove))
+    setFileNames((prev) => prev.filter((_, i) => i !== indexToRemove))
   }
 
   return (
     <div className="space-y-4">
       {value.length > 0 && (
-        <ImagePreviewCarousel images={value} disabled={disabled} onRemove={handleRemove} />
+        <ImagePreviewCarousel
+          images={value}
+          fileNames={fileNames.length === value.length ? fileNames : undefined}
+          disabled={disabled}
+          onRemove={handleRemove}
+        />
       )}
 
       {!disabled && (

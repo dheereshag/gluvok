@@ -13,27 +13,39 @@ import {
 
 interface ImagePreviewCarouselProps {
   images: string[]
+  fileNames?: string[]
   disabled?: boolean
   onRemove: (index: number) => void
 }
 
+function getDisplayName(src: string, fileName: string | undefined, index: number): string {
+  if (fileName) return fileName
+  if (src.startsWith("data:")) return `Image ${index + 1}`
+  // extract basename from path
+  const parts = src.split("/")
+  return parts[parts.length - 1] || `Image ${index + 1}`
+}
+
 export function ImagePreviewCarousel({
   images,
+  fileNames,
   disabled,
   onRemove,
 }: ImagePreviewCarouselProps) {
   return (
-    <div className="flex justify-center w-full px-8">
-      <Carousel opts={{ align: "start" }} className="w-full relative px-10 max-w-xs sm:max-w-sm">
+    <div className="flex justify-center w-full px-2 sm:px-4 overflow-hidden">
+      <Carousel opts={{ align: "start" }} className="w-full relative px-8 sm:px-10 max-w-[220px] sm:max-w-[260px]">
         <CarouselContent>
           {images.map((src, index) => {
             const imageSrc =
               src.startsWith("data:") || src.startsWith("blob:") || src.startsWith("/")
                 ? src
                 : `/${src}`
+            const displayName = getDisplayName(src, fileNames?.[index], index)
             return (
-              <CarouselItem key={index} className="basis-full flex items-center justify-center">
+              <CarouselItem key={index} className="basis-full min-w-0 flex flex-col items-center justify-center">
                 <div className="p-1 w-full">
+                  {/* Image container — fixed aspect ratio keeps fill from overflowing */}
                   <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/15 bg-card overflow-hidden shadow-sm group">
                     <Image
                       src={imageSrc}
@@ -60,6 +72,14 @@ export function ImagePreviewCarousel({
                       )}
                     </div>
                   </div>
+
+                  {/* Filename label */}
+                  <p
+                    title={displayName}
+                    className="mt-1.5 text-center text-[10px] font-mono text-muted-foreground truncate max-w-full px-1"
+                  >
+                    {displayName}
+                  </p>
                 </div>
               </CarouselItem>
             )
