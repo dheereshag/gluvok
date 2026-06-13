@@ -17,7 +17,7 @@ export function useEntityOptions(entitySlug: string) {
       const { id, name } = extractor(item)
       return {
         value: id,
-        label: name ? `${name} (ID: ${id})` : id,
+        label: name === id ? name : name ? `${name} (ID: ${id})` : id,
       }
     })
   }, [storeData, entitySlug])
