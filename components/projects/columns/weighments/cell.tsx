@@ -3,7 +3,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { Image as ImageIcon, ImageOff } from "lucide-react"
-import { getDisplayName } from "@/lib/utils"
+import { getDisplayName, splitFileName } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -109,12 +109,13 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
                             unoptimized
                           />
                         </div>
-                        <p
+                        <div
                           title={getDisplayName(img, undefined, i)}
-                          className="mt-2 text-center text-[11px] font-mono text-muted-foreground truncate max-w-full px-2"
+                          className="mt-2 flex justify-center text-[11px] font-mono text-muted-foreground w-full px-2 overflow-hidden whitespace-nowrap"
                         >
-                          {getDisplayName(img, undefined, i)}
-                        </p>
+                          <span className="truncate">{splitFileName(getDisplayName(img, undefined, i))[0]}</span>
+                          <span className="shrink-0">{splitFileName(getDisplayName(img, undefined, i))[1]}</span>
+                        </div>
                       </CarouselItem>
                     )
                   })}

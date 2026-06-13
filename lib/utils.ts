@@ -30,3 +30,9 @@ export function getDisplayName(src: string, fileName: string | undefined, index:
   const parts = src.split("/")
   return parts[parts.length - 1] || `Image ${index + 1}`
 }
+
+export function splitFileName(filename: string): [string, string] {
+  const lastDotIndex = filename.lastIndexOf(".")
+  if (lastDotIndex === -1 || lastDotIndex === 0) return [filename, ""]
+  return [filename.slice(0, lastDotIndex), filename.slice(lastDotIndex)]
+}

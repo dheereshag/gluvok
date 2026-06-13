@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { getDisplayName } from "@/lib/utils"
+import { getDisplayName, splitFileName } from "@/lib/utils"
 
 interface ImagePreviewCarouselProps {
   images: string[]
@@ -67,12 +67,13 @@ export function ImagePreviewCarousel({
                   </div>
 
                   {/* Filename label */}
-                  <p
+                  <div
                     title={displayName}
-                    className="mt-1.5 text-center text-[10px] font-mono text-muted-foreground truncate max-w-full px-1"
+                    className="mt-1.5 flex justify-center text-[10px] font-mono text-muted-foreground w-full px-1 overflow-hidden whitespace-nowrap"
                   >
-                    {displayName}
-                  </p>
+                    <span className="truncate">{splitFileName(displayName)[0]}</span>
+                    <span className="shrink-0">{splitFileName(displayName)[1]}</span>
+                  </div>
                 </div>
               </CarouselItem>
             )
