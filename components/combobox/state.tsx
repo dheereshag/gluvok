@@ -18,11 +18,11 @@ export function StateCombobox({ value, onChange, id }: StateComboboxProps) {
     <Combobox data={STATES_DATA} type="state" value={value} onValueChange={onChange} open={open} onOpenChange={setOpen} modal={true}>
       <ComboboxTrigger
         id={id || "state-combobox-trigger"}
-        className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors"
+        className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors min-w-0"
       >
-        <span className="flex items-center gap-2">
-          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-          {value ? value : "Select state..."}
+        <span className="flex items-center gap-2 truncate text-left flex-1 min-w-0">
+          <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <span className="truncate">{value ? value : "Select state..."}</span>
         </span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>

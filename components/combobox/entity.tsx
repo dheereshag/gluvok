@@ -22,9 +22,9 @@ export function EntityCombobox({
     <Combobox data={comboboxData} type={entitySlug} value={value} onValueChange={onChange} open={open} onOpenChange={setOpen} modal={true}>
       <ComboboxTrigger
         id={id || `entity-combobox-trigger-${entitySlug}`}
-        className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors"
+        className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors min-w-0"
       >
-        <span className="truncate">{selectedItem ? selectedItem.label : placeholder || `Select ${entitySlug.slice(0, -1)}...`}</span>
+        <span className="truncate text-left flex-1 min-w-0">{selectedItem ? selectedItem.label : placeholder || `Select ${entitySlug.slice(0, -1)}...`}</span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </ComboboxTrigger>
       <ComboboxContent className="max-h-72">
