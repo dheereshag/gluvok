@@ -26,6 +26,7 @@ export function EntityDialog(props: EntityDialogProps) {
           mode={props.mode}
           onOpenChange={props.onOpenChange}
           projectName={props.projectName}
+          primaryIdKey={props.primaryIdKey}
           {...formState}
         />
       </DialogContent>

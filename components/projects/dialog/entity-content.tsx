@@ -16,10 +16,11 @@ interface EntityDialogContentProps {
   fields: FieldConfig[]
   form: UseFormReturn<FieldValues>
   onSubmit: (values: FieldValues) => void
+  primaryIdKey: string
 }
 
 export function EntityDialogContent({
-  mode, onOpenChange, projectName, isEdit, fields, form, onSubmit
+  mode, onOpenChange, projectName, isEdit, fields, form, onSubmit, primaryIdKey
 }: EntityDialogContentProps) {
   const Icon = isEdit ? Pencil : Plus
   const titleText = isEdit ? `Edit ${projectName}` : `Add ${projectName}`
@@ -36,7 +37,12 @@ export function EntityDialogContent({
         {fields.map((field) => (
           <div key={field.key} className="flex flex-col gap-1.5">
             <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground">{field.label}</label>
-            <FormFieldInput field={field} form={form} idPrefix={`${mode}-entity`} />
+            <FormFieldInput
+              field={field}
+              form={form}
+              idPrefix={`${mode}-entity`}
+              disabled={isEdit && field.key === primaryIdKey}
+            />
             {form.formState.errors[field.key] && (
               <span className="text-destructive text-[11px] font-medium">{form.formState.errors[field.key]?.message as string}</span>
             )}

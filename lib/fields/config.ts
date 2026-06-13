@@ -14,6 +14,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER },
   ],
   [ProjectSlug.CUSTOMERS]: [
+    { key: EntityKey.GOVT_ID, label: ColumnLabel.GOVT_ID, placeholder: "e.g. 1001", type: FieldType.NUMBER },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT },
     { key: EntityKey.FATHER_NAME, label: ColumnLabel.FATHER_NAME, placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
@@ -52,20 +53,36 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
 }
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
-  if (slug === ProjectSlug.CUSTOMERS) return EntityKey.GOVT_ID
-  if (slug === ProjectSlug.OPERATORS) return EntityKey.AADHAR_NUMBER
-  if (slug === ProjectSlug.COMMODITIES) return EntityKey.NAME
-  return EntityKey.ID
+  switch (slug) {
+    case ProjectSlug.CUSTOMERS:
+      return EntityKey.GOVT_ID
+    case ProjectSlug.OPERATORS:
+      return EntityKey.AADHAR_NUMBER
+    case ProjectSlug.COMMODITIES:
+      return EntityKey.NAME
+    default:
+      return EntityKey.ID
+  }
 }
 
 export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | null {
-  if (key === EntityKey.FACTORY_ID) return ProjectSlug.FACTORIES
-  if (key === EntityKey.VILLAGE_ID) return ProjectSlug.VILLAGES
-  if (key === EntityKey.COMMODITY_ID) return ProjectSlug.COMMODITIES
-  if (key === EntityKey.COMMODITY_NAME) return ProjectSlug.COMMODITIES
-  if (key === EntityKey.COMMODITY_PRICE_ID) return ProjectSlug.COMMODITY_PRICES
-  if (key === EntityKey.CENTER_ID) return ProjectSlug.CENTERS
-  if (key === EntityKey.OPERATOR_ID) return ProjectSlug.OPERATORS
-  if (key === EntityKey.CUSTOMER_ID) return ProjectSlug.CUSTOMERS
-  return null
+  switch (key) {
+    case EntityKey.FACTORY_ID:
+      return ProjectSlug.FACTORIES
+    case EntityKey.VILLAGE_ID:
+      return ProjectSlug.VILLAGES
+    case EntityKey.COMMODITY_ID:
+    case EntityKey.COMMODITY_NAME:
+      return ProjectSlug.COMMODITIES
+    case EntityKey.COMMODITY_PRICE_ID:
+      return ProjectSlug.COMMODITY_PRICES
+    case EntityKey.CENTER_ID:
+      return ProjectSlug.CENTERS
+    case EntityKey.OPERATOR_ID:
+      return ProjectSlug.OPERATORS
+    case EntityKey.CUSTOMER_ID:
+      return ProjectSlug.CUSTOMERS
+    default:
+      return null
+  }
 }

@@ -10,9 +10,10 @@ interface FormFieldInputProps {
   field: FieldConfig
   form: UseFormReturn<FieldValues>
   idPrefix: string
+  disabled?: boolean
 }
 
-export function FormFieldInput({ field, form, idPrefix }: FormFieldInputProps) {
+export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInputProps) {
   const referencedSlug = getReferencedEntitySlug(field.key)
   const fieldId = `${idPrefix}-field-${field.key}`
   const value = useWatch({ control: form.control, name: field.key })
@@ -42,6 +43,7 @@ export function FormFieldInput({ field, form, idPrefix }: FormFieldInputProps) {
         <Input
           id={fieldId}
           type={field.type}
+          disabled={disabled}
           step={field.type === FieldType.NUMBER ? "any" : undefined}
           {...form.register(field.key, {
             onChange: (e) => {
