@@ -8,6 +8,7 @@ import { NavMain } from "./nav/main"
 import { NavSecondary } from "./nav/secondary"
 import { NavUser } from "./nav/user"
 import { SIDEBAR_DATA } from "./data"
+import { useAuthStore } from "@/lib/store"
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +20,15 @@ import {
 } from "@/components/ui/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useAuthStore((state) => state.user)
+  const hydrated = useAuthStore((state) => state.hydrated)
+
+  const activeUser = {
+    name: (hydrated && user?.name) || SIDEBAR_DATA.user.name,
+    email: (hydrated && user?.email) || SIDEBAR_DATA.user.email,
+    avatar: (hydrated && user?.avatar) || SIDEBAR_DATA.user.avatar,
+  }
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -42,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={SIDEBAR_DATA.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={SIDEBAR_DATA.user} />
+        <NavUser user={activeUser} />
       </SidebarFooter>
     </Sidebar>
   )

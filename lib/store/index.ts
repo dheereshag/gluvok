@@ -5,6 +5,7 @@ import { type EntityRecord } from "@/types"
 import { getField } from "./helpers"
 
 export * from "./helpers"
+export * from "./auth"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>

@@ -45,3 +45,9 @@ export enum DialogMode {
   CREATE = "create",
   EDIT = "edit",
 }
+
+export enum AppRoutes {
+  HOME = "/",
+  LOGIN = "/login",
+  SIGNUP = "/signup",
+}

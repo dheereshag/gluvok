@@ -1,9 +1,12 @@
 "use client"
 
 import { SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Status, StatusIndicator, StatusLabel } from "@/components/kibo-ui/status"
 import { UserAvatarInfo, type UserInfo } from "./user-info"
+import { useAuthStore } from "@/lib/store"
+import { AppRoutes } from "@/lib/constants"
 
 interface NavUserDropdownProps {
   user: UserInfo
@@ -17,6 +20,15 @@ const MENU_ITEMS = [
 ]
 
 export function NavUserDropdown({ user, isMobile }: NavUserDropdownProps) {
+  const router = useRouter()
+  const logout = useAuthStore((state) => state.logout)
+
+  const handleLogout = () => {
+    logout()
+    router.push(AppRoutes.LOGIN)
+    router.refresh()
+  }
+
   return (
     <DropdownMenuContent
       className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
@@ -53,7 +65,11 @@ export function NavUserDropdown({ user, isMobile }: NavUserDropdownProps) {
         })}
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuItem id="user-menu-logout" className="text-destructive focus:text-destructive focus:bg-destructive/10">
+      <DropdownMenuItem
+        id="user-menu-logout"
+        className="text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer"
+        onClick={handleLogout}
+      >
         <LogOutIcon className="mr-2 h-4 w-4 text-destructive" /> Log out
       </DropdownMenuItem>
     </DropdownMenuContent>
