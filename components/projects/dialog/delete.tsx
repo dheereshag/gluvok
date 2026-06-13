@@ -12,7 +12,7 @@ export function DeleteEntityDialog({
 }: DeleteEntityDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className={`w-[92vw] sm:w-full ${size === "sm" ? "max-w-[320px] p-5" : "max-w-100"}`}>
+      <DialogContent showCloseButton={false} className={`w-[92vw] sm:w-full ${size === "sm" ? "max-w-80 sm:max-w-80 p-5" : "max-w-100"}`}>
         <DeleteEntityDialogContent onOpenChange={onOpenChange} {...props} />
       </DialogContent>
     </Dialog>
