@@ -49,7 +49,7 @@ const getRoleConfig = (role: string) => {
 }
 
 const getRoleClassName = (role: string) => {
-  const baseClass = "h-6 py-0.5 px-2.5 text-[11px] font-semibold border transition-all duration-200"
+  const baseClass = "h-5 py-0 px-2 text-[10px] font-semibold border transition-all duration-200"
   const normalized = role?.toLowerCase()
   switch (normalized) {
     case Role.SUPER_ADMIN:
@@ -78,7 +78,7 @@ export function getUsersColumns<T>(): ColumnDef<T>[] {
         return (
           <>
             {indicator}
-            <span className="ml-1.5">{label}</span>
+            <span>{label}</span>
           </>
         )
       },
