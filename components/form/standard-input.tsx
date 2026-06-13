@@ -18,7 +18,6 @@ export function StandardInput({ field, form, fieldId, disabled }: StandardInputP
       id={fieldId}
       type={field.type}
       disabled={disabled}
-      step={field.type === FieldType.NUMBER ? "any" : undefined}
       {...form.register(field.key, {
         onChange: (e) => {
           if (field.transformOnChange) {

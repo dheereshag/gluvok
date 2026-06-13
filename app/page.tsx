@@ -28,7 +28,7 @@ export default function Page() {
       </header>
 
       <main className="p-8 max-w-6xl mx-auto space-y-8">
-        <div className="space-y-2">
+        <div className="space-y-2 flex flex-col items-start text-left">
           <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
             <Weight className="h-8 w-8 text-primary" />
             gluvok Dashboard
