@@ -6,28 +6,11 @@ import { useEntitiesStore } from "@/lib/store"
 
 export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
   const storeData = useEntitiesStore((state) => state.entities[projectSlug])
-  const setEntities = useEntitiesStore((state) => state.setEntities)
-  const [localLoading, setLocalLoading] = React.useState(true)
-
-  React.useEffect(() => {
-    let active = true
-    if (storeData === undefined) {
-      Promise.resolve().then(() => {
-        if (active) setEntities(projectSlug, initialData)
-      })
-    }
-    const timer = setTimeout(() => {
-      if (active) setLocalLoading(false)
-    }, 600)
-    return () => {
-      active = false
-      clearTimeout(timer)
-    }
-  }, [projectSlug, initialData, setEntities, storeData])
+  const hydrated = useEntitiesStore((state) => state.hydrated)
 
   return {
     tableData: storeData || initialData,
-    isLoading: localLoading,
+    isLoading: !hydrated,
   }
 }
 
