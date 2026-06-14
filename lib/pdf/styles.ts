@@ -11,11 +11,19 @@ export const PDF_STYLES = `
   table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
   th { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-weight: 600; text-align: left; padding: 12px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
   td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; }
+  tr { page-break-inside: avoid; break-inside: avoid; }
   tr:nth-child(even) td { background-color: #f8fafc; }
   footer { text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 20px; margin-top: 60px; font-weight: 500; }
+  
+  @page {
+    size: auto;
+    margin: 0mm;
+  }
+  
   @media print {
-    body { padding: 0; }
+    body { padding: 20mm; margin: 0; }
     header { margin-bottom: 24px; }
-    footer { position: fixed; bottom: 0; width: 100%; }
+    footer { position: fixed; bottom: 20mm; left: 20mm; right: 20mm; width: auto; margin-top: 0; }
   }
 `
+
