@@ -28,7 +28,7 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
     }).join("")
     printPdf(generatePdfHtml(projectName, headersHtml, rowsHtml, selectedRows.length))
     //? what should happen after 
-    //table.resetRowSelection()
+    table.resetRowSelection()
   }
 
   return (
