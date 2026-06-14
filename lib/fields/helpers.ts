@@ -36,3 +36,21 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
       return null
   }
 }
+
+export function isPrimaryKeyEditable(slug: string | ProjectSlug): boolean {
+  switch (slug) {
+    case ProjectSlug.COMMODITIES:
+      return true
+    default:
+      return false
+  }
+}
+
+export function isCommoditySlug(slug: string | ProjectSlug): boolean {
+  switch (slug) {
+    case ProjectSlug.COMMODITIES:
+      return true
+    default:
+      return false
+  }
+}

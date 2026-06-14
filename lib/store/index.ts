@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { type EntityRecord } from "@/types"
+import { type EntityRecord, type CommodityPrice } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
 import { ProjectSlug } from "@/lib/fields"
@@ -40,21 +40,6 @@ export const useEntitiesStore = create<EntitiesState>()(
         set((state) => {
           const currentList = state.entities[slug] || []
 
-          // Check for commodity uniqueness
-          if (slug === ProjectSlug.COMMODITIES) {
-            const nameExists = currentList.some((item) => {
-              const existingName = getField(item, key)
-              const newName = newE[key]
-              return (
-                typeof existingName === "string" &&
-                typeof newName === "string" &&
-                existingName.trim().toLowerCase() === newName.trim().toLowerCase()
-              )
-            })
-            if (nameExists) {
-              throw new Error("Commodity name must be unique")
-            }
-          }
 
           let id = newE[key]
           if (id === undefined || id === null || id === "") {
@@ -78,10 +63,30 @@ export const useEntitiesStore = create<EntitiesState>()(
         }),
       updateEntity: (slug, key, id, fields) =>
         set((state) => {
-          const updatedList = (state.entities[slug] || []).map((item) =>
+          const currentList = state.entities[slug] || []
+
+
+          const updatedList = currentList.map((item) =>
             String(getField(item, key)) === String(id) ? { ...item, ...fields, updated_at: getTimestamp() } as EntityRecord : item
           )
-          return { entities: { ...state.entities, [slug]: updatedList } }
+
+           const nextEntities = { ...state.entities, [slug]: updatedList }
+
+          // Cascade update commodity_name in commodity_prices if a commodity is renamed
+          if (slug === ProjectSlug.COMMODITIES && fields.name && String(fields.name) !== String(id)) {
+            const oldName = String(id)
+            const newName = String(fields.name)
+            const updatedPrices = (state.entities[ProjectSlug.COMMODITY_PRICES] || []).map((item) => {
+              const price = item as CommodityPrice
+              if (price.commodity_name === oldName) {
+                return { ...price, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
+              }
+              return price
+            })
+            nextEntities[ProjectSlug.COMMODITY_PRICES] = updatedPrices
+          }
+
+          return { entities: nextEntities }
         }),
       deleteEntity: (slug, idKey, id) =>
         set((state) => {

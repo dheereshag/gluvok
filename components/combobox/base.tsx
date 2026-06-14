@@ -3,6 +3,8 @@
 import * as React from "react"
 import { ChevronsUpDown, Check, LucideIcon } from "lucide-react"
 import { Combobox, ComboboxTrigger, ComboboxContent, ComboboxInput, ComboboxList, ComboboxEmpty, ComboboxGroup, ComboboxItem } from "@/components/kibo-ui/combobox"
+import { getCommodityIcon } from "@/components/projects/columns/helpers"
+import { isCommoditySlug } from "@/lib/fields"
 
 export interface ComboboxOption {
   value: string
@@ -38,6 +40,15 @@ export function BaseCombobox({
     return data.find((item) => String(item.value) === String(value))
   }, [data, value])
 
+  const isCommodity = isCommoditySlug(type)
+
+  const commodityIcon = React.useMemo(() => {
+    if (isCommodity && selectedItem) {
+      return getCommodityIcon(selectedItem.label)
+    }
+    return null
+  }, [isCommodity, selectedItem])
+
   return (
     <Combobox data={data} type={type} value={value} onValueChange={onChange} open={open} onOpenChange={setOpen} modal={true}>
       <ComboboxTrigger
@@ -45,7 +56,11 @@ export function BaseCombobox({
         className="h-9 w-full justify-between text-xs font-normal border border-input bg-background hover:bg-muted/50 transition-colors min-w-0"
       >
         <span className="flex items-center gap-2 truncate text-left flex-1 min-w-0">
-          {Icon && <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
+          {commodityIcon ? (
+            React.createElement(commodityIcon, { className: "h-3.5 w-3.5 text-muted-foreground shrink-0" })
+          ) : Icon ? (
+            <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          ) : null}
           <span className="truncate">{selectedItem ? selectedItem.label : placeholder || `Select ${type}...`}</span>
         </span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -55,23 +70,29 @@ export function BaseCombobox({
         <ComboboxList className="max-h-[250px] overflow-y-auto">
           <ComboboxEmpty className="py-2 text-center text-xs text-muted-foreground">{emptyText || `No ${type} found.`}</ComboboxEmpty>
           <ComboboxGroup>
-            {data.map((item) => (
-              <ComboboxItem
-                key={item.value}
-                id={`${type}-option-${item.value}`}
-                value={`${item.label.toLowerCase()} ${item.value.toLowerCase()} ${item.rightLabel ? item.rightLabel.toLowerCase() : ""}`}
-                onSelect={() => { onChange(item.value); setOpen(false); }}
-                className="text-xs cursor-pointer py-2 hover:bg-muted transition-colors flex items-center justify-between"
-              >
-                <span className="font-medium text-foreground">{item.label}</span>
-                {item.rightLabel && (
-                  <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">{item.rightLabel}</span>
-                )}
-                {String(value) === String(item.value) && !item.rightLabel && (
-                  <Check className="h-3.5 w-3.5 text-primary shrink-0 ml-2" />
-                )}
-              </ComboboxItem>
-            ))}
+            {data.map((item) => {
+              const itemIcon = isCommodity ? getCommodityIcon(item.label) : null
+              return (
+                <ComboboxItem
+                  key={item.value}
+                  id={`${type}-option-${item.value}`}
+                  value={`${item.label.toLowerCase()} ${item.value.toLowerCase()} ${item.rightLabel ? item.rightLabel.toLowerCase() : ""}`}
+                  onSelect={() => { onChange(item.value); setOpen(false); }}
+                  className="text-xs cursor-pointer py-2 hover:bg-muted transition-colors flex items-center justify-between"
+                >
+                  <span className="flex items-center gap-2 font-medium text-foreground">
+                    {itemIcon && React.createElement(itemIcon, { className: "h-3.5 w-3.5 text-muted-foreground/80 shrink-0" })}
+                    <span>{item.label}</span>
+                  </span>
+                  {item.rightLabel && (
+                    <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">{item.rightLabel}</span>
+                  )}
+                  {String(value) === String(item.value) && !item.rightLabel && (
+                    <Check className="h-3.5 w-3.5 text-primary shrink-0 ml-2" />
+                  )}
+                </ComboboxItem>
+              )
+            })}
           </ComboboxGroup>
         </ComboboxList>
       </ComboboxContent>

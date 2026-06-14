@@ -7,6 +7,7 @@ export interface EntityDialogContentProps {
   mode: DialogMode
   onOpenChange: (open: boolean) => void
   projectName: string
+  projectSlug: string
   isEdit: boolean
   fields: FieldConfig[]
   form: UseFormReturn<FieldValues>
