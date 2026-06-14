@@ -9,7 +9,11 @@ import { AppRoutes } from "@/lib/constants"
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isAuthPage = pathname === AppRoutes.LOGIN || pathname === AppRoutes.SIGNUP
+  const isAuthPage =
+    pathname === AppRoutes.LOGIN ||
+    pathname === AppRoutes.SIGNUP ||
+    pathname === AppRoutes.FORGOT_PASSWORD ||
+    pathname === AppRoutes.RESET_PASSWORD
 
   if (isAuthPage) {
     return <AuthGuard>{children}</AuthGuard>

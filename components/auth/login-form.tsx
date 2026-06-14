@@ -76,7 +76,7 @@ export function LoginForm({
               error={form.formState.errors.password}
               labelRight={
                 <a
-                  href="#"
+                  href={AppRoutes.FORGOT_PASSWORD}
                   className="text-xs text-muted-foreground underline-offset-4 hover:underline"
                 >
                   Forgot your password?

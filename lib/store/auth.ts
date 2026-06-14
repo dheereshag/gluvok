@@ -20,6 +20,7 @@ interface AuthStore {
   login: (email: string, password: string) => boolean
   logout: () => void
   registerUser: (user: RegisteredUser) => boolean
+  resetPassword: (email: string, newPassword: string) => boolean
   setHydrated: (state: boolean) => void
 }
 
@@ -71,6 +72,17 @@ export const useAuthStore = create<AuthStore>()(
             avatar: "/avatars/shadcn.jpg",
           },
         })
+        return true
+      },
+      resetPassword: (email, newPassword) => {
+        const users = get().registeredUsers
+        const index = users.findIndex((u) => u.email.toLowerCase() === email.toLowerCase())
+        if (index === -1) {
+          return false
+        }
+        const updatedUsers = [...users]
+        updatedUsers[index] = { ...updatedUsers[index], password: newPassword }
+        set({ registeredUsers: updatedUsers })
         return true
       },
       setHydrated: (state) => set({ hydrated: state }),
