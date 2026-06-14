@@ -11,6 +11,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   ],
   [ProjectSlug.COMMODITY_PRICES]: [
     { key: EntityKey.COMMODITY_NAME, label: ColumnLabel.COMMODITY_NAME, placeholder: "Select commodity...", type: FieldType.TEXT },
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY_ID, placeholder: "Select factory...", type: FieldType.TEXT },
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER },
   ],
   [ProjectSlug.CUSTOMERS]: [

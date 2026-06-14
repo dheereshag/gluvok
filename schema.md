@@ -51,6 +51,7 @@
 | `id` | `SERIAL` | Primary Key | Unique price record identifier. |
 | `commodity_name` | `VARCHAR(255)` | FK → `commodities.name`, Not Null, On Delete Cascade, On Update Cascade | Associated commodity name. |
 | `unit_price` | `DECIMAL(12,2)` | Not Null | Price per metric ton. |
+| `factory_id` | `INTEGER` | FK → `factories.id`, Not Null | Associated factory. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 

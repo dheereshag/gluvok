@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { IndianRupee, Tag } from "lucide-react"
+import { Building, IndianRupee, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
-import { createCustomColumn, getCommodityIcon } from "./helpers"
+import { createCustomColumn, createTextColumn, getCommodityIcon } from "./helpers"
 
 export function getCommodityPricesColumns<T>(): ColumnDef<T>[] {
   return [
@@ -15,6 +15,7 @@ export function getCommodityPricesColumns<T>(): ColumnDef<T>[] {
         </div>
       )
     }),
+    createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Building, "font-mono text-muted-foreground text-xs"),
     createCustomColumn(EntityKey.UNIT_PRICE, ColumnLabel.UNIT_PRICE, IndianRupee, (val) => {
       const price = parseFloat(val)
       const formatted = new Intl.NumberFormat("en-IN", {

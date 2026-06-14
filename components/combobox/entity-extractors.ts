@@ -7,6 +7,7 @@ import { factories } from "@/data/factories"
 import { operators } from "@/data/operators"
 import { villages } from "@/data/villages"
 import { users } from "@/data/users"
+import { useEntitiesStore } from "@/lib/store"
 import {
   type Center,
   type Commodity,
@@ -38,9 +39,13 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
   [ProjectSlug.COMMODITIES]: (item) => ({ id: (item as Commodity).name, name: (item as Commodity).name }),
   [ProjectSlug.COMMODITY_PRICES]: (item) => {
     const p = item as CommodityPrice
+    const storeState = useEntitiesStore.getState()
+    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
+    const factory = activeFactories.find((f) => String(f.id) === String(p.factory_id))
+    const factoryName = factory ? factory.name : `Factory ${p.factory_id}`
     return {
       id: String(p.id),
-      name: `${p.commodity_name} Price (Rate: ${p.unit_price} INR)`
+      name: `${p.commodity_name} (${factoryName} - ID: ${p.factory_id}) (${parseFloat(p.unit_price)} INR)`
     }
   },
   [ProjectSlug.FACTORIES]: (item) => ({ id: String((item as Factory).id ?? ""), name: (item as Factory).name }),

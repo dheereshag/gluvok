@@ -18,6 +18,7 @@ export interface CommodityPrice {
   id: number
   commodity_name: string
   unit_price: string
+  factory_id: number
   created_at: string
   updated_at: string
 }
