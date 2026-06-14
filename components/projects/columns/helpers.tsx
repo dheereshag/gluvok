@@ -3,8 +3,8 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/data-table"
 import { Pill } from "@/components/kibo-ui/pill"
 import { EntityKey } from "@/lib/fields"
+export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
-import { Sprout, Wheat, Droplet, Hammer, Package, type LucideIcon } from "lucide-react"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"]
@@ -59,11 +59,3 @@ export function truncateId(val: string): string {
   return val.length > 8 ? `${val.substring(0, 8)}...` : val
 }
 
-export function getCommodityIcon(name: string): LucideIcon {
-  const norm = name?.toLowerCase().trim() || ""
-  if (norm.includes("wheat")) return Wheat
-  if (norm.includes("corn")) return Sprout
-  if (norm.includes("oil") || norm.includes("crude")) return Droplet
-  if (norm.includes("copper") || norm.includes("scrap") || norm.includes("metal")) return Hammer
-  return Package
-}

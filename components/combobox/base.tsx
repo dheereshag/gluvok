@@ -3,8 +3,8 @@
 import * as React from "react"
 import { ChevronsUpDown, Check, LucideIcon } from "lucide-react"
 import { Combobox, ComboboxTrigger, ComboboxContent, ComboboxInput, ComboboxList, ComboboxEmpty, ComboboxGroup, ComboboxItem } from "@/components/kibo-ui/combobox"
-import { getCommodityIcon } from "@/components/projects/columns/helpers"
-import { isCommoditySlug } from "@/lib/fields"
+import { getItemIcon } from "@/lib/fields"
+import { useCommodityIcon } from "@/hooks/use-commodity-icon"
 
 export interface ComboboxOption {
   value: string
@@ -24,6 +24,8 @@ interface BaseComboboxProps {
   id?: string
 }
 
+
+
 export function BaseCombobox({
   value,
   onChange,
@@ -40,14 +42,7 @@ export function BaseCombobox({
     return data.find((item) => String(item.value) === String(value))
   }, [data, value])
 
-  const isCommodity = isCommoditySlug(type)
-
-  const commodityIcon = React.useMemo(() => {
-    if (isCommodity && selectedItem) {
-      return getCommodityIcon(selectedItem.label)
-    }
-    return null
-  }, [isCommodity, selectedItem])
+  const commodityIcon = useCommodityIcon(type, selectedItem)
 
   return (
     <Combobox data={data} type={type} value={value} onValueChange={onChange} open={open} onOpenChange={setOpen} modal={true}>
@@ -71,7 +66,7 @@ export function BaseCombobox({
           <ComboboxEmpty className="py-2 text-center text-xs text-muted-foreground">{emptyText || `No ${type} found.`}</ComboboxEmpty>
           <ComboboxGroup>
             {data.map((item) => {
-              const itemIcon = isCommodity ? getCommodityIcon(item.label) : null
+              const itemIcon = getItemIcon(type, item.label)
               return (
                 <ComboboxItem
                   key={item.value}

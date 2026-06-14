@@ -54,6 +54,13 @@ export enum InputMode {
   SEARCH = "search",
 }
 
+export enum CommodityName {
+  WHEAT = "Wheat",
+  CORN = "Corn",
+  CRUDE_OIL = "Crude Oil",
+  SCRAP_COPPER = "Scrap Copper",
+}
+
 export interface FieldConfig {
   key: EntityKey
   label: string

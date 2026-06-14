@@ -1,4 +1,5 @@
-import { ProjectSlug, EntityKey } from "./types"
+import { ProjectSlug, EntityKey, CommodityName } from "./types"
+import { Sprout, Wheat, Droplet, Hammer, Package, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
@@ -52,5 +53,25 @@ export function isCommoditySlug(slug: string | ProjectSlug): boolean {
       return true
     default:
       return false
+  }
+}
+
+const COMMODITY_ICON_MAP: Record<CommodityName, LucideIcon> = {
+  [CommodityName.WHEAT]: Wheat,
+  [CommodityName.CORN]: Sprout,
+  [CommodityName.CRUDE_OIL]: Droplet,
+  [CommodityName.SCRAP_COPPER]: Hammer,
+}
+
+export function getCommodityIcon(name: string): LucideIcon {
+  return COMMODITY_ICON_MAP[name as CommodityName] ?? Package
+}
+
+export function getItemIcon(type: string | ProjectSlug, label: string): LucideIcon | null {
+  switch (type as ProjectSlug) {
+    case ProjectSlug.COMMODITIES:
+      return getCommodityIcon(label)
+    default:
+      return null
   }
 }
