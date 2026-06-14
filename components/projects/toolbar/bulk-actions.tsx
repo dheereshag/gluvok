@@ -3,7 +3,7 @@
 import * as React from "react"
 import { type Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { FileDown, Trash2 } from "lucide-react"
+import { FileDown, Trash2, X } from "lucide-react"
 import { DeleteEntityDialog } from "@/components/projects/dialog/delete"
 import { generatePdfHtml } from "@/lib/pdf/template"
 import { printPdf } from "@/lib/pdf/exporter"
@@ -27,6 +27,8 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
       return `<tr>${cells}</tr>`
     }).join("")
     printPdf(generatePdfHtml(projectName, headersHtml, rowsHtml, selectedRows.length))
+    //? what should happen after 
+    //table.resetRowSelection()
   }
 
   return (
@@ -36,6 +38,7 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
         <span>selected</span>
       </div>
       <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()} className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" />Clear</Button>
         <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="h-8 gap-1.5 text-xs bg-background shadow-xs hover:bg-muted"><FileDown className="h-3.5 w-3.5" />Download PDF</Button>
         <Button variant="destructive" size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5 text-xs shadow-xs"><Trash2 className="h-3.5 w-3.5" />Delete Selected</Button>
         <DeleteEntityDialog
