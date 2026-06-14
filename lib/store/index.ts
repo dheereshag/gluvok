@@ -101,7 +101,7 @@ export const useEntitiesStore = create<EntitiesState>()(
       onRehydrateStorage: () => {
         return (state) => {
           if (state) {
-            state.setHydrated(true)
+            setTimeout(() => state.setHydrated(true), 0)
           }
         }
       },

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuthStore, useEntitiesStore } from "@/lib/store"
+import { useAuthStore } from "@/lib/store"
 import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
 
 function FullScreenStatus({ message }: { message: string }) {
@@ -16,7 +16,7 @@ function FullScreenStatus({ message }: { message: string }) {
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user)
   const authHydrated = useAuthStore((state) => state.hydrated)
-  const entitiesHydrated = useEntitiesStore((state) => state.hydrated)
+
   const router = useRouter()
   const pathname = usePathname()
 
@@ -33,7 +33,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [user, authHydrated, isAuthPage, router])
 
   // Show loading during initial rehydration to prevent UI flash
-  if (!authHydrated || !entitiesHydrated) {
+  if (!authHydrated) {
     return <FullScreenStatus message="Loading..." />
   }
 
