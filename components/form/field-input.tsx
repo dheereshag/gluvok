@@ -1,7 +1,7 @@
 "use client"
 
 import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
-import { StateCombobox, EntityCombobox } from "@/components/combobox"
+import { StateCombobox, EntityCombobox, RoleCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
 import { StandardInput } from "./standard-input"
 import { ImageUpload } from "./image/upload"
@@ -34,6 +34,14 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
           id={`${idPrefix}-state-trigger`}
           value={typeof value === "string" ? value : ""}
           onChange={(val) => form.setValue("state", val, { shouldValidate: true })}
+        />
+      )
+    case FieldType.ROLE:
+      return (
+        <RoleCombobox
+          id={`${idPrefix}-role-trigger`}
+          value={typeof value === "string" ? value : ""}
+          onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
         />
       )
     default:

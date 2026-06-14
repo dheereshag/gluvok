@@ -26,7 +26,7 @@ export interface BaseDeleteDialogProps {
   onConfirm?: () => void
 }
 
-export interface DeleteContentProps extends BaseDeleteDialogProps {}
+export type DeleteContentProps = BaseDeleteDialogProps
 
 export interface DeleteEntityDialogProps extends BaseDeleteDialogProps {
   open: boolean

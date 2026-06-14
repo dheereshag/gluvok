@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware"
 import { type EntityRecord } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
+import { ProjectSlug } from "@/lib/fields"
 
 export * from "./helpers"
 export * from "./auth"
@@ -38,7 +39,39 @@ export const useEntitiesStore = create<EntitiesState>()(
       addEntity: (slug, key, newE) =>
         set((state) => {
           const currentList = state.entities[slug] || []
-          const id = newE[key] || Math.floor(Math.random() * 1000000).toString()
+
+          // Check for commodity uniqueness
+          if (slug === ProjectSlug.COMMODITIES) {
+            const nameExists = currentList.some((item) => {
+              const existingName = getField(item, key)
+              const newName = newE[key]
+              return (
+                typeof existingName === "string" &&
+                typeof newName === "string" &&
+                existingName.trim().toLowerCase() === newName.trim().toLowerCase()
+              )
+            })
+            if (nameExists) {
+              throw new Error("Commodity name must be unique")
+            }
+          }
+
+          let id = newE[key]
+          if (id === undefined || id === null || id === "") {
+            const isNumericSerial = [
+              ProjectSlug.VILLAGES,
+              ProjectSlug.FACTORIES,
+              ProjectSlug.CENTERS,
+              ProjectSlug.COMMODITY_PRICES,
+              ProjectSlug.WEIGHMENTS
+            ].includes(slug as ProjectSlug)
+
+            if (isNumericSerial) {
+              id = currentList.length + 1
+            } else {
+              id = Math.floor(Math.random() * 1000000).toString()
+            }
+          }
           newE[key] = id
           const entityToAdd = { ...newE, created_at: getTimestamp(), updated_at: getTimestamp() } as EntityRecord
           return { entities: { ...state.entities, [slug]: [entityToAdd, ...currentList] } }

@@ -69,7 +69,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   ],
   [ProjectSlug.USERS]: [
     { key: EntityKey.EMAIL, label: ColumnLabel.EMAIL, placeholder: "e.g. user@example.com", type: FieldType.TEXT },
-    { key: EntityKey.ROLE, label: ColumnLabel.ROLE, placeholder: "e.g. operator", type: FieldType.TEXT },
+    { key: EntityKey.ROLE, label: ColumnLabel.ROLE, placeholder: "Select role...", type: FieldType.ROLE },
   ],
   [ProjectSlug.VILLAGES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ludhiana", type: FieldType.TEXT },

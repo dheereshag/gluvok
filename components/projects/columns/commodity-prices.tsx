@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { IndianRupee, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
-import { createTextColumn, createCustomColumn, getCommodityIcon } from "./helpers"
+import { createCustomColumn, getCommodityIcon } from "./helpers"
 
 export function getCommodityPricesColumns<T>(): ColumnDef<T>[] {
   return [

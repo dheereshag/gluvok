@@ -2,7 +2,7 @@
 
 import { type UseFormReturn, type FieldValues } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { type FieldConfig, FieldType } from "@/lib/fields"
+import { type FieldConfig } from "@/lib/fields"
 import { cn } from "@/lib/utils"
 
 interface StandardInputProps {
