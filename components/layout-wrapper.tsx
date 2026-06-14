@@ -5,15 +5,11 @@ import { usePathname } from "next/navigation"
 import { AppSidebar } from "@/components/sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AuthGuard } from "@/components/auth/guard"
-import { AppRoutes } from "@/lib/constants"
+import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isAuthPage =
-    pathname === AppRoutes.LOGIN ||
-    pathname === AppRoutes.SIGNUP ||
-    pathname === AppRoutes.FORGOT_PASSWORD ||
-    pathname === AppRoutes.RESET_PASSWORD
+  const isAuthPage = AUTH_ROUTES.includes(pathname as AppRoutes)
 
   if (isAuthPage) {
     return <AuthGuard>{children}</AuthGuard>

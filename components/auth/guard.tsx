@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore } from "@/lib/store"
-import { AppRoutes } from "@/lib/constants"
+import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
 
 function FullScreenStatus({ message }: { message: string }) {
   return (
@@ -19,11 +19,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
-  const isAuthPage =
-    pathname === AppRoutes.LOGIN ||
-    pathname === AppRoutes.SIGNUP ||
-    pathname === AppRoutes.FORGOT_PASSWORD ||
-    pathname === AppRoutes.RESET_PASSWORD
+  const isAuthPage = AUTH_ROUTES.includes(pathname as AppRoutes)
 
   useEffect(() => {
     if (!hydrated) return

@@ -26,7 +26,12 @@ export default function RootLayout({
             {children}
           </MainLayout>
         </TooltipProvider>
-        <Toaster richColors />
+        <Toaster
+          richColors
+          toastOptions={{
+            className: geist.className,
+          }}
+        />
       </body>
     </html>
   );
