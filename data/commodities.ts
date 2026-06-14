@@ -21,4 +21,9 @@ export const commodities: Commodity[] = [
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
+  {
+    name: "Barley",
+    created_at: "2026-06-07 11:50:14.658144",
+    updated_at: "2026-06-07 11:50:14.658144",
+  },
 ]

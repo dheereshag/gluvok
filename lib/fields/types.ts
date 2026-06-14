@@ -59,6 +59,7 @@ export enum CommodityName {
   CORN = "Corn",
   CRUDE_OIL = "Crude Oil",
   SCRAP_COPPER = "Scrap Copper",
+  BARLEY = "Barley",
 }
 
 export interface FieldConfig {
