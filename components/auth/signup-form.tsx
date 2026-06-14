@@ -14,10 +14,10 @@ import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants"
 
 const signupSchema = z.object({
-  name: z.string().min(1, "Full name is required").min(2, "Name must be at least 2 characters"),
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  confirmPassword: z.string().min(1, "Confirm password is required"),
+  confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],

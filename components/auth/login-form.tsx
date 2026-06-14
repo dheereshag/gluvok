@@ -14,8 +14,8 @@ import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants"
 
 const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters"),
+  email: z.email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 })
 
 type LoginInput = z.infer<typeof loginSchema>
