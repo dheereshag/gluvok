@@ -15,7 +15,7 @@ export interface UniquenessError {
 export function checkEditUniqueness(
   projectSlug: ProjectSlug,
   item: EntityRecord,
-  values: Record<string, any>
+  values: Record<string, unknown>
 ): UniquenessError | null {
   switch (projectSlug) {
     case ProjectSlug.COMMODITIES: {
@@ -33,6 +33,41 @@ export function checkEditUniqueness(
           return {
             field: EntityKey.NAME,
             message: `A ${projectSlug} with this ${EntityKey.NAME} already exists`,
+          }
+        }
+      }
+      break
+    }
+    case ProjectSlug.CENTERS: {
+      const currentName = String(getField(item, EntityKey.NAME) ?? "")
+      const currentFactoryId = String(getField(item, EntityKey.FACTORY_ID) ?? "")
+
+      const newName = String(values[EntityKey.NAME] ?? "")
+      const newFactoryId = String(values[EntityKey.FACTORY_ID] ?? "")
+
+      if (
+        newName.trim().toLowerCase() !== currentName.trim().toLowerCase() ||
+        newFactoryId !== currentFactoryId
+      ) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.CENTERS] || []
+        const exists = list.some((e) => {
+          // exclude the current center being edited using its ID
+          if (String(getField(e, EntityKey.ID)) === String(getField(item, EntityKey.ID))) {
+            return false
+          }
+          const n = getField(e, EntityKey.NAME)
+          const f = getField(e, EntityKey.FACTORY_ID)
+          return (
+            typeof n === "string" &&
+            n.trim().toLowerCase() === newName.trim().toLowerCase() &&
+            String(f) === newFactoryId
+          )
+        })
+
+        if (exists) {
+          return {
+            field: EntityKey.NAME,
+            message: "A center with this name and factory ID already exists",
           }
         }
       }
