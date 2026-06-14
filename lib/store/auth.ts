@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
+import { users as seedUsers } from "@/data/users"
 
 export interface AuthUser {
   name: string
@@ -24,13 +25,11 @@ interface AuthStore {
   setHydrated: (state: boolean) => void
 }
 
-const DEFAULT_USERS: RegisteredUser[] = [
-  {
-    name: "shadcn",
-    email: "m@example.com",
-    password: "password123",
-  },
-]
+const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
+  name: u.email.split("@")[0],
+  email: u.email,
+  password: "password123",
+}))
 
 export const useAuthStore = create<AuthStore>()(
   persist(

@@ -3,6 +3,14 @@ import { type FieldConfig } from "@/lib/fields"
 import { DialogMode } from "@/lib/constants"
 import { type EntityRecord } from "@/types"
 
+export interface EntityFormProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  projectSlug: string
+  projectName: string
+  primaryIdKey: string
+}
+
 export interface EntityDialogContentProps {
   mode: DialogMode
   onOpenChange: (open: boolean) => void

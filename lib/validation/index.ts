@@ -8,3 +8,5 @@ export * from "./operators"
 export * from "./users"
 export * from "./villages"
 export * from "./registry"
+export * from "./uniqueness"
+

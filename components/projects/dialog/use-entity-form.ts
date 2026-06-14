@@ -1,63 +1,48 @@
 "use client"
 
-import * as React from "react"
-import { useForm, type FieldValues } from "react-hook-form"
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
-import { useEntitiesStore, getField } from "@/lib/store"
-import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
-import { ENTITY_ADD_SCHEMAS, ENTITY_EDIT_SCHEMAS } from "@/lib/validation"
 import { DialogMode } from "@/lib/constants"
+import { type EntityFormProps } from "./types"
+import { useAddEntityForm } from "./use-add-entity-form"
+import { useEditEntityForm } from "./use-edit-entity-form"
 
-interface UseEntityFormProps {
-  mode: DialogMode; open: boolean; onOpenChange: (open: boolean) => void
-  projectSlug: string; projectName: string; primaryIdKey: string; item?: EntityRecord | null
+interface UseEntityFormProps extends EntityFormProps {
+  mode: DialogMode
+  item?: EntityRecord | null
 }
 
 export function useEntityForm({
-  mode, open, onOpenChange, projectSlug, projectName, primaryIdKey, item
+  mode,
+  open,
+  onOpenChange,
+  projectSlug,
+  projectName,
+  primaryIdKey,
+  item,
 }: UseEntityFormProps) {
-  const addEntity = useEntitiesStore((state) => state.addEntity)
-  const updateEntity = useEntitiesStore((state) => state.updateEntity)
   const isEdit = mode === DialogMode.EDIT
-  const fields = React.useMemo(() => PROJECT_FIELDS[projectSlug] || [], [projectSlug])
-  const formSchema = React.useMemo(() => {
-    return isEdit ? ENTITY_EDIT_SCHEMAS[projectSlug as ProjectSlug] : ENTITY_ADD_SCHEMAS[projectSlug as ProjectSlug]
-  }, [projectSlug, isEdit])
-  const form = useForm<FieldValues>({ resolver: standardSchemaResolver(formSchema), defaultValues: {} })
 
-  React.useEffect(() => {
-    if (open) {
-      if (isEdit && item) {
-        const defaults: Record<string, unknown> = {}
-        fields.forEach((field) => {
-          let rawVal = getField(item, field.key)
-          if (field.transformOnChange && typeof rawVal === "string") {
-            rawVal = field.transformOnChange(rawVal)
-          }
-          defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
-        })
-        form.reset(defaults)
-      } else form.reset({})
-    }
-  }, [open, isEdit, item, fields, form])
+  const addForm = useAddEntityForm({
+    open: open && !isEdit,
+    onOpenChange,
+    projectSlug,
+    projectName,
+    primaryIdKey,
+  })
 
-  const onSubmit = (values: FieldValues) => {
-    try {
-      if (isEdit) {
-        if (!item) return
-        updateEntity(projectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
-        toast.success(`${projectName} updated successfully`)
-      } else {
-        addEntity(projectSlug, primaryIdKey, values)
-        toast.success(`${projectName} created successfully`)
-      }
-      onOpenChange(false)
-    } catch {
-      toast.error(`Failed to ${isEdit ? "update" : "create"} ${projectName.toLowerCase()}`)
-    }
+  const editForm = useEditEntityForm({
+    open: open && isEdit,
+    onOpenChange,
+    projectSlug,
+    projectName,
+    primaryIdKey,
+    item: item ?? ({} as EntityRecord),
+  })
+
+  return {
+    form: isEdit ? editForm.form : addForm.form,
+    fields: isEdit ? editForm.fields : addForm.fields,
+    onSubmit: isEdit ? editForm.onSubmit : addForm.onSubmit,
+    isEdit,
   }
-
-  return { form, fields, isEdit, onSubmit }
 }
