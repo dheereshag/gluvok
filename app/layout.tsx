@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Outfit } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout-wrapper";
 
 const geist = Geist({ subsets: ['latin'] });
+const outfit = Outfit({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "gluvok Dashboard | Platform Operations",
@@ -27,10 +28,12 @@ export default function RootLayout({
           </MainLayout>
         </TooltipProvider>
         <Toaster
+          position="top-right"
+          expand={true}
           richColors
           closeButton
           toastOptions={{
-            className: geist.className,
+            className: outfit.className,
           }}
         />
       </body>
