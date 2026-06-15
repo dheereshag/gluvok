@@ -1,4 +1,4 @@
-import { Role, State } from "@/lib/constants"
+import { Role, State, ActiveStatus } from "@/lib/constants"
 
 export interface Center {
   id: number
@@ -59,7 +59,7 @@ export interface Weighment {
   center_id: number
   profile_id: string
   customer_id: number
-  is_active: boolean
+  is_active: ActiveStatus
   created_at: string
   updated_at: string
 }

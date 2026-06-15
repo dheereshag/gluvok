@@ -45,7 +45,7 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
     const factoryName = factory ? factory.name : `Factory ${p.factory_id}`
     return {
       id: String(p.id),
-      name: `${p.commodity_name} (${factoryName} - ID: ${p.factory_id}) (${parseFloat(p.unit_price)} INR)`
+      name: `${p.commodity_name} (${factoryName}) (₹${parseFloat(p.unit_price)})`
     }
   },
   [ProjectSlug.FACTORIES]: (item) => ({ id: String((item as Factory).id ?? ""), name: (item as Factory).name }),

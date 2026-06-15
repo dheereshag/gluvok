@@ -6,6 +6,7 @@ import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fiel
 import { Checkbox } from "@/components/ui/checkbox"
 import { StandardInput } from "./standard-input"
 import { ImageUpload } from "./image/upload"
+import { ActiveStatus } from "@/lib/constants"
 
 interface FormFieldInputProps {
   field: FieldConfig
@@ -30,11 +31,12 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
         />
       )
     case FieldType.CHECKBOX:
+      const isChecked = value === ActiveStatus.ACTIVE || value === true || value === "true"
       return (
         <Checkbox
           id={fieldId}
-          checked={!!value}
-          onCheckedChange={(checked) => form.setValue(field.key, !!checked, { shouldValidate: true })}
+          checked={isChecked}
+          onCheckedChange={(checked) => form.setValue(field.key, checked ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE, { shouldValidate: true })}
           disabled={disabled}
         />
       )

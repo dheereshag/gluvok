@@ -8,6 +8,7 @@ import { useEntitiesStore } from "@/lib/store"
 import { PROJECT_FIELDS, type ProjectSlug } from "@/lib/fields"
 import { ENTITY_ADD_SCHEMAS } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
+import { ActiveStatus } from "@/lib/constants"
 
 export function useAddEntityForm({
   open,
@@ -22,7 +23,7 @@ export function useAddEntityForm({
   const form = useForm<FieldValues>({ resolver: standardSchemaResolver(formSchema), defaultValues: {} })
 
   React.useEffect(() => {
-    if (open) form.reset({})
+    if (open) form.reset({ is_active: ActiveStatus.ACTIVE })
   }, [open, form])
 
   const onSubmit = (values: FieldValues) => {
