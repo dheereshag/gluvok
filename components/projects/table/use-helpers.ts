@@ -5,12 +5,30 @@ import { type EntityRecord } from "@/types"
 import { useEntitiesStore } from "@/lib/store"
 
 export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
-  const storeData = useEntitiesStore((state) => state.entities[projectSlug])
-  const hydrated = useEntitiesStore((state) => state.hydrated)
+  const [data, setData] = React.useState<EntityRecord[]>(initialData)
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    const unsubscribe = useEntitiesStore.subscribe((state) => {
+      if (state.entities[projectSlug]) {
+        setData(state.entities[projectSlug])
+      }
+      setIsLoading(!state.hydrated)
+    })
+
+    // Set initial values from store
+    const currentState = useEntitiesStore.getState()
+    if (currentState.entities[projectSlug]) {
+      setData(currentState.entities[projectSlug])
+    }
+    setIsLoading(!currentState.hydrated)
+
+    return () => unsubscribe()
+  }, [projectSlug])
 
   return {
-    tableData: storeData || initialData,
-    isLoading: !hydrated,
+    tableData: data,
+    isLoading,
   }
 }
 

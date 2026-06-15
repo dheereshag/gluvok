@@ -91,8 +91,8 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
               </DialogDescription>
             </DialogHeader>
 
-            <div className="p-6 pb-2 flex flex-col items-center justify-center bg-black/5 dark:bg-black/20">
-              <Carousel setApi={setApi} className="w-full relative px-10">
+            <div className="p-6 pb-2 flex flex-col items-center justify-center bg-black/5 dark:bg-black/20 w-full overflow-hidden">
+              <Carousel setApi={setApi} className="w-full max-w-full relative px-10">
                 <CarouselContent>
                   {images.map((img, i) => {
                     const src = img.startsWith("/") ? img : `/${img}`

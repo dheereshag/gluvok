@@ -1,3 +1,5 @@
+import { ComponentType } from "react"
+
 export enum ProjectSlug {
   CENTERS = "centers",
   COMMODITIES = "commodities",
@@ -73,4 +75,5 @@ export interface FieldConfig {
   className?: string
   transformOnChange?: (value: string) => string
   inputMode?: InputMode
+  icon?: ComponentType<{ className?: string }>
 }

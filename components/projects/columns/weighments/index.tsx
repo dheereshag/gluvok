@@ -38,7 +38,7 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         const storeState = useEntitiesStore.getState()
         const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
         const rateRec = activeRates.find((p) => String(p.id) === String(val))
-        const displayName = rateRec ? `${rateRec.commodity_name}` : `Rate ID: ${val}`
+        const displayName = rateRec ? `${rateRec.commodity_name} (ID: ${val})` : `Rate ID: ${val}`
         const Icon = getCommodityIcon(rateRec ? rateRec.commodity_name : "")
         return <><PillIcon icon={Icon} />{displayName}</>
       },

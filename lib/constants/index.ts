@@ -40,6 +40,8 @@ export enum ColumnLabel {
   UPDATED_AT = "Updated At",
   IMAGES = "Images",
   USER_ID = "User ID",
+  COMMODITY = "Commodity",
+  FACTORY = "Factory",
   IS_ACTIVE = "Active",
 }
 
