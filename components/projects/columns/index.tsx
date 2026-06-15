@@ -16,6 +16,8 @@ import { getOperatorsColumns } from "./operators"
 import { getUsersColumns } from "./users"
 import { getVillagesColumns } from "./villages"
 
+import { type Permission } from "@/lib/store"
+
 export interface ColumnActionsCallbacks<T = EntityRecord> {
   onEdit: (item: T) => void
   onDelete: (item: T) => void
@@ -40,7 +42,8 @@ export function getProjectColumns<T extends EntityRecord = EntityRecord>(
   projectSlug: string,
   primaryIdKey: string,
   projectName: string,
-  callbacks: ColumnActionsCallbacks<T>
+  callbacks: ColumnActionsCallbacks<T>,
+  permissions?: Permission
 ): ColumnDef<T>[] {
   const systemCols = getSystemColumns<T>(primaryIdKey)
 
@@ -50,6 +53,6 @@ export function getProjectColumns<T extends EntityRecord = EntityRecord>(
     ...getSpecificColumns<T>(projectSlug),
     systemCols[1], // Created At
     systemCols[2], // Updated At
-    getActionsColumn<T>(projectSlug, primaryIdKey, projectName, callbacks),
+    getActionsColumn<T>(projectSlug, primaryIdKey, projectName, callbacks, permissions),
   ]
 }

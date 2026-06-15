@@ -1,13 +1,23 @@
 "use client"
 
+import * as React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { LayoutDashboard, Weight } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
+import { useAuthStore, hasPageAccess } from "@/lib/store"
 
 export default function Page() {
+  const user = useAuthStore((state) => state.user)
+  const hydrated = useAuthStore((state) => state.hydrated)
+
+  const filteredProjects = React.useMemo(() => {
+    if (!hydrated || !user) return []
+    return PROJECTS.filter((p) => hasPageAccess(user.role, p.slug))
+  }, [hydrated, user])
+
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 border-b">
@@ -39,7 +49,7 @@ export default function Page() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {PROJECTS.map((project) => (
+          {filteredProjects.map((project) => (
             <DashboardCard
               key={project.name}
               name={project.name}

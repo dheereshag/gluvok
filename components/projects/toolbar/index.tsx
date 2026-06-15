@@ -5,6 +5,8 @@ import { Search, Plus } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
 import { BulkActions } from "./bulk-actions"
 
+import { useAuthStore, getPermissions } from "@/lib/store"
+
 interface ProjectToolbarProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; filterKey: string
   primaryIdKey: string; setCreating: (open: boolean) => void
@@ -15,6 +17,9 @@ export function ProjectToolbar<TData>({
 }: ProjectToolbarProps<TData>) {
   const filterColumn = table.getColumn(filterKey)
   const selectedRows = table.getFilteredSelectedRowModel().rows
+  const user = useAuthStore((state) => state.user)
+  const permissions = getPermissions(user?.role, projectSlug)
+  const canWrite = permissions.write
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -40,10 +45,12 @@ export function ProjectToolbar<TData>({
             </div>
           )}
           <div className="flex items-center gap-2 justify-end">
-            <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
-              <Plus className="h-4 w-4" />
-              Add {projectName}
-            </Button>
+            {canWrite && (
+              <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
+                <Plus className="h-4 w-4" />
+                Add {projectName}
+              </Button>
+            )}
             <DataTableViewOptions table={table} />
           </div>
         </>

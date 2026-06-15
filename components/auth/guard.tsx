@@ -2,8 +2,9 @@
 
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuthStore } from "@/lib/store"
+import { useAuthStore, hasPageAccess } from "@/lib/store"
 import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
+import { toast } from "sonner"
 
 function FullScreenStatus({ message }: { message: string }) {
   return (
@@ -21,6 +22,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isAuthPage = AUTH_ROUTES.includes(pathname as AppRoutes)
+  const projectMatch = pathname.match(/^\/projects\/([^/]+)/)
+  const projectSlug = projectMatch ? projectMatch[1] : null
+
+  const isAuthorized = !user || !projectSlug || hasPageAccess(user.role, projectSlug)
 
   useEffect(() => {
     if (!authHydrated) return
@@ -29,8 +34,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       router.push(AppRoutes.LOGIN)
     } else if (user && isAuthPage) {
       router.push(AppRoutes.HOME)
+    } else if (user && projectSlug && !isAuthorized) {
+      toast.error("Access Denied: You do not have permission to access this page")
+      router.push(AppRoutes.HOME)
     }
-  }, [user, authHydrated, isAuthPage, router])
+  }, [user, authHydrated, isAuthPage, projectSlug, isAuthorized, router])
 
   // Show loading during initial rehydration to prevent UI flash
   if (!authHydrated) {
@@ -39,6 +47,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!user && !isAuthPage) {
     return <FullScreenStatus message="Redirecting..." />
+  }
+
+  if (user && projectSlug && !isAuthorized) {
+    return <FullScreenStatus message="Access Denied..." />
   }
 
   return <>{children}</>

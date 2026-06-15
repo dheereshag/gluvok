@@ -8,7 +8,7 @@ import { NavMain } from "./nav/main"
 import { NavSecondary } from "./nav/secondary"
 import { NavUser } from "./nav/user"
 import { SIDEBAR_DATA } from "./data"
-import { useAuthStore } from "@/lib/store"
+import { useAuthStore, hasPageAccess } from "@/lib/store"
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +29,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: (hydrated && user?.avatar) || SIDEBAR_DATA.user.avatar,
   }
 
+  const filteredNavMain = React.useMemo(() => {
+    if (!hydrated || !user) return []
+    return SIDEBAR_DATA.navMain.filter((item) => {
+      const slug = item.url.split("/").pop() || ""
+      return hasPageAccess(user.role, slug)
+    })
+  }, [hydrated, user])
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -48,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={SIDEBAR_DATA.navMain} />
+        <NavMain items={filteredNavMain} />
         <NavSecondary items={SIDEBAR_DATA.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

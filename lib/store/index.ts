@@ -9,6 +9,7 @@ import { ProjectSlug } from "@/lib/fields"
 
 export * from "./helpers"
 export * from "./auth"
+export * from "./access"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>
@@ -100,9 +101,7 @@ export const useEntitiesStore = create<EntitiesState>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => {
         return (state) => {
-          if (state) {
-            setTimeout(() => state.setHydrated(true), 0)
-          }
+          state?.setHydrated(true)
         }
       },
     }

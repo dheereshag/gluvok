@@ -8,6 +8,8 @@ import { DeleteEntityDialog } from "@/components/projects/dialog/delete"
 import { generatePdfHtml } from "@/lib/pdf/template"
 import { printPdf } from "@/lib/pdf/exporter"
 
+import { useAuthStore, getPermissions } from "@/lib/store"
+
 interface BulkActionsProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; primaryIdKey: string
 }
@@ -15,6 +17,9 @@ interface BulkActionsProps<TData> {
 export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdKey }: BulkActionsProps<TData>) {
   const [open, setOpen] = React.useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows
+  const user = useAuthStore((state) => state.user)
+  const permissions = getPermissions(user?.role, projectSlug)
+  const canDelete = permissions.delete
 
   const handleDownloadPDF = () => {
     const cols = table.getVisibleLeafColumns().filter(c => c.id !== "select" && c.id !== "actions")
@@ -40,7 +45,11 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()} className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" />Clear</Button>
         <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="h-8 gap-1.5 text-xs bg-background shadow-xs hover:bg-muted"><FileDown className="h-3.5 w-3.5" />Download PDF</Button>
-        <Button variant="destructive" size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5 text-xs shadow-xs"><Trash2 className="h-3.5 w-3.5" />Delete Selected</Button>
+        {canDelete && (
+          <Button variant="destructive" size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5 text-xs shadow-xs">
+            <Trash2 className="h-3.5 w-3.5" />Delete Selected
+          </Button>
+        )}
         <DeleteEntityDialog
           open={open}
           onOpenChange={setOpen}

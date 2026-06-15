@@ -4,6 +4,7 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRo
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
+import { useAuthStore, getPermissions } from "@/lib/store"
 
 interface UseProjectTableProps {
   projectSlug: string
@@ -25,12 +26,16 @@ export function useProjectTable({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const { setEditingItem, setDeletingItem } = dialogStates
+
+  const user = useAuthStore((state) => state.user)
+  const permissions = React.useMemo(() => getPermissions(user?.role, projectSlug), [user?.role, projectSlug])
+
   const columns = React.useMemo<ColumnDef<EntityRecord>[]>(() => {
     return getProjectColumns(projectSlug, primaryIdKey, projectName, {
       onEdit: setEditingItem,
       onDelete: setDeletingItem,
-    })
-  }, [projectSlug, primaryIdKey, projectName, setEditingItem, setDeletingItem])
+    }, permissions)
+  }, [projectSlug, primaryIdKey, projectName, setEditingItem, setDeletingItem, permissions])
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -54,5 +59,5 @@ export function useProjectTable({
     return EntityKey.NAME
   }, [projectSlug])
 
-  return { table, isLoading, filterKey, ...dialogStates }
+  return { table, isLoading, filterKey, permissions, ...dialogStates }
 }

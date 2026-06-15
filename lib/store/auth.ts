@@ -2,16 +2,20 @@ import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { users as seedUsers } from "@/data/users"
 
+import { Role } from "@/lib/constants"
+
 export interface AuthUser {
   name: string
   email: string
   avatar?: string
+  role: Role
 }
 
 export interface RegisteredUser {
   name: string
   email: string
   password?: string
+  role: Role
 }
 
 interface AuthStore {
@@ -20,7 +24,7 @@ interface AuthStore {
   hydrated: boolean
   login: (email: string, password: string) => boolean
   logout: () => void
-  registerUser: (user: RegisteredUser) => boolean
+  registerUser: (user: Omit<RegisteredUser, "role"> & { role?: Role }) => boolean
   resetPassword: (email: string, newPassword: string) => boolean
   setHydrated: (state: boolean) => void
 }
@@ -29,6 +33,7 @@ const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
   name: u.email.split("@")[0],
   email: u.email,
   password: "password123",
+  role: u.role,
 }))
 
 export const useAuthStore = create<AuthStore>()(
@@ -48,6 +53,7 @@ export const useAuthStore = create<AuthStore>()(
               name: found.name,
               email: found.email,
               avatar: "/avatars/shadcn.jpg",
+              role: found.role || Role.BASE,
             },
           })
           return true
@@ -62,13 +68,20 @@ export const useAuthStore = create<AuthStore>()(
         if (users.some((u) => u.email.toLowerCase() === user.email.toLowerCase())) {
           return false
         }
-        const updatedUsers = [...users, user]
+        const userWithRole: RegisteredUser = {
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          role: user.role || Role.BASE,
+        }
+        const updatedUsers = [...users, userWithRole]
         set({
           registeredUsers: updatedUsers,
           user: {
-            name: user.name,
-            email: user.email,
+            name: userWithRole.name,
+            email: userWithRole.email,
             avatar: "/avatars/shadcn.jpg",
+            role: userWithRole.role,
           },
         })
         return true
@@ -91,9 +104,7 @@ export const useAuthStore = create<AuthStore>()(
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => {
         return (state) => {
-          if (state) {
-            setTimeout(() => state.setHydrated(true), 0)
-          }
+          state?.setHydrated(true)
         }
       },
     }

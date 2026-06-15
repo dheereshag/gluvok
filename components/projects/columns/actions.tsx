@@ -9,9 +9,18 @@ import { getField } from "@/lib/store"
 import { type EntityRecord } from "@/types"
 import { type ColumnActionsCallbacks } from "./index"
 
+import { type Permission } from "@/lib/store"
+
 export function getActionsColumn<T extends EntityRecord>(
-  projectSlug: string, primaryIdKey: string, projectName: string, callbacks: ColumnActionsCallbacks<T>
+  projectSlug: string,
+  primaryIdKey: string,
+  projectName: string,
+  callbacks: ColumnActionsCallbacks<T>,
+  permissions?: Permission
 ): ColumnDef<T> {
+  const canWrite = permissions?.write ?? true
+  const canDelete = permissions?.delete ?? true
+
   return {
     id: "actions",
     cell: ({ row }) => {
@@ -33,13 +42,22 @@ export function getActionsColumn<T extends EntityRecord>(
               >
                 <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Copy ID
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem id={`actions-edit-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2" onClick={() => callbacks.onEdit(item)}>
-                <Pencil className="h-3.5 w-3.5 text-muted-foreground" /> Edit {projectName}
-              </DropdownMenuItem>
-              <DropdownMenuItem id={`actions-delete-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2 text-destructive focus:text-destructive focus:bg-destructive/10" onClick={() => callbacks.onDelete(item)}>
-                <Trash2 className="h-3.5 w-3.5 text-destructive" /> Delete {projectName}
-              </DropdownMenuItem>
+              {canWrite && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem id={`actions-edit-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2" onClick={() => callbacks.onEdit(item)}>
+                    <Pencil className="h-3.5 w-3.5 text-muted-foreground" /> Edit {projectName}
+                  </DropdownMenuItem>
+                </>
+              )}
+              {canDelete && (
+                <>
+                  {!canWrite && <DropdownMenuSeparator />}
+                  <DropdownMenuItem id={`actions-delete-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2 text-destructive focus:text-destructive focus:bg-destructive/10" onClick={() => callbacks.onDelete(item)}>
+                    <Trash2 className="h-3.5 w-3.5 text-destructive" /> Delete {projectName}
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
