@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Package, Building, User, Users, Image, CheckCircle } from "lucide-react"
+import { Car, Weight, Package, Building, User, Users, Image, Power } from "lucide-react"
 import { EntityKey, ProjectSlug } from "@/lib/fields"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
@@ -53,7 +53,7 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     ),
     createTextColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User, "font-mono text-muted-foreground text-xs"),
     createTextColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users, "font-mono text-muted-foreground text-xs"),
-    createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, CheckCircle, (val) => {
+    createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, Power, (val) => {
       const isActive = val === "true"
       return (
         <span className={cn(

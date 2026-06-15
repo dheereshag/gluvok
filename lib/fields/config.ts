@@ -12,7 +12,7 @@ import {
   Image,
   Weight,
   Users,
-  CheckCircle,
+  Power,
   Mail,
   ShieldCheck,
   Fingerprint,
@@ -68,7 +68,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       icon: User,
     },
     { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER_ID, placeholder: "e.g. GOV1001", type: FieldType.TEXT, icon: Users },
-    { key: EntityKey.IS_ACTIVE, label: ColumnLabel.IS_ACTIVE, placeholder: "", type: FieldType.CHECKBOX, icon: CheckCircle },
+    { key: EntityKey.IS_ACTIVE, label: ColumnLabel.IS_ACTIVE, placeholder: "", type: FieldType.CHECKBOX, icon: Power },
   ],
   [ProjectSlug.FACTORIES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Factory },
