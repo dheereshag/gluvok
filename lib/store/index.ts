@@ -97,7 +97,7 @@ export const useEntitiesStore = create<EntitiesState>()(
       setHydrated: (state) => set({ hydrated: state }),
     }),
     {
-      name: "gluvok-entities-storage-v2",
+      name: "gluvok-entities-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )
