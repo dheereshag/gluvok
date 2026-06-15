@@ -1,7 +1,7 @@
 import { Table } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Plus } from "lucide-react"
+import { Search, Plus, RotateCw } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
 import { BulkActions } from "./bulk-actions"
 
@@ -9,11 +9,11 @@ import { useAuthStore, getPermissions } from "@/lib/store"
 
 interface ProjectToolbarProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; filterKey: string
-  primaryIdKey: string; setCreating: (open: boolean) => void
+  primaryIdKey: string; setCreating: (open: boolean) => void; onReload: () => void
 }
 
 export function ProjectToolbar<TData>({
-  table, projectSlug, projectName, filterKey, primaryIdKey, setCreating
+  table, projectSlug, projectName, filterKey, primaryIdKey, setCreating, onReload
 }: ProjectToolbarProps<TData>) {
   const filterColumn = table.getColumn(filterKey)
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -45,6 +45,15 @@ export function ProjectToolbar<TData>({
             </div>
           )}
           <div className="flex items-center gap-2 justify-end">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onReload}
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50 shadow-sm"
+              title="Reload and Reset Data"
+            >
+              <RotateCw className="h-4 w-4" />
+            </Button>
             {canWrite && (
               <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
                 <Plus className="h-4 w-4" />

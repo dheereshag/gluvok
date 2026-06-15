@@ -4,7 +4,9 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRo
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
-import { useAuthStore, getPermissions } from "@/lib/store"
+import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
+import { PROJECT_REGISTRY } from "@/lib/projects/registry"
+import { toast } from "sonner"
 
 interface UseProjectTableProps {
   projectSlug: string
@@ -25,6 +27,7 @@ export function useProjectTable({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [isReloading, setIsReloading] = React.useState(false)
   const { setEditingItem, setDeletingItem } = dialogStates
 
   const user = useAuthStore((state) => state.user)
@@ -59,5 +62,28 @@ export function useProjectTable({
     return EntityKey.NAME
   }, [projectSlug])
 
-  return { table, isLoading, filterKey, permissions, ...dialogStates }
+  const handleReload = React.useCallback(() => {
+    setIsReloading(true)
+
+    // Reset store data back to registry initial data
+    const setEntities = useEntitiesStore.getState().setEntities
+    const initialRegistryData = PROJECT_REGISTRY[projectSlug]?.data || []
+    setEntities(projectSlug, initialRegistryData)
+
+    setTimeout(() => {
+      setIsReloading(false)
+      toast.success("Table reloaded", {
+        description: `Reset ${projectName} data.`,
+      })
+    }, 600)
+  }, [projectSlug, projectName])
+
+  return {
+    table,
+    isLoading: isLoading || isReloading,
+    filterKey,
+    permissions,
+    handleReload,
+    ...dialogStates
+  }
 }

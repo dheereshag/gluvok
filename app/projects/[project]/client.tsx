@@ -12,7 +12,7 @@ interface ProjectClientProps {
 export function ProjectClient({ projectName, projectSlug, initialData }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
   const pt = useProjectTable({ projectSlug, primaryIdKey, projectName, initialData })
-  const { table, isLoading, filterKey, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem } = pt
+  const { table, isLoading, filterKey, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
 
   return (
     <div className="space-y-4">
@@ -23,6 +23,7 @@ export function ProjectClient({ projectName, projectSlug, initialData }: Project
         filterKey={filterKey}
         primaryIdKey={primaryIdKey}
         setCreating={setCreating}
+        onReload={handleReload}
       />
 
       <ProjectTable table={table} isLoading={isLoading} columnsCount={table.getAllColumns().length} />
