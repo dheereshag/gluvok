@@ -30,12 +30,14 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
         />
       )
     case FieldType.CHECKBOX:
+      const { ref: checkboxRef } = form.register(field.key)
       return (
         <Checkbox
           id={fieldId}
           checked={value === true || value === "true"}
           onCheckedChange={(checked) => form.setValue(field.key, !!checked, { shouldValidate: true })}
           disabled={disabled}
+          ref={checkboxRef}
         />
       )
     case FieldType.STATE:

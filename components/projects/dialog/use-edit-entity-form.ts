@@ -9,6 +9,7 @@ import { useEntitiesStore, getField } from "@/lib/store"
 import { PROJECT_FIELDS, ProjectSlug, FieldType } from "@/lib/fields"
 import { ENTITY_EDIT_SCHEMAS, checkEditUniqueness } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
+import { ActiveStatus } from "@/lib/constants"
 
 interface UseEditEntityFormProps extends EntityFormProps {
   item: EntityRecord
@@ -36,7 +37,7 @@ export function useEditEntityForm({
           rawVal = field.transformOnChange(rawVal)
         }
         if (field.type === FieldType.CHECKBOX) {
-          defaults[field.key] = String(rawVal) === "true" || String(rawVal) === "Active"
+          defaults[field.key] = String(rawVal) === "true" || String(rawVal) === ActiveStatus.ACTIVE
         } else {
           defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
         }

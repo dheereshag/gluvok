@@ -42,12 +42,17 @@ export enum ColumnLabel {
   USER_ID = "User ID",
   COMMODITY = "Commodity",
   FACTORY = "Factory",
-  IS_ACTIVE = "Active",
+  IS_ACTIVE = "Status",
 }
 
 export enum DialogMode {
   CREATE = "create",
   EDIT = "edit",
+}
+
+export enum ActiveStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
 }
 
 export enum AppRoutes {

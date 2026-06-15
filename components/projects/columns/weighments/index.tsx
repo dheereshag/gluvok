@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Car, Weight, Package, Building, User, Users, Image, CheckCircle } from "lucide-react"
 import { EntityKey, ProjectSlug } from "@/lib/fields"
-import { ColumnLabel } from "@/lib/constants"
+import { ColumnLabel, ActiveStatus } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
 import { useEntitiesStore } from "@/lib/store"
 import { rates } from "@/data/rates"
@@ -62,7 +62,7 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
             ? "bg-emerald-50 text-emerald-700 border border-emerald-200/50 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/30"
             : "bg-muted text-muted-foreground border border-border"
         )}>
-          {isActive ? "Active" : "Inactive"}
+          {isActive ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE}
         </span>
       )
     }),
