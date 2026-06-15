@@ -4,7 +4,7 @@ import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { createCustomColumn, createTextColumn, getCommodityIcon } from "./helpers"
 
-export function getCommodityPricesColumns<T>(): ColumnDef<T>[] {
+export function getRatesColumns<T>(): ColumnDef<T>[] {
   return [
     createCustomColumn(EntityKey.COMMODITY_NAME, ColumnLabel.COMMODITY_NAME, Tag, (val) => {
       const Icon = getCommodityIcon(val)

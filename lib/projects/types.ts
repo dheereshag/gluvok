@@ -4,11 +4,11 @@ import { ProjectSlug } from "../fields"
 export enum ProjectName {
   CENTERS = "Centers",
   COMMODITIES = "Commodities",
-  COMMODITY_PRICES = "Commodity Prices",
+  RATES = "Rates",
   CUSTOMERS = "Customers",
   WEIGHMENTS = "Weighments",
   FACTORIES = "Factories",
-  OPERATORS = "Operators",
+  PROFILES = "Profiles",
   USERS = "Users",
   VILLAGES = "Villages",
 }

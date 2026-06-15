@@ -1,6 +1,6 @@
-import { type CommodityPrice } from "@/types"
+import { type Rate } from "@/types"
 
-export const commodityPrices: CommodityPrice[] = [
+export const rates: Rate[] = [
   {
     id: 1,
     commodity_name: "Wheat",

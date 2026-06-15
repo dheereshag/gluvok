@@ -1,6 +1,6 @@
-import { type Operator } from "@/types";
+import { type Profile } from "@/types";
 
-export const operators: Operator[] = [
+export const profiles: Profile[] = [
   {
     aadhar_number: "123456789012",
     id: "056c8f39-b406-4f2d-bca2-304b5645b342",

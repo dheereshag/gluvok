@@ -1,12 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Package, Building, User, Users, Image } from "lucide-react"
+import { Car, Weight, Package, Building, User, Users, Image, CheckCircle } from "lucide-react"
 import { EntityKey, ProjectSlug } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
 import { useEntitiesStore } from "@/lib/store"
-import { commodityPrices } from "@/data/commodity-prices"
-import { type CommodityPrice } from "@/types"
-import { createTextColumn, createPillColumn, createBaseColumn, getCommodityIcon } from "../helpers"
+import { rates } from "@/data/rates"
+import { type Rate } from "@/types"
+import { cn } from "@/lib/utils"
+import { createTextColumn, createPillColumn, createBaseColumn, createCustomColumn, getCommodityIcon } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -30,15 +31,15 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       { className: "h-6 py-0.5 px-2.5 text-[11px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
     ),
     createPillColumn(
-      EntityKey.COMMODITY_PRICE_ID,
-      ColumnLabel.COMMODITY_PRICE_ID,
+      EntityKey.RATE_ID,
+      ColumnLabel.RATE_ID,
       Package,
       (val) => {
         const storeState = useEntitiesStore.getState()
-        const prices = (storeState.entities[ProjectSlug.COMMODITY_PRICES] || commodityPrices) as CommodityPrice[]
-        const priceRec = prices.find((p) => String(p.id) === String(val))
-        const displayName = priceRec ? `${priceRec.commodity_name}` : `Price ID: ${val}`
-        const Icon = getCommodityIcon(priceRec ? priceRec.commodity_name : "")
+        const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
+        const rateRec = activeRates.find((p) => String(p.id) === String(val))
+        const displayName = rateRec ? `${rateRec.commodity_name}` : `Rate ID: ${val}`
+        const Icon = getCommodityIcon(rateRec ? rateRec.commodity_name : "")
         return <><PillIcon icon={Icon} />{displayName}</>
       },
       { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
@@ -50,7 +51,20 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       (val) => <><PillIcon icon={Building} />ID: {val}</>,
       { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-transparent border border-border hover:bg-muted/20 text-muted-foreground transition-all duration-200" }
     ),
-    createTextColumn(EntityKey.OPERATOR_ID, ColumnLabel.OPERATOR_ID, User, "font-mono text-muted-foreground text-xs"),
+    createTextColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User, "font-mono text-muted-foreground text-xs"),
     createTextColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users, "font-mono text-muted-foreground text-xs"),
+    createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, CheckCircle, (val) => {
+      const isActive = val === "true"
+      return (
+        <span className={cn(
+          "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold shadow-sm",
+          isActive
+            ? "bg-emerald-50 text-emerald-700 border border-emerald-200/50 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/30"
+            : "bg-muted text-muted-foreground border border-border"
+        )}>
+          {isActive ? "Active" : "Inactive"}
+        </span>
+      )
+    }),
   ]
 }

@@ -30,15 +30,17 @@ export enum ColumnLabel {
   WEIGHT = "Weight",
   COMMODITY_ID = "Commodity ID",
   COMMODITY_NAME = "Commodity Name",
-  COMMODITY_PRICE_ID = "Commodity Price ID",
+  RATE_ID = "Rate ID",
   CENTER_ID = "Center ID",
-  OPERATOR_ID = "Operator ID",
+  PROFILE_ID = "Profile ID",
   CUSTOMER_ID = "Customer ID",
   EMAIL = "Email",
   ROLE = "Role",
   CREATED_AT = "Created At",
   UPDATED_AT = "Updated At",
   IMAGES = "Images",
+  USER_ID = "User ID",
+  IS_ACTIVE = "Active",
 }
 
 export enum DialogMode {

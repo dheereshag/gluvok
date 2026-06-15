@@ -14,7 +14,7 @@ export interface Commodity {
   updated_at: string
 }
 
-export interface CommodityPrice {
+export interface Rate {
   id: number
   commodity_name: string
   unit_price: string
@@ -37,6 +37,7 @@ export interface Factory {
   id: number
   name: string
   village_id: number
+  user_id: string
   created_at: string
   updated_at: string
 }
@@ -54,15 +55,16 @@ export interface Weighment {
   vehicle_number: string
   weight: string
   images: string[]
-  commodity_price_id: number
+  rate_id: number
   center_id: number
-  operator_id: string
+  profile_id: string
   customer_id: number
+  is_active: boolean
   created_at: string
   updated_at: string
 }
 
-export interface Operator {
+export interface Profile {
   aadhar_number: string
   id: string
   name: string

@@ -3,6 +3,7 @@
 import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { StateCombobox, EntityCombobox, RoleCombobox } from "@/components/combobox"
 import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
+import { Checkbox } from "@/components/ui/checkbox"
 import { StandardInput } from "./standard-input"
 import { ImageUpload } from "./image/upload"
 
@@ -25,6 +26,15 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
           id={fieldId}
           value={Array.isArray(value) ? value : []}
           onChange={(newImages) => form.setValue(field.key, newImages, { shouldValidate: true })}
+          disabled={disabled}
+        />
+      )
+    case FieldType.CHECKBOX:
+      return (
+        <Checkbox
+          id={fieldId}
+          checked={!!value}
+          onCheckedChange={(checked) => form.setValue(field.key, !!checked, { shouldValidate: true })}
           disabled={disabled}
         />
       )

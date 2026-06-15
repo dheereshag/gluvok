@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
-import { isPrimaryKeyEditable } from "@/lib/fields"
+import { isPrimaryKeyEditable, FieldType } from "@/lib/fields"
 
 export function EntityDialogContent({
   mode, onOpenChange, projectName, projectSlug, isEdit, fields, form, onSubmit, primaryIdKey
@@ -26,6 +26,23 @@ export function EntityDialogContent({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fields.map((field) => {
           const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug)
+
+          if (field.type === FieldType.CHECKBOX) {
+            return (
+              <div key={field.key} className="flex items-center gap-2 py-1">
+                <FormFieldInput
+                  field={field}
+                  form={form}
+                  idPrefix={`${mode}-entity`}
+                  disabled={disabled}
+                />
+                <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">{field.label}</label>
+                {form.formState.errors[field.key] && (
+                  <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
+                )}
+              </div>
+            )
+          }
 
           return (
             <div key={field.key} className="flex flex-col gap-1.5">

@@ -9,7 +9,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.COMMODITIES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Barley", type: FieldType.TEXT },
   ],
-  [ProjectSlug.COMMODITY_PRICES]: [
+  [ProjectSlug.RATES]: [
     { key: EntityKey.COMMODITY_NAME, label: ColumnLabel.COMMODITY_NAME, placeholder: "Select commodity...", type: FieldType.TEXT },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY_ID, placeholder: "Select factory...", type: FieldType.TEXT },
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER },
@@ -32,11 +32,11 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     },
     { key: EntityKey.IMAGES, label: ColumnLabel.IMAGES, placeholder: "Upload weighment photos...", type: FieldType.IMAGES },
     { key: EntityKey.WEIGHT, label: ColumnLabel.WEIGHT, placeholder: "e.g. 15.5", type: FieldType.NUMBER },
-    { key: EntityKey.COMMODITY_PRICE_ID, label: ColumnLabel.COMMODITY_PRICE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.RATE_ID, label: ColumnLabel.RATE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
     {
-      key: EntityKey.OPERATOR_ID,
-      label: ColumnLabel.OPERATOR_ID,
+      key: EntityKey.PROFILE_ID,
+      label: ColumnLabel.PROFILE_ID,
       placeholder: "e.g. 1234 5678 9012",
       type: FieldType.TEXT,
       inputMode: InputMode.NUMERIC,
@@ -47,12 +47,14 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       },
     },
     { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER_ID, placeholder: "e.g. GOV1001", type: FieldType.TEXT },
+    { key: EntityKey.IS_ACTIVE, label: ColumnLabel.IS_ACTIVE, placeholder: "", type: FieldType.CHECKBOX },
   ],
   [ProjectSlug.FACTORIES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE_ID, placeholder: "e.g. 1", type: FieldType.TEXT },
+    { key: EntityKey.USER_ID, label: ColumnLabel.USER_ID, placeholder: "Select user...", type: FieldType.TEXT },
   ],
-  [ProjectSlug.OPERATORS]: [
+  [ProjectSlug.PROFILES]: [
     {
       key: EntityKey.AADHAR_NUMBER,
       label: ColumnLabel.AADHAR_NUMBER,
@@ -65,7 +67,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
         return match ? match.join(" ") : digits
       },
     },
-    { key: EntityKey.ID, label: ColumnLabel.ID, placeholder: "Select user...", type: FieldType.TEXT },
+    { key: EntityKey.ID, label: ColumnLabel.USER_ID, placeholder: "Select user...", type: FieldType.TEXT },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT },
   ],
   [ProjectSlug.USERS]: [

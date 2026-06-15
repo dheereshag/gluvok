@@ -1,5 +1,5 @@
-import { Center, Commodity, CommodityPrice, Customer, Factory, Operator, User, Village, Weighment } from "./entities"
+import { Center, Commodity, Rate, Customer, Factory, Profile, User, Village, Weighment } from "./entities"
 
 export * from "./entities"
 /** Union of all entity types used across the app */
-export type EntityRecord = Center | Commodity | CommodityPrice | Customer | Weighment | Factory | Operator | User | Village
+export type EntityRecord = Center | Commodity | Rate | Customer | Weighment | Factory | Profile | User | Village

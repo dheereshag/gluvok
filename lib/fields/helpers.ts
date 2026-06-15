@@ -5,7 +5,7 @@ export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
     case ProjectSlug.CUSTOMERS:
       return EntityKey.GOVT_ID
-    case ProjectSlug.OPERATORS:
+    case ProjectSlug.PROFILES:
       return EntityKey.AADHAR_NUMBER
     case ProjectSlug.COMMODITIES:
       return EntityKey.NAME
@@ -25,14 +25,16 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
     case EntityKey.COMMODITY_ID:
     case EntityKey.COMMODITY_NAME:
       return ProjectSlug.COMMODITIES
-    case EntityKey.COMMODITY_PRICE_ID:
-      return ProjectSlug.COMMODITY_PRICES
+    case EntityKey.RATE_ID:
+      return ProjectSlug.RATES
     case EntityKey.CENTER_ID:
       return ProjectSlug.CENTERS
-    case EntityKey.OPERATOR_ID:
-      return ProjectSlug.OPERATORS
+    case EntityKey.PROFILE_ID:
+      return ProjectSlug.PROFILES
     case EntityKey.CUSTOMER_ID:
       return ProjectSlug.CUSTOMERS
+    case EntityKey.USER_ID:
+      return ProjectSlug.USERS
     default:
       return null
   }

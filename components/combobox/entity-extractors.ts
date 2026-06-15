@@ -1,44 +1,44 @@
 import { ProjectSlug } from "@/lib/fields"
 import { centers } from "@/data/centers"
 import { commodities } from "@/data/commodities"
-import { commodityPrices } from "@/data/commodity-prices"
+import { rates } from "@/data/rates"
 import { customers } from "@/data/customers"
 import { factories } from "@/data/factories"
-import { operators } from "@/data/operators"
+import { profiles } from "@/data/profiles"
 import { villages } from "@/data/villages"
 import { users } from "@/data/users"
 import { useEntitiesStore } from "@/lib/store"
 import {
   type Center,
   type Commodity,
-  type CommodityPrice,
+  type Rate,
   type Customer,
   type Factory,
-  type Operator,
+  type Profile,
   type User,
   type Village,
 } from "@/types"
 
-export type Entity = Center | Commodity | CommodityPrice | Customer | Factory | Operator | User | Village
+export type Entity = Center | Commodity | Rate | Customer | Factory | Profile | User | Village
 
 export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.CENTERS]: centers,
   [ProjectSlug.COMMODITIES]: commodities,
-  [ProjectSlug.COMMODITY_PRICES]: commodityPrices,
+  [ProjectSlug.RATES]: rates,
   [ProjectSlug.CUSTOMERS]: customers,
   [ProjectSlug.FACTORIES]: factories,
-  [ProjectSlug.OPERATORS]: operators,
+  [ProjectSlug.PROFILES]: profiles,
   [ProjectSlug.VILLAGES]: villages,
   [ProjectSlug.USERS]: users,
 }
 
 export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; name: string }> = {
   [ProjectSlug.CUSTOMERS]: (item) => ({ id: String((item as Customer).govt_id ?? ""), name: (item as Customer).name }),
-  [ProjectSlug.OPERATORS]: (item) => ({ id: String((item as Operator).aadhar_number ?? ""), name: (item as Operator).name }),
+  [ProjectSlug.PROFILES]: (item) => ({ id: String((item as Profile).aadhar_number ?? ""), name: (item as Profile).name }),
   [ProjectSlug.CENTERS]: (item) => ({ id: String((item as Center).id ?? ""), name: (item as Center).name }),
   [ProjectSlug.COMMODITIES]: (item) => ({ id: (item as Commodity).name, name: (item as Commodity).name }),
-  [ProjectSlug.COMMODITY_PRICES]: (item) => {
-    const p = item as CommodityPrice
+  [ProjectSlug.RATES]: (item) => {
+    const p = item as Rate
     const storeState = useEntitiesStore.getState()
     const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
     const factory = activeFactories.find((f) => String(f.id) === String(p.factory_id))

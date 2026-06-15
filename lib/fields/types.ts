@@ -1,11 +1,11 @@
 export enum ProjectSlug {
   CENTERS = "centers",
   COMMODITIES = "commodities",
-  COMMODITY_PRICES = "commodity-prices",
+  RATES = "rates",
   CUSTOMERS = "customers",
   WEIGHMENTS = "weighments",
   FACTORIES = "factories",
-  OPERATORS = "operators",
+  PROFILES = "profiles",
   USERS = "users",
   VILLAGES = "villages",
 }
@@ -16,6 +16,7 @@ export enum FieldType {
   STATE = "state",
   IMAGES = "images",
   ROLE = "role",
+  CHECKBOX = "checkbox",
 }
 
 export enum EntityKey {
@@ -30,9 +31,9 @@ export enum EntityKey {
   WEIGHT = "weight",
   COMMODITY_ID = "commodity_id",
   COMMODITY_NAME = "commodity_name",
-  COMMODITY_PRICE_ID = "commodity_price_id",
+  RATE_ID = "rate_id",
   CENTER_ID = "center_id",
-  OPERATOR_ID = "operator_id",
+  PROFILE_ID = "profile_id",
   CUSTOMER_ID = "customer_id",
   EMAIL = "email",
   ROLE = "role",
@@ -40,7 +41,9 @@ export enum EntityKey {
   UPDATED_AT = "updated_at",
   AADHAR_NUMBER = "aadhar_number",
   GOVT_ID = "govt_id",
-  IMAGES = "images"
+  IMAGES = "images",
+  USER_ID = "user_id",
+  IS_ACTIVE = "is_active",
 }
 
 export enum InputMode {

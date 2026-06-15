@@ -28,6 +28,7 @@ export default function RootLayout({
         </TooltipProvider>
         <Toaster
           richColors
+          closeButton
           toastOptions={{
             className: geist.className,
           }}

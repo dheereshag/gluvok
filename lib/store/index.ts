@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { type EntityRecord, type CommodityPrice } from "@/types"
+import { type EntityRecord, type Rate } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
 import { ProjectSlug } from "@/lib/fields"
@@ -15,8 +15,8 @@ interface EntitiesState {
   entities: Record<string, EntityRecord[]>
   hydrated: boolean
   setEntities: (slug: string, data: EntityRecord[]) => void
-  addEntity: (slug: string, key: string, newE: Record<string, string | number>) => void
-  updateEntity: (slug: string, key: string, id: string, fields: Record<string, string | number>) => void
+  addEntity: (slug: string, key: string, newE: Record<string, string | number | boolean>) => void
+  updateEntity: (slug: string, key: string, id: string, fields: Record<string, string | number | boolean>) => void
   deleteEntity: (slug: string, key: string, id: string) => void
   setHydrated: (state: boolean) => void
 }
@@ -48,7 +48,7 @@ export const useEntitiesStore = create<EntitiesState>()(
               ProjectSlug.VILLAGES,
               ProjectSlug.FACTORIES,
               ProjectSlug.CENTERS,
-              ProjectSlug.COMMODITY_PRICES,
+              ProjectSlug.RATES,
               ProjectSlug.WEIGHMENTS
             ].includes(slug as ProjectSlug)
 
@@ -73,18 +73,18 @@ export const useEntitiesStore = create<EntitiesState>()(
 
            const nextEntities = { ...state.entities, [slug]: updatedList }
 
-          // Cascade update commodity_name in commodity_prices if a commodity is renamed
+          // Cascade update commodity_name in rates if a commodity is renamed
           if (slug === ProjectSlug.COMMODITIES && fields.name && String(fields.name) !== String(id)) {
             const oldName = String(id)
             const newName = String(fields.name)
-            const updatedPrices = (state.entities[ProjectSlug.COMMODITY_PRICES] || []).map((item) => {
-              const price = item as CommodityPrice
-              if (price.commodity_name === oldName) {
-                return { ...price, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
+            const updatedRates = (state.entities[ProjectSlug.RATES] || []).map((item) => {
+              const rate = item as Rate
+              if (rate.commodity_name === oldName) {
+                return { ...rate, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
               }
-              return price
+              return rate
             })
-            nextEntities[ProjectSlug.COMMODITY_PRICES] = updatedPrices
+            nextEntities[ProjectSlug.RATES] = updatedRates
           }
 
           return { entities: nextEntities }
@@ -97,7 +97,7 @@ export const useEntitiesStore = create<EntitiesState>()(
       setHydrated: (state) => set({ hydrated: state }),
     }),
     {
-      name: "gluvok-entities-storage",
+      name: "gluvok-entities-storage-v2",
       storage: createJSONStorage(() => localStorage),
     }
   )
