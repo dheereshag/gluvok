@@ -26,10 +26,10 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY_ID, placeholder: "e.g. 1", type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.COMMODITIES]: [
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Barley", type: FieldType.TEXT, icon: Package },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Barley", type: FieldType.TEXT, icon: Tag },
   ],
   [ProjectSlug.RATES]: [
-    { key: EntityKey.COMMODITY_NAME, label: ColumnLabel.COMMODITY, placeholder: "Select commodity...", type: FieldType.TEXT, icon: Package },
+    { key: EntityKey.COMMODITY_NAME, label: ColumnLabel.COMMODITY, placeholder: "Select commodity...", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: "Select factory...", type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER, icon: IndianRupee },
   ],

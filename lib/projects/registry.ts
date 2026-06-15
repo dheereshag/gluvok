@@ -8,6 +8,7 @@ import {
   UserCog,
   User,
   Home,
+  Tag,
 } from "lucide-react";
 import { type EntityRecord } from "@/types";
 import { ProjectName } from "./types";
@@ -31,7 +32,7 @@ export interface ProjectConfig {
 
 export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
-  [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Package, data: commodities },
+  [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Tag, data: commodities },
   [ProjectSlug.RATES]: { name: ProjectName.RATES, icon: IndianRupee, data: rates },
   [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
   [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList, data: weighments },
