@@ -37,3 +37,14 @@ export function splitFileName(filename: string): [string, string] {
   if (lastDotIndex === -1 || lastDotIndex === 0) return [filename, ""]
   return [filename.slice(0, lastDotIndex), filename.slice(lastDotIndex)]
 }
+
+export function getSingularName(pluralName: string): string {
+  if (!pluralName) return ""
+  if (pluralName.endsWith("ies")) {
+    return pluralName.slice(0, -3) + "y"
+  }
+  if (pluralName.endsWith("s")) {
+    return pluralName.slice(0, -1)
+  }
+  return pluralName
+}

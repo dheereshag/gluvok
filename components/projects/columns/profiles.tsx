@@ -1,8 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Hash, User, ShieldCheck } from "lucide-react"
+import { Hash, User } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
-import { createTextColumn, createCustomColumn, truncateId } from "./helpers"
+import { createTextColumn, createCustomColumn } from "./helpers"
 
 export function getProfilesColumns<T>(): ColumnDef<T>[] {
   return [

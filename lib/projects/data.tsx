@@ -1,6 +1,5 @@
 import {
   Building,
-  Package,
   IndianRupee,
   Users,
   ClipboardList,

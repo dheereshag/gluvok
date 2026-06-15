@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useEntitiesStore, getField, getEntityDisplayName } from "@/lib/store"
 import { type DeleteContentProps } from "./types"
+import { getSingularName } from "@/lib/utils"
 
 export function DeleteEntityDialogContent({
   onOpenChange, projectSlug, projectName, primaryIdKey, item, items, onSuccess, customDisplayName, onConfirm
@@ -27,16 +28,23 @@ export function DeleteEntityDialogContent({
     }
 
     try {
+      const pName = projectName || "Item"
       if (isBulk) {
         items.forEach(i => deleteEntity(projectSlug!, primaryIdKey!, String(getField(i, primaryIdKey!))))
+        toast.success(`${count} ${pName.toLowerCase()} deleted successfully`)
       } else if (item) {
         deleteEntity(projectSlug!, primaryIdKey!, String(getField(item, primaryIdKey!)))
+        const singularName = getSingularName(pName)
+        const primaryKeyValue = String(getField(item, primaryIdKey!))
+        toast.success(`${singularName} "${primaryKeyValue}" deleted successfully`)
       }
-      toast.success(`${isBulk ? `${count} items` : projectName} deleted successfully`)
+      
       onSuccess?.()
       onOpenChange(false)
     } catch {
-      toast.error(`Failed to delete ${isBulk ? "items" : projectName?.toLowerCase() || "item"}`)
+      const pName = projectName || "Item"
+      const singularName = getSingularName(pName)
+      toast.error(`Failed to delete ${isBulk ? pName.toLowerCase() : singularName.toLowerCase()}`)
     }
   }
 
