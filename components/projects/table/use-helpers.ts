@@ -5,8 +5,14 @@ import { type EntityRecord } from "@/types"
 import { useEntitiesStore } from "@/lib/store"
 
 export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
-  const [data, setData] = React.useState<EntityRecord[]>(initialData)
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [data, setData] = React.useState<EntityRecord[]>(() => {
+    const currentState = useEntitiesStore.getState()
+    return currentState.entities[projectSlug] || initialData
+  })
+  const [isLoading, setIsLoading] = React.useState(() => {
+    const currentState = useEntitiesStore.getState()
+    return !currentState.hydrated
+  })
 
   React.useEffect(() => {
     const unsubscribe = useEntitiesStore.subscribe((state) => {
@@ -15,13 +21,6 @@ export function useProjectStoreSync(projectSlug: string, initialData: EntityReco
       }
       setIsLoading(!state.hydrated)
     })
-
-    // Set initial values from store
-    const currentState = useEntitiesStore.getState()
-    if (currentState.entities[projectSlug]) {
-      setData(currentState.entities[projectSlug])
-    }
-    setIsLoading(!currentState.hydrated)
 
     return () => unsubscribe()
   }, [projectSlug])

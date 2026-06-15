@@ -50,11 +50,6 @@ export enum DialogMode {
   EDIT = "edit",
 }
 
-export enum ActiveStatus {
-  ACTIVE = "Active",
-  INACTIVE = "Inactive",
-}
-
 export enum AppRoutes {
   HOME = "/",
   LOGIN = "/login",

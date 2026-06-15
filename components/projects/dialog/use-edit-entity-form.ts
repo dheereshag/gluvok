@@ -6,10 +6,9 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
 import { useEntitiesStore, getField } from "@/lib/store"
-import { PROJECT_FIELDS, ProjectSlug } from "@/lib/fields"
+import { PROJECT_FIELDS, ProjectSlug, FieldType } from "@/lib/fields"
 import { ENTITY_EDIT_SCHEMAS, checkEditUniqueness } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
-import { ActiveStatus } from "@/lib/constants"
 
 interface UseEditEntityFormProps extends EntityFormProps {
   item: EntityRecord
@@ -36,8 +35,8 @@ export function useEditEntityForm({
         if (field.transformOnChange && typeof rawVal === "string") {
           rawVal = field.transformOnChange(rawVal)
         }
-        if (field.key === "is_active") {
-          defaults[field.key] = String(rawVal) === "true" || String(rawVal) === ActiveStatus.ACTIVE ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE
+        if (field.type === FieldType.CHECKBOX) {
+          defaults[field.key] = String(rawVal) === "true" || String(rawVal) === "Active"
         } else {
           defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
         }

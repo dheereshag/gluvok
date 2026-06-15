@@ -36,7 +36,10 @@ export function EntityDialogContent({
                   idPrefix={`${mode}-entity`}
                   disabled={disabled}
                 />
-                <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none">{field.label}</label>
+                <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none flex items-center gap-1.5">
+                  {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+                  {field.label}
+                </label>
                 {form.formState.errors[field.key] && (
                   <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
                 )}
@@ -46,7 +49,10 @@ export function EntityDialogContent({
 
           return (
             <div key={field.key} className="flex flex-col gap-1.5">
-              <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground">{field.label}</label>
+              <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+                {field.label}
+              </label>
               <FormFieldInput
                 field={field}
                 form={form}

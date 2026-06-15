@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { State, ActiveStatus } from "../constants"
+import { State } from "../constants"
 
 export const addWeighmentSchema = z.object({
   vehicle_number: z
@@ -19,7 +19,7 @@ export const addWeighmentSchema = z.object({
       z.string().length(12, "Profile Aadhar number must be exactly 12 characters")
     ),
   customer_id: z.coerce.number({ message: "Customer ID must be an integer" }).int("Customer ID must be an integer").positive("Customer ID must be a positive integer"),
-  is_active: z.nativeEnum(ActiveStatus).default(ActiveStatus.ACTIVE),
+  is_active: z.boolean().default(true),
   images: z.array(z.string()).optional(),
 })
 
