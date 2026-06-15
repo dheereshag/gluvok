@@ -102,11 +102,6 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "gluvok-auth-storage",
       storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: () => {
-        return (state) => {
-          state?.setHydrated(true)
-        }
-      },
     }
   )
 )

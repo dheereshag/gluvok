@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuthStore, hasPageAccess } from "@/lib/store"
+import { useAuthStore, useEntitiesStore, hasPageAccess } from "@/lib/store"
 import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
 import { toast } from "sonner"
 
@@ -26,6 +26,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const projectSlug = projectMatch ? projectMatch[1] : null
 
   const isAuthorized = !user || !projectSlug || hasPageAccess(user.role, projectSlug)
+
+  // Mark both stores as hydrated after mount (avoids React 19 state-update-before-mount warning)
+  useEffect(() => {
+    useAuthStore.getState().setHydrated(true)
+    useEntitiesStore.getState().setHydrated(true)
+  }, [])
 
   useEffect(() => {
     if (!authHydrated) return

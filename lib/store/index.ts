@@ -99,11 +99,6 @@ export const useEntitiesStore = create<EntitiesState>()(
     {
       name: "gluvok-entities-storage",
       storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: () => {
-        return (state) => {
-          state?.setHydrated(true)
-        }
-      },
     }
   )
 )
