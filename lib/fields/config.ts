@@ -94,6 +94,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     },
     { key: EntityKey.ID, label: ColumnLabel.USER_ID, placeholder: "Select user...", type: FieldType.TEXT, icon: Hash },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT, icon: User },
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY_ID, placeholder: "Select factory...", type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.USERS]: [
     { key: EntityKey.EMAIL, label: ColumnLabel.EMAIL, placeholder: "e.g. user@example.com", type: FieldType.TEXT, icon: Mail },

@@ -75,6 +75,7 @@ export interface Profile {
   aadhar_number: string
   id: string
   name: string
+  factory_id?: number
   created_at: string
   updated_at: string
 }

@@ -10,6 +10,7 @@ export const addProfileSchema = z.object({
     ),
   id: z.uuid("User ID must be a valid Supabase Auth UUID"),
   name: z.string().min(3, "Full name must be at least 3 characters").max(255, "Name must be 255 characters or less"),
+  factory_id: z.coerce.number({ message: "Factory ID must be an integer" }).int("Factory ID must be an integer").positive("Factory ID must be a positive integer"),
 })
 
 export const editProfileSchema = addProfileSchema

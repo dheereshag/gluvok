@@ -15,7 +15,7 @@ export function getProfilesColumns<T>(): ColumnDef<T>[] {
       return <div className="font-medium text-foreground text-xs">{user ? user.email : val}</div>
     }),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, User),
-    createCustomColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY, Factory, (val) => {
+    createCustomColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, (val) => {
       if (!val || val === "undefined" || val === "null") return <div className="text-muted-foreground text-xs">—</div>
       const activeFactories = useEntitiesStore.getState().entities["factories"] as FactoryType[] || []
       const factory = activeFactories.find((f) => String(f.id) === String(val))
