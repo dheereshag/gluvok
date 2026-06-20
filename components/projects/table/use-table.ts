@@ -82,7 +82,7 @@ export function useProjectTable({
       toast.success("Table reloaded", {
         description: `Reset ${projectName} data.`,
       })
-    }, 100)
+    }, 600)
   }, [projectSlug, projectName])
 
   return {

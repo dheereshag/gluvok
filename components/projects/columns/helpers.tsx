@@ -7,7 +7,7 @@ export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { useEntitiesStore } from "@/lib/store"
 import { type Factory as FactoryType, type User as UserType, type Village as VillageType } from "@/types"
-import { User, Factory } from "lucide-react"
+import { User, Factory, Home } from "lucide-react"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"], id?: string
@@ -29,13 +29,19 @@ export function createBaseColumn<T>(
 export function createCustomColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, renderCell: (value: string) => React.ReactNode, id?: string
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => renderCell(String(row.getValue(key))), id)
+  return createBaseColumn(key, label, Icon, ({ row }) => {
+    const val = (row.original as Record<string, unknown>)[key]
+    return renderCell(String(val ?? ""))
+  }, id)
 }
 
 export function createTextColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, className = "font-semibold text-foreground text-xs", id?: string
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => <div className={className}>{String(row.getValue(key))}</div>, id)
+  return createBaseColumn(key, label, Icon, ({ row }) => {
+    const val = (row.original as Record<string, unknown>)[key]
+    return <div className={className}>{String(val ?? "")}</div>
+  }, id)
 }
 
 export function createPillColumn<T>(
@@ -43,7 +49,7 @@ export function createPillColumn<T>(
   pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string | ((value: string) => string) }, id?: string
 ): ColumnDef<T> {
   return createBaseColumn(key, label, Icon, ({ row }) => {
-    const val = String(row.getValue(key))
+    const val = String((row.original as Record<string, unknown>)[key] ?? "")
     const resolvedClassName = typeof pillProps?.className === "function"
       ? pillProps.className(val)
       : pillProps?.className
@@ -166,6 +172,34 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
     cell: ({ row }) => {
       const factoryName = row.getValue(id) as string
       return <div className="font-semibold text-foreground text-xs">{factoryName || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createVillageNameColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.VILLAGE_NAME
+  const label = ColumnLabel.VILLAGE_NAME
+  const Icon = Home
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      const villageId = record.village_id
+      if (!villageId) return ""
+      const activeVillages = useEntitiesStore.getState().entities[ProjectSlug.VILLAGES] as VillageType[] || []
+      const village = activeVillages.find((v) => String(v.id) === String(villageId))
+      return village ? village.name : `Village ${villageId}`
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const villageName = row.getValue(id) as string
+      return <div className="font-semibold text-foreground text-xs">{villageName || "—"}</div>
     },
     meta: { icon: Icon, label },
   }
