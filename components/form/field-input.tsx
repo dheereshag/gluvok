@@ -12,9 +12,10 @@ interface FormFieldInputProps {
   form: UseFormReturn<FieldValues>
   idPrefix: string
   disabled?: boolean
+  projectSlug?: string
 }
 
-export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInputProps) {
+export function FormFieldInput({ field, form, idPrefix, disabled, projectSlug }: FormFieldInputProps) {
   const referencedSlug = getReferencedEntitySlug(field.key)
   const fieldId = `${idPrefix}-field-${field.key}`
   const value = useWatch({ control: form.control, name: field.key })
@@ -65,6 +66,8 @@ export function FormFieldInput({ field, form, idPrefix, disabled }: FormFieldInp
             value={typeof value === "string" ? value : ""}
             onChange={(val) => form.setValue(field.key, val, { shouldValidate: true })}
             placeholder={field.placeholder}
+            contextSlug={projectSlug}
+            fieldKey={field.key}
           />
         )
       }

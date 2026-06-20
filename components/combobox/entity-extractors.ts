@@ -7,6 +7,7 @@ import { factories } from "@/data/factories"
 import { profiles } from "@/data/profiles"
 import { villages } from "@/data/villages"
 import { users } from "@/data/users"
+import { assignments } from "@/data/assignments"
 import { useEntitiesStore } from "@/lib/store"
 import {
   type Center,
@@ -17,9 +18,11 @@ import {
   type Profile,
   type User,
   type Village,
+  type Assignment,
+  type EntityRecord,
 } from "@/types"
 
-export type Entity = Center | Commodity | Rate | Customer | Factory | Profile | User | Village
+export type Entity = EntityRecord
 
 export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.CENTERS]: centers,
@@ -30,6 +33,7 @@ export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.PROFILES]: profiles,
   [ProjectSlug.VILLAGES]: villages,
   [ProjectSlug.USERS]: users,
+  [ProjectSlug.ASSIGNMENTS]: assignments,
 }
 
 export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; name: string }> = {
@@ -51,4 +55,18 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
   [ProjectSlug.FACTORIES]: (item) => ({ id: String((item as Factory).id ?? ""), name: (item as Factory).name }),
   [ProjectSlug.VILLAGES]: (item) => ({ id: String((item as Village).id ?? ""), name: (item as Village).name }),
   [ProjectSlug.USERS]: (item) => ({ id: (item as User).id, name: (item as User).email }),
+  [ProjectSlug.ASSIGNMENTS]: (item) => {
+    const a = item as Assignment
+    const storeState = useEntitiesStore.getState()
+    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
+    const activeUsers = (storeState.entities[ProjectSlug.USERS] || users) as User[]
+    const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
+    const user = activeUsers.find((u) => String(u.id) === String(a.user_id))
+    const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
+    const userEmail = user ? user.email : `User ${a.user_id}`
+    return {
+      id: String(a.id),
+      name: `${userEmail} @ ${factoryName}`
+    }
+  },
 }

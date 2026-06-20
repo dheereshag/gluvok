@@ -15,6 +15,7 @@ import { getFactoriesColumns } from "./factories"
 import { getProfilesColumns } from "./profiles"
 import { getUsersColumns } from "./users"
 import { getVillagesColumns } from "./villages"
+import { getAssignmentsColumns } from "./assignments"
 
 import { type Permission } from "@/lib/store"
 
@@ -34,6 +35,7 @@ function getSpecificColumns<T>(projectSlug: string): ColumnDef<T>[] {
     case ProjectSlug.PROFILES: return getProfilesColumns<T>()
     case ProjectSlug.USERS: return getUsersColumns<T>()
     case ProjectSlug.VILLAGES: return getVillagesColumns<T>()
+    case ProjectSlug.ASSIGNMENTS: return getAssignmentsColumns<T>()
     default: return []
   }
 }

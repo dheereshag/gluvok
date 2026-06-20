@@ -73,6 +73,9 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.FACTORIES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE_ID, placeholder: "e.g. 1", type: FieldType.TEXT, icon: Home },
+  ],
+  [ProjectSlug.ASSIGNMENTS]: [
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: "Select factory...", type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.USER_ID, label: ColumnLabel.USER_ID, placeholder: "Select user...", type: FieldType.TEXT, icon: User },
   ],
   [ProjectSlug.PROFILES]: [

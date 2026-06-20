@@ -19,7 +19,7 @@ export const users: User[] = [
   {
     id: "256c8f39-b406-4f2d-bca2-304b5645b342",
     email: "rahul@example.com",
-    role: Role.MANAGER,
+    role: Role.ADMIN,
     created_at: "2026-06-07 11:50:14.658144+00",
     updated_at: "2026-06-07 11:50:14.658144+00",
   },

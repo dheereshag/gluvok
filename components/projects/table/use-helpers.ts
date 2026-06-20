@@ -2,32 +2,21 @@
 
 import * as React from "react"
 import { type EntityRecord } from "@/types"
-import { useEntitiesStore } from "@/lib/store"
+import { useEntitiesStore, useAuthStore, filterEntitiesForUser } from "@/lib/store"
 
 export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
-  const [data, setData] = React.useState<EntityRecord[]>(() => {
-    const currentState = useEntitiesStore.getState()
-    return currentState.entities[projectSlug] || initialData
-  })
-  const [isLoading, setIsLoading] = React.useState(() => {
-    const currentState = useEntitiesStore.getState()
-    return !currentState.hydrated
-  })
+  const user = useAuthStore((state) => state.user)
+  const entities = useEntitiesStore((state) => state.entities)
+  const hydrated = useEntitiesStore((state) => state.hydrated)
 
-  React.useEffect(() => {
-    const unsubscribe = useEntitiesStore.subscribe((state) => {
-      if (state.entities[projectSlug]) {
-        setData(state.entities[projectSlug])
-      }
-      setIsLoading(!state.hydrated)
-    })
-
-    return () => unsubscribe()
-  }, [projectSlug])
+  const data = React.useMemo(() => {
+    const rawData = entities[projectSlug] || initialData
+    return filterEntitiesForUser(projectSlug, rawData, user, entities)
+  }, [projectSlug, initialData, user, entities])
 
   return {
     tableData: data,
-    isLoading,
+    isLoading: !hydrated,
   }
 }
 

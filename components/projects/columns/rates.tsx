@@ -15,7 +15,7 @@ export function getRatesColumns<T>(): ColumnDef<T>[] {
         </div>
       )
     }),
-    createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY, Factory, "font-mono text-muted-foreground text-xs"),
+    createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, "font-mono text-muted-foreground text-xs"),
     createCustomColumn(EntityKey.UNIT_PRICE, ColumnLabel.UNIT_PRICE, IndianRupee, (val) => {
       const price = parseFloat(val)
       const formatted = new Intl.NumberFormat("en-IN", {

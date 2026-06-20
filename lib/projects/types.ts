@@ -11,6 +11,7 @@ export enum ProjectName {
   PROFILES = "Profiles",
   USERS = "Users",
   VILLAGES = "Villages",
+  ASSIGNMENTS = "Assignments",
 }
 
 export interface ProjectMetadata {

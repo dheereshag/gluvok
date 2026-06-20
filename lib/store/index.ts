@@ -6,10 +6,12 @@ import { type EntityRecord, type Rate } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
 import { ProjectSlug } from "@/lib/fields"
+import { useAuthStore } from "./auth"
 
 export * from "./helpers"
 export * from "./auth"
 export * from "./access"
+export * from "./filters"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>
@@ -49,7 +51,8 @@ export const useEntitiesStore = create<EntitiesState>()(
               ProjectSlug.FACTORIES,
               ProjectSlug.CENTERS,
               ProjectSlug.RATES,
-              ProjectSlug.WEIGHMENTS
+              ProjectSlug.WEIGHMENTS,
+              ProjectSlug.ASSIGNMENTS
             ].includes(slug as ProjectSlug)
 
             if (isNumericSerial) {
@@ -60,7 +63,26 @@ export const useEntitiesStore = create<EntitiesState>()(
           }
           newE[key] = id
           const entityToAdd = { ...newE, created_at: getTimestamp(), updated_at: getTimestamp() } as EntityRecord
-          return { entities: { ...state.entities, [slug]: [entityToAdd, ...currentList] } }
+
+          const nextEntities = { ...state.entities, [slug]: [entityToAdd, ...currentList] }
+
+          // Auto-assign admin/creator to new factory
+          if (slug === ProjectSlug.FACTORIES) {
+            const currentUser = useAuthStore.getState().user
+            if (currentUser?.id) {
+              const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
+              const newAssignment = {
+                id: currentAssignments.length + 1,
+                factory_id: Number(id),
+                user_id: currentUser.id,
+                created_at: getTimestamp(),
+                updated_at: getTimestamp()
+              } as EntityRecord
+              nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
+            }
+          }
+
+          return { entities: nextEntities }
         }),
       updateEntity: (slug, key, id, fields) =>
         set((state) => {

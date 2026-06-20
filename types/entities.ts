@@ -37,6 +37,13 @@ export interface Factory {
   id: number
   name: string
   village_id: number
+  created_at: string
+  updated_at: string
+}
+
+export interface Assignment {
+  id: number
+  factory_id: number
   user_id: string
   created_at: string
   updated_at: string

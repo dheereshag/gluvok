@@ -8,6 +8,7 @@ import {
   User,
   Home,
   Tag,
+  UserCheck,
 } from "lucide-react"
 import { ProjectSlug } from "../fields"
 import { ProjectName, type ProjectMetadata } from "./types"
@@ -22,4 +23,5 @@ export const PROJECTS: ProjectMetadata[] = [
   { slug: ProjectSlug.PROFILES, name: ProjectName.PROFILES, desc: "Manage user profiles and credentials", icon: UserCog, color: "text-pink-500" },
   { slug: ProjectSlug.USERS, name: ProjectName.USERS, desc: "Configure access control and team profiles", icon: User, color: "text-teal-500" },
   { slug: ProjectSlug.VILLAGES, name: ProjectName.VILLAGES, desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
+  { slug: ProjectSlug.ASSIGNMENTS, name: ProjectName.ASSIGNMENTS, desc: "Manage user-factory station assignments", icon: UserCheck, color: "text-cyan-500" },
 ]

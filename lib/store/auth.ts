@@ -5,6 +5,7 @@ import { users as seedUsers } from "@/data/users"
 import { Role } from "@/lib/constants"
 
 export interface AuthUser {
+  id: string
   name: string
   email: string
   avatar?: string
@@ -12,6 +13,7 @@ export interface AuthUser {
 }
 
 export interface RegisteredUser {
+  id: string
   name: string
   email: string
   password?: string
@@ -24,17 +26,29 @@ interface AuthStore {
   hydrated: boolean
   login: (email: string, password: string) => boolean
   logout: () => void
-  registerUser: (user: Omit<RegisteredUser, "role"> & { role?: Role }) => boolean
+  registerUser: (user: Omit<RegisteredUser, "role" | "id"> & { role?: Role }) => boolean
   resetPassword: (email: string, newPassword: string) => boolean
   setHydrated: (state: boolean) => void
 }
 
 const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
+  id: u.id,
   name: u.email.split("@")[0],
   email: u.email,
   password: "password123",
   role: u.role,
 }))
+
+function generateUUID(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID()
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === "x" ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
 
 export const useAuthStore = create<AuthStore>()(
   persist(
@@ -50,6 +64,7 @@ export const useAuthStore = create<AuthStore>()(
         if (found) {
           set({
             user: {
+              id: found.id,
               name: found.name,
               email: found.email,
               avatar: "/avatars/shadcn.jpg",
@@ -69,6 +84,7 @@ export const useAuthStore = create<AuthStore>()(
           return false
         }
         const userWithRole: RegisteredUser = {
+          id: generateUUID(),
           name: user.name,
           email: user.email,
           password: user.password,
@@ -78,6 +94,7 @@ export const useAuthStore = create<AuthStore>()(
         set({
           registeredUsers: updatedUsers,
           user: {
+            id: userWithRole.id,
             name: userWithRole.name,
             email: userWithRole.email,
             avatar: "/avatars/shadcn.jpg",

@@ -59,6 +59,7 @@ export function useProjectTable({
     if (projectSlug === ProjectSlug.USERS) return EntityKey.EMAIL
     if (projectSlug === ProjectSlug.WEIGHMENTS) return EntityKey.VEHICLE_NUMBER
     if (projectSlug === ProjectSlug.RATES) return EntityKey.COMMODITY_NAME
+    if (projectSlug === ProjectSlug.ASSIGNMENTS) return EntityKey.USER_ID
     return EntityKey.NAME
   }, [projectSlug])
 

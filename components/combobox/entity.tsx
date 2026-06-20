@@ -10,6 +10,8 @@ interface EntityComboboxProps {
   onChange: (value: string) => void
   placeholder?: string
   id?: string
+  contextSlug?: string
+  fieldKey?: string
 }
 
 export function EntityCombobox({
@@ -18,8 +20,10 @@ export function EntityCombobox({
   onChange,
   placeholder,
   id,
+  contextSlug,
+  fieldKey,
 }: EntityComboboxProps) {
-  const comboboxData = useEntityOptions(entitySlug)
+  const comboboxData = useEntityOptions(entitySlug, contextSlug, fieldKey)
 
   return (
     <BaseCombobox

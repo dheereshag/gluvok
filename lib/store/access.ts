@@ -18,17 +18,19 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: true, delete: true },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
+    [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
   },
   [Role.ADMIN]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: true },
     [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false },
-    [ProjectSlug.FACTORIES]: { read: true, write: false, delete: false },
-    [ProjectSlug.CENTERS]: { read: true, write: false, delete: false },
+    [ProjectSlug.FACTORIES]: { read: true, write: true, delete: true },
+    [ProjectSlug.CENTERS]: { read: true, write: true, delete: true },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false },
     [ProjectSlug.RATES]: { read: true, write: true, delete: true },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
+    [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
   },
   [Role.MANAGER]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -40,6 +42,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: true, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
+    [ProjectSlug.ASSIGNMENTS]: { read: true, write: false, delete: false },
   },
   [Role.OPERATOR]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -51,6 +54,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: false, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
+    [ProjectSlug.ASSIGNMENTS]: { read: false, write: false, delete: false },
   },
   [Role.BASE]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -62,6 +66,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: false, write: false, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: false, write: false, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: false, delete: false },
+    [ProjectSlug.ASSIGNMENTS]: { read: false, write: false, delete: false },
   },
 }
 

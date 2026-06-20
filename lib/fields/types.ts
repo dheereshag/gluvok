@@ -10,6 +10,7 @@ export enum ProjectSlug {
   PROFILES = "profiles",
   USERS = "users",
   VILLAGES = "villages",
+  ASSIGNMENTS = "assignments",
 }
 
 export enum FieldType {
