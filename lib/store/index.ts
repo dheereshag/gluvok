@@ -159,4 +159,5 @@ export const useEntitiesStore = create<EntitiesState>()(
 
 export function resetAllEntitiesData() {
   useEntitiesStore.getState().resetAllEntities()
+  useAuthStore.getState().resetAuth()
 }

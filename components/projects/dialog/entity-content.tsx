@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
-import { isPrimaryKeyEditable, FieldType } from "@/lib/fields"
+import { isPrimaryKeyEditable, FieldType, ProjectSlug, EntityKey } from "@/lib/fields"
 import { useAuthStore } from "@/lib/store"
 import { Role } from "@/lib/constants"
 
@@ -29,47 +29,75 @@ export function EntityDialogContent({
       </DialogHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fields.map((field) => {
-          const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin
+          const isFieldVisible = (() => {
+            switch (projectSlug as ProjectSlug) {
+              case ProjectSlug.WEIGHMENTS:
+                switch (field.key) {
+                  case EntityKey.PROFILE_ID:
+                    switch (currentUser?.role) {
+                      case Role.SUPER_ADMIN:
+                      case Role.ADMIN:
+                        return true
+                      default:
+                        return false
+                    }
+                  default:
+                    return true
+                }
+              default:
+                return true
+            }
+          })()
 
-          if (field.type === FieldType.CHECKBOX) {
-            return (
-              <div key={field.key} className="flex items-center gap-2 py-1">
-                <FormFieldInput
-                  field={field}
-                  form={form}
-                  idPrefix={`${mode}-entity`}
-                  disabled={disabled}
-                  projectSlug={projectSlug}
-                />
-                <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none flex items-center gap-1.5">
-                  {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
-                  {field.label}
-                </label>
-                {form.formState.errors[field.key] && (
-                  <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
-                )}
-              </div>
-            )
+          switch (isFieldVisible) {
+            case false:
+              return null
+            default:
+              break
           }
 
-          return (
-            <div key={field.key} className="flex flex-col gap-1.5">
-              <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
-                {field.label}
-              </label>
-              <FormFieldInput
-                field={field}
-                form={form}
-                idPrefix={`${mode}-entity`}
-                disabled={disabled}
-                projectSlug={projectSlug}
-              />
-              {form.formState.errors[field.key] && (
-                <span className="text-destructive text-[11px] font-medium">{form.formState.errors[field.key]?.message as string}</span>
-              )}
-            </div>
-          )
+          const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin
+
+          switch (field.type) {
+            case FieldType.CHECKBOX:
+              return (
+                <div key={field.key} className="flex items-center gap-2 py-1">
+                  <FormFieldInput
+                    field={field}
+                    form={form}
+                    idPrefix={`${mode}-entity`}
+                    disabled={disabled}
+                    projectSlug={projectSlug}
+                  />
+                  <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none flex items-center gap-1.5">
+                    {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+                    {field.label}
+                  </label>
+                  {form.formState.errors[field.key] && (
+                    <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
+                  )}
+                </div>
+              )
+            default:
+              return (
+                <div key={field.key} className="flex flex-col gap-1.5">
+                  <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                    {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+                    {field.label}
+                  </label>
+                  <FormFieldInput
+                    field={field}
+                    form={form}
+                    idPrefix={`${mode}-entity`}
+                    disabled={disabled}
+                    projectSlug={projectSlug}
+                  />
+                  {form.formState.errors[field.key] && (
+                    <span className="text-destructive text-[11px] font-medium">{form.formState.errors[field.key]?.message as string}</span>
+                  )}
+                </div>
+              )
+          }
         })}
         <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
           <Button id={`${mode}-entity-cancel`} type="button" variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5 h-8 px-3 text-xs">

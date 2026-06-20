@@ -29,6 +29,7 @@ interface AuthStore {
   registerUser: (user: Omit<RegisteredUser, "role" | "id"> & { role?: Role }) => boolean
   resetPassword: (email: string, newPassword: string) => boolean
   setHydrated: (state: boolean) => void
+  resetAuth: () => void
 }
 
 const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
@@ -115,6 +116,18 @@ export const useAuthStore = create<AuthStore>()(
         return true
       },
       setHydrated: (state) => set({ hydrated: state }),
+      resetAuth: () => {
+        set({
+          user: null,
+          registeredUsers: seedUsers.map((u) => ({
+            id: u.id,
+            name: u.email.split("@")[0],
+            email: u.email,
+            password: "password123",
+            role: u.role,
+          })),
+        })
+      },
     }),
     {
       name: "gluvok-auth-storage",

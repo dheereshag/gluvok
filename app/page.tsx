@@ -4,19 +4,33 @@ import * as React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { LayoutDashboard, Weight } from "lucide-react"
+import { LayoutDashboard, Weight, RotateCw } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
-import { useAuthStore, hasPageAccess } from "@/lib/store"
+import { useAuthStore, hasPageAccess, resetAllEntitiesData } from "@/lib/store"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 export default function Page() {
   const user = useAuthStore((state) => state.user)
   const hydrated = useAuthStore((state) => state.hydrated)
+  const [isReloading, setIsReloading] = React.useState(false)
 
   const filteredProjects = React.useMemo(() => {
     if (!hydrated || !user) return []
     return PROJECTS.filter((p) => hasPageAccess(user.role, p.slug))
   }, [hydrated, user])
+
+  const handleReload = React.useCallback(() => {
+    setIsReloading(true)
+    resetAllEntitiesData()
+    setTimeout(() => {
+      setIsReloading(false)
+      toast.success("All tables reloaded", {
+        description: "Reset all dashboard data back to initial seed state.",
+      })
+    }, 600)
+  }, [])
 
   return (
     <>
@@ -38,14 +52,28 @@ export default function Page() {
       </header>
 
       <main className="p-8 w-full min-w-0 space-y-8">
-        <div className="space-y-2 flex flex-col items-start text-left">
-          <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-            <Weight className="h-8 w-8 text-primary" />
-            gluvok Dashboard
-          </h1>
-          <p className="text-muted-foreground text-sm max-w-xl">
-            Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
-          </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2 flex flex-col items-start text-left">
+            <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
+              <Weight className="h-8 w-8 text-primary" />
+              gluvok Dashboard
+            </h1>
+            <p className="text-muted-foreground text-sm max-w-xl">
+              Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
+            </p>
+          </div>
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReload}
+              disabled={isReloading}
+              className="h-9 gap-2 shadow-sm font-semibold transition-all duration-300 hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCw className={`h-4 w-4 ${isReloading ? "animate-spin" : ""}`} />
+              Reload and Reset Data
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
