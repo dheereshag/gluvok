@@ -1,19 +1,11 @@
 import { type Profile } from "@/types";
 
 export const profiles: Profile[] = [
-  // Super Admins
-  {
-    aadhar_number: "900000000001",
-    id: "6025181a-91b2-4e5f-b8d3-7c5d37867f15",
-    name: "Super Admin A",
-    factory_id: 1,
-    created_at: "2026-06-07 11:46:03.686287",
-    updated_at: "2026-06-07 11:46:03.705674",
-  },
+  // Super Admin
   {
     aadhar_number: "900000000002",
     id: "f1a8e8b8-2b8d-4e9e-b5c6-7a8b9c0d1e2f",
-    name: "Super Admin B",
+    name: "Super Admin",
     factory_id: 1,
     created_at: "2026-06-07 11:46:03.686287",
     updated_at: "2026-06-07 11:46:03.705674",
@@ -23,7 +15,7 @@ export const profiles: Profile[] = [
   {
     aadhar_number: "123456789012",
     id: "056c8f39-b406-4f2d-bca2-304b5645b342",
-    name: "Amit Sharma",
+    name: "Admin One A",
     factory_id: 1,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
@@ -55,7 +47,7 @@ export const profiles: Profile[] = [
   {
     aadhar_number: "345678901234",
     id: "356c8f39-b406-4f2d-bca2-304b5645b342",
-    name: "Neha Gupta",
+    name: "Operator One A",
     factory_id: 1,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
@@ -71,7 +63,7 @@ export const profiles: Profile[] = [
   {
     aadhar_number: "100000000007",
     id: "456c8f39-b406-4f2d-bca2-304b5645b342",
-    name: "Priya Sharma",
+    name: "Base One A",
     factory_id: 1,
     created_at: "2026-06-07 11:52:00.000000",
     updated_at: "2026-06-07 11:52:00.000000",
@@ -155,7 +147,7 @@ export const profiles: Profile[] = [
   {
     aadhar_number: "234567890123",
     id: "256c8f39-b406-4f2d-bca2-304b5645b342",
-    name: "Rahul Verma",
+    name: "Admin Three A",
     factory_id: 3,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",

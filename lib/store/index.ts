@@ -21,6 +21,7 @@ interface EntitiesState {
   updateEntity: (slug: string, key: string, id: string, fields: Record<string, string | number | boolean>) => void
   deleteEntity: (slug: string, key: string, id: string) => void
   setHydrated: (state: boolean) => void
+  resetAllEntities: () => void
 }
 
 const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
@@ -140,6 +141,14 @@ export const useEntitiesStore = create<EntitiesState>()(
           return { entities: { ...state.entities, [slug]: updatedList } }
         }),
       setHydrated: (state) => set({ hydrated: state }),
+      resetAllEntities: () =>
+        set(() => {
+          const initialEntities: Record<string, EntityRecord[]> = {}
+          Object.keys(PROJECT_REGISTRY).forEach((slug) => {
+            initialEntities[slug] = PROJECT_REGISTRY[slug].data
+          })
+          return { entities: initialEntities }
+        }),
     }),
     {
       name: "gluvok-entities-storage",
@@ -147,3 +156,7 @@ export const useEntitiesStore = create<EntitiesState>()(
     }
   )
 )
+
+export function resetAllEntitiesData() {
+  useEntitiesStore.getState().resetAllEntities()
+}

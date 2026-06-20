@@ -5,8 +5,7 @@ import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
-import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
-import { PROJECT_REGISTRY } from "@/lib/projects/registry"
+import { useAuthStore, getPermissions, resetAllEntitiesData } from "@/lib/store"
 import { toast } from "sonner"
 
 interface UseProjectTableProps {
@@ -72,11 +71,7 @@ export function useProjectTable({
   const handleReload = React.useCallback(() => {
     setIsReloading(true)
 
-    // Reset all store data back to registry initial data to clear stale local storage
-    const setEntities = useEntitiesStore.getState().setEntities
-    Object.keys(PROJECT_REGISTRY).forEach((slug) => {
-      setEntities(slug, PROJECT_REGISTRY[slug]?.data || [])
-    })
+    resetAllEntitiesData()
 
     setTimeout(() => {
       setIsReloading(false)
