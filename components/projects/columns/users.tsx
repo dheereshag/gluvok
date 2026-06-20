@@ -84,7 +84,5 @@ export function getUsersColumns<T>(): ColumnDef<T>[] {
       },
       { className: getRoleClassName }
     ),
-    createFactoryIdColumn(),
-    createFactoryNameColumn(),
   ]
 }

@@ -72,18 +72,19 @@ export function useProjectTable({
   const handleReload = React.useCallback(() => {
     setIsReloading(true)
 
-    // Reset store data back to registry initial data
+    // Reset all store data back to registry initial data to clear stale local storage
     const setEntities = useEntitiesStore.getState().setEntities
-    const initialRegistryData = PROJECT_REGISTRY[projectSlug]?.data || []
-    setEntities(projectSlug, initialRegistryData)
+    Object.keys(PROJECT_REGISTRY).forEach((slug) => {
+      setEntities(slug, PROJECT_REGISTRY[slug]?.data || [])
+    })
 
     setTimeout(() => {
       setIsReloading(false)
-      toast.success("Table reloaded", {
-        description: `Reset ${projectName} data.`,
+      toast.success("All tables reloaded", {
+        description: `Reset all dashboard data back to initial seed state.`,
       })
     }, 600)
-  }, [projectSlug, projectName])
+  }, [])
 
   return {
     table,

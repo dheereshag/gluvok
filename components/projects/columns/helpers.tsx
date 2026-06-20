@@ -139,7 +139,7 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
       if (userId && typeof userId === "string") {
         const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
         const factoryIds = activeAssignments
-          .filter((a) => String(a.user_id) === String(userId))
+          .filter((a) => String(a.user_id).trim().toLowerCase() === String(userId).trim().toLowerCase())
           .map((a) => a.factory_id)
         if (factoryIds.length > 0) {
           return factoryIds.join(", ")
@@ -178,7 +178,7 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
         if (userId && typeof userId === "string") {
           const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
           factoryIds = activeAssignments
-            .filter((a) => String(a.user_id) === String(userId))
+            .filter((a) => String(a.user_id).trim().toLowerCase() === String(userId).trim().toLowerCase())
             .map((a) => String(a.factory_id))
         }
       }
@@ -187,7 +187,7 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
 
       const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
       const names = factoryIds.map((fid) => {
-        const factory = activeFactories.find((f) => String(f.id) === String(fid))
+        const factory = activeFactories.find((f) => String(f.id).trim().toLowerCase() === String(fid).trim().toLowerCase())
         return factory ? factory.name : `Factory ${fid}`
       })
 
