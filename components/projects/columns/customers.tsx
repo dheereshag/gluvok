@@ -6,10 +6,10 @@ import { createTextColumn, createCustomColumn, resolveUserEmail, resolveVillageN
 
 export function getCustomersColumns<T>(): ColumnDef<T>[] {
   return [
-    createCustomColumn(EntityKey.ID, ColumnLabel.EMAIL, Mail, resolveUserEmail, "user_email"),
+    createCustomColumn(EntityKey.ID, ColumnLabel.EMAIL, Mail, resolveUserEmail, EntityKey.EMAIL),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, User),
     createTextColumn(EntityKey.FATHER_NAME, ColumnLabel.FATHER_NAME, User, "text-muted-foreground text-xs"),
     createTextColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home, "font-mono text-muted-foreground text-xs"),
-    createCustomColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_NAME, Home, resolveVillageName, "village_name"),
+    createCustomColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_NAME, Home, resolveVillageName, EntityKey.VILLAGE_NAME),
   ]
 }

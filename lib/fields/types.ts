@@ -47,6 +47,8 @@ export enum EntityKey {
   IMAGES = "images",
   USER_ID = "user_id",
   IS_ACTIVE = "is_active",
+  FACTORY_NAME = "factory_name",
+  VILLAGE_NAME = "village_name",
 }
 
 export enum InputMode {
