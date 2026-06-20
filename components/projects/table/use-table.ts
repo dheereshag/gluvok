@@ -1,6 +1,7 @@
 import * as React from "react"
 import { type EntityRecord } from "@/types"
-import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
+import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel } from "@tanstack/react-table"
+import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
@@ -40,7 +41,6 @@ export function useProjectTable({
     }, permissions)
   }, [projectSlug, primaryIdKey, projectName, setEditingItem, setDeletingItem, permissions])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: tableData,
     columns,

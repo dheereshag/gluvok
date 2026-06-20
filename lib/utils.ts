@@ -48,3 +48,5 @@ export function getSingularName(pluralName: string): string {
   }
   return pluralName
 }
+
+export { useReactTable } from "@tanstack/react-table"
