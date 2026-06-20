@@ -27,6 +27,7 @@ export function useProjectTable({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [globalFilter, setGlobalFilter] = React.useState("")
   const [isReloading, setIsReloading] = React.useState(false)
   const { setEditingItem, setDeletingItem } = dialogStates
 
@@ -46,21 +47,28 @@ export function useProjectTable({
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: { sorting, columnFilters, columnVisibility, rowSelection },
+    state: { sorting, columnFilters, columnVisibility, rowSelection, globalFilter },
   })
 
   const filterKey = React.useMemo(() => {
-    if (projectSlug === ProjectSlug.USERS) return EntityKey.EMAIL
-    if (projectSlug === ProjectSlug.WEIGHMENTS) return EntityKey.VEHICLE_NUMBER
-    if (projectSlug === ProjectSlug.RATES) return EntityKey.COMMODITY_NAME
-    if (projectSlug === ProjectSlug.ASSIGNMENTS) return EntityKey.USER_ID
-    return EntityKey.NAME
+    switch (projectSlug) {
+      case ProjectSlug.USERS:
+      case ProjectSlug.ASSIGNMENTS:
+        return EntityKey.EMAIL
+      case ProjectSlug.WEIGHMENTS:
+        return EntityKey.VEHICLE_NUMBER
+      case ProjectSlug.RATES:
+        return EntityKey.COMMODITY_NAME
+      default:
+        return EntityKey.NAME
+    }
   }, [projectSlug])
 
   const handleReload = React.useCallback(() => {
@@ -76,7 +84,7 @@ export function useProjectTable({
       toast.success("Table reloaded", {
         description: `Reset ${projectName} data.`,
       })
-    }, 600)
+    }, 100)
   }, [projectSlug, projectName])
 
   return {

@@ -15,7 +15,6 @@ interface ProjectToolbarProps<TData> {
 export function ProjectToolbar<TData>({
   table, projectSlug, projectName, filterKey, primaryIdKey, setCreating, onReload
 }: ProjectToolbarProps<TData>) {
-  const filterColumn = table.getColumn(filterKey)
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const user = useAuthStore((state) => state.user)
   const permissions = getPermissions(user?.role, projectSlug)
@@ -32,18 +31,22 @@ export function ProjectToolbar<TData>({
         />
       ) : (
         <>
-          {filterColumn && (
-            <div className="relative w-full sm:max-w-xs md:max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id={`search-input-${projectSlug}`}
-                placeholder={`Filter by ${filterKey.replace("_", " ")}...`}
-                value={(filterColumn.getFilterValue() as string) ?? ""}
-                onChange={(event) => filterColumn.setFilterValue(event.target.value)}
-                className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
-              />
-            </div>
-          )}
+          <div className="relative w-full sm:max-w-xs md:max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              id={`search-input-${projectSlug}`}
+              placeholder={
+                projectSlug === "assignments"
+                  ? "Search by email or factory..."
+                  : projectSlug === "profiles"
+                  ? "Search by name, email or factory..."
+                  : `Search by ${filterKey.replace("_", " ")}...`
+              }
+              value={(table.getState().globalFilter as string) ?? ""}
+              onChange={(event) => table.setGlobalFilter(event.target.value)}
+              className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
+            />
+          </div>
           <div className="flex items-center gap-2 justify-end">
             <Button
               variant="outline"
