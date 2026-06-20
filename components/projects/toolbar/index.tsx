@@ -40,6 +40,16 @@ export function ProjectToolbar<TData>({
                   ? "Search by email or factory..."
                   : projectSlug === "profiles"
                   ? "Search by name, email or factory..."
+                  : projectSlug === "centers"
+                  ? "Search by name or factory..."
+                  : projectSlug === "rates"
+                  ? "Search by commodity or factory..."
+                  : projectSlug === "customers"
+                  ? "Search by name, email, village or govt id..."
+                  : projectSlug === "factories"
+                  ? "Search by name or village..."
+                  : projectSlug === "users"
+                  ? "Search by email, role or factory..."
                   : `Search by ${filterKey.replace("_", " ")}...`
               }
               value={(table.getState().globalFilter as string) ?? ""}

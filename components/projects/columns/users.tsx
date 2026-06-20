@@ -3,7 +3,7 @@ import { Mail, ShieldCheck } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel, Role, RoleLabel } from "@/lib/constants"
 import { PillIndicator } from "@/components/kibo-ui/pill"
-import { createTextColumn, createPillColumn } from "./helpers"
+import { createTextColumn, createPillColumn, createFactoryIdColumn, createFactoryNameColumn } from "./helpers"
 
 const renderRoleIndicator = (variant: "success" | "error" | "warning" | "info" | "muted", pulse = true) => {
   if (variant === "muted") {
@@ -84,5 +84,7 @@ export function getUsersColumns<T>(): ColumnDef<T>[] {
       },
       { className: getRoleClassName }
     ),
+    createFactoryIdColumn(),
+    createFactoryNameColumn(),
   ]
 }

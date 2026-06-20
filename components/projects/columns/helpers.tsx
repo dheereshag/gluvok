@@ -6,7 +6,7 @@ import { EntityKey, ProjectSlug } from "@/lib/fields"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType, type Village as VillageType } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment } from "@/types"
 import { User, Factory, Home } from "lucide-react"
 
 export function createBaseColumn<T>(
@@ -133,7 +133,19 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      return record.factory_id ? String(record.factory_id) : ""
+      if (record.factory_id) return String(record.factory_id)
+
+      const userId = record.id || record.user_id
+      if (userId && typeof userId === "string") {
+        const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+        const factoryIds = activeAssignments
+          .filter((a) => String(a.user_id) === String(userId))
+          .map((a) => a.factory_id)
+        if (factoryIds.length > 0) {
+          return factoryIds.join(", ")
+        }
+      }
+      return ""
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -157,11 +169,29 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const factoryId = record.factory_id
-      if (!factoryId) return ""
+      let factoryIds: string[] = []
+
+      if (record.factory_id) {
+        factoryIds = [String(record.factory_id)]
+      } else {
+        const userId = record.id || record.user_id
+        if (userId && typeof userId === "string") {
+          const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+          factoryIds = activeAssignments
+            .filter((a) => String(a.user_id) === String(userId))
+            .map((a) => String(a.factory_id))
+        }
+      }
+
+      if (factoryIds.length === 0) return ""
+
       const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-      const factory = activeFactories.find((f) => String(f.id) === String(factoryId))
-      return factory ? factory.name : `Factory ${factoryId}`
+      const names = factoryIds.map((fid) => {
+        const factory = activeFactories.find((f) => String(f.id) === String(fid))
+        return factory ? factory.name : `Factory ${fid}`
+      })
+
+      return names.join(", ")
     },
     header: ({ column }) => (
       <DataTableColumnHeader
