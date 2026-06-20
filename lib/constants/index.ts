@@ -43,6 +43,13 @@ export enum ColumnLabel {
   COMMODITY = "Commodity",
   FACTORY = "Factory",
   IS_ACTIVE = "Status",
+  USER = "User",
+  VILLAGE = "Village",
+  RATE = "Rate",
+  CENTER = "Center",
+  PROFILE = "Profile",
+  CUSTOMER = "Customer",
+  FACTORY_NAME = "Factory Name",
 }
 
 export enum DialogMode {

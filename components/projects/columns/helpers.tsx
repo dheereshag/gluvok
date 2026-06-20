@@ -5,6 +5,8 @@ import { Pill } from "@/components/kibo-ui/pill"
 import { EntityKey } from "@/lib/fields"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
+import { useEntitiesStore } from "@/lib/store"
+import { type Factory as FactoryType, type User as UserType } from "@/types"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"]
@@ -57,5 +59,23 @@ export function truncateId(val: string): string {
     return "—"
   }
   return val.length > 8 ? `${val.substring(0, 8)}...` : val
+}
+
+export function resolveFactoryName(val: string): React.ReactNode {
+  if (!val || val === "undefined" || val === "null") {
+    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
+  }
+  const activeFactories = useEntitiesStore.getState().entities["factories"] as FactoryType[] || []
+  const factory = activeFactories.find((f) => String(f.id) === String(val))
+  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, factory ? factory.name : `Factory ${val}`)
+}
+
+export function resolveUserEmail(val: string): React.ReactNode {
+  if (!val || val === "undefined" || val === "null") {
+    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
+  }
+  const activeUsers = useEntitiesStore.getState().entities["users"] as UserType[] || []
+  const user = activeUsers.find((u) => String(u.id) === String(val))
+  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, user ? user.email : val)
 }
 

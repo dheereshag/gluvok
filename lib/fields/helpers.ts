@@ -78,3 +78,7 @@ export function getItemIcon(type: string | ProjectSlug, label: string): LucideIc
       return null
   }
 }
+
+export function getSelectPlaceholder(entity: string): string {
+  return `Select ${entity.toLowerCase()}...`
+}
