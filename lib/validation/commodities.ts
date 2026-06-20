@@ -1,28 +1,28 @@
 import * as z from "zod"
 import { useEntitiesStore, getField } from "@/lib/store"
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug, EntityKey } from "@/lib/fields"
+import { ColumnLabel } from "../constants"
+import { nameSchema } from "./helpers"
 
-const commodityNameField = z.string().min(1, "Commodity name is required").max(100, "Commodity name must be 100 characters or less")
+const commodityNameField = nameSchema(ColumnLabel.NAME, 1, 100)
 
 export const addCommoditySchema = z.object({
-  name: commodityNameField,
+  [EntityKey.NAME]: commodityNameField,
 }).refine((data) => {
   const currentList = useEntitiesStore.getState().entities[ProjectSlug.COMMODITIES] || []
   const nameExists = currentList.some((item) => {
-    const existingName = getField(item, "name")
+    const existingName = getField(item, EntityKey.NAME)
     return (
       typeof existingName === "string" &&
-      existingName.trim().toLowerCase() === data.name.trim().toLowerCase()
+      existingName.trim().toLowerCase() === data[EntityKey.NAME].trim().toLowerCase()
     )
   })
   return !nameExists
 }, {
   message: "A commodity with this name already exists",
-  path: ["name"],
+  path: [EntityKey.NAME],
 })
 
 export const editCommoditySchema = z.object({
-  name: commodityNameField,
+  [EntityKey.NAME]: commodityNameField,
 })
-
-

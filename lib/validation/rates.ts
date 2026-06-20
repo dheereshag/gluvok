@@ -1,9 +1,12 @@
 import * as z from "zod"
+import { EntityKey } from "@/lib/fields"
+import { ColumnLabel } from "../constants"
+import { integerIdSchema, nameSchema } from "./helpers"
 
 export const addRateSchema = z.object({
-  commodity_name: z.string().min(1, "Commodity name selection is required"),
-  unit_price: z.coerce.number({ message: "Unit price must be a number" }).positive("Unit price must be a positive number"),
-  factory_id: z.coerce.number({ message: "Factory ID must be an integer" }).int("Factory ID must be an integer").positive("Factory ID must be a positive integer"),
+  [EntityKey.COMMODITY_NAME]: nameSchema(ColumnLabel.COMMODITY, 1, 255),
+  [EntityKey.UNIT_PRICE]: z.coerce.number({ message: `${ColumnLabel.UNIT_PRICE} must be a number` }).positive(`${ColumnLabel.UNIT_PRICE} must be a positive number`),
+  [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 })
 
 export const editRateSchema = addRateSchema

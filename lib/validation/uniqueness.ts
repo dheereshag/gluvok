@@ -73,7 +73,51 @@ export function checkEditUniqueness(
       }
       break
     }
-    // Future uniqueness checks can be added as case blocks here
+    case ProjectSlug.PROFILES: {
+      const currentUserId = String(getField(item, EntityKey.ID) ?? "")
+      const newUserId = String(values[EntityKey.ID] ?? "")
+
+      if (newUserId && newUserId !== currentUserId) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
+        const exists = list.some((e) => {
+          if (String(getField(e, EntityKey.AADHAR_NUMBER)) === String(getField(item, EntityKey.AADHAR_NUMBER))) {
+            return false
+          }
+          return String(getField(e, EntityKey.ID)) === newUserId
+        })
+
+        if (exists) {
+          return {
+            field: EntityKey.ID,
+            message: "A profile already exists for this user",
+          }
+        }
+      }
+      break
+    }
+    case ProjectSlug.CUSTOMERS: {
+      const currentUserId = String(getField(item, EntityKey.ID) ?? "")
+      const newUserId = String(values[EntityKey.ID] ?? "")
+
+      if (newUserId && newUserId !== currentUserId) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
+        const exists = list.some((e) => {
+          if (String(getField(e, EntityKey.GOVT_ID)) === String(getField(item, EntityKey.GOVT_ID))) {
+            return false
+          }
+          const uId = getField(e, EntityKey.ID)
+          return uId && String(uId) === newUserId
+        })
+
+        if (exists) {
+          return {
+            field: EntityKey.ID,
+            message: "A customer already exists for this user",
+          }
+        }
+      }
+      break
+    }
     default:
       break
   }

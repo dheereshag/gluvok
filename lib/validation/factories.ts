@@ -1,8 +1,11 @@
 import * as z from "zod"
+import { EntityKey } from "@/lib/fields"
+import { ColumnLabel } from "../constants"
+import { integerIdSchema, nameSchema } from "./helpers"
 
 export const addFactorySchema = z.object({
-  name: z.string().min(1, "Factory name is required").max(255, "Factory name must be 255 characters or less"),
-  village_id: z.coerce.number({ message: "Village ID must be an integer" }).int("Village ID must be an integer").positive("Village ID must be a positive integer"),
+  [EntityKey.NAME]: nameSchema(ColumnLabel.NAME, 1, 255),
+  [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
 })
 
 export const editFactorySchema = addFactorySchema
