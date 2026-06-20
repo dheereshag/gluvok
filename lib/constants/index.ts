@@ -50,6 +50,8 @@ export enum ColumnLabel {
   PROFILE = "Profile",
   CUSTOMER = "Customer",
   FACTORY_NAME = "Factory Name",
+  VILLAGE_NAME = "Village Name",
+  USER_EMAIL = "User Email",
 }
 
 export enum DialogMode {

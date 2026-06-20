@@ -43,7 +43,6 @@ export const useEntitiesStore = create<EntitiesState>()(
         set((state) => {
           const currentList = state.entities[slug] || []
 
-
           let id = newE[key]
           if (id === undefined || id === null || id === "") {
             const isNumericSerial = [
@@ -67,52 +66,76 @@ export const useEntitiesStore = create<EntitiesState>()(
           const nextEntities = { ...state.entities, [slug]: [entityToAdd, ...currentList] }
 
           // Auto-assign admin/creator to new factory
-          if (slug === ProjectSlug.FACTORIES) {
-            const currentUser = useAuthStore.getState().user
-            if (currentUser?.id) {
-              const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
-              const newAssignment = {
-                id: currentAssignments.length + 1,
-                factory_id: Number(id),
-                user_id: currentUser.id,
-                created_at: getTimestamp(),
-                updated_at: getTimestamp()
-              } as EntityRecord
-              nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
+          switch (slug as ProjectSlug) {
+            case ProjectSlug.FACTORIES: {
+              const currentUser = useAuthStore.getState().user
+              if (currentUser?.id) {
+                const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
+                const newAssignment = {
+                  id: currentAssignments.length + 1,
+                  factory_id: Number(id),
+                  user_id: currentUser.id,
+                  created_at: getTimestamp(),
+                  updated_at: getTimestamp()
+                } as EntityRecord
+                nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
+              }
+              break
             }
+            default:
+              break
           }
 
           return { entities: nextEntities }
         }),
       updateEntity: (slug, key, id, fields) =>
         set((state) => {
-          const currentList = state.entities[slug] || []
+          switch (slug as ProjectSlug) {
+            case ProjectSlug.RATES:
+              throw new Error("Rates are not editable or deletable")
+            default:
+              break
+          }
 
+          const currentList = state.entities[slug] || []
 
           const updatedList = currentList.map((item) =>
             String(getField(item, key)) === String(id) ? { ...item, ...fields, updated_at: getTimestamp() } as EntityRecord : item
           )
 
-           const nextEntities = { ...state.entities, [slug]: updatedList }
+          const nextEntities = { ...state.entities, [slug]: updatedList }
 
           // Cascade update commodity_name in rates if a commodity is renamed
-          if (slug === ProjectSlug.COMMODITIES && fields.name && String(fields.name) !== String(id)) {
-            const oldName = String(id)
-            const newName = String(fields.name)
-            const updatedRates = (state.entities[ProjectSlug.RATES] || []).map((item) => {
-              const rate = item as Rate
-              if (rate.commodity_name === oldName) {
-                return { ...rate, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
+          switch (slug as ProjectSlug) {
+            case ProjectSlug.COMMODITIES: {
+              if (fields.name && String(fields.name) !== String(id)) {
+                const oldName = String(id)
+                const newName = String(fields.name)
+                const updatedRates = (state.entities[ProjectSlug.RATES] || []).map((item) => {
+                  const rate = item as Rate
+                  if (rate.commodity_name === oldName) {
+                    return { ...rate, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
+                  }
+                  return rate
+                })
+                nextEntities[ProjectSlug.RATES] = updatedRates
               }
-              return rate
-            })
-            nextEntities[ProjectSlug.RATES] = updatedRates
+              break
+            }
+            default:
+              break
           }
 
           return { entities: nextEntities }
         }),
       deleteEntity: (slug, idKey, id) =>
         set((state) => {
+          switch (slug as ProjectSlug) {
+            case ProjectSlug.RATES:
+              throw new Error("Rates are not editable or deletable")
+            default:
+              break
+          }
           const updatedList = (state.entities[slug] || []).filter((item) => String(getField(item, idKey)) !== String(id))
           return { entities: { ...state.entities, [slug]: updatedList } }
         }),

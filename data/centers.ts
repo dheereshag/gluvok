@@ -32,7 +32,7 @@ export const centers: Center[] = [
   {
     id: 5,
     name: "Center E",
-    factory_id: 4,
+    factory_id: 3,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },

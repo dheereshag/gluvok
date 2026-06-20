@@ -6,8 +6,10 @@ import { createTextColumn, createCustomColumn, resolveFactoryName, resolveUserEm
 
 export function getProfilesColumns<T>(): ColumnDef<T>[] {
   return [
-    createCustomColumn(EntityKey.ID, ColumnLabel.EMAIL, Mail, resolveUserEmail),
+    createCustomColumn(EntityKey.ID, ColumnLabel.EMAIL, Mail, resolveUserEmail, "user_email"),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, User),
-    createCustomColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, resolveFactoryName),
+    createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, "font-mono text-muted-foreground text-xs"),
+    createCustomColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_NAME, Factory, resolveFactoryName, "factory_name"),
+    createTextColumn(EntityKey.ID, ColumnLabel.USER_ID, User, "font-mono text-muted-foreground text-xs", "user_id"),
   ]
 }

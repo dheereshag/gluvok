@@ -4,7 +4,7 @@ import { ProjectSlug, EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "../constants"
 import { integerIdSchema, nameSchema, uuidSchema } from "./helpers"
 
-export const addProfileSchema = z.object({
+const baseProfileSchema = z.object({
   [EntityKey.AADHAR_NUMBER]: z
     .preprocess(
       (val) => typeof val === "string" ? val.replace(/\s/g, "") : val,
@@ -15,17 +15,24 @@ export const addProfileSchema = z.object({
   [EntityKey.ID]: uuidSchema(ColumnLabel.USER),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
-}).refine((data) => {
-  const userId = data[EntityKey.ID]
-  const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
-  const userExists = profiles.some((p) => {
-    const uId = getField(p, EntityKey.ID)
-    return uId && String(uId) === String(userId)
-  })
-  return !userExists
-}, {
-  message: "A profile already exists for this user",
-  path: [EntityKey.ID],
 })
 
-export const editProfileSchema = addProfileSchema
+export const addProfileSchema = baseProfileSchema
+  .refine((data) => {
+    const aadharVal = data[EntityKey.AADHAR_NUMBER]
+    const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
+    return !profiles.some((p) => String(getField(p, EntityKey.AADHAR_NUMBER)) === String(aadharVal))
+  }, {
+    message: "A profile with this Aadhar number already exists",
+    path: [EntityKey.AADHAR_NUMBER],
+  })
+  .refine((data) => {
+    const userId = data[EntityKey.ID]
+    const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
+    return !profiles.some((p) => String(getField(p, EntityKey.ID)) === String(userId))
+  }, {
+    message: "A profile already exists for this user",
+    path: [EntityKey.ID],
+  })
+
+export const editProfileSchema = baseProfileSchema

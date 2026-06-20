@@ -9,8 +9,6 @@ export interface UniquenessError {
 
 /**
  * Checks if updating an entity violates any uniqueness constraints.
- * This helper uses a switch case based on the projectSlug to validate fields,
- * and is designed to be easily replaced or integrated with database-level constraints (like Supabase) later.
  */
 export function checkEditUniqueness(
   projectSlug: ProjectSlug,
@@ -51,7 +49,6 @@ export function checkEditUniqueness(
       ) {
         const list = useEntitiesStore.getState().entities[ProjectSlug.CENTERS] || []
         const exists = list.some((e) => {
-          // exclude the current center being edited using its ID
           if (String(getField(e, EntityKey.ID)) === String(getField(item, EntityKey.ID))) {
             return false
           }
@@ -74,6 +71,27 @@ export function checkEditUniqueness(
       break
     }
     case ProjectSlug.PROFILES: {
+      // 1. Check aadhar_number uniqueness
+      const currentAadhar = String(getField(item, EntityKey.AADHAR_NUMBER) ?? "")
+      const newAadhar = String(values[EntityKey.AADHAR_NUMBER] ?? "")
+
+      if (newAadhar && newAadhar !== currentAadhar) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
+        const exists = list.some((e) => {
+          if (String(getField(e, EntityKey.AADHAR_NUMBER)) === String(getField(item, EntityKey.AADHAR_NUMBER))) {
+            return false
+          }
+          return String(getField(e, EntityKey.AADHAR_NUMBER)) === newAadhar
+        })
+        if (exists) {
+          return {
+            field: EntityKey.AADHAR_NUMBER,
+            message: "A profile with this Aadhar number already exists",
+          }
+        }
+      }
+
+      // 2. Check user ID uniqueness
       const currentUserId = String(getField(item, EntityKey.ID) ?? "")
       const newUserId = String(values[EntityKey.ID] ?? "")
 
@@ -96,6 +114,27 @@ export function checkEditUniqueness(
       break
     }
     case ProjectSlug.CUSTOMERS: {
+      // 1. Check govt_id uniqueness
+      const currentGovtId = String(getField(item, EntityKey.GOVT_ID) ?? "")
+      const newGovtId = String(values[EntityKey.GOVT_ID] ?? "")
+
+      if (newGovtId && newGovtId !== currentGovtId) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
+        const exists = list.some((e) => {
+          if (String(getField(e, EntityKey.GOVT_ID)) === String(getField(item, EntityKey.GOVT_ID))) {
+            return false
+          }
+          return String(getField(e, EntityKey.GOVT_ID)) === newGovtId
+        })
+        if (exists) {
+          return {
+            field: EntityKey.GOVT_ID,
+            message: "A customer with this Govt ID already exists",
+          }
+        }
+      }
+
+      // 2. Check user ID uniqueness
       const currentUserId = String(getField(item, EntityKey.ID) ?? "")
       const newUserId = String(values[EntityKey.ID] ?? "")
 
@@ -113,6 +152,29 @@ export function checkEditUniqueness(
           return {
             field: EntityKey.ID,
             message: "A customer already exists for this user",
+          }
+        }
+      }
+      break
+    }
+    case ProjectSlug.USERS: {
+      const currentEmail = String(getField(item, EntityKey.EMAIL) ?? "").trim().toLowerCase()
+      const newEmail = String(values[EntityKey.EMAIL] ?? "").trim().toLowerCase()
+
+      if (newEmail !== currentEmail) {
+        const list = useEntitiesStore.getState().entities[ProjectSlug.USERS] || []
+        const exists = list.some((e) => {
+          if (String(getField(e, EntityKey.ID)) === String(getField(item, EntityKey.ID))) {
+            return false
+          }
+          const email = String(getField(e, EntityKey.EMAIL) ?? "").trim().toLowerCase()
+          return email === newEmail
+        })
+
+        if (exists) {
+          return {
+            field: EntityKey.EMAIL,
+            message: "A user with this email already exists",
           }
         }
       }

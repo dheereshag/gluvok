@@ -6,12 +6,13 @@ import { EntityKey } from "@/lib/fields"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType } from "@/types"
 
 export function createBaseColumn<T>(
-  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"]
+  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"], id?: string
 ): ColumnDef<T> {
   return {
+    id,
     accessorKey: key,
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -25,20 +26,20 @@ export function createBaseColumn<T>(
 }
 
 export function createCustomColumn<T>(
-  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, renderCell: (value: string) => React.ReactNode
+  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, renderCell: (value: string) => React.ReactNode, id?: string
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => renderCell(String(row.getValue(key))))
+  return createBaseColumn(key, label, Icon, ({ row }) => renderCell(String(row.getValue(key))), id)
 }
 
 export function createTextColumn<T>(
-  key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, className = "font-semibold text-foreground text-xs"
+  key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, className = "font-semibold text-foreground text-xs", id?: string
 ): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => <div className={className}>{String(row.getValue(key))}</div>)
+  return createBaseColumn(key, label, Icon, ({ row }) => <div className={className}>{String(row.getValue(key))}</div>, id)
 }
 
 export function createPillColumn<T>(
   key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, renderContent: (value: string) => React.ReactNode,
-  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string | ((value: string) => string) }
+  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string | ((value: string) => string) }, id?: string
 ): ColumnDef<T> {
   return createBaseColumn(key, label, Icon, ({ row }) => {
     const val = String(row.getValue(key))
@@ -51,7 +52,7 @@ export function createPillColumn<T>(
         {renderContent(val)}
       </Pill>
     )
-  })
+  }, id)
 }
 
 export function truncateId(val: string): string {
@@ -78,4 +79,14 @@ export function resolveUserEmail(val: string): React.ReactNode {
   const user = activeUsers.find((u) => String(u.id) === String(val))
   return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, user ? user.email : val)
 }
+
+export function resolveVillageName(val: string): React.ReactNode {
+  if (!val || val === "undefined" || val === "null") {
+    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
+  }
+  const activeVillages = useEntitiesStore.getState().entities["villages"] as VillageType[] || []
+  const village = activeVillages.find((v) => String(v.id) === String(val))
+  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, village ? village.name : `Village ${val}`)
+}
+
 

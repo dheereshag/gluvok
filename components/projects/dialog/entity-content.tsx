@@ -6,10 +6,14 @@ import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/co
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
 import { isPrimaryKeyEditable, FieldType } from "@/lib/fields"
+import { useAuthStore } from "@/lib/store"
+import { Role } from "@/lib/constants"
 
 export function EntityDialogContent({
   mode, onOpenChange, projectName, projectSlug, isEdit, fields, form, onSubmit, primaryIdKey
 }: EntityDialogContentProps) {
+  const currentUser = useAuthStore((state) => state.user)
+  const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN
   const Icon = isEdit ? Pencil : Plus
   const desc = isEdit
     ? "Update the attributes of this record. Click save when done."
@@ -25,7 +29,7 @@ export function EntityDialogContent({
       </DialogHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fields.map((field) => {
-          const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug)
+          const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin
 
           if (field.type === FieldType.CHECKBOX) {
             return (

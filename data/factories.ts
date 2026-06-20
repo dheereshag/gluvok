@@ -22,11 +22,4 @@ export const factories: Factory[] = [
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
-  {
-    id: 4,
-    name: "Hisar Agro Factory",
-    village_id: 4,
-    created_at: "2026-06-07 11:50:14.658144",
-    updated_at: "2026-06-07 11:50:14.658144",
-  },
 ]

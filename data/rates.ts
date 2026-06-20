@@ -29,7 +29,7 @@ export const rates: Rate[] = [
     id: 4,
     commodity_name: "Crude Oil",
     unit_price: "72000.00",
-    factory_id: 4,
+    factory_id: 3,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
