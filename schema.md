@@ -17,7 +17,6 @@
 | `id` | `SERIAL` | Primary Key | Unique depot ID. |
 | `name` | `VARCHAR(255)` | Not Null | Display label (e.g., "Silo Terminal C"). |
 | `village_id` | `INTEGER` | FK → `villages.id`, Not Null | Restricts factory to a registered village. |
-| `user_id` | `UUID` | FK → `auth.users(id)`, Not Null | Associated factory owner/admin user ID. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last structural update time. |
 
@@ -80,6 +79,7 @@ Details of human resources/users linked to login accounts.
 | `aadhar_number` | `CHAR(12)` | Primary Key, CHECK (`aadhar_number ~ '^\d{12}$'`) | Aadhar number — unique profile identifier. |
 | `id` | `UUID` | Unique, Not Null, FK → `auth.users(id)`, On Delete Cascade | References Supabase Auth user. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the profile owner. |
+| `factory_id` | `INTEGER` | FK → `factories.id`, Nullable | Associated home factory. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 
@@ -100,3 +100,16 @@ Details of human resources/users linked to login accounts.
 | `is_active` | `BOOLEAN` | Not Null, Default: `TRUE` | Transaction status toggle. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Immutable transaction timestamp. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
+
+---
+
+### Entity I: assignments
+Represents factory assignments that map factories to users.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | `SERIAL` | Primary Key | Unique assignment ID. |
+| `factory_id` | `INTEGER` | FK → `factories.id`, Not Null | Associated factory. |
+| `user_id` | `UUID` | FK → `auth.users(id)`, Not Null | Associated operator/admin user. |
+| `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
+| `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last structural update time. |
