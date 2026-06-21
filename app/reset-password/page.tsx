@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ResetPasswordForm } from "@/components/auth/form/reset-password-form"
+import { ResetPasswordForm } from "@/components/auth/form/reset-password"
 import { AuthPageLayout } from "@/components/auth/common"
 
 export default function ResetPasswordPage() {
