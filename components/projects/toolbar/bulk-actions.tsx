@@ -9,7 +9,6 @@ import { generatePdfHtml } from "@/lib/pdf/template"
 import { printPdf } from "@/lib/pdf/exporter"
 
 import { useAuthStore, getPermissions } from "@/lib/store"
-import { ProjectSlug } from "@/lib/constants/enums"
 
 interface BulkActionsProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; primaryIdKey: string
@@ -20,15 +19,7 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const user = useAuthStore((state) => state.user)
   const permissions = getPermissions(user?.role, projectSlug)
-  let canDelete = permissions.delete
-
-  switch (projectSlug as ProjectSlug) {
-    case ProjectSlug.RATES:
-      canDelete = false
-      break
-    default:
-      break
-  }
+  const canDelete = permissions.delete
 
   const handleDownloadPDF = () => {
     const cols = table.getVisibleLeafColumns().filter(c => c.id !== "select" && c.id !== "actions")
