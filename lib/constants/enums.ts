@@ -175,6 +175,7 @@ export enum EntityKey {
   PROFILE_AADHAR = "profile_aadhar",
   CUSTOMER_NAME = "customer_name",
   CENTER_NAME = "center_name",
+  CUSTOMER_GOVT_ID = "customer_govt_id",
 }
 
 export enum InputMode {

@@ -110,7 +110,7 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
       const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
       const names = factoryIds.map((fid) => {
         const factory = activeFactories.find((f) => String(f.id) === String(fid))
-        return factory ? factory.name : `Factory ${fid}`
+        return factory ? factory.name : `${ColumnLabel.FACTORY} ${fid}`
       })
       return names.join(", ")
     },
@@ -140,7 +140,7 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
       if (!villageId) return ""
       const activeVillages = useEntitiesStore.getState().entities[ProjectSlug.VILLAGES] as VillageType[] || []
       const village = activeVillages.find((v) => String(v.id) === String(villageId))
-      return village ? village.name : `Village ${villageId}`
+      return village ? village.name : `${ColumnLabel.VILLAGE} ${villageId}`
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -219,7 +219,7 @@ export function createCommodityNameColumn<T>(): ColumnDef<T> {
     Tag,
     EntityKey.COMMODITY_ID,
     ProjectSlug.COMMODITIES,
-    "Commodity"
+    ColumnLabel.COMMODITY
   )
 }
 
@@ -230,12 +230,12 @@ export function createCustomerNameColumn<T>(): ColumnDef<T> {
     Users,
     EntityKey.CUSTOMER_ID,
     ProjectSlug.CUSTOMERS,
-    "Customer"
+    ColumnLabel.CUSTOMER
   )
 }
 
 export function createCustomerGovtIdColumn<T>(): ColumnDef<T> {
-  const id = "customer_govt_id"
+  const id = EntityKey.CUSTOMER_GOVT_ID
   const label = ColumnLabel.GOVT_ID
   const Icon = ShieldCheck
   return {
@@ -310,7 +310,7 @@ export function createCenterNameColumn<T>(): ColumnDef<T> {
     Building,
     EntityKey.CENTER_ID,
     ProjectSlug.CENTERS,
-    "Center"
+    ColumnLabel.CENTER
   )
 }
 
@@ -372,7 +372,7 @@ export function createIdColumn<T>(
   key: EntityKey,
   label: ColumnLabel | string,
   Icon: React.ComponentType<{ className?: string }>,
-  id: string = key
+  id: EntityKey = key
 ): ColumnDef<T> {
   return {
     id,
@@ -396,12 +396,12 @@ export function createIdColumn<T>(
 }
 
 export function createLookupNameColumn<T>(
-  id: string,
+  id: EntityKey,
   label: ColumnLabel | string,
   Icon: React.ComponentType<{ className?: string }>,
   fkKey: EntityKey,
   slug: ProjectSlug,
-  fallbackPrefix: string
+  fallbackPrefix: ColumnLabel
 ): ColumnDef<T> {
   return {
     id,
