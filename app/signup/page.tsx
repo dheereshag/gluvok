@@ -1,6 +1,6 @@
 "use client"
 
-import { SignupForm } from "@/components/auth/signup-form"
+import { SignupForm } from "@/components/auth/form/signup-form"
 import { AuthPageLayout } from "@/components/auth/common"
 
 export default function SignupPage() {

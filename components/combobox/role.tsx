@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Shield } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { Role, RoleLabel } from "@/lib/constants/enums"

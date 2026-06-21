@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { BaseCombobox } from "./base"
 import { useEntityOptions } from "./use-entity-options"
 

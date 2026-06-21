@@ -1,24 +1,20 @@
 import { ProjectSlug } from "@/lib/constants/enums"
-import { centers } from "@/data/centers"
-import { commodities } from "@/data/commodities"
-import { rates } from "@/data/rates"
-import { customers } from "@/data/customers"
-import { factories } from "@/data/factories"
-import { profiles } from "@/data/profiles"
-import { villages } from "@/data/villages"
-import { users } from "@/data/users"
-import { assignments } from "@/data/assignments"
-import { affiliations } from "@/data/affiliations"
+import {
+  centers,
+  commodities,
+  rates,
+  customers,
+  factories,
+  profiles,
+  villages,
+  users,
+  assignments,
+  affiliations,
+} from "@/data"
 import { useEntitiesStore } from "@/lib/store"
 import {
-  type Center,
-  type Commodity,
   type Rate,
-  type Customer,
-  type Factory,
-  type Profile,
   type User,
-  type Village,
   type Assignment,
   type Affiliation,
   type EntityRecord,
@@ -39,38 +35,48 @@ export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.AFFILIATIONS]: affiliations,
 }
 
+const extractByIdAndName = (item: Entity) => {
+  const namedItem = item as { id: string | number; name: string }
+  return {
+    id: String(namedItem.id ?? ""),
+    name: namedItem.name,
+  }
+}
+
+function getEntityName<T extends Entity>(
+  slug: ProjectSlug,
+  id: string | number,
+  fallbackData: T[],
+  getName: (item: T) => string,
+  fallbackLabel: string
+): string {
+  const storeState = useEntitiesStore.getState()
+  const entities = (storeState.entities[slug] || fallbackData) as T[]
+  const entity = entities.find((e) => String(e.id) === String(id))
+  return entity ? getName(entity) : `${fallbackLabel} ${id}`
+}
+
 export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; name: string }> = {
-  [ProjectSlug.CUSTOMERS]: (item) => ({ id: String((item as Customer).id ?? ""), name: (item as Customer).name }),
-  [ProjectSlug.PROFILES]: (item) => ({ id: String((item as Profile).id ?? ""), name: (item as Profile).name }),
-  [ProjectSlug.CENTERS]: (item) => ({ id: String((item as Center).id ?? ""), name: (item as Center).name }),
-  [ProjectSlug.COMMODITIES]: (item) => ({ id: String((item as Commodity).id ?? ""), name: (item as Commodity).name }),
+  [ProjectSlug.CUSTOMERS]: extractByIdAndName,
+  [ProjectSlug.PROFILES]: extractByIdAndName,
+  [ProjectSlug.CENTERS]: extractByIdAndName,
+  [ProjectSlug.COMMODITIES]: extractByIdAndName,
+  [ProjectSlug.FACTORIES]: extractByIdAndName,
+  [ProjectSlug.VILLAGES]: extractByIdAndName,
+  [ProjectSlug.USERS]: (item) => ({ id: (item as User).id, name: (item as User).email }),
   [ProjectSlug.RATES]: (item) => {
     const p = item as Rate
-    const storeState = useEntitiesStore.getState()
-    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
-    const activeCommodities = (storeState.entities[ProjectSlug.COMMODITIES] || commodities) as Commodity[]
-    const factory = activeFactories.find((f) => String(f.id) === String(p.factory_id))
-    const commodity = activeCommodities.find((c) => Number(c.id) === Number(p.commodity_id))
-    const factoryName = factory ? factory.name : `Factory ${p.factory_id}`
-    const commodityName = commodity ? commodity.name : `Commodity ${p.commodity_id}`
+    const factoryName = getEntityName(ProjectSlug.FACTORIES, p.factory_id, factories, (f) => f.name, "Factory")
+    const commodityName = getEntityName(ProjectSlug.COMMODITIES, p.commodity_id, commodities, (c) => c.name, "Commodity")
     return {
       id: String(p.id),
       name: `${commodityName} (${factoryName}) (₹${parseFloat(p.unit_price)})`
     }
   },
-  [ProjectSlug.FACTORIES]: (item) => ({ id: String((item as Factory).id ?? ""), name: (item as Factory).name }),
-  [ProjectSlug.VILLAGES]: (item) => ({ id: String((item as Village).id ?? ""), name: (item as Village).name }),
-  [ProjectSlug.USERS]: (item) => ({ id: (item as User).id, name: (item as User).email }),
   [ProjectSlug.ASSIGNMENTS]: (item) => {
     const a = item as Assignment
-    const storeState = useEntitiesStore.getState()
-    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
-    const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
-    const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
-
-    const activeProfiles = (storeState.entities[ProjectSlug.PROFILES] || profiles) as Profile[]
-    const profile = activeProfiles.find((p) => Number(p.id) === Number(a.profile_id))
-    const profileName = profile ? profile.name : `Profile ${a.profile_id}`
+    const factoryName = getEntityName(ProjectSlug.FACTORIES, a.factory_id, factories, (f) => f.name, "Factory")
+    const profileName = getEntityName(ProjectSlug.PROFILES, a.profile_id, profiles, (p) => p.name, "Profile")
     return {
       id: String(a.id),
       name: `${profileName} @ ${factoryName}`
@@ -78,14 +84,8 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
   },
   [ProjectSlug.AFFILIATIONS]: (item) => {
     const a = item as Affiliation
-    const storeState = useEntitiesStore.getState()
-    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
-    const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
-    const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
-
-    const activeCustomers = (storeState.entities[ProjectSlug.CUSTOMERS] || customers) as Customer[]
-    const customer = activeCustomers.find((c) => Number(c.id) === Number(a.customer_id))
-    const customerName = customer ? customer.name : `Customer ${a.customer_id}`
+    const factoryName = getEntityName(ProjectSlug.FACTORIES, a.factory_id, factories, (f) => f.name, "Factory")
+    const customerName = getEntityName(ProjectSlug.CUSTOMERS, a.customer_id, customers, (c) => c.name, "Customer")
     return {
       id: String(a.id),
       name: `${customerName} @ ${factoryName}`

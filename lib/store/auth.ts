@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { users as seedUsers } from "@/data/users"
+import { users as seedUsers } from "@/data"
 
 import { Role, ProjectSlug } from "@/lib/constants/enums"
 import { type Profile } from "@/types"

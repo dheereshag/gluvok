@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { MapPin } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { STATES_DATA } from "./states-data"

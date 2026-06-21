@@ -36,13 +36,22 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
       return
     }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
-
-    api.on("select", () => {
+    const updateSlide = () => {
+      setCount(api.scrollSnapList().length)
       setCurrent(api.selectedScrollSnap() + 1)
-    })
+    }
+
+    // Defer the initial read so setState is not called synchronously in the effect body
+    const id = setTimeout(updateSlide, 0)
+
+    api.on("select", updateSlide)
+    api.on("reInit", updateSlide)
+
+    return () => {
+      clearTimeout(id)
+      api.off("select", updateSlide)
+      api.off("reInit", updateSlide)
+    }
   }, [api, isOpen])
 
   const hasImages = images && images.length > 0

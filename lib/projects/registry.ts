@@ -15,17 +15,19 @@ import { type EntityRecord } from "@/types";
 import { ProjectName } from "@/lib/constants/enums";
 import { ProjectSlug } from "@/lib/constants/enums";
 
-import { centers } from "@/data/centers";
-import { commodities } from "@/data/commodities";
-import { rates } from "@/data/rates";
-import { customers } from "@/data/customers";
-import { weighments } from "@/data/weighments";
-import { factories } from "@/data/factories";
-import { profiles } from "@/data/profiles";
-import { users } from "@/data/users";
-import { villages } from "@/data/villages";
-import { assignments } from "@/data/assignments";
-import { affiliations } from "@/data/affiliations";
+import {
+  centers,
+  commodities,
+  rates,
+  customers,
+  weighments,
+  factories,
+  profiles,
+  users,
+  villages,
+  assignments,
+  affiliations,
+} from "@/data";
 
 export interface ProjectConfig {
   name: ProjectName;
