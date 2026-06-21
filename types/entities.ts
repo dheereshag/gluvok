@@ -19,6 +19,7 @@ export interface Rate {
   id: number
   commodity_id: number
   unit_price: string
+  unit: string
   factory_id: number
   created_at: string
   updated_at: string

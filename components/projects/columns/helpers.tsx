@@ -242,7 +242,15 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const villageId = record[EntityKey.VILLAGE_ID]
+      let villageId = record[EntityKey.VILLAGE_ID]
+      if (!villageId && record[EntityKey.FACTORY_ID]) {
+        const factId = record[EntityKey.FACTORY_ID]
+        const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
+        const factory = activeFactories.find((f) => String(f.id) === String(factId))
+        if (factory) {
+          villageId = factory.village_id
+        }
+      }
       if (!villageId) return ""
       const activeVillages = useEntitiesStore.getState().entities[ProjectSlug.VILLAGES] as VillageType[] || []
       const village = activeVillages.find((v) => String(v.id) === String(villageId))
@@ -435,7 +443,15 @@ export function createVillageIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const villageId = record[EntityKey.VILLAGE_ID]
+      let villageId = record[EntityKey.VILLAGE_ID]
+      if (!villageId && record[EntityKey.FACTORY_ID]) {
+        const factId = record[EntityKey.FACTORY_ID]
+        const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
+        const factory = activeFactories.find((f) => String(f.id) === String(factId))
+        if (factory) {
+          villageId = factory.village_id
+        }
+      }
       return villageId ? String(villageId) : ""
     },
     header: ({ column }) => (
