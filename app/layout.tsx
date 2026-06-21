@@ -12,6 +12,9 @@ const outfit = Outfit({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: "gluvok Dashboard | Platform Operations",
   description: "Access the gluvok platform tools, manage entities, configure visibility settings, and track operations.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

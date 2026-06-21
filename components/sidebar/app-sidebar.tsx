@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Weight } from "lucide-react"
+import { Logo } from "@/components/ui/logo"
 
 import { NavMain } from "./nav/main"
 import { NavSecondary } from "./nav/secondary"
@@ -44,8 +44,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Weight className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden bg-background">
+                  <Logo size={32} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">gluvok</span>

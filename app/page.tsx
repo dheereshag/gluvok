@@ -4,7 +4,8 @@ import * as React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { LayoutDashboard, Weight, RotateCw } from "lucide-react"
+import { LayoutDashboard, RotateCw } from "lucide-react"
+import { Logo } from "@/components/ui/logo"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
 import { useAuthStore, hasPageAccess, resetAllEntitiesData } from "@/lib/store"
@@ -55,7 +56,7 @@ export default function Page() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2 flex flex-col items-start text-left">
             <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-              <Weight className="h-8 w-8 text-primary" />
+              <Logo size={32} />
               gluvok Dashboard
             </h1>
             <p className="text-muted-foreground text-sm max-w-xl">
