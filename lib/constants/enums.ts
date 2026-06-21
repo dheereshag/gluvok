@@ -47,9 +47,9 @@ export enum Role {
 }
 
 export enum Unit {
-  QUINTAL = "quintal",
   KG = "kg",
-  BARREL = "barrel",
+  Q = "q",
+  GAL = "gal",
 }
 
 export enum RoleLabel {
@@ -140,6 +140,7 @@ export enum FieldType {
   STATE = "state",
   IMAGES = "images",
   ROLE = "role",
+  UNIT = "unit",
   CHECKBOX = "checkbox",
 }
 

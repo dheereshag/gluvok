@@ -1,4 +1,5 @@
 export * from "./entity"
 export * from "./state"
 export * from "./role"
+export * from "./unit"
 export * from "./base"

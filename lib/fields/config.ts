@@ -34,7 +34,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.COMMODITY_ID, label: ColumnLabel.COMMODITY, placeholder: getSelectPlaceholder("Commodity"), type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER, icon: IndianRupee },
-    { key: EntityKey.UNIT, label: ColumnLabel.UNIT, placeholder: "e.g. kg", type: FieldType.TEXT, icon: Weight },
+    { key: EntityKey.UNIT, label: ColumnLabel.UNIT, placeholder: "Select unit...", type: FieldType.UNIT, icon: Weight },
   ],
   [ProjectSlug.CUSTOMERS]: [
     { key: EntityKey.GOVT_ID, label: ColumnLabel.GOVT_ID, placeholder: "e.g. 1001", type: FieldType.NUMBER, icon: ShieldCheck },
