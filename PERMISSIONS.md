@@ -14,7 +14,7 @@ Source: [lib/store/access.ts](lib/store/access.ts) (RBAC_MATRIX)
 | Factories (factories) | R, W, D | R, W, D | R | R | - |
 | Centers (centers) | R, W, D | R, W, D | R | R | - |
 | Commodities (commodities) | R, W, D | R | R | R | - |
-| Rates (rates) | R, W, D | R, W, D | R, W | R | - |
+| Rates (rates) | R, W | R, W | R, W | R | - |
 | Customers (customers) | R, W, D | R, W, D | R, W | R, W | - |
 | Weighments (weighments) | R, W, D | R, W, D | R, W | R, W | R |
 | Assignments (assignments) | R, W, D | R, W, D | R | - | - |
