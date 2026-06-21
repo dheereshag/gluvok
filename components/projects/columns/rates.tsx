@@ -1,20 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Factory, IndianRupee, Package } from "lucide-react"
+import { Factory, IndianRupee } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
-import { createCustomColumn, createTextColumn, getCommodityIcon, createFactoryNameColumn } from "./helpers"
+import { createCustomColumn, createTextColumn, createFactoryNameColumn, createCommodityNameColumn } from "./helpers"
 
 export function getRatesColumns<T>(): ColumnDef<T>[] {
   return [
-    createCustomColumn(EntityKey.COMMODITY_NAME, ColumnLabel.COMMODITY, Package, (val) => {
-      const Icon = getCommodityIcon(val)
-      return (
-        <div className="flex items-center gap-1.5 font-semibold text-foreground text-xs">
-          <Icon className="h-3.5 w-3.5 text-muted-foreground/75" />
-          {val}
-        </div>
-      )
-    }),
+    createCommodityNameColumn(),
     createTextColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, "font-mono text-muted-foreground text-xs"),
     createFactoryNameColumn(),
     createCustomColumn(EntityKey.UNIT_PRICE, ColumnLabel.UNIT_PRICE, IndianRupee, (val) => {
@@ -27,3 +19,4 @@ export function getRatesColumns<T>(): ColumnDef<T>[] {
     }),
   ]
 }
+

@@ -38,7 +38,8 @@
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
-| `name` | `VARCHAR(255)` | Primary Key | Display name and unique identifier of the commodity (e.g., "Wheat", "Corn"). |
+| `id` | `SERIAL` | Primary Key | Unique identifier. |
+| `name` | `VARCHAR(255)` | Unique, Not Null | Display name of the commodity (e.g., "Wheat", "Corn"). |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 
@@ -49,7 +50,7 @@
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
 | `id` | `SERIAL` | Primary Key | Unique price record identifier. |
-| `commodity_name` | `VARCHAR(255)` | FK → `commodities.name`, Not Null, On Delete Cascade, On Update Cascade | Associated commodity name. |
+| `commodity_id` | `INTEGER` | FK → `commodities.id`, Not Null, On Delete Cascade, On Update Cascade | Associated commodity ID. |
 | `unit_price` | `DECIMAL(12,2)` | Not Null | Price per metric ton. |
 | `factory_id` | `INTEGER` | FK → `factories.id`, Not Null | Associated factory. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
@@ -62,7 +63,8 @@ Represents workers/customers identified by government ID. No auth login required
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
-| `govt_id` | `INTEGER` | Primary Key | Government-issued ID, unique per customer. |
+| `id` | `SERIAL` | Primary Key | Unique customer ID. |
+| `govt_id` | `INTEGER` | Unique, Not Null | Government-issued ID, unique per customer. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the customer. |
 | `father_name` | `VARCHAR(255)` | Nullable | Father's full name (additional identifier). |
 | `village_id` | `INTEGER` | FK → `villages.id`, Nullable | Registered home village. |
@@ -76,8 +78,9 @@ Details of human resources/users linked to login accounts.
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
-| `aadhar_number` | `CHAR(12)` | Primary Key, CHECK (`aadhar_number ~ '^\d{12}$'`) | Aadhar number — unique profile identifier. |
-| `id` | `UUID` | Unique, Not Null, FK → `auth.users(id)`, On Delete Cascade | References Supabase Auth user. |
+| `id` | `SERIAL` | Primary Key | Unique profile ID. |
+| `user_id` | `UUID` | Unique, Not Null, FK → `auth.users(id)`, On Delete Cascade | References Supabase Auth user. |
+| `aadhar_number` | `CHAR(12)` | Unique, Not Null, CHECK (`aadhar_number ~ '^\d{12}$'`) | Aadhar number — unique profile identifier. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the profile owner. |
 | `factory_id` | `INTEGER` | FK → `factories.id`, Nullable | Associated home factory. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
@@ -95,8 +98,8 @@ Details of human resources/users linked to login accounts.
 | `images` | `JSONB` | Nullable | Array of object-storage paths. |
 | `rate_id` | `INTEGER` | FK → `rates.id`, Not Null | Link to the specific commodity price rate. |
 | `center_id` | `INTEGER` | FK → `centers.id`, Not Null | Physical location where weighing occurred. |
-| `profile_id` | `CHAR(12)` | FK → `profiles.aadhar_number`, Not Null | Profile who managed the scale/vehicle. |
-| `customer_id` | `INTEGER` | FK → `customers.govt_id`, Not Null | Customer who was there. |
+| `profile_id` | `INTEGER` | FK → `profiles.id`, Not Null | Profile who managed the scale/vehicle. |
+| `customer_id` | `INTEGER` | FK → `customers.id`, Not Null | Customer who was there. |
 | `is_active` | `BOOLEAN` | Not Null, Default: `TRUE` | Transaction status toggle. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Immutable transaction timestamp. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
@@ -110,6 +113,6 @@ Represents factory assignments that map factories to profiles.
 |--------|------|-------------|-------------|
 | `id` | `SERIAL` | Primary Key | Unique assignment ID. |
 | `factory_id` | `INTEGER` | FK → `factories.id`, Not Null | Associated factory. |
-| `profile_id` | `CHAR(12)` | FK → `profiles.aadhar_number`, Not Null | Associated operator/admin profile. |
+| `profile_id` | `INTEGER` | FK → `profiles.id`, Not Null | Associated operator/admin profile ID. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last structural update time. |

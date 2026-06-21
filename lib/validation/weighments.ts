@@ -24,11 +24,7 @@ export const addWeighmentSchema = z.object({
   [EntityKey.WEIGHT]: z.coerce.number({ message: `${ColumnLabel.WEIGHT} must be a number` }).positive(`Measured ${ColumnLabel.WEIGHT.toLowerCase()} must be a positive number`),
   [EntityKey.RATE_ID]: integerIdSchema(ColumnLabel.RATE),
   [EntityKey.CENTER_ID]: integerIdSchema(ColumnLabel.CENTER),
-  [EntityKey.PROFILE_ID]: z
-    .preprocess(
-      (val) => typeof val === "string" ? val.replace(/\s/g, "") : val,
-      z.string().length(12, `${ColumnLabel.PROFILE} Aadhar number must be exactly 12 characters`)
-    ),
+  [EntityKey.PROFILE_ID]: integerIdSchema(ColumnLabel.PROFILE),
   [EntityKey.CUSTOMER_ID]: integerIdSchema(ColumnLabel.CUSTOMER),
   [EntityKey.IS_ACTIVE]: z.boolean().default(true),
   [EntityKey.IMAGES]: z.array(z.string()).optional(),

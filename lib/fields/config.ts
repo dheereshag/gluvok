@@ -30,7 +30,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Barley", type: FieldType.TEXT, icon: Tag },
   ],
   [ProjectSlug.RATES]: [
-    { key: EntityKey.COMMODITY_NAME, label: ColumnLabel.COMMODITY, placeholder: getSelectPlaceholder("Commodity"), type: FieldType.TEXT, icon: Tag },
+    { key: EntityKey.COMMODITY_ID, label: ColumnLabel.COMMODITY, placeholder: getSelectPlaceholder("Commodity"), type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.UNIT_PRICE, label: ColumnLabel.UNIT_PRICE, placeholder: "e.g. 15000", type: FieldType.NUMBER, icon: IndianRupee },
   ],
@@ -93,7 +93,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       },
       icon: Fingerprint,
     },
-    { key: EntityKey.ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder("User"), type: FieldType.TEXT, icon: Hash },
+    { key: EntityKey.USER_ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder("User"), type: FieldType.TEXT, icon: Hash },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT, icon: User },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
   ],

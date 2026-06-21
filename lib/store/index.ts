@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { type EntityRecord, type Rate, type Profile } from "@/types"
+import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
 import { ProjectSlug } from "@/lib/fields"
@@ -45,21 +45,26 @@ export const useEntitiesStore = create<EntitiesState>()(
           const currentList = state.entities[slug] || []
 
           let id = newE[key]
-          if (id === undefined || id === null || id === "") {
-            const isNumericSerial = [
-              ProjectSlug.VILLAGES,
-              ProjectSlug.FACTORIES,
-              ProjectSlug.CENTERS,
-              ProjectSlug.RATES,
-              ProjectSlug.WEIGHMENTS,
-              ProjectSlug.ASSIGNMENTS
-            ].includes(slug as ProjectSlug)
-
-            if (isNumericSerial) {
-              id = currentList.length + 1
-            } else {
-              id = Math.floor(Math.random() * 1000000).toString()
+          switch (id === undefined || id === null || id === "") {
+            case true: {
+              const isNumericSerial = slug !== ProjectSlug.USERS
+              switch (isNumericSerial) {
+                case true: {
+                  const maxId = currentList.reduce((max, item) => {
+                    const itemId = Number(item.id || getField(item, key))
+                    return itemId > max ? itemId : max
+                  }, 0)
+                  id = maxId + 1
+                  break
+                }
+                default:
+                  id = Math.floor(Math.random() * 1000000).toString()
+                  break
+              }
+              break
             }
+            default:
+              break
           }
           newE[key] = id
           const entityToAdd = { ...newE, created_at: getTimestamp(), updated_at: getTimestamp() } as EntityRecord
@@ -74,14 +79,14 @@ export const useEntitiesStore = create<EntitiesState>()(
                 case true: {
                   const currentUserId = currentUser!.id
                   const activeProfiles = state.entities[ProjectSlug.PROFILES] as Profile[] || []
-                  const userProfile = activeProfiles.find((p) => String(p.id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
+                  const userProfile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
                   switch (!!userProfile) {
                     case true: {
                       const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
                       const newAssignment = {
                         id: currentAssignments.length + 1,
                         factory_id: Number(id),
-                        profile_id: userProfile!.aadhar_number,
+                        profile_id: Number(userProfile!.id),
                         created_at: getTimestamp(),
                         updated_at: getTimestamp()
                       } as EntityRecord
@@ -119,30 +124,7 @@ export const useEntitiesStore = create<EntitiesState>()(
             String(getField(item, key)) === String(id) ? { ...item, ...fields, updated_at: getTimestamp() } as EntityRecord : item
           )
 
-          const nextEntities = { ...state.entities, [slug]: updatedList }
-
-          // Cascade update commodity_name in rates if a commodity is renamed
-          switch (slug as ProjectSlug) {
-            case ProjectSlug.COMMODITIES: {
-              if (fields.name && String(fields.name) !== String(id)) {
-                const oldName = String(id)
-                const newName = String(fields.name)
-                const updatedRates = (state.entities[ProjectSlug.RATES] || []).map((item) => {
-                  const rate = item as Rate
-                  if (rate.commodity_name === oldName) {
-                    return { ...rate, commodity_name: newName, updated_at: getTimestamp() } as EntityRecord
-                  }
-                  return rate
-                })
-                nextEntities[ProjectSlug.RATES] = updatedRates
-              }
-              break
-            }
-            default:
-              break
-          }
-
-          return { entities: nextEntities }
+          return { entities: { ...state.entities, [slug]: updatedList } }
         }),
       deleteEntity: (slug, idKey, id) =>
         set((state) => {

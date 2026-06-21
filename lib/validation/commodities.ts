@@ -24,5 +24,21 @@ export const addCommoditySchema = z.object({
 })
 
 export const editCommoditySchema = z.object({
+  [EntityKey.ID]: z.coerce.number().optional(),
   [EntityKey.NAME]: commodityNameField,
+}).refine((data) => {
+  const currentList = useEntitiesStore.getState().entities[ProjectSlug.COMMODITIES] || []
+  const nameExists = currentList.some((item) => {
+    const existingId = getField(item, EntityKey.ID)
+    const existingName = getField(item, EntityKey.NAME)
+    return (
+      Number(existingId) !== Number(data[EntityKey.ID]) &&
+      typeof existingName === "string" &&
+      existingName.trim().toLowerCase() === data[EntityKey.NAME].trim().toLowerCase()
+    )
+  })
+  return !nameExists
+}, {
+  message: "A commodity with this name already exists",
+  path: [EntityKey.NAME],
 })

@@ -1,13 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Package, Building, User, Users, Image, Power } from "lucide-react"
+import { Car, Weight, Package, Building, Power, Image } from "lucide-react"
 import { EntityKey, ProjectSlug } from "@/lib/fields"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
 import { useEntitiesStore } from "@/lib/store"
 import { rates } from "@/data/rates"
-import { type Rate } from "@/types"
+import { type Rate, type Commodity } from "@/types"
 import { cn } from "@/lib/utils"
-import { createTextColumn, createPillColumn, createBaseColumn, createCustomColumn, getCommodityIcon } from "../helpers"
+import { createTextColumn, createPillColumn, createBaseColumn, createCustomColumn, getCommodityIcon, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -38,8 +38,20 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         const storeState = useEntitiesStore.getState()
         const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
         const rateRec = activeRates.find((p) => String(p.id) === String(val))
-        const displayName = rateRec ? `${rateRec.commodity_name} (ID: ${val})` : `Rate ID: ${val}`
-        const Icon = getCommodityIcon(rateRec ? rateRec.commodity_name : "")
+        const commodityId = rateRec ? rateRec.commodity_id : null
+        let commodityName = ""
+        switch (commodityId !== null) {
+          case true: {
+            const activeCommodities = storeState.entities[ProjectSlug.COMMODITIES] as Commodity[] || []
+            const comm = activeCommodities.find((c) => Number(c.id) === Number(commodityId))
+            commodityName = comm ? comm.name : `Commodity ${commodityId}`
+            break
+          }
+          default:
+            break
+        }
+        const displayName = rateRec ? `${commodityName} (ID: ${val})` : `Rate ID: ${val}`
+        const Icon = getCommodityIcon(commodityName)
         return <><PillIcon icon={Icon} />{displayName}</>
       },
       { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
@@ -51,8 +63,10 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       (val) => <><PillIcon icon={Building} />ID: {val}</>,
       { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-transparent border border-border hover:bg-muted/20 text-muted-foreground transition-all duration-200" }
     ),
-    createTextColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User, "font-mono text-muted-foreground text-xs"),
-    createTextColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users, "font-mono text-muted-foreground text-xs"),
+    createProfileAadharColumn(),
+    createProfileNameColumn(),
+    createCustomerGovtIdColumn(),
+    createCustomerNameColumn(),
     createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, Power, (val) => {
       const isActive = val === "true"
       return (
@@ -68,3 +82,4 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     }),
   ]
 }
+

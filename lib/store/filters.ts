@@ -21,14 +21,14 @@ export function filterEntitiesForUser(
           // Scope by factory assignments for all other roles (ADMIN, MANAGER, OPERATOR, BASE)
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
-          const myProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
+          const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
           let myFactoryIds: number[] = []
           switch (!!myProfile) {
             case true: {
-              const cleanAadhar = myProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+              const profileId = myProfile!.id
               myFactoryIds = allAssignments
-                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanAadhar)
+                .filter((a) => Number(a.profile_id) === Number(profileId))
                 .map((a) => Number(a.factory_id))
               break
             }
@@ -52,11 +52,8 @@ export function filterEntitiesForUser(
             case ProjectSlug.PROFILES: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
-              return rawData.filter((item) => {
-                const aadhar = String((item as Profile).aadhar_number).replace(/\s/g, "").toLowerCase()
-                return profileIdsInMyFactories.includes(aadhar)
-              })
+                .map((a) => Number(a.profile_id))
+              return rawData.filter((item) => profileIdsInMyFactories.includes(Number((item as Profile).id)))
             }
 
             case ProjectSlug.WEIGHMENTS: {
@@ -70,15 +67,13 @@ export function filterEntitiesForUser(
             case ProjectSlug.USERS: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+                .map((a) => Number(a.profile_id))
               return rawData.filter((item) => {
                 const userId = String((item as User).id).trim().toLowerCase()
-                const userProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === userId)
+                const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
-                  case true: {
-                    const aadhar = userProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
-                    return profileIdsInMyFactories.includes(aadhar)
-                  }
+                  case true:
+                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
                   default:
                     return false
                 }
@@ -119,14 +114,14 @@ export function filterOptionsForUser(
         default: {
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
-          const myProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
+          const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
           let myFactoryIds: number[] = []
           switch (!!myProfile) {
             case true: {
-              const cleanAadhar = myProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+              const profileId = myProfile!.id
               myFactoryIds = allAssignments
-                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanAadhar)
+                .filter((a) => Number(a.profile_id) === Number(profileId))
                 .map((a) => Number(a.factory_id))
               break
             }
@@ -147,25 +142,20 @@ export function filterOptionsForUser(
             case ProjectSlug.PROFILES: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
-              return dataList.filter((item) => {
-                const aadhar = String((item as Profile).aadhar_number).replace(/\s/g, "").toLowerCase()
-                return profileIdsInMyFactories.includes(aadhar)
-              })
+                .map((a) => Number(a.profile_id))
+              return dataList.filter((item) => profileIdsInMyFactories.includes(Number((item as Profile).id)))
             }
 
             case ProjectSlug.USERS: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+                .map((a) => Number(a.profile_id))
               return dataList.filter((item) => {
                 const userId = String((item as User).id).trim().toLowerCase()
-                const userProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === userId)
+                const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
-                  case true: {
-                    const aadhar = userProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
-                    return profileIdsInMyFactories.includes(aadhar)
-                  }
+                  case true:
+                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
                   default:
                     return false
                 }
@@ -180,3 +170,4 @@ export function filterOptionsForUser(
     }
   }
 }
+

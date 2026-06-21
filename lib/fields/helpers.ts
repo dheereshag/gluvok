@@ -3,21 +3,14 @@ import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, type LucideIcon } from "
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
-    case ProjectSlug.CUSTOMERS:
-      return EntityKey.GOVT_ID
-    case ProjectSlug.PROFILES:
-      return EntityKey.AADHAR_NUMBER
-    case ProjectSlug.COMMODITIES:
-      return EntityKey.NAME
     default:
-      return EntityKey.ID
+      break
   }
+  return EntityKey.ID
 }
 
 export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | null {
   switch (key) {
-    case EntityKey.ID:
-      return ProjectSlug.USERS
     case EntityKey.FACTORY_ID:
       return ProjectSlug.FACTORIES
     case EntityKey.VILLAGE_ID:
@@ -42,11 +35,10 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
 
 export function isPrimaryKeyEditable(slug: string | ProjectSlug): boolean {
   switch (slug) {
-    case ProjectSlug.COMMODITIES:
-      return true
     default:
-      return false
+      break
   }
+  return false
 }
 
 export function isCommoditySlug(slug: string | ProjectSlug): boolean {

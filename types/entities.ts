@@ -9,6 +9,7 @@ export interface Center {
 }
 
 export interface Commodity {
+  id: number
   name: string
   created_at: string
   updated_at: string
@@ -16,7 +17,7 @@ export interface Commodity {
 
 export interface Rate {
   id: number
-  commodity_name: string
+  commodity_id: number
   unit_price: string
   factory_id: number
   created_at: string
@@ -24,8 +25,8 @@ export interface Rate {
 }
 
 export interface Customer {
+  id: number
   govt_id: number
-  id?: string
   name: string
   father_name: string
   village_id: number
@@ -44,7 +45,7 @@ export interface Factory {
 export interface Assignment {
   id: number
   factory_id: number
-  profile_id: string
+  profile_id: number
   created_at: string
   updated_at: string
 }
@@ -64,7 +65,7 @@ export interface Weighment {
   images: string[]
   rate_id: number
   center_id: number
-  profile_id: string
+  profile_id: number
   customer_id: number
   is_active: boolean
   created_at: string
@@ -72,8 +73,9 @@ export interface Weighment {
 }
 
 export interface Profile {
+  id: number
+  user_id: string
   aadhar_number: string
-  id: string
   name: string
   factory_id?: number
   created_at: string

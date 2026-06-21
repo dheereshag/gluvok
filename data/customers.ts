@@ -2,6 +2,7 @@ import { type Customer } from "@/types";
 
 export const customers: Customer[] = [
   {
+    id: 1,
     govt_id: 1001,
     name: "Ramesh Kumar",
     father_name: "Mohan Kumar",
@@ -10,6 +11,7 @@ export const customers: Customer[] = [
     updated_at: "2026-06-07 11:50:14.658144",
   },
   {
+    id: 2,
     govt_id: 1002,
     name: "Suresh Singh",
     father_name: "Baldev Singh",
@@ -18,6 +20,7 @@ export const customers: Customer[] = [
     updated_at: "2026-06-07 11:50:14.658144",
   },
   {
+    id: 3,
     govt_id: 1003,
     name: "Anil Sharma",
     father_name: "Rajesh Sharma",
@@ -26,6 +29,7 @@ export const customers: Customer[] = [
     updated_at: "2026-06-07 11:50:14.658144",
   },
   {
+    id: 4,
     govt_id: 1004,
     name: "Pawan Verma",
     father_name: "Mahesh Verma",
@@ -34,6 +38,7 @@ export const customers: Customer[] = [
     updated_at: "2026-06-07 11:50:14.658144",
   },
   {
+    id: 5,
     govt_id: 1005,
     name: "Vikas Yadav",
     father_name: "Satish Yadav",
