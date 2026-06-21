@@ -10,7 +10,6 @@ import { type EntityRecord } from "@/types"
 import { type ColumnActionsCallbacks } from "./index"
 
 import { type Permission } from "@/lib/store"
-import { ProjectSlug } from "@/lib/constants/enums"
 
 export function getActionsColumn<T extends EntityRecord>(
   projectSlug: string,
@@ -19,17 +18,10 @@ export function getActionsColumn<T extends EntityRecord>(
   callbacks: ColumnActionsCallbacks<T>,
   permissions?: Permission
 ): ColumnDef<T> {
-  let canWrite = permissions?.write ?? true
-  let canDelete = permissions?.delete ?? true
+  const canWrite = permissions?.write ?? true
+  const canDelete = permissions?.delete ?? true
 
-  switch (projectSlug as ProjectSlug) {
-    case ProjectSlug.RATES:
-      canWrite = false
-      canDelete = false
-      break
-    default:
-      break
-  }
+
 
   return {
     id: "actions",

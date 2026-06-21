@@ -106,13 +106,6 @@ export const useEntitiesStore = create<EntitiesState>()(
         }),
       updateEntity: (slug, key, id, fields) =>
         set((state) => {
-          switch (slug as ProjectSlug) {
-            case ProjectSlug.RATES:
-              throw new Error("Rates are not editable or deletable")
-            default:
-              break
-          }
-
           const currentList = state.entities[slug] || []
 
           const updatedList = currentList.map((item) =>
@@ -123,12 +116,6 @@ export const useEntitiesStore = create<EntitiesState>()(
         }),
       deleteEntity: (slug, idKey, id) =>
         set((state) => {
-          switch (slug as ProjectSlug) {
-            case ProjectSlug.RATES:
-              throw new Error("Rates are not editable or deletable")
-            default:
-              break
-          }
           const updatedList = (state.entities[slug] || []).filter((item) => String(getField(item, idKey)) !== String(id))
           return { entities: { ...state.entities, [slug]: updatedList } }
         }),
