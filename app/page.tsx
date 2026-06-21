@@ -56,8 +56,7 @@ export default function Page() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2 flex flex-col items-start text-left">
             <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2.5 text-foreground">
-              <Logo size={32} />
-              gluvok Dashboard
+              Dashboard
             </h1>
             <p className="text-muted-foreground text-sm max-w-xl">
               Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.

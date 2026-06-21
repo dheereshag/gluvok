@@ -44,9 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden bg-background">
-                  <Logo size={32} />
-                </div>
+                <Logo size={32} />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">gluvok</span>
                 </div>
