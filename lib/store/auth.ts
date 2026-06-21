@@ -2,7 +2,9 @@ import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { users as seedUsers } from "@/data/users"
 
-import { Role } from "@/lib/constants/enums"
+import { Role, ProjectSlug } from "@/lib/constants/enums"
+import { type Profile } from "@/types"
+import { useEntitiesStore } from "./entities"
 
 export interface AuthUser {
   id: string
@@ -10,6 +12,7 @@ export interface AuthUser {
   email: string
   avatar?: string
   role: Role
+  profile?: Profile
 }
 
 export interface RegisteredUser {
@@ -63,6 +66,8 @@ export const useAuthStore = create<AuthStore>()(
           (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
         )
         if (found) {
+          const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+          const profile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(found.id).trim().toLowerCase())
           set({
             user: {
               id: found.id,
@@ -70,6 +75,7 @@ export const useAuthStore = create<AuthStore>()(
               email: found.email,
               avatar: "/avatars/shadcn.jpg",
               role: found.role || Role.BASE,
+              profile,
             },
           })
           return true
@@ -92,6 +98,8 @@ export const useAuthStore = create<AuthStore>()(
           role: user.role || Role.BASE,
         }
         const updatedUsers = [...users, userWithRole]
+        const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+        const profile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(userWithRole.id).trim().toLowerCase())
         set({
           registeredUsers: updatedUsers,
           user: {
@@ -100,6 +108,7 @@ export const useAuthStore = create<AuthStore>()(
             email: userWithRole.email,
             avatar: "/avatars/shadcn.jpg",
             role: userWithRole.role,
+            profile,
           },
         })
         return true
@@ -135,3 +144,4 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 )
+
