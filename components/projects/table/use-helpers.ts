@@ -11,10 +11,14 @@ export function useProjectStoreSync(projectSlug: string, initialData: EntityReco
   const hydrated = useEntitiesStore((state) => state.hydrated)
 
   React.useEffect(() => {
+    let cancelled = false
     const timer = setTimeout(() => {
-      setIsMounted(true)
+      if (!cancelled) setIsMounted(true)
     }, 0)
-    return () => clearTimeout(timer)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
   }, [])
 
   const data = React.useMemo(() => {
