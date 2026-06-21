@@ -1,10 +1,6 @@
 import { type Assignment } from "@/types"
 
 export const assignments: Assignment[] = [
-  // Super Admin (super@example.com) -> assigned to all factories
-  { id: 1, factory_id: 1, profile_id: 1, created_at: "2026-06-07 11:46:03", updated_at: "2026-06-07 11:46:03" },
-  { id: 2, factory_id: 2, profile_id: 1, created_at: "2026-06-07 11:46:03", updated_at: "2026-06-07 11:46:03" },
-  { id: 3, factory_id: 3, profile_id: 1, created_at: "2026-06-07 11:46:03", updated_at: "2026-06-07 11:46:03" },
 
   // Factory 1 Users (Punjab Grain Depot)
   { id: 4, factory_id: 1, profile_id: 2, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // admin1a

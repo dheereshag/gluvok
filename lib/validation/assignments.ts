@@ -14,6 +14,7 @@ export const addAssignmentSchema = baseAssignmentSchema.refine((data) => {
   const assignmentExists = currentList.some((item) => {
     const existingFactoryId = getField(item, EntityKey.FACTORY_ID)
     const existingProfileId = getField(item, EntityKey.PROFILE_ID)
+    
     return (
       Number(existingFactoryId) === Number(data[EntityKey.FACTORY_ID]) &&
       Number(existingProfileId) === Number(data[EntityKey.PROFILE_ID])
@@ -21,8 +22,8 @@ export const addAssignmentSchema = baseAssignmentSchema.refine((data) => {
   })
   return !assignmentExists
 }, {
-  message: "This profile is already assigned to this factory",
-  path: [EntityKey.PROFILE_ID],
+  message: "This assignment already exists for this factory",
+  path: [EntityKey.FACTORY_ID],
 })
 
 export const editAssignmentSchema = baseAssignmentSchema

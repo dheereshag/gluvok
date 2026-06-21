@@ -30,6 +30,7 @@ export interface Customer {
   name: string
   father_name: string
   village_id: number
+  factory_id?: number
   created_at: string
   updated_at: string
 }
@@ -46,6 +47,14 @@ export interface Assignment {
   id: number
   factory_id: number
   profile_id: number
+  created_at: string
+  updated_at: string
+}
+
+export interface Affiliation {
+  id: number
+  factory_id: number
+  customer_id: number
   created_at: string
   updated_at: string
 }
@@ -91,5 +100,6 @@ export interface User {
 }
 
 /** Union of all entity types used across the app */
-export type EntityRecord = Center | Commodity | Rate | Customer | Weighment | Factory | Profile | User | Village | Assignment
+export type EntityRecord = Center | Commodity | Rate | Customer | Weighment | Factory | Profile | User | Village | Assignment | Affiliation
+
 

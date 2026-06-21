@@ -89,6 +89,8 @@ export enum ColumnLabel {
   CUSTOMER = "Customer",
   FACTORY_NAME = "Factory Name",
   VILLAGE_NAME = "Village Name",
+  PROFILE_NAME = "Profile Name",
+  CUSTOMER_NAME = "Customer Name",
   USER_EMAIL = "User Email",
 }
 
@@ -121,6 +123,7 @@ export enum ProjectSlug {
   USERS = "users",
   VILLAGES = "villages",
   ASSIGNMENTS = "assignments",
+  AFFILIATIONS = "affliations",
 }
 
 export enum FieldType {
@@ -191,4 +194,5 @@ export enum ProjectName {
   USERS = "Users",
   VILLAGES = "Villages",
   ASSIGNMENTS = "Assignments",
+  AFFILIATIONS = "Affliations",
 }

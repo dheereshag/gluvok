@@ -6,7 +6,7 @@ export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer } from "@/types"
-import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint } from "lucide-react"
+import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint, Package, Building } from "lucide-react"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"], id?: string
@@ -155,12 +155,13 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
       />
     ),
     cell: ({ row }) => {
-      const factoryId = row.getValue(id) as string
-      return <div className="font-mono text-muted-foreground text-xs">{factoryId || "—"}</div>
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
     },
     meta: { icon: Icon, label },
   }
 }
+
 
 export function createFactoryNameColumn<T>(): ColumnDef<T> {
   const id = EntityKey.FACTORY_NAME
@@ -294,7 +295,7 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
 
 export function createProfileNameColumn<T>(): ColumnDef<T> {
   const id = "profile_name"
-  const label = ColumnLabel.PROFILE
+  const label = ColumnLabel.PROFILE_NAME
   const Icon = User
   return {
     id,
@@ -393,7 +394,7 @@ export function createCommodityNameColumn<T>(): ColumnDef<T> {
 
 export function createCustomerNameColumn<T>(): ColumnDef<T> {
   const id = "customer_name"
-  const label = ColumnLabel.CUSTOMER
+  const label = ColumnLabel.CUSTOMER_NAME
   const Icon = Users
   return {
     id,
@@ -452,6 +453,126 @@ export function createCustomerGovtIdColumn<T>(): ColumnDef<T> {
     cell: ({ row }) => {
       const govtId = row.getValue(id) as string
       return <div className="font-mono text-muted-foreground text-xs">{govtId || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createVillageIdColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.VILLAGE_ID
+  const label = ColumnLabel.VILLAGE_ID
+  const Icon = Home
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      return record.village_id ? String(record.village_id) : ""
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createRateIdColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.RATE_ID
+  const label = ColumnLabel.RATE_ID
+  const Icon = Package
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      return record.rate_id ? String(record.rate_id) : ""
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createCenterIdColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.CENTER_ID
+  const label = ColumnLabel.CENTER_ID
+  const Icon = Building
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      return record.center_id ? String(record.center_id) : ""
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createProfileIdColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.PROFILE_ID
+  const label = ColumnLabel.PROFILE_ID
+  const Icon = User
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      return record.profile_id ? String(record.profile_id) : ""
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createCustomerIdColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.CUSTOMER_ID
+  const label = ColumnLabel.CUSTOMER_ID
+  const Icon = Users
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      return record.customer_id ? String(record.customer_id) : ""
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const val = row.getValue(id) as string
+      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
     },
     meta: { icon: Icon, label },
   }

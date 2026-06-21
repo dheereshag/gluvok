@@ -1,6 +1,6 @@
 import { Role } from "@/lib/constants/enums"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type User } from "@/types"
+import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type User, type Customer, type Affiliation } from "@/types"
 import { type AuthUser } from "./auth"
 
 export function filterEntitiesForUser(
@@ -20,6 +20,7 @@ export function filterEntitiesForUser(
         default: {
           // Scope by factory assignments for all other roles (ADMIN, MANAGER, OPERATOR, BASE)
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
+          const allAffiliations = (allEntities[ProjectSlug.AFFILIATIONS] || []) as Affiliation[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
@@ -49,11 +50,38 @@ export function filterEntitiesForUser(
             case ProjectSlug.ASSIGNMENTS:
               return rawData.filter((item) => myFactoryIds.includes(Number((item as Assignment).factory_id)))
 
+            case ProjectSlug.AFFILIATIONS:
+              return rawData.filter((item) => myFactoryIds.includes(Number((item as Affiliation).factory_id)))
+
             case ProjectSlug.PROFILES: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
                 .map((a) => Number(a.profile_id))
-              return rawData.filter((item) => profileIdsInMyFactories.includes(Number((item as Profile).id)))
+                .filter(Boolean)
+              return rawData.filter((item) => {
+                const profile = item as Profile
+                if (myProfile && Number(profile.id) === Number(myProfile.id)) {
+                  return true
+                }
+                return (
+                  profileIdsInMyFactories.includes(Number(profile.id)) ||
+                  (profile.factory_id !== undefined && myFactoryIds.includes(Number(profile.factory_id)))
+                )
+              })
+            }
+
+            case ProjectSlug.CUSTOMERS: {
+              const customerIdsInMyFactories = allAffiliations
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => Number(a.customer_id))
+                .filter(Boolean)
+              return rawData.filter((item) => {
+                const customer = item as Customer
+                return (
+                  customerIdsInMyFactories.includes(Number(customer.id)) ||
+                  (customer.factory_id !== undefined && myFactoryIds.includes(Number(customer.factory_id)))
+                )
+              })
             }
 
             case ProjectSlug.WEIGHMENTS: {
@@ -68,12 +96,19 @@ export function filterEntitiesForUser(
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
                 .map((a) => Number(a.profile_id))
+                .filter(Boolean)
               return rawData.filter((item) => {
                 const userId = String((item as User).id).trim().toLowerCase()
+                if (userId === String(user.id).trim().toLowerCase()) {
+                  return true
+                }
                 const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
                   case true:
-                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
+                    return (
+                      profileIdsInMyFactories.includes(Number(userProfile!.id)) ||
+                      (userProfile!.factory_id !== undefined && myFactoryIds.includes(Number(userProfile!.factory_id)))
+                    )
                   default:
                     return false
                 }
@@ -113,6 +148,7 @@ export function filterOptionsForUser(
           return dataList
         default: {
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
+          const allAffiliations = (allEntities[ProjectSlug.AFFILIATIONS] || []) as Affiliation[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
@@ -143,19 +179,50 @@ export function filterOptionsForUser(
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
                 .map((a) => Number(a.profile_id))
-              return dataList.filter((item) => profileIdsInMyFactories.includes(Number((item as Profile).id)))
+                .filter(Boolean)
+              return dataList.filter((item) => {
+                const profile = item as Profile
+                if (myProfile && Number(profile.id) === Number(myProfile.id)) {
+                  return true
+                }
+                return (
+                  profileIdsInMyFactories.includes(Number(profile.id)) ||
+                  (profile.factory_id !== undefined && myFactoryIds.includes(Number(profile.factory_id)))
+                )
+              })
+            }
+
+            case ProjectSlug.CUSTOMERS: {
+              const customerIdsInMyFactories = allAffiliations
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => Number(a.customer_id))
+                .filter(Boolean)
+              return dataList.filter((item) => {
+                const customer = item as Customer
+                return (
+                  customerIdsInMyFactories.includes(Number(customer.id)) ||
+                  (customer.factory_id !== undefined && myFactoryIds.includes(Number(customer.factory_id)))
+                )
+              })
             }
 
             case ProjectSlug.USERS: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
                 .map((a) => Number(a.profile_id))
+                .filter(Boolean)
               return dataList.filter((item) => {
                 const userId = String((item as User).id).trim().toLowerCase()
+                if (userId === String(user.id).trim().toLowerCase()) {
+                  return true
+                }
                 const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
                   case true:
-                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
+                    return (
+                      profileIdsInMyFactories.includes(Number(userProfile!.id)) ||
+                      (userProfile!.factory_id !== undefined && myFactoryIds.includes(Number(userProfile!.factory_id)))
+                    )
                   default:
                     return false
                 }

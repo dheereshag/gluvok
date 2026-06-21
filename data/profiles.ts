@@ -7,7 +7,6 @@ export const profiles: Profile[] = [
     aadhar_number: "900000000002",
     user_id: "f1a8e8b8-2b8d-4e9e-b5c6-7a8b9c0d1e2f",
     name: "Super Admin",
-    factory_id: 1,
     created_at: "2026-06-07 11:46:03.686287",
     updated_at: "2026-06-07 11:46:03.705674",
   },

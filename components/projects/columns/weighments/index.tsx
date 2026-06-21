@@ -1,12 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Package, Building, Power, Image } from "lucide-react"
-import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
+import { Car, Weight, Power, Image } from "lucide-react"
+import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
-import { useEntitiesStore } from "@/lib/store"
-import { rates } from "@/data/rates"
-import { type Rate, type Commodity } from "@/types"
 import { cn } from "@/lib/utils"
-import { createTextColumn, createBaseColumn, createCustomColumn, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn } from "../helpers"
+import { createTextColumn, createBaseColumn, createCustomColumn, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn, createRateIdColumn, createCenterIdColumn } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -25,28 +22,8 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     createCustomColumn(EntityKey.WEIGHT, ColumnLabel.WEIGHT, Weight, (val) => {
       return <div className="font-mono text-xs font-semibold text-foreground">{val} tons</div>
     }),
-    createCustomColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package, (val) => {
-      const storeState = useEntitiesStore.getState()
-      const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
-      const rateRec = activeRates.find((p) => String(p.id) === String(val))
-      const commodityId = rateRec ? rateRec.commodity_id : null
-      let commodityName = ""
-      switch (commodityId !== null) {
-        case true: {
-          const activeCommodities = storeState.entities[ProjectSlug.COMMODITIES] as Commodity[] || []
-          const comm = activeCommodities.find((c) => Number(c.id) === Number(commodityId))
-          commodityName = comm ? comm.name : `Commodity ${commodityId}`
-          break
-        }
-        default:
-          break
-      }
-      const displayName = rateRec ? `${commodityName} (ID: ${val})` : `Rate ID: ${val}`
-      return <div className="font-semibold text-xs text-foreground">{displayName}</div>
-    }),
-    createCustomColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building, (val) => {
-      return <div className="font-mono text-xs text-muted-foreground">ID: {val}</div>
-    }),
+    createRateIdColumn(),
+    createCenterIdColumn(),
     createProfileAadharColumn(),
     createProfileNameColumn(),
     createCustomerGovtIdColumn(),

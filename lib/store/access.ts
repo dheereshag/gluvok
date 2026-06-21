@@ -19,6 +19,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
     [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
+    [ProjectSlug.AFFILIATIONS]: { read: true, write: true, delete: true },
   },
   [Role.ADMIN]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -31,6 +32,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
     [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
+    [ProjectSlug.AFFILIATIONS]: { read: true, write: true, delete: true },
   },
   [Role.MANAGER]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -43,6 +45,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
     [ProjectSlug.ASSIGNMENTS]: { read: true, write: false, delete: false },
+    [ProjectSlug.AFFILIATIONS]: { read: true, write: false, delete: false },
   },
   [Role.OPERATOR]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -55,6 +58,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
     [ProjectSlug.ASSIGNMENTS]: { read: false, write: false, delete: false },
+    [ProjectSlug.AFFILIATIONS]: { read: false, write: false, delete: false },
   },
   [Role.BASE]: {
     [ProjectSlug.USERS]: { read: false, write: false, delete: false },
@@ -67,6 +71,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: false, write: false, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: false, delete: false },
     [ProjectSlug.ASSIGNMENTS]: { read: false, write: false, delete: false },
+    [ProjectSlug.AFFILIATIONS]: { read: false, write: false, delete: false },
   },
 }
 

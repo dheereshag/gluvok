@@ -41,6 +41,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FATHER_NAME, label: ColumnLabel.FATHER_NAME, placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT, icon: User },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder("Village"), type: FieldType.TEXT, icon: Home },
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.WEIGHMENTS]: [
     {
@@ -58,7 +59,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER, placeholder: getSelectPlaceholder("Center"), type: FieldType.TEXT, icon: Building },
     {
       key: EntityKey.PROFILE_ID,
-      label: ColumnLabel.PROFILE,
+      label: ColumnLabel.PROFILE_NAME,
       placeholder: getSelectPlaceholder("Profile"),
       type: FieldType.TEXT,
       inputMode: InputMode.NUMERIC,
@@ -69,7 +70,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       },
       icon: User,
     },
-    { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER, placeholder: getSelectPlaceholder("Customer"), type: FieldType.TEXT, icon: Users },
+    { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER_NAME, placeholder: getSelectPlaceholder("Customer"), type: FieldType.TEXT, icon: Users },
     { key: EntityKey.IS_ACTIVE, label: ColumnLabel.IS_ACTIVE, placeholder: "", type: FieldType.CHECKBOX, icon: Power },
   ],
   [ProjectSlug.FACTORIES]: [
@@ -79,6 +80,10 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.ASSIGNMENTS]: [
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.PROFILE_ID, label: ColumnLabel.PROFILE, placeholder: getSelectPlaceholder("Profile"), type: FieldType.TEXT, icon: User },
+  ],
+  [ProjectSlug.AFFILIATIONS]: [
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
+    { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER, placeholder: getSelectPlaceholder("Customer"), type: FieldType.TEXT, icon: Users },
   ],
   [ProjectSlug.PROFILES]: [
     {

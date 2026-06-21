@@ -60,8 +60,11 @@ export function useProjectTable({
   const filterKey = React.useMemo(() => {
     switch (projectSlug) {
       case ProjectSlug.USERS:
-      case ProjectSlug.ASSIGNMENTS:
         return EntityKey.EMAIL
+      case ProjectSlug.ASSIGNMENTS:
+        return "profile_name"
+      case ProjectSlug.AFFILIATIONS:
+        return "customer_name"
       case ProjectSlug.WEIGHMENTS:
         return EntityKey.VEHICLE_NUMBER
       case ProjectSlug.RATES:

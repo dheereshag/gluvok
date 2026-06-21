@@ -8,6 +8,7 @@ import { profiles } from "@/data/profiles"
 import { villages } from "@/data/villages"
 import { users } from "@/data/users"
 import { assignments } from "@/data/assignments"
+import { affiliations } from "@/data/affiliations"
 import { useEntitiesStore } from "@/lib/store"
 import {
   type Center,
@@ -19,6 +20,7 @@ import {
   type User,
   type Village,
   type Assignment,
+  type Affiliation,
   type EntityRecord,
 } from "@/types"
 
@@ -34,6 +36,7 @@ export const FALLBACK_DATA: Record<string, Entity[]> = {
   [ProjectSlug.VILLAGES]: villages,
   [ProjectSlug.USERS]: users,
   [ProjectSlug.ASSIGNMENTS]: assignments,
+  [ProjectSlug.AFFILIATIONS]: affiliations,
 }
 
 export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; name: string }> = {
@@ -62,15 +65,32 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
     const a = item as Assignment
     const storeState = useEntitiesStore.getState()
     const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
-    const activeProfiles = (storeState.entities[ProjectSlug.PROFILES] || profiles) as Profile[]
     const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
-    const profile = activeProfiles.find((p) => Number(p.id) === Number(a.profile_id))
     const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
+
+    const activeProfiles = (storeState.entities[ProjectSlug.PROFILES] || profiles) as Profile[]
+    const profile = activeProfiles.find((p) => Number(p.id) === Number(a.profile_id))
     const profileName = profile ? profile.name : `Profile ${a.profile_id}`
     return {
       id: String(a.id),
       name: `${profileName} @ ${factoryName}`
     }
   },
+  [ProjectSlug.AFFILIATIONS]: (item) => {
+    const a = item as Affiliation
+    const storeState = useEntitiesStore.getState()
+    const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
+    const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
+    const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
+
+    const activeCustomers = (storeState.entities[ProjectSlug.CUSTOMERS] || customers) as Customer[]
+    const customer = activeCustomers.find((c) => Number(c.id) === Number(a.customer_id))
+    const customerName = customer ? customer.name : `Customer ${a.customer_id}`
+    return {
+      id: String(a.id),
+      name: `${customerName} @ ${factoryName}`
+    }
+  },
 }
+
 
