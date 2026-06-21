@@ -5,7 +5,7 @@ import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer, type Center as CenterType } from "@/types"
 import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint, Package, Building } from "lucide-react"
 
 export function createBaseColumn<T>(
@@ -547,6 +547,34 @@ export function createCustomerIdColumn<T>(): ColumnDef<T> {
     cell: ({ row }) => {
       const val = row.getValue(id) as string
       return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createCenterNameColumn<T>(): ColumnDef<T> {
+  const id = EntityKey.CENTER_NAME
+  const label = ColumnLabel.CENTER_NAME
+  const Icon = Building
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      const centerId = record[EntityKey.CENTER_ID]
+      if (!centerId) return ""
+      const activeCenters = useEntitiesStore.getState().entities[ProjectSlug.CENTERS] as CenterType[] || []
+      const center = activeCenters.find((c) => Number(c.id) === Number(centerId))
+      return center ? center.name : `Center ${centerId}`
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const name = row.getValue(id) as string
+      return <div className="font-semibold text-foreground text-xs">{name || "—"}</div>
     },
     meta: { icon: Icon, label },
   }

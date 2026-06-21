@@ -3,7 +3,7 @@ import { Car, Weight, Power, Image } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { cn } from "@/lib/utils"
-import { createTextColumn, createBaseColumn, createCustomColumn, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn, createRateIdColumn, createCenterIdColumn } from "./helpers"
+import { createTextColumn, createBaseColumn, createCustomColumn, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn, createRateIdColumn, createCenterIdColumn, createCenterNameColumn, createFactoryIdColumn, createFactoryNameColumn } from "./helpers"
 import { WeighmentImagesCell } from "./weighments-cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -27,6 +27,9 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     }),
     createRateIdColumn(),
     createCenterIdColumn(),
+    createCenterNameColumn(),
+    createFactoryIdColumn(),
+    createFactoryNameColumn(),
     createProfileAadharColumn(),
     createProfileNameColumn(),
     createCustomerGovtIdColumn(),

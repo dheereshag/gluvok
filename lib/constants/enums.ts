@@ -91,6 +91,7 @@ export enum ColumnLabel {
   VILLAGE_NAME = "Village Name",
   PROFILE_NAME = "Profile Name",
   CUSTOMER_NAME = "Customer Name",
+  CENTER_NAME = "Center Name",
   USER_EMAIL = "User Email",
 }
 
@@ -165,6 +166,7 @@ export enum EntityKey {
   PROFILE_NAME = "profile_name",
   PROFILE_AADHAR = "profile_aadhar",
   CUSTOMER_NAME = "customer_name",
+  CENTER_NAME = "center_name",
 }
 
 export enum InputMode {
