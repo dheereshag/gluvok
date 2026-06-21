@@ -89,3 +89,7 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+/** Union of all entity types used across the app */
+export type EntityRecord = Center | Commodity | Rate | Customer | Weighment | Factory | Profile | User | Village | Assignment
+
