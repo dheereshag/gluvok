@@ -15,17 +15,17 @@ export function DashboardCard({ name, href, desc, icon: Icon, color }: Dashboard
   return (
     <Link href={href} id={cardId} className="group block">
       <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
-        <CardHeader className="p-4">
+        <CardHeader className="p-3">
           <div className="flex items-center justify-between mb-3">
             <div className={`p-2 rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${color}`}>
               <Icon className="h-4 w-4" />
             </div>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
           </div>
-          <CardTitle className="font-bold text-xs text-card-foreground group-hover:text-primary leading-none">
+          <CardTitle className="font-bold text-md text-card-foreground group-hover:text-primary leading-none">
             {name}
           </CardTitle>
-          <CardDescription className="text-[11px] text-muted-foreground mt-1 leading-relaxed line-clamp-2">
+          <CardDescription className="text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-2">
             {desc}
           </CardDescription>
         </CardHeader>
