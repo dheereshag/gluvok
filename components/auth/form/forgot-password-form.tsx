@@ -13,6 +13,8 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
+import Link from "next/link"
+
 const forgotPasswordSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
 })
@@ -62,9 +64,9 @@ export function ForgotPasswordForm({
         footer={
           <FieldDescription className="text-center mt-4">
             Remembered your password?{" "}
-            <a href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">
+            <Link href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">
               Sign in
-            </a>
+            </Link>
           </FieldDescription>
         }
       >

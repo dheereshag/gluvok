@@ -13,6 +13,8 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
+import Link from "next/link"
+
 const loginSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -54,7 +56,7 @@ export function LoginForm({
         description="Enter your email below to login to your account"
         footer={
           <FieldDescription className="text-center mt-4">
-            Don&apos;t have an account? <a href={AppRoutes.SIGNUP} className="underline underline-offset-4 hover:text-primary">Sign up</a>
+            Don&apos;t have an account? <Link href={AppRoutes.SIGNUP} className="underline underline-offset-4 hover:text-primary">Sign up</Link>
           </FieldDescription>
         }
       >
@@ -75,12 +77,12 @@ export function LoginForm({
               registration={form.register("password")}
               error={form.formState.errors.password}
               labelRight={
-                <a
+                <Link
                   href={AppRoutes.FORGOT_PASSWORD}
                   className="text-xs text-muted-foreground underline-offset-4 hover:underline"
                 >
                   Forgot your password?
-                </a>
+                </Link>
               }
             />
             <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>

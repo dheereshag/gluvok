@@ -6,6 +6,7 @@ import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui
 import { Input } from "@/components/ui/input"
 import { UseFormRegisterReturn, FieldError as HookFieldError } from "react-hook-form"
 import { Logo } from "@/components/ui/logo"
+import Link from "next/link"
 
 interface AuthCardProps {
   title: string
@@ -28,8 +29,8 @@ export function AuthCard({ title, description, children, footer }: AuthCardProps
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <Link href="#">Terms of Service</Link>{" "}
+        and <Link href="#">Privacy Policy</Link>.
       </FieldDescription>
     </div>
   )
@@ -63,12 +64,10 @@ export function AuthPageLayout({ children }: AuthPageLayoutProps) {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="flex size-6 items-center justify-center rounded-md overflow-hidden bg-background">
-            <Logo size={24} />
-          </div>
+        <Link href="#" className="flex items-center gap-2 self-center font-medium">
+          <Logo size={24} />
           gluvok
-        </a>
+        </Link>
         {children}
       </div>
     </div>

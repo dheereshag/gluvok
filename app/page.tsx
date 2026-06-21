@@ -5,7 +5,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/co
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { LayoutDashboard, RotateCw } from "lucide-react"
-import { Logo } from "@/components/ui/logo"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
 import { useAuthStore, hasPageAccess, resetAllEntitiesData } from "@/lib/store"

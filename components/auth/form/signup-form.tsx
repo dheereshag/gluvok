@@ -13,6 +13,8 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
+import Link from "next/link"
+
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Invalid email address"),
@@ -65,7 +67,7 @@ export function SignupForm({
         description="Enter your details below to create your account"
         footer={
           <FieldDescription className="text-center mt-4">
-            Already have an account? <a href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">Sign in</a>
+            Already have an account? <Link href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">Sign in</Link>
           </FieldDescription>
         }
       >

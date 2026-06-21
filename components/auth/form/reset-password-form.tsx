@@ -13,6 +13,8 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
+import Link from "next/link"
+
 const resetPasswordSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
@@ -64,9 +66,9 @@ export function ResetPasswordForm({
         footer={
           <FieldDescription className="text-center mt-4">
             Remembered your password?{" "}
-            <a href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">
+            <Link href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">
               Sign in
-            </a>
+            </Link>
           </FieldDescription>
         }
       >
