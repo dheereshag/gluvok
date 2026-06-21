@@ -11,8 +11,38 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+const SMALL_SIZES = [5, 10, 20]
+const LARGE_SIZES = [30, 40, 50]
+const ALL_PAGE_SIZES = [...SMALL_SIZES, ...LARGE_SIZES]
+
 export function DataTablePaginationPageSize<TData>({ table }: { table: Table<TData> }) {
   const pageSize = table.getState().pagination.pageSize
+  const totalRows = table.getCoreRowModel().rows.length
+
+  // Only show sizes strictly less than totalRows
+  const smallSizes = SMALL_SIZES.filter((s) => s <= totalRows)
+  const largeSizes = LARGE_SIZES.filter((s) => s <= totalRows)
+
+  // "All" option — the total itself, only if not already a standard size
+  const allOption = ALL_PAGE_SIZES.includes(totalRows) ? null : totalRows
+
+  const hasSmall = smallSizes.length > 0
+  const hasLarge = largeSizes.length > 0
+  const hasAny = hasSmall || hasLarge || allOption !== null
+
+  // If only one meaningful option or none at all, just show a label
+  const totalOptions = smallSizes.length + largeSizes.length + (allOption ? 1 : 0)
+  if (totalOptions <= 1) {
+    return (
+      <div className="flex items-center space-x-2">
+        <List className="h-4 w-4 text-muted-foreground" />
+        <p className="text-xs font-medium text-muted-foreground">
+          {totalRows} row{totalRows !== 1 ? "s" : ""}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex items-center space-x-2">
       <List className="h-4 w-4 text-muted-foreground" />
@@ -22,19 +52,32 @@ export function DataTablePaginationPageSize<TData>({ table }: { table: Table<TDa
           <SelectValue placeholder={`${pageSize}`} />
         </SelectTrigger>
         <SelectContent side="top">
-          <SelectGroup>
-            <SelectLabel className="text-xs">Small Rows</SelectLabel>
-            {[5, 10, 20].map((size) => (
-              <SelectItem key={size} value={`${size}`} className="text-xs">{size}</SelectItem>
-            ))}
-          </SelectGroup>
-          <SelectSeparator />
-          <SelectGroup>
-            <SelectLabel className="text-xs">Large Rows</SelectLabel>
-            {[30, 40, 50].map((size) => (
-              <SelectItem key={size} value={`${size}`} className="text-xs">{size}</SelectItem>
-            ))}
-          </SelectGroup>
+          {hasSmall && (
+            <SelectGroup>
+              <SelectLabel className="text-xs">Small Rows</SelectLabel>
+              {smallSizes.map((size) => (
+                <SelectItem key={size} value={`${size}`} className="text-xs">{size}</SelectItem>
+              ))}
+            </SelectGroup>
+          )}
+          {hasSmall && (hasLarge || allOption !== null) && <SelectSeparator />}
+          {hasLarge && (
+            <SelectGroup>
+              <SelectLabel className="text-xs">Large Rows</SelectLabel>
+              {largeSizes.map((size) => (
+                <SelectItem key={size} value={`${size}`} className="text-xs">{size}</SelectItem>
+              ))}
+            </SelectGroup>
+          )}
+          {allOption !== null && (
+            <>
+              {hasAny && <SelectSeparator />}
+              <SelectGroup>
+                <SelectLabel className="text-xs">All Rows</SelectLabel>
+                <SelectItem value={`${allOption}`} className="text-xs">{allOption} (All)</SelectItem>
+              </SelectGroup>
+            </>
+          )}
         </SelectContent>
       </Select>
     </div>

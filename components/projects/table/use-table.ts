@@ -47,6 +47,7 @@ export function useProjectTable({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -62,9 +63,9 @@ export function useProjectTable({
       case ProjectSlug.USERS:
         return EntityKey.EMAIL
       case ProjectSlug.ASSIGNMENTS:
-        return "profile_name"
+        return EntityKey.PROFILE_NAME
       case ProjectSlug.AFFILIATIONS:
-        return "customer_name"
+        return EntityKey.CUSTOMER_NAME
       case ProjectSlug.WEIGHMENTS:
         return EntityKey.VEHICLE_NUMBER
       case ProjectSlug.RATES:

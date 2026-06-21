@@ -37,19 +37,27 @@ export function ProjectToolbar<TData>({
               id={`search-input-${projectSlug}`}
               placeholder={
                 projectSlug === "assignments"
-                  ? "Search by email or factory..."
+                  ? "Search by factory ID, factory name, profile ID, name or aadhar..."
+                  : projectSlug === "affiliations"
+                  ? "Search by factory ID, factory name, customer ID or customer name..."
                   : projectSlug === "profiles"
-                  ? "Search by name, email or factory..."
+                  ? "Search by aadhar, user, name or factory..."
                   : projectSlug === "centers"
-                  ? "Search by name or factory..."
+                  ? "Search by ID, name, factory ID or factory name..."
                   : projectSlug === "rates"
-                  ? "Search by commodity or factory..."
+                  ? "Search by commodity, factory or unit price..."
                   : projectSlug === "customers"
-                  ? "Search by name, email, village or govt id..."
+                  ? "Search by govt ID, name, father name, email, village or factory..."
                   : projectSlug === "factories"
-                  ? "Search by name or village..."
+                  ? "Search by ID, name or village..."
                   : projectSlug === "users"
                   ? "Search by email or role..."
+                  : projectSlug === "villages"
+                  ? "Search by name or state..."
+                  : projectSlug === "commodities"
+                  ? "Search by ID or name..."
+                  : projectSlug === "weighments"
+                  ? "Search by vehicle, weight, rate, center, profile or customer..."
                   : `Search by ${filterKey.replace("_", " ")}...`
               }
               value={(table.getState().globalFilter as string) ?? ""}

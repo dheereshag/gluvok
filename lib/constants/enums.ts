@@ -162,6 +162,9 @@ export enum EntityKey {
   IS_ACTIVE = "is_active",
   FACTORY_NAME = "factory_name",
   VILLAGE_NAME = "village_name",
+  PROFILE_NAME = "profile_name",
+  PROFILE_AADHAR = "profile_aadhar",
+  CUSTOMER_NAME = "customer_name",
 }
 
 export enum InputMode {

@@ -134,24 +134,24 @@ export function checkEditUniqueness(
         }
       }
 
-      // 2. Check user ID uniqueness
-      const currentUserId = String(getField(item, EntityKey.ID) ?? "")
-      const newUserId = String(values[EntityKey.ID] ?? "")
+      // 2. Check user_id uniqueness (user can only be linked to one customer)
+      const currentUserId = String(getField(item, EntityKey.USER_ID) ?? "")
+      const newUserId = String(values[EntityKey.USER_ID] ?? "")
 
       if (newUserId && newUserId !== currentUserId) {
         const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
         const exists = list.some((e) => {
-          if (String(getField(e, EntityKey.GOVT_ID)) === String(getField(item, EntityKey.GOVT_ID))) {
+          if (String(getField(e, EntityKey.ID)) === String(getField(item, EntityKey.ID))) {
             return false
           }
-          const uId = getField(e, EntityKey.ID)
+          const uId = getField(e, EntityKey.USER_ID)
           return uId && String(uId) === newUserId
         })
 
         if (exists) {
           return {
-            field: EntityKey.ID,
-            message: "A customer already exists for this user",
+            field: EntityKey.USER_ID,
+            message: "This user is already linked to another customer",
           }
         }
       }

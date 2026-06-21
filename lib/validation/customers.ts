@@ -6,6 +6,7 @@ import { integerIdSchema, nameSchema } from "./helpers"
 
 const baseCustomerSchema = z.object({
   [EntityKey.GOVT_ID]: integerIdSchema(ColumnLabel.GOVT_ID),
+  [EntityKey.USER_ID]: z.string().uuid(`${ColumnLabel.USER} must be a valid User selection`).optional().or(z.literal("")).transform((v) => v === "" ? undefined : v),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
@@ -21,10 +22,20 @@ export const addCustomerSchema = baseCustomerSchema
     message: "A customer with this Govt ID already exists",
     path: [EntityKey.GOVT_ID],
   })
+  .refine((data) => {
+    const userId = data[EntityKey.USER_ID]
+    if (!userId) return true
+    const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
+    return !list.some((item) => String(getField(item, EntityKey.USER_ID)) === String(userId))
+  }, {
+    message: "This user is already linked to another customer",
+    path: [EntityKey.USER_ID],
+  })
 
 export const editCustomerSchema = z.object({
   [EntityKey.ID]: z.coerce.number().optional(),
   [EntityKey.GOVT_ID]: integerIdSchema(ColumnLabel.GOVT_ID),
+  [EntityKey.USER_ID]: z.string().uuid(`${ColumnLabel.USER} must be a valid User selection`).optional().or(z.literal("")).transform((v) => v === "" ? undefined : v),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
@@ -39,4 +50,15 @@ export const editCustomerSchema = z.object({
 }, {
   message: "A customer with this Govt ID already exists",
   path: [EntityKey.GOVT_ID],
+}).refine((data) => {
+  const userId = data[EntityKey.USER_ID]
+  if (!userId) return true
+  const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
+  return !list.some((item) =>
+    Number(getField(item, EntityKey.ID)) !== Number(data[EntityKey.ID]) &&
+    String(getField(item, EntityKey.USER_ID)) === String(userId)
+  )
+}, {
+  message: "This user is already linked to another customer",
+  path: [EntityKey.USER_ID],
 })

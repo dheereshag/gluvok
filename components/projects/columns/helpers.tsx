@@ -263,7 +263,7 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
 }
 
 export function createProfileNameColumn<T>(): ColumnDef<T> {
-  const id = "profile_name"
+  const id = EntityKey.PROFILE_NAME
   const label = ColumnLabel.PROFILE_NAME
   const Icon = User
   return {
@@ -296,7 +296,7 @@ export function createProfileNameColumn<T>(): ColumnDef<T> {
 }
 
 export function createProfileAadharColumn<T>(): ColumnDef<T> {
-  const id = "profile_aadhar"
+  const id = EntityKey.PROFILE_AADHAR
   const label = ColumnLabel.AADHAR_NUMBER
   const Icon = Fingerprint
   return {
@@ -329,7 +329,7 @@ export function createProfileAadharColumn<T>(): ColumnDef<T> {
 }
 
 export function createCommodityNameColumn<T>(): ColumnDef<T> {
-  const id = "commodity_name"
+  const id = EntityKey.COMMODITY_NAME
   const label = ColumnLabel.COMMODITY
   const Icon = Tag
   return {
@@ -362,7 +362,7 @@ export function createCommodityNameColumn<T>(): ColumnDef<T> {
 }
 
 export function createCustomerNameColumn<T>(): ColumnDef<T> {
-  const id = "customer_name"
+  const id = EntityKey.CUSTOMER_NAME
   const label = ColumnLabel.CUSTOMER_NAME
   const Icon = Users
   return {

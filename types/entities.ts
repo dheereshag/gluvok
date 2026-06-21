@@ -31,6 +31,7 @@ export interface Customer {
   father_name: string
   village_id: number
   factory_id?: number
+  user_id?: string
   created_at: string
   updated_at: string
 }

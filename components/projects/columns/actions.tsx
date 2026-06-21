@@ -65,5 +65,8 @@ export function getActionsColumn<T extends EntityRecord>(
         </div>
       )
     },
+    enableSorting: false,
+    enableHiding: false,
+    enableGlobalFilter: false,
   }
 }

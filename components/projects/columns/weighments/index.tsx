@@ -9,16 +9,19 @@ import { WeighmentImagesCell } from "./cell"
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
-    createBaseColumn(
-      EntityKey.IMAGES,
-      ColumnLabel.IMAGES,
-      Image,
-      ({ row }) => {
-        const images = row.getValue(EntityKey.IMAGES) as string[] | undefined
-        const vehicleNumber = row.getValue(EntityKey.VEHICLE_NUMBER) as string
-        return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
-      }
-    ),
+    {
+      ...createBaseColumn(
+        EntityKey.IMAGES,
+        ColumnLabel.IMAGES,
+        Image,
+        ({ row }) => {
+          const images = row.getValue(EntityKey.IMAGES) as string[] | undefined
+          const vehicleNumber = row.getValue(EntityKey.VEHICLE_NUMBER) as string
+          return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
+        }
+      ),
+      enableGlobalFilter: false,
+    },
     createCustomColumn(EntityKey.WEIGHT, ColumnLabel.WEIGHT, Weight, (val) => {
       return <div className="font-mono text-xs font-semibold text-foreground">{val} tons</div>
     }),

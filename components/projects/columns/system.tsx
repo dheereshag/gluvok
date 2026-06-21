@@ -58,11 +58,17 @@ export function getSystemColumns<T>(primaryIdKey: string): ColumnDef<T>[] {
       config.icon,
       config.renderCell
     ),
-    createCustomColumn<T>(EntityKey.CREATED_AT, ColumnLabel.CREATED_AT, Calendar, (val) => (
-      <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
-    )),
-    createCustomColumn<T>(EntityKey.UPDATED_AT, ColumnLabel.UPDATED_AT, CalendarClock, (val) => (
-      <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
-    )),
+    {
+      ...createCustomColumn<T>(EntityKey.CREATED_AT, ColumnLabel.CREATED_AT, Calendar, (val) => (
+        <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
+      )),
+      enableGlobalFilter: false,
+    },
+    {
+      ...createCustomColumn<T>(EntityKey.UPDATED_AT, ColumnLabel.UPDATED_AT, CalendarClock, (val) => (
+        <span className="text-muted-foreground text-xs font-medium">{formatDateTime(val)}</span>
+      )),
+      enableGlobalFilter: false,
+    },
   ]
 }

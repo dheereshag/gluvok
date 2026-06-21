@@ -23,5 +23,6 @@ export function getSelectColumn<T>(): ColumnDef<T> {
     ),
     enableSorting: false,
     enableHiding: false,
+    enableGlobalFilter: false,
   }
 }
