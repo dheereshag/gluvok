@@ -1,7 +1,7 @@
 import * as z from "zod"
 import { useEntitiesStore, getField } from "@/lib/store"
-import { ProjectSlug, EntityKey } from "@/lib/fields"
-import { ColumnLabel } from "../constants"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { nameSchema } from "./helpers"
 
 const commodityNameField = nameSchema(ColumnLabel.NAME, 1, 100)

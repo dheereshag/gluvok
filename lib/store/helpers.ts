@@ -1,5 +1,5 @@
 import { type EntityRecord } from "@/types"
-import { ProjectSlug, EntityKey } from "../fields"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 /** Safe dynamic field access on entity records */
 export function getField(entity: EntityRecord, key: string): string | number | string[] | undefined {

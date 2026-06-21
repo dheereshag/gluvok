@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
-import { isPrimaryKeyEditable, FieldType, ProjectSlug, EntityKey } from "@/lib/fields"
+import { FieldType, ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { isPrimaryKeyEditable } from "@/lib/fields"
 import { useAuthStore } from "@/lib/store"
-import { Role } from "@/lib/constants"
+import { Role } from "@/lib/constants/enums"
 
 export function EntityDialogContent({
   mode, onOpenChange, projectName, projectSlug, isEdit, fields, form, onSubmit, primaryIdKey

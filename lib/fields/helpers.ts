@@ -1,4 +1,4 @@
-import { ProjectSlug, EntityKey, CommodityName } from "./types"
+import { ProjectSlug, EntityKey, CommodityName } from "@/lib/constants/enums"
 import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {

@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation"
 import { AppSidebar } from "@/components/sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AuthGuard } from "@/components/auth/guard"
-import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
+import { AppRoutes } from "@/lib/constants/enums"
+import { AUTH_ROUTES } from "@/lib/constants"
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

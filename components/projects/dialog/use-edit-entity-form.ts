@@ -6,10 +6,11 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
 import { useEntitiesStore, getField } from "@/lib/store"
-import { PROJECT_FIELDS, ProjectSlug, FieldType } from "@/lib/fields"
+import { ProjectSlug, FieldType } from "@/lib/constants/enums"
+import { PROJECT_FIELDS } from "@/lib/fields"
 import { ENTITY_EDIT_SCHEMAS, checkEditUniqueness } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
-import { ActiveStatus } from "@/lib/constants"
+import { ActiveStatus } from "@/lib/constants/enums"
 
 interface UseEditEntityFormProps extends EntityFormProps {
   item: EntityRecord

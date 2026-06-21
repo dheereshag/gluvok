@@ -10,8 +10,9 @@ import {
   Tag,
   UserCheck,
 } from "lucide-react"
-import { ProjectSlug } from "../fields"
-import { ProjectName, type ProjectMetadata } from "./types"
+import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectName } from "@/lib/constants/enums"
+import { type ProjectMetadata } from "./types"
 
 export const PROJECTS: ProjectMetadata[] = [
   { slug: ProjectSlug.CENTERS, name: ProjectName.CENTERS, desc: "Manage processing and collection centers", icon: Building, color: "text-blue-500" },

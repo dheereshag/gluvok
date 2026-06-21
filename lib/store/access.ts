@@ -1,5 +1,5 @@
-import { Role } from "@/lib/constants"
-import { ProjectSlug } from "@/lib/fields"
+import { Role } from "@/lib/constants/enums"
+import { ProjectSlug } from "@/lib/constants/enums"
 
 export interface Permission {
   read: boolean

@@ -1,5 +1,5 @@
-import { Role } from "@/lib/constants"
-import { ProjectSlug } from "@/lib/fields"
+import { Role } from "@/lib/constants/enums"
+import { ProjectSlug } from "@/lib/constants/enums"
 import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type User } from "@/types"
 import { type AuthUser } from "./auth"
 

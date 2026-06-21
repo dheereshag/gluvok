@@ -1,5 +1,6 @@
-import { ProjectSlug, EntityKey, FieldType, InputMode, type FieldConfig } from "./types"
-import { ColumnLabel } from "@/lib/constants"
+import { ProjectSlug, EntityKey, FieldType, InputMode } from "@/lib/constants/enums"
+import { type FieldConfig } from "./types"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { getSelectPlaceholder } from "./helpers"
 import {
   Building,

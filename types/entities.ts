@@ -1,4 +1,4 @@
-import { Role, State } from "@/lib/constants"
+import { Role, State } from "@/lib/constants/enums"
 
 export interface Center {
   id: number

@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ShieldCheck, Hash, Calendar, CalendarClock, Fingerprint, Tag, type LucideIcon } from "lucide-react"
-import { EntityKey } from "@/lib/fields"
-import { ColumnLabel } from "@/lib/constants"
+import { EntityKey } from "@/lib/constants/enums"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { formatDateTime } from "@/lib/utils"
-import { createCustomColumn, truncateId, getCommodityIcon } from "./helpers"
+import { createCustomColumn, getCommodityIcon } from "./helpers"
 
 interface PrimaryKeyConfig {
   label: ColumnLabel
@@ -11,9 +11,9 @@ interface PrimaryKeyConfig {
   renderCell: (val: string) => React.ReactNode
 }
 
-const renderTextCell = (val: string, truncate = false) => (
+const renderTextCell = (val: string) => (
   <div className="font-mono text-muted-foreground text-xs">
-    {truncate ? truncateId(val) : val}
+    {val}
   </div>
 )
 
@@ -44,7 +44,7 @@ const PRIMARY_KEY_CONFIGS: Record<string, PrimaryKeyConfig> = {
   [EntityKey.ID]: {
     label: ColumnLabel.ID,
     icon: Hash,
-    renderCell: (val) => renderTextCell(val, true),
+    renderCell: (val) => renderTextCell(val),
   },
 }
 

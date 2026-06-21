@@ -5,7 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware"
 import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
 
 export * from "./helpers"

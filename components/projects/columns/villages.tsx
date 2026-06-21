@@ -1,21 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Globe, Tag } from "lucide-react"
-import { EntityKey } from "@/lib/fields"
-import { ColumnLabel } from "@/lib/constants"
-import { PillIcon } from "@/components/kibo-ui/pill"
-import { createTextColumn, createPillColumn } from "./helpers"
+import { EntityKey } from "@/lib/constants/enums"
+import { ColumnLabel } from "@/lib/constants/enums"
+import { createTextColumn } from "./helpers"
 
 export function getVillagesColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
-
-
-    createPillColumn(
-      EntityKey.STATE,
-      ColumnLabel.STATE,
-      Globe,
-      (val) => <><PillIcon icon={Globe} />{val}</>,
-      { className: "h-6 py-0.5 px-2.5 text-[11px] font-semibold border bg-transparent text-foreground border-border hover:bg-muted/20 transition-all duration-200" }
-    ),
+    createTextColumn(EntityKey.STATE, ColumnLabel.STATE, Globe),
   ]
 }

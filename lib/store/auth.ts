@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { users as seedUsers } from "@/data/users"
 
-import { Role } from "@/lib/constants"
+import { Role } from "@/lib/constants/enums"
 
 export interface AuthUser {
   id: string

@@ -2,7 +2,8 @@
 
 import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { StateCombobox, EntityCombobox, RoleCombobox } from "@/components/combobox"
-import { type FieldConfig, FieldType, getReferencedEntitySlug } from "@/lib/fields"
+import { FieldType } from "@/lib/constants/enums"
+import { type FieldConfig, getReferencedEntitySlug } from "@/lib/fields"
 import { Checkbox } from "@/components/ui/checkbox"
 import { StandardInput } from "./standard-input"
 import { ImageUpload } from "./image/upload"

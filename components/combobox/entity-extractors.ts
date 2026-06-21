@@ -1,4 +1,4 @@
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 import { centers } from "@/data/centers"
 import { commodities } from "@/data/commodities"
 import { rates } from "@/data/rates"

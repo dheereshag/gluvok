@@ -1,6 +1,6 @@
 import * as z from "zod"
-import { Role, ColumnLabel } from "../constants"
-import { EntityKey, ProjectSlug } from "@/lib/fields"
+import { Role, ColumnLabel } from "@/lib/constants/enums"
+import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 import { useEntitiesStore, getField } from "@/lib/store"
 
 const baseUserSchema = z.object({

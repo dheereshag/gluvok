@@ -1,18 +1,5 @@
 import { type LucideIcon } from "lucide-react"
-import { ProjectSlug } from "../fields"
-
-export enum ProjectName {
-  CENTERS = "Centers",
-  COMMODITIES = "Commodities",
-  RATES = "Rates",
-  CUSTOMERS = "Customers",
-  WEIGHMENTS = "Weighments",
-  FACTORIES = "Factories",
-  PROFILES = "Profiles",
-  USERS = "Users",
-  VILLAGES = "Villages",
-  ASSIGNMENTS = "Assignments",
-}
+import { ProjectSlug, ProjectName } from "@/lib/constants/enums"
 
 export interface ProjectMetadata {
   slug: ProjectSlug

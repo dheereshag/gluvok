@@ -1,13 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Car, Weight, Package, Building, Power, Image } from "lucide-react"
-import { EntityKey, ProjectSlug } from "@/lib/fields"
-import { ColumnLabel, ActiveStatus } from "@/lib/constants"
-import { PillIcon } from "@/components/kibo-ui/pill"
+import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
+import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { rates } from "@/data/rates"
 import { type Rate, type Commodity } from "@/types"
 import { cn } from "@/lib/utils"
-import { createTextColumn, createPillColumn, createBaseColumn, createCustomColumn, getCommodityIcon, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn } from "../helpers"
+import { createTextColumn, createBaseColumn, createCustomColumn, createProfileAadharColumn, createProfileNameColumn, createCustomerNameColumn, createCustomerGovtIdColumn } from "../helpers"
 import { WeighmentImagesCell } from "./cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -23,46 +22,31 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
       }
     ),
-    createPillColumn(
-      EntityKey.WEIGHT,
-      ColumnLabel.WEIGHT,
-      Weight,
-      (val) => <><PillIcon icon={Weight} />{val} tons</>,
-      { className: "h-6 py-0.5 px-2.5 text-[11px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
-    ),
-    createPillColumn(
-      EntityKey.RATE_ID,
-      ColumnLabel.RATE_ID,
-      Package,
-      (val) => {
-        const storeState = useEntitiesStore.getState()
-        const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
-        const rateRec = activeRates.find((p) => String(p.id) === String(val))
-        const commodityId = rateRec ? rateRec.commodity_id : null
-        let commodityName = ""
-        switch (commodityId !== null) {
-          case true: {
-            const activeCommodities = storeState.entities[ProjectSlug.COMMODITIES] as Commodity[] || []
-            const comm = activeCommodities.find((c) => Number(c.id) === Number(commodityId))
-            commodityName = comm ? comm.name : `Commodity ${commodityId}`
-            break
-          }
-          default:
-            break
+    createCustomColumn(EntityKey.WEIGHT, ColumnLabel.WEIGHT, Weight, (val) => {
+      return <div className="font-mono text-xs font-semibold text-foreground">{val} tons</div>
+    }),
+    createCustomColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package, (val) => {
+      const storeState = useEntitiesStore.getState()
+      const activeRates = (storeState.entities[ProjectSlug.RATES] || rates) as Rate[]
+      const rateRec = activeRates.find((p) => String(p.id) === String(val))
+      const commodityId = rateRec ? rateRec.commodity_id : null
+      let commodityName = ""
+      switch (commodityId !== null) {
+        case true: {
+          const activeCommodities = storeState.entities[ProjectSlug.COMMODITIES] as Commodity[] || []
+          const comm = activeCommodities.find((c) => Number(c.id) === Number(commodityId))
+          commodityName = comm ? comm.name : `Commodity ${commodityId}`
+          break
         }
-        const displayName = rateRec ? `${commodityName} (ID: ${val})` : `Rate ID: ${val}`
-        const Icon = getCommodityIcon(commodityName)
-        return <><PillIcon icon={Icon} />{displayName}</>
-      },
-      { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-muted/50 border border-muted-foreground/15 hover:bg-muted/70 text-foreground transition-all duration-200" }
-    ),
-    createPillColumn(
-      EntityKey.CENTER_ID,
-      ColumnLabel.CENTER_ID,
-      Building,
-      (val) => <><PillIcon icon={Building} />ID: {val}</>,
-      { className: "h-6 py-0.5 px-2.5 text-[10px] font-mono font-semibold bg-transparent border border-border hover:bg-muted/20 text-muted-foreground transition-all duration-200" }
-    ),
+        default:
+          break
+      }
+      const displayName = rateRec ? `${commodityName} (ID: ${val})` : `Rate ID: ${val}`
+      return <div className="font-semibold text-xs text-foreground">{displayName}</div>
+    }),
+    createCustomColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building, (val) => {
+      return <div className="font-mono text-xs text-muted-foreground">ID: {val}</div>
+    }),
     createProfileAadharColumn(),
     createProfileNameColumn(),
     createCustomerGovtIdColumn(),
@@ -82,4 +66,5 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     }),
   ]
 }
+
 

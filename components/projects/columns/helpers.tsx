@@ -1,10 +1,9 @@
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/data-table"
-import { Pill } from "@/components/kibo-ui/pill"
-import { EntityKey, ProjectSlug } from "@/lib/fields"
+import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 export { getCommodityIcon } from "@/lib/fields"
-import { ColumnLabel } from "@/lib/constants"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer } from "@/types"
 import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint } from "lucide-react"
@@ -42,58 +41,6 @@ export function createTextColumn<T>(
     const val = (row.original as Record<string, unknown>)[key]
     return <div className={className}>{String(val ?? "")}</div>
   }, id)
-}
-
-export function createPillColumn<T>(
-  key: EntityKey, label: ColumnLabel, Icon: React.ComponentType<{ className?: string }>, renderContent: (value: string) => React.ReactNode,
-  pillProps?: { variant?: "outline" | "secondary" | "default"; className?: string | ((value: string) => string) }, id?: string
-): ColumnDef<T> {
-  return createBaseColumn(key, label, Icon, ({ row }) => {
-    const val = String((row.original as Record<string, unknown>)[key] ?? "")
-    const resolvedClassName = typeof pillProps?.className === "function"
-      ? pillProps.className(val)
-      : pillProps?.className
-
-    return (
-      <Pill variant={pillProps?.variant || "secondary"} className={resolvedClassName}>
-        {renderContent(val)}
-      </Pill>
-    )
-  }, id)
-}
-
-export function truncateId(val: string): string {
-  if (!val || val === "undefined" || val === "null") {
-    return "—"
-  }
-  return val.length > 8 ? `${val.substring(0, 8)}...` : val
-}
-
-export function resolveFactoryName(val: string): React.ReactNode {
-  if (!val || val === "undefined" || val === "null") {
-    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
-  }
-  const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-  const factory = activeFactories.find((f) => String(f.id) === String(val))
-  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, factory ? factory.name : `Factory ${val}`)
-}
-
-export function resolveUserEmail(val: string): React.ReactNode {
-  if (!val || val === "undefined" || val === "null") {
-    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
-  }
-  const activeUsers = useEntitiesStore.getState().entities[ProjectSlug.USERS] as UserType[] || []
-  const user = activeUsers.find((u) => String(u.id) === String(val))
-  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, user ? user.email : val)
-}
-
-export function resolveVillageName(val: string): React.ReactNode {
-  if (!val || val === "undefined" || val === "null") {
-    return React.createElement("div", { className: "text-muted-foreground text-xs" }, "—")
-  }
-  const activeVillages = useEntitiesStore.getState().entities[ProjectSlug.VILLAGES] as VillageType[] || []
-  const village = activeVillages.find((v) => String(v.id) === String(val))
-  return React.createElement("div", { className: "font-semibold text-foreground text-xs" }, village ? village.name : `Village ${val}`)
 }
 
 export function createUserEmailColumn<T>(

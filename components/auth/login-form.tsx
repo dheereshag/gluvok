@@ -11,7 +11,7 @@ import { AuthCard, AuthInput } from "./common"
 import { useAuthStore } from "@/lib/store"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
-import { AppRoutes } from "@/lib/constants"
+import { AppRoutes } from "@/lib/constants/enums"
 
 const loginSchema = z.object({
   email: z.email("Invalid email address"),

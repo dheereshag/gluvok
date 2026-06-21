@@ -1,6 +1,6 @@
 import * as z from "zod"
-import { EntityKey } from "@/lib/fields"
-import { ColumnLabel } from "../constants"
+import { EntityKey } from "@/lib/constants/enums"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { integerIdSchema } from "./helpers"
 
 export const addRateSchema = z.object({

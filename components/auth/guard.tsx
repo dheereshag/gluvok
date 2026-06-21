@@ -3,7 +3,8 @@
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore, useEntitiesStore, hasPageAccess } from "@/lib/store"
-import { AppRoutes, AUTH_ROUTES } from "@/lib/constants"
+import { AppRoutes } from "@/lib/constants/enums"
+import { AUTH_ROUTES } from "@/lib/constants"
 import { toast } from "sonner"
 
 function FullScreenStatus({ message }: { message: string }) {

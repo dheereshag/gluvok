@@ -10,7 +10,7 @@ import { type EntityRecord } from "@/types"
 import { type ColumnActionsCallbacks } from "./index"
 
 import { type Permission } from "@/lib/store"
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 
 export function getActionsColumn<T extends EntityRecord>(
   projectSlug: string,

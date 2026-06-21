@@ -1,5 +1,5 @@
 import { type User } from "@/types";
-import { Role } from "@/lib/constants";
+import { Role } from "@/lib/constants/enums";
 
 export const users: User[] = [
   // Super Admin

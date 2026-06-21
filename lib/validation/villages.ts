@@ -1,6 +1,6 @@
 import * as z from "zod"
-import { State, ColumnLabel } from "../constants"
-import { EntityKey } from "@/lib/fields"
+import { State, ColumnLabel } from "@/lib/constants/enums"
+import { EntityKey } from "@/lib/constants/enums"
 import { nameSchema } from "./helpers"
 
 export const addVillageSchema = z.object({

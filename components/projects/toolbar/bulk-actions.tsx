@@ -9,7 +9,7 @@ import { generatePdfHtml } from "@/lib/pdf/template"
 import { printPdf } from "@/lib/pdf/exporter"
 
 import { useAuthStore, getPermissions } from "@/lib/store"
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 
 interface BulkActionsProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; primaryIdKey: string

@@ -1,5 +1,5 @@
 import { type EntityRecord } from "@/types"
-import { DialogMode } from "@/lib/constants"
+import { DialogMode } from "@/lib/constants/enums"
 import { EntityDialog } from "./entity"
 import { DeleteEntityDialog } from "./delete"
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { type EntityRecord } from "@/types"
-import { DialogMode } from "@/lib/constants"
+import { DialogMode } from "@/lib/constants/enums"
 import { type EntityFormProps } from "./types"
 import { useAddEntityForm } from "./use-add-entity-form"
 import { useEditEntityForm } from "./use-edit-entity-form"

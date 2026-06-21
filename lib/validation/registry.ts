@@ -1,4 +1,4 @@
-import { ProjectSlug } from "../fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 import { addCenterSchema, editCenterSchema } from "./centers"
 import { addCommoditySchema, editCommoditySchema } from "./commodities"
 import { addRateSchema, editRateSchema } from "./rates"

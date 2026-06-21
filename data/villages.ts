@@ -1,5 +1,5 @@
 import { type Village } from "@/types";
-import { State } from "@/lib/constants";
+import { State } from "@/lib/constants/enums";
 
 export const villages: Village[] = [
   {

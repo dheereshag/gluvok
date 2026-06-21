@@ -1,0 +1,194 @@
+export enum State {
+  AN = "Andaman and Nicobar Islands",
+  AP = "Andhra Pradesh",
+  AR = "Arunachal Pradesh",
+  AS = "Assam",
+  BR = "Bihar",
+  CH = "Chandigarh",
+  CG = "Chhattisgarh",
+  DD = "Daman and Diu",
+  DL = "Delhi",
+  DN = "Dadra and Nagar Haveli and Daman and Diu",
+  GA = "Goa",
+  GJ = "Gujarat",
+  HR = "Haryana",
+  HP = "Himachal Pradesh",
+  JK = "Jammu and Kashmir",
+  JH = "Jharkhand",
+  KA = "Karnataka",
+  KL = "Kerala",
+  LA = "Ladakh",
+  LD = "Lakshadweep",
+  MP = "Madhya Pradesh",
+  MH = "Maharashtra",
+  MN = "Manipur",
+  ML = "Meghalaya",
+  MZ = "Mizoram",
+  NL = "Nagaland",
+  OD = "Odisha",
+  PY = "Puducherry",
+  PB = "Punjab",
+  RJ = "Rajasthan",
+  SK = "Sikkim",
+  TN = "Tamil Nadu",
+  TS = "Telangana",
+  TR = "Tripura",
+  UP = "Uttar Pradesh",
+  UK = "Uttarakhand",
+  WB = "West Bengal",
+}
+
+export enum Role {
+  SUPER_ADMIN = "super_admin",
+  ADMIN = "admin",
+  MANAGER = "manager",
+  OPERATOR = "operator",
+  BASE = "base",
+}
+
+export enum RoleLabel {
+  SUPER_ADMIN = "SUPER ADMIN",
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
+  OPERATOR = "OPERATOR",
+  BASE = "BASE",
+}
+
+export enum ColumnLabel {
+  ID = "ID",
+  GOVT_ID = "Govt ID",
+  AADHAR_NUMBER = "Aadhar Number",
+  NAME = "Name",
+  STATE = "State",
+  FACTORY_ID = "Factory ID",
+  UNIT_PRICE = "Unit Price",
+  FATHER_NAME = "Father's Name",
+  VILLAGE_ID = "Village ID",
+  VEHICLE_NUMBER = "Vehicle Number",
+  WEIGHT = "Weight",
+  COMMODITY_ID = "Commodity ID",
+  COMMODITY_NAME = "Commodity Name",
+  RATE_ID = "Rate ID",
+  CENTER_ID = "Center ID",
+  PROFILE_ID = "Profile ID",
+  CUSTOMER_ID = "Customer ID",
+  EMAIL = "Email",
+  ROLE = "Role",
+  CREATED_AT = "Created At",
+  UPDATED_AT = "Updated At",
+  IMAGES = "Images",
+  USER_ID = "User ID",
+  COMMODITY = "Commodity",
+  FACTORY = "Factory",
+  IS_ACTIVE = "Status",
+  USER = "User",
+  VILLAGE = "Village",
+  RATE = "Rate",
+  CENTER = "Center",
+  PROFILE = "Profile",
+  CUSTOMER = "Customer",
+  FACTORY_NAME = "Factory Name",
+  VILLAGE_NAME = "Village Name",
+  USER_EMAIL = "User Email",
+}
+
+export enum DialogMode {
+  CREATE = "create",
+  EDIT = "edit",
+}
+
+export enum ActiveStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+}
+
+export enum AppRoutes {
+  HOME = "/",
+  LOGIN = "/login",
+  SIGNUP = "/signup",
+  FORGOT_PASSWORD = "/forgot-password",
+  RESET_PASSWORD = "/reset-password",
+}
+
+export enum ProjectSlug {
+  CENTERS = "centers",
+  COMMODITIES = "commodities",
+  RATES = "rates",
+  CUSTOMERS = "customers",
+  WEIGHMENTS = "weighments",
+  FACTORIES = "factories",
+  PROFILES = "profiles",
+  USERS = "users",
+  VILLAGES = "villages",
+  ASSIGNMENTS = "assignments",
+}
+
+export enum FieldType {
+  TEXT = "text",
+  NUMBER = "number",
+  STATE = "state",
+  IMAGES = "images",
+  ROLE = "role",
+  CHECKBOX = "checkbox",
+}
+
+export enum EntityKey {
+  ID = "id",
+  NAME = "name",
+  STATE = "state",
+  FACTORY_ID = "factory_id",
+  UNIT_PRICE = "unit_price",
+  FATHER_NAME = "father_name",
+  VILLAGE_ID = "village_id",
+  VEHICLE_NUMBER = "vehicle_number",
+  WEIGHT = "weight",
+  COMMODITY_ID = "commodity_id",
+  COMMODITY_NAME = "commodity_name",
+  RATE_ID = "rate_id",
+  CENTER_ID = "center_id",
+  PROFILE_ID = "profile_id",
+  CUSTOMER_ID = "customer_id",
+  EMAIL = "email",
+  ROLE = "role",
+  CREATED_AT = "created_at",
+  UPDATED_AT = "updated_at",
+  AADHAR_NUMBER = "aadhar_number",
+  GOVT_ID = "govt_id",
+  IMAGES = "images",
+  USER_ID = "user_id",
+  IS_ACTIVE = "is_active",
+  FACTORY_NAME = "factory_name",
+  VILLAGE_NAME = "village_name",
+}
+
+export enum InputMode {
+  NONE = "none",
+  TEXT = "text",
+  TEL = "tel",
+  URL = "url",
+  EMAIL = "email",
+  NUMERIC = "numeric",
+  DECIMAL = "decimal",
+  SEARCH = "search",
+}
+
+export enum CommodityName {
+  WHEAT = "Wheat",
+  CORN = "Corn",
+  CRUDE_OIL = "Crude Oil",
+  SCRAP_COPPER = "Scrap Copper",
+  BARLEY = "Barley",
+}
+
+export enum ProjectName {
+  CENTERS = "Centers",
+  COMMODITIES = "Commodities",
+  RATES = "Rates",
+  CUSTOMERS = "Customers",
+  WEIGHMENTS = "Weighments",
+  FACTORIES = "Factories",
+  PROFILES = "Profiles",
+  USERS = "Users",
+  VILLAGES = "Villages",
+  ASSIGNMENTS = "Assignments",
+}

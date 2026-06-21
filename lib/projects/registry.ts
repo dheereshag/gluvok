@@ -11,8 +11,8 @@ import {
   UserCheck,
 } from "lucide-react";
 import { type EntityRecord } from "@/types";
-import { ProjectName } from "./types";
-import { ProjectSlug } from "../fields";
+import { ProjectName } from "@/lib/constants/enums";
+import { ProjectSlug } from "@/lib/constants/enums";
 
 import { centers } from "@/data/centers";
 import { commodities } from "@/data/commodities";

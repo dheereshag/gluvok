@@ -1,6 +1,6 @@
 import { type FieldValues, type UseFormReturn } from "react-hook-form"
 import { type FieldConfig } from "@/lib/fields"
-import { DialogMode } from "@/lib/constants"
+import { DialogMode } from "@/lib/constants/enums"
 import { type EntityRecord } from "@/types"
 
 export interface EntityFormProps {

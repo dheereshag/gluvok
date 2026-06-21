@@ -6,7 +6,7 @@ import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuL
 import { Status, StatusIndicator, StatusLabel } from "@/components/kibo-ui/status"
 import { UserAvatarInfo, type UserInfo } from "./user-info"
 import { useAuthStore } from "@/lib/store"
-import { AppRoutes } from "@/lib/constants"
+import { AppRoutes } from "@/lib/constants/enums"
 
 interface NavUserDropdownProps {
   user: UserInfo

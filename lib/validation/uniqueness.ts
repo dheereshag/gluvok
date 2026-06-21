@@ -1,4 +1,4 @@
-import { ProjectSlug, EntityKey } from "@/lib/fields"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore, getField } from "@/lib/store"
 import { type EntityRecord } from "@/types"
 

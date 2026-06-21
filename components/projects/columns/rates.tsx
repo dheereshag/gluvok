@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Factory, IndianRupee } from "lucide-react"
-import { EntityKey } from "@/lib/fields"
-import { ColumnLabel } from "@/lib/constants"
+import { EntityKey } from "@/lib/constants/enums"
+import { ColumnLabel } from "@/lib/constants/enums"
 import { createCustomColumn, createTextColumn, createFactoryNameColumn, createCommodityNameColumn } from "./helpers"
 
 export function getRatesColumns<T>(): ColumnDef<T>[] {

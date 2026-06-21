@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { type EntityRecord } from "@/types"
-import { ProjectSlug } from "@/lib/fields"
+import { ProjectSlug } from "@/lib/constants/enums"
 
 import { getSelectColumn } from "./select"
 import { getSystemColumns } from "./system"
