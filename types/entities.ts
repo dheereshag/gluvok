@@ -1,4 +1,4 @@
-import { Role, State } from "@/lib/constants/enums"
+import { Role, State, Unit } from "@/lib/constants/enums"
 
 export interface Center {
   id: number
@@ -19,7 +19,7 @@ export interface Rate {
   id: number
   commodity_id: number
   unit_price: string
-  unit: string
+  unit: Unit
   factory_id: number
   created_at: string
   updated_at: string

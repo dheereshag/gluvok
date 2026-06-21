@@ -46,6 +46,12 @@ export enum Role {
   BASE = "base",
 }
 
+export enum Unit {
+  QUINTAL = "quintal",
+  KG = "kg",
+  BARREL = "barrel",
+}
+
 export enum RoleLabel {
   SUPER_ADMIN = "SUPER ADMIN",
   ADMIN = "ADMIN",

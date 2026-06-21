@@ -5,7 +5,7 @@ import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer, type Center as CenterType } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Customer } from "@/types"
 import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint, Package, Building } from "lucide-react"
 
 export function createBaseColumn<T>(
@@ -80,58 +80,8 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const factId = record[EntityKey.FACTORY_ID]
-      switch (!!factId) {
-        case true:
-          return String(factId)
-        default: {
-          let profileId: number | null = null
-          const profId = record[EntityKey.PROFILE_ID]
-          switch (!!profId) {
-            case true:
-              profileId = Number(profId)
-              break
-            default: {
-              const uId = record[EntityKey.ID] || record[EntityKey.USER_ID]
-              switch (!!uId && typeof uId === "string") {
-                case true: {
-                  const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-                  const cleanUId = String(uId).trim().toLowerCase()
-                  const foundP = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === cleanUId)
-                  switch (!!foundP) {
-                    case true:
-                      profileId = foundP!.id
-                      break
-                    default:
-                      break
-                  }
-                  break
-                }
-                default:
-                  break
-              }
-              break
-            }
-          }
-
-          switch (profileId !== null) {
-            case true: {
-              const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-              const factoryIds = activeAssignments
-                .filter((a) => Number(a.profile_id) === Number(profileId))
-                .map((a) => a.factory_id)
-              switch (factoryIds.length > 0) {
-                case true:
-                  return factoryIds.join(", ")
-                default:
-                  return ""
-              }
-            }
-            default:
-              return ""
-          }
-        }
-      }
+      const factoryIds = resolveFactoryIds(record)
+      return factoryIds.length > 0 ? factoryIds.join(", ") : ""
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -155,70 +105,14 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      let factoryIds: string[] = []
-      const factId = record[EntityKey.FACTORY_ID]
-
-      switch (!!factId) {
-        case true:
-          factoryIds = [String(factId)]
-          break
-        default: {
-          let profileId: number | null = null
-          const profId = record[EntityKey.PROFILE_ID]
-          switch (!!profId) {
-            case true:
-              profileId = Number(profId)
-              break
-            default: {
-              const uId = record[EntityKey.ID] || record[EntityKey.USER_ID]
-              switch (!!uId && typeof uId === "string") {
-                case true: {
-                  const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-                  const cleanUId = String(uId).trim().toLowerCase()
-                  const foundP = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === cleanUId)
-                  switch (!!foundP) {
-                    case true:
-                      profileId = foundP!.id
-                      break
-                    default:
-                      break
-                  }
-                  break
-                }
-                default:
-                  break
-              }
-              break
-            }
-          }
-
-          switch (profileId !== null) {
-            case true: {
-              const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-              factoryIds = activeAssignments
-                .filter((a) => Number(a.profile_id) === Number(profileId))
-                .map((a) => String(a.factory_id))
-              break
-            }
-            default:
-              break
-          }
-          break
-        }
-      }
-
-      switch (factoryIds.length === 0) {
-        case true:
-          return ""
-        default: {
-          const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-          const names = factoryIds.map((fid) => {
-            const factory = activeFactories.find((f) => String(f.id).trim().toLowerCase() === String(fid).trim().toLowerCase())
-            return factory ? factory.name : `Factory ${fid}`
-          })
-          return names.join(", ")
-        }
-      }
+      const factoryIds = resolveFactoryIds(record)
+      if (factoryIds.length === 0) return ""
+      const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
+      const names = factoryIds.map((fid) => {
+        const factory = activeFactories.find((f) => String(f.id) === String(fid))
+        return factory ? factory.name : `Factory ${fid}`
+      })
+      return names.join(", ")
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -242,15 +136,7 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      let villageId = record[EntityKey.VILLAGE_ID]
-      if (!villageId && record[EntityKey.FACTORY_ID]) {
-        const factId = record[EntityKey.FACTORY_ID]
-        const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-        const factory = activeFactories.find((f) => String(f.id) === String(factId))
-        if (factory) {
-          villageId = factory.village_id
-        }
-      }
+      const villageId = resolveVillageId(record)
       if (!villageId) return ""
       const activeVillages = useEntitiesStore.getState().entities[ProjectSlug.VILLAGES] as VillageType[] || []
       const village = activeVillages.find((v) => String(v.id) === String(villageId))
@@ -278,16 +164,11 @@ export function createProfileNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const profileId = record[EntityKey.PROFILE_ID] || record[EntityKey.ID]
-      switch (!!profileId) {
-        case true: {
-          const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-          const profile = activeProfiles.find((p) => Number(p.id) === Number(profileId))
-          return profile ? profile.name : String(profileId)
-        }
-        default:
-          return ""
-      }
+      const profileId = getProfileId(record)
+      if (!profileId) return ""
+      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+      const profile = activeProfiles.find((p) => Number(p.id) === profileId)
+      return profile ? profile.name : String(profileId)
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -311,16 +192,11 @@ export function createProfileAadharColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const profileId = record[EntityKey.PROFILE_ID] || record[EntityKey.ID]
-      switch (!!profileId) {
-        case true: {
-          const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-          const profile = activeProfiles.find((p) => Number(p.id) === Number(profileId))
-          return profile ? profile.aadhar_number : String(profileId)
-        }
-        default:
-          return ""
-      }
+      const profileId = getProfileId(record)
+      if (!profileId) return ""
+      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+      const profile = activeProfiles.find((p) => Number(p.id) === profileId)
+      return profile ? profile.aadhar_number : String(profileId)
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -337,69 +213,25 @@ export function createProfileAadharColumn<T>(): ColumnDef<T> {
 }
 
 export function createCommodityNameColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.COMMODITY_NAME
-  const label = ColumnLabel.COMMODITY
-  const Icon = Tag
-  return {
-    id,
-    accessorFn: (row: T) => {
-      const record = row as Record<string, unknown>
-      const commodityId = record[EntityKey.COMMODITY_ID]
-      switch (!!commodityId) {
-        case true: {
-          const activeCommodities = useEntitiesStore.getState().entities[ProjectSlug.COMMODITIES] as Commodity[] || []
-          const comm = activeCommodities.find((c) => Number(c.id) === Number(commodityId))
-          return comm ? comm.name : `Commodity ${commodityId}`
-        }
-        default:
-          return ""
-      }
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
-      />
-    ),
-    cell: ({ row }) => {
-      const name = row.getValue(id) as string
-      return <div className="font-semibold text-foreground text-xs">{name || "—"}</div>
-    },
-    meta: { icon: Icon, label },
-  }
+  return createLookupNameColumn(
+    EntityKey.COMMODITY_NAME,
+    ColumnLabel.COMMODITY,
+    Tag,
+    EntityKey.COMMODITY_ID,
+    ProjectSlug.COMMODITIES,
+    "Commodity"
+  )
 }
 
 export function createCustomerNameColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.CUSTOMER_NAME
-  const label = ColumnLabel.CUSTOMER_NAME
-  const Icon = Users
-  return {
-    id,
-    accessorFn: (row: T) => {
-      const record = row as Record<string, unknown>
-      const customerId = record[EntityKey.CUSTOMER_ID]
-      switch (!!customerId) {
-        case true: {
-          const activeCustomers = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] as Customer[] || []
-          const customer = activeCustomers.find((c) => Number(c.id) === Number(customerId))
-          return customer ? customer.name : String(customerId)
-        }
-        default:
-          return ""
-      }
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
-      />
-    ),
-    cell: ({ row }) => {
-      const name = row.getValue(id) as string
-      return <div className="font-semibold text-foreground text-xs">{name || "—"}</div>
-    },
-    meta: { icon: Icon, label },
-  }
+  return createLookupNameColumn(
+    EntityKey.CUSTOMER_NAME,
+    ColumnLabel.CUSTOMER_NAME,
+    Users,
+    EntityKey.CUSTOMER_ID,
+    ProjectSlug.CUSTOMERS,
+    "Customer"
+  )
 }
 
 export function createCustomerGovtIdColumn<T>(): ColumnDef<T> {
@@ -411,15 +243,10 @@ export function createCustomerGovtIdColumn<T>(): ColumnDef<T> {
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
       const customerId = record[EntityKey.CUSTOMER_ID]
-      switch (!!customerId) {
-        case true: {
-          const activeCustomers = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] as Customer[] || []
-          const customer = activeCustomers.find((c) => Number(c.id) === Number(customerId))
-          return customer ? String(customer.govt_id) : String(customerId)
-        }
-        default:
-          return ""
-      }
+      if (!customerId) return ""
+      const activeCustomers = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] as Customer[] || []
+      const customer = activeCustomers.find((c) => Number(c.id) === Number(customerId))
+      return customer ? String(customer.govt_id) : String(customerId)
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -443,15 +270,7 @@ export function createVillageIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      let villageId = record[EntityKey.VILLAGE_ID]
-      if (!villageId && record[EntityKey.FACTORY_ID]) {
-        const factId = record[EntityKey.FACTORY_ID]
-        const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-        const factory = activeFactories.find((f) => String(f.id) === String(factId))
-        if (factory) {
-          villageId = factory.village_id
-        }
-      }
+      const villageId = resolveVillageId(record)
       return villageId ? String(villageId) : ""
     },
     header: ({ column }) => (
@@ -469,90 +288,98 @@ export function createVillageIdColumn<T>(): ColumnDef<T> {
 }
 
 export function createRateIdColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.RATE_ID
-  const label = ColumnLabel.RATE_ID
-  const Icon = Package
-  return {
-    id,
-    accessorFn: (row: T) => {
-      const record = row as Record<string, unknown>
-      const rateId = record[EntityKey.RATE_ID]
-      return rateId ? String(rateId) : ""
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
-      />
-    ),
-    cell: ({ row }) => {
-      const val = row.getValue(id) as string
-      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
-    },
-    meta: { icon: Icon, label },
-  }
+  return createIdColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package)
 }
 
 export function createCenterIdColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.CENTER_ID
-  const label = ColumnLabel.CENTER_ID
-  const Icon = Building
-  return {
-    id,
-    accessorFn: (row: T) => {
-      const record = row as Record<string, unknown>
-      const centerId = record[EntityKey.CENTER_ID]
-      return centerId ? String(centerId) : ""
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
-      />
-    ),
-    cell: ({ row }) => {
-      const val = row.getValue(id) as string
-      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
-    },
-    meta: { icon: Icon, label },
-  }
+  return createIdColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building)
 }
 
 export function createProfileIdColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.PROFILE_ID
-  const label = ColumnLabel.PROFILE_ID
-  const Icon = User
-  return {
-    id,
-    accessorFn: (row: T) => {
-      const record = row as Record<string, unknown>
-      const profileId = record[EntityKey.PROFILE_ID]
-      return profileId ? String(profileId) : ""
-    },
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
-      />
-    ),
-    cell: ({ row }) => {
-      const val = row.getValue(id) as string
-      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
-    },
-    meta: { icon: Icon, label },
-  }
+  return createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User)
 }
 
 export function createCustomerIdColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.CUSTOMER_ID
-  const label = ColumnLabel.CUSTOMER_ID
-  const Icon = Users
+  return createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users)
+}
+
+export function createCenterNameColumn<T>(): ColumnDef<T> {
+  return createLookupNameColumn(
+    EntityKey.CENTER_NAME,
+    ColumnLabel.CENTER_NAME,
+    Building,
+    EntityKey.CENTER_ID,
+    ProjectSlug.CENTERS,
+    "Center"
+  )
+}
+
+// --- Internal Helpers for resolving nested relations ---
+
+function resolveFactoryIds(record: Record<string, unknown>): number[] {
+  const factId = record[EntityKey.FACTORY_ID]
+  if (factId) {
+    return [Number(factId)]
+  }
+
+  let profileId: number | null = null
+  const profId = record[EntityKey.PROFILE_ID]
+  if (profId) {
+    profileId = Number(profId)
+  } else {
+    const uId = record[EntityKey.ID] || record[EntityKey.USER_ID]
+    if (uId && typeof uId === "string") {
+      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+      const cleanUId = String(uId).trim().toLowerCase()
+      const foundP = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === cleanUId)
+      if (foundP) {
+        profileId = foundP.id
+      }
+    }
+  }
+
+  if (profileId !== null) {
+    const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+    return activeAssignments
+      .filter((a) => Number(a.profile_id) === Number(profileId))
+      .map((a) => a.factory_id)
+  }
+
+  return []
+}
+
+function resolveVillageId(record: Record<string, unknown>): number | null {
+  const villageId = record[EntityKey.VILLAGE_ID]
+  if (villageId) return Number(villageId)
+
+  const factId = record[EntityKey.FACTORY_ID]
+  if (factId) {
+    const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
+    const factory = activeFactories.find((f) => String(f.id) === String(factId))
+    if (factory) {
+      return factory.village_id
+    }
+  }
+  return null
+}
+
+function getProfileId(record: Record<string, unknown>): number | null {
+  const profileId = record[EntityKey.PROFILE_ID] || record[EntityKey.ID]
+  return profileId ? Number(profileId) : null
+}
+
+export function createIdColumn<T>(
+  key: EntityKey,
+  label: ColumnLabel | string,
+  Icon: React.ComponentType<{ className?: string }>,
+  id: string = key
+): ColumnDef<T> {
   return {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const customerId = record[EntityKey.CUSTOMER_ID]
-      return customerId ? String(customerId) : ""
+      const val = record[key]
+      return val ? String(val) : ""
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -568,19 +395,23 @@ export function createCustomerIdColumn<T>(): ColumnDef<T> {
   }
 }
 
-export function createCenterNameColumn<T>(): ColumnDef<T> {
-  const id = EntityKey.CENTER_NAME
-  const label = ColumnLabel.CENTER_NAME
-  const Icon = Building
+export function createLookupNameColumn<T>(
+  id: string,
+  label: ColumnLabel | string,
+  Icon: React.ComponentType<{ className?: string }>,
+  fkKey: EntityKey,
+  slug: ProjectSlug,
+  fallbackPrefix: string
+): ColumnDef<T> {
   return {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const centerId = record[EntityKey.CENTER_ID]
-      if (!centerId) return ""
-      const activeCenters = useEntitiesStore.getState().entities[ProjectSlug.CENTERS] as CenterType[] || []
-      const center = activeCenters.find((c) => Number(c.id) === Number(centerId))
-      return center ? center.name : `Center ${centerId}`
+      const fkValue = record[fkKey]
+      if (!fkValue) return ""
+      const activeEntities = useEntitiesStore.getState().entities[slug] as { id: number | string; name: string }[] || []
+      const found = activeEntities.find((e) => String(e.id) === String(fkValue))
+      return found ? found.name : `${fallbackPrefix} ${fkValue}`
     },
     header: ({ column }) => (
       <DataTableColumnHeader
