@@ -104,12 +104,12 @@ Details of human resources/users linked to login accounts.
 ---
 
 ### Entity I: assignments
-Represents factory assignments that map factories to users.
+Represents factory assignments that map factories to profiles.
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
 | `id` | `SERIAL` | Primary Key | Unique assignment ID. |
 | `factory_id` | `INTEGER` | FK → `factories.id`, Not Null | Associated factory. |
-| `user_id` | `UUID` | FK → `auth.users(id)`, Not Null | Associated operator/admin user. |
+| `profile_id` | `CHAR(12)` | FK → `profiles.aadhar_number`, Not Null | Associated operator/admin profile. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last structural update time. |

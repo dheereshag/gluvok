@@ -59,14 +59,14 @@ export const ENTITY_EXTRACTORS: Record<string, (item: Entity) => { id: string; n
     const a = item as Assignment
     const storeState = useEntitiesStore.getState()
     const activeFactories = (storeState.entities[ProjectSlug.FACTORIES] || factories) as Factory[]
-    const activeUsers = (storeState.entities[ProjectSlug.USERS] || users) as User[]
+    const activeProfiles = (storeState.entities[ProjectSlug.PROFILES] || profiles) as Profile[]
     const factory = activeFactories.find((f) => String(f.id) === String(a.factory_id))
-    const user = activeUsers.find((u) => String(u.id) === String(a.user_id))
+    const profile = activeProfiles.find((p) => p.aadhar_number.replace(/\s/g, "").toLowerCase() === a.profile_id.replace(/\s/g, "").toLowerCase())
     const factoryName = factory ? factory.name : `Factory ${a.factory_id}`
-    const userEmail = user ? user.email : `User ${a.user_id}`
+    const profileName = profile ? profile.name : `Profile ${a.profile_id}`
     return {
       id: String(a.id),
-      name: `${userEmail} @ ${factoryName}`
+      name: `${profileName} @ ${factoryName}`
     }
   },
 }

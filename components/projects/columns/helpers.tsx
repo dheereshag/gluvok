@@ -6,7 +6,7 @@ import { EntityKey, ProjectSlug } from "@/lib/fields"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile } from "@/types"
 import { User, Factory, Home } from "lucide-react"
 
 export function createBaseColumn<T>(
@@ -133,19 +133,64 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      if (record.factory_id) return String(record.factory_id)
+      switch (!!record.factory_id) {
+        case true:
+          return String(record.factory_id)
+        default: {
+          let profileId = ""
+          switch (!!record.aadhar_number) {
+            case true:
+              profileId = String(record.aadhar_number)
+              break
+            default:
+              switch (!!record.profile_id) {
+                case true:
+                  profileId = String(record.profile_id)
+                  break
+                default: {
+                  const uId = record.id || record.user_id
+                  switch (!!uId && typeof uId === "string") {
+                    case true: {
+                      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+                      const cleanUId = String(uId).trim().toLowerCase()
+                      const foundP = activeProfiles.find((p) => String(p.id).trim().toLowerCase() === cleanUId)
+                      switch (!!foundP) {
+                        case true:
+                          profileId = foundP!.aadhar_number
+                          break
+                        default:
+                          break
+                      }
+                      break
+                    }
+                    default:
+                      break
+                  }
+                  break
+                }
+              }
+              break
+          }
 
-      const userId = record.id || record.user_id
-      if (userId && typeof userId === "string") {
-        const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-        const factoryIds = activeAssignments
-          .filter((a) => String(a.user_id).trim().toLowerCase() === String(userId).trim().toLowerCase())
-          .map((a) => a.factory_id)
-        if (factoryIds.length > 0) {
-          return factoryIds.join(", ")
+          switch (!!profileId) {
+            case true: {
+              const cleanProfileId = profileId.replace(/\s/g, "").toLowerCase()
+              const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+              const factoryIds = activeAssignments
+                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanProfileId)
+                .map((a) => a.factory_id)
+              switch (factoryIds.length > 0) {
+                case true:
+                  return factoryIds.join(", ")
+                default:
+                  return ""
+              }
+            }
+            default:
+              return ""
+          }
         }
       }
-      return ""
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -171,27 +216,74 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
       const record = row as Record<string, unknown>
       let factoryIds: string[] = []
 
-      if (record.factory_id) {
-        factoryIds = [String(record.factory_id)]
-      } else {
-        const userId = record.id || record.user_id
-        if (userId && typeof userId === "string") {
-          const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-          factoryIds = activeAssignments
-            .filter((a) => String(a.user_id).trim().toLowerCase() === String(userId).trim().toLowerCase())
-            .map((a) => String(a.factory_id))
+      switch (!!record.factory_id) {
+        case true:
+          factoryIds = [String(record.factory_id)]
+          break
+        default: {
+          let profileId = ""
+          switch (!!record.aadhar_number) {
+            case true:
+              profileId = String(record.aadhar_number)
+              break
+            default:
+              switch (!!record.profile_id) {
+                case true:
+                  profileId = String(record.profile_id)
+                  break
+                default: {
+                  const uId = record.id || record.user_id
+                  switch (!!uId && typeof uId === "string") {
+                    case true: {
+                      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+                      const cleanUId = String(uId).trim().toLowerCase()
+                      const foundP = activeProfiles.find((p) => String(p.id).trim().toLowerCase() === cleanUId)
+                      switch (!!foundP) {
+                        case true:
+                          profileId = foundP!.aadhar_number
+                          break
+                        default:
+                          break
+                      }
+                      break
+                    }
+                    default:
+                      break
+                  }
+                  break
+                }
+              }
+              break
+          }
+
+          switch (!!profileId) {
+            case true: {
+              const cleanProfileId = profileId.replace(/\s/g, "").toLowerCase()
+              const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+              factoryIds = activeAssignments
+                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanProfileId)
+                .map((a) => String(a.factory_id))
+              break
+            }
+            default:
+              break
+          }
+          break
         }
       }
 
-      if (factoryIds.length === 0) return ""
-
-      const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
-      const names = factoryIds.map((fid) => {
-        const factory = activeFactories.find((f) => String(f.id).trim().toLowerCase() === String(fid).trim().toLowerCase())
-        return factory ? factory.name : `Factory ${fid}`
-      })
-
-      return names.join(", ")
+      switch (factoryIds.length === 0) {
+        case true:
+          return ""
+        default: {
+          const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
+          const names = factoryIds.map((fid) => {
+            const factory = activeFactories.find((f) => String(f.id).trim().toLowerCase() === String(fid).trim().toLowerCase())
+            return factory ? factory.name : `Factory ${fid}`
+          })
+          return names.join(", ")
+        }
+      }
     },
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -230,6 +322,35 @@ export function createVillageNameColumn<T>(): ColumnDef<T> {
     cell: ({ row }) => {
       const villageName = row.getValue(id) as string
       return <div className="font-semibold text-foreground text-xs">{villageName || "—"}</div>
+    },
+    meta: { icon: Icon, label },
+  }
+}
+
+export function createProfileNameColumn<T>(): ColumnDef<T> {
+  const id = "profile_name"
+  const label = ColumnLabel.PROFILE
+  const Icon = User
+  return {
+    id,
+    accessorFn: (row: T) => {
+      const record = row as Record<string, unknown>
+      const profileId = record.profile_id || record.aadhar_number
+      if (!profileId || typeof profileId !== "string") return ""
+      const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+      const cleanVal = String(profileId).replace(/\s/g, "").toLowerCase()
+      const profile = activeProfiles.find((p) => p.aadhar_number.replace(/\s/g, "").toLowerCase() === cleanVal)
+      return profile ? profile.name : profileId
+    },
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title={<span className="flex items-center gap-1"><Icon className="h-3.5 w-3.5 text-muted-foreground/70" />{label}</span>}
+      />
+    ),
+    cell: ({ row }) => {
+      const name = row.getValue(id) as string
+      return <div className="font-semibold text-foreground text-xs">{name || "—"}</div>
     },
     meta: { icon: Icon, label },
   }

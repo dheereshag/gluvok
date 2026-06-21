@@ -2,7 +2,7 @@
 
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { type EntityRecord, type Rate } from "@/types"
+import { type EntityRecord, type Rate, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { PROJECT_REGISTRY } from "@/lib/projects/registry"
 import { ProjectSlug } from "@/lib/fields"
@@ -70,16 +70,31 @@ export const useEntitiesStore = create<EntitiesState>()(
           switch (slug as ProjectSlug) {
             case ProjectSlug.FACTORIES: {
               const currentUser = useAuthStore.getState().user
-              if (currentUser?.id) {
-                const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
-                const newAssignment = {
-                  id: currentAssignments.length + 1,
-                  factory_id: Number(id),
-                  user_id: currentUser.id,
-                  created_at: getTimestamp(),
-                  updated_at: getTimestamp()
-                } as EntityRecord
-                nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
+              switch (!!currentUser) {
+                case true: {
+                  const currentUserId = currentUser!.id
+                  const activeProfiles = state.entities[ProjectSlug.PROFILES] as Profile[] || []
+                  const userProfile = activeProfiles.find((p) => String(p.id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
+                  switch (!!userProfile) {
+                    case true: {
+                      const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
+                      const newAssignment = {
+                        id: currentAssignments.length + 1,
+                        factory_id: Number(id),
+                        profile_id: userProfile!.aadhar_number,
+                        created_at: getTimestamp(),
+                        updated_at: getTimestamp()
+                      } as EntityRecord
+                      nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
+                      break
+                    }
+                    default:
+                      break
+                  }
+                  break
+                }
+                default:
+                  break
               }
               break
             }

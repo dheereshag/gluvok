@@ -9,54 +9,89 @@ export function filterEntitiesForUser(
   currentUser: AuthUser | null,
   allEntities: Record<string, EntityRecord[]>
 ): EntityRecord[] {
-  if (!currentUser) return []
+  switch (!!currentUser) {
+    case false:
+      return []
+    default: {
+      const user = currentUser!
+      switch (user.role) {
+        case Role.SUPER_ADMIN:
+          return rawData
+        default: {
+          // Scope by factory assignments for all other roles (ADMIN, MANAGER, OPERATOR, BASE)
+          const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
+          const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
+          const myProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
-  // SUPER_ADMIN has access to everything
-  if (currentUser.role === Role.SUPER_ADMIN) {
-    return rawData
-  }
+          let myFactoryIds: number[] = []
+          switch (!!myProfile) {
+            case true: {
+              const cleanAadhar = myProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+              myFactoryIds = allAssignments
+                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanAadhar)
+                .map((a) => Number(a.factory_id))
+              break
+            }
+            default:
+              break
+          }
 
-  // ADMIN scoping
-  if (currentUser.role === Role.ADMIN) {
-    const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
-    const myFactoryIds = allAssignments
-      .filter((a) => String(a.user_id) === String(currentUser.id))
-      .map((a) => Number(a.factory_id))
+          switch (projectSlug as ProjectSlug) {
+            case ProjectSlug.FACTORIES:
+              return rawData.filter((item) => myFactoryIds.includes(Number((item as Factory).id)))
 
-    switch (projectSlug as ProjectSlug) {
-      case ProjectSlug.FACTORIES:
-        return rawData.filter((item) => myFactoryIds.includes(Number((item as Factory).id)))
+            case ProjectSlug.CENTERS:
+              return rawData.filter((item) => myFactoryIds.includes(Number((item as Center).factory_id)))
 
-      case ProjectSlug.CENTERS:
-        return rawData.filter((item) => myFactoryIds.includes(Number((item as Center).factory_id)))
+            case ProjectSlug.RATES:
+              return rawData.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
 
-      case ProjectSlug.RATES:
-        return rawData.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
+            case ProjectSlug.ASSIGNMENTS:
+              return rawData.filter((item) => myFactoryIds.includes(Number((item as Assignment).factory_id)))
 
-      case ProjectSlug.ASSIGNMENTS:
-        return rawData.filter((item) => myFactoryIds.includes(Number((item as Assignment).factory_id)))
+            case ProjectSlug.PROFILES: {
+              const profileIdsInMyFactories = allAssignments
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+              return rawData.filter((item) => {
+                const aadhar = String((item as Profile).aadhar_number).replace(/\s/g, "").toLowerCase()
+                return profileIdsInMyFactories.includes(aadhar)
+              })
+            }
 
-      case ProjectSlug.PROFILES:
-        const userIdsInMyFactories = allAssignments
-          .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-          .map((a) => String(a.user_id))
-        return rawData.filter((item) => userIdsInMyFactories.includes(String((item as Profile).id)))
+            case ProjectSlug.WEIGHMENTS: {
+              const allCenters = (allEntities[ProjectSlug.CENTERS] || []) as Center[]
+              const centerIdsInMyFactories = allCenters
+                .filter((c) => myFactoryIds.includes(Number(c.factory_id)))
+                .map((c) => c.id)
+              return rawData.filter((item) => centerIdsInMyFactories.includes(Number((item as Weighment).center_id)))
+            }
 
-      case ProjectSlug.WEIGHMENTS:
-        const allCenters = (allEntities[ProjectSlug.CENTERS] || []) as Center[]
-        const centerIdsInMyFactories = allCenters
-          .filter((c) => myFactoryIds.includes(Number(c.factory_id)))
-          .map((c) => c.id)
-        return rawData.filter((item) => centerIdsInMyFactories.includes(Number((item as Weighment).center_id)))
+            case ProjectSlug.USERS: {
+              const profileIdsInMyFactories = allAssignments
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+              return rawData.filter((item) => {
+                const userId = String((item as User).id).trim().toLowerCase()
+                const userProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === userId)
+                switch (!!userProfile) {
+                  case true: {
+                    const aadhar = userProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+                    return profileIdsInMyFactories.includes(aadhar)
+                  }
+                  default:
+                    return false
+                }
+              })
+            }
 
-      default:
-        // Other entities (villages, commodities, customers, users) are not scoped by factory for ADMIN
-        return rawData
+            default:
+              return rawData
+          }
+        }
+      }
     }
   }
-
-  // For other roles, just return rawData
-  return rawData
 }
 
 export function filterOptionsForUser(
@@ -64,49 +99,84 @@ export function filterOptionsForUser(
   dataList: EntityRecord[],
   currentUser: AuthUser | null,
   allEntities: Record<string, EntityRecord[]>,
-  contextSlug?: string,
-  fieldKey?: string
+  _contextSlug?: string,
+  _fieldKey?: string
 ): EntityRecord[] {
-  if (!currentUser) return []
+  switch (!!currentUser) {
+    case false:
+      return []
+    default: {
+      const user = currentUser!
 
-  // When creating/editing assignments, restrict users dropdown to ADMIN, MANAGER, OPERATOR
-  if (entitySlug === ProjectSlug.USERS && contextSlug === ProjectSlug.ASSIGNMENTS && fieldKey === "user_id") {
-    const users = dataList as User[]
-    return users.filter((u) => u.role === Role.ADMIN || u.role === Role.MANAGER || u.role === Role.OPERATOR)
-  }
+      switch (!!_contextSlug && !!_fieldKey) {
+        default:
+          break
+      }
 
-  // SUPER_ADMIN has access to everything
-  if (currentUser.role === Role.SUPER_ADMIN) {
-    return dataList
-  }
+      switch (user.role) {
+        case Role.SUPER_ADMIN:
+          return dataList
+        default: {
+          const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
+          const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
+          const myProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
-  // ADMIN scoping for dropdown select choices
-  if (currentUser.role === Role.ADMIN) {
-    const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
-    const myFactoryIds = allAssignments
-      .filter((a) => String(a.user_id) === String(currentUser.id))
-      .map((a) => Number(a.factory_id))
+          let myFactoryIds: number[] = []
+          switch (!!myProfile) {
+            case true: {
+              const cleanAadhar = myProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+              myFactoryIds = allAssignments
+                .filter((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase() === cleanAadhar)
+                .map((a) => Number(a.factory_id))
+              break
+            }
+            default:
+              break
+          }
 
-    switch (entitySlug as ProjectSlug) {
-      case ProjectSlug.FACTORIES:
-        return dataList.filter((item) => myFactoryIds.includes(Number((item as Factory).id)))
+          switch (entitySlug as ProjectSlug) {
+            case ProjectSlug.FACTORIES:
+              return dataList.filter((item) => myFactoryIds.includes(Number((item as Factory).id)))
 
-      case ProjectSlug.CENTERS:
-        return dataList.filter((item) => myFactoryIds.includes(Number((item as Center).factory_id)))
+            case ProjectSlug.CENTERS:
+              return dataList.filter((item) => myFactoryIds.includes(Number((item as Center).factory_id)))
 
-      case ProjectSlug.RATES:
-        return dataList.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
+            case ProjectSlug.RATES:
+              return dataList.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
 
-      case ProjectSlug.PROFILES:
-        const userIdsInMyFactories = allAssignments
-          .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-          .map((a) => String(a.user_id))
-        return dataList.filter((item) => userIdsInMyFactories.includes(String((item as Profile).id)))
+            case ProjectSlug.PROFILES: {
+              const profileIdsInMyFactories = allAssignments
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+              return dataList.filter((item) => {
+                const aadhar = String((item as Profile).aadhar_number).replace(/\s/g, "").toLowerCase()
+                return profileIdsInMyFactories.includes(aadhar)
+              })
+            }
 
-      default:
-        return dataList
+            case ProjectSlug.USERS: {
+              const profileIdsInMyFactories = allAssignments
+                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
+                .map((a) => String(a.profile_id).replace(/\s/g, "").toLowerCase())
+              return dataList.filter((item) => {
+                const userId = String((item as User).id).trim().toLowerCase()
+                const userProfile = allProfiles.find((p) => String(p.id).trim().toLowerCase() === userId)
+                switch (!!userProfile) {
+                  case true: {
+                    const aadhar = userProfile!.aadhar_number.replace(/\s/g, "").toLowerCase()
+                    return profileIdsInMyFactories.includes(aadhar)
+                  }
+                  default:
+                    return false
+                }
+              })
+            }
+
+            default:
+              return dataList
+          }
+        }
+      }
     }
   }
-
-  return dataList
 }

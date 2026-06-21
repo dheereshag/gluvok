@@ -44,7 +44,7 @@ export interface Factory {
 export interface Assignment {
   id: number
   factory_id: number
-  user_id: string
+  profile_id: string
   created_at: string
   updated_at: string
 }
