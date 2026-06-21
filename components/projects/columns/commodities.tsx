@@ -18,3 +18,5 @@ export function getCommoditiesColumns<T>(): ColumnDef<T>[] {
   ]
 }
 
+
+

@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { ShieldCheck, Hash, Calendar, CalendarClock, Tag, Fingerprint, type LucideIcon } from "lucide-react"
+import { ShieldCheck, Hash, Calendar, CalendarClock, Fingerprint, Tag, type LucideIcon } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { formatDateTime } from "@/lib/utils"

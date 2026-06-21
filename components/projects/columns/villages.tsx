@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Home, Globe } from "lucide-react"
+import { Globe, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { PillIcon } from "@/components/kibo-ui/pill"
@@ -7,7 +7,9 @@ import { createTextColumn, createPillColumn } from "./helpers"
 
 export function getVillagesColumns<T>(): ColumnDef<T>[] {
   return [
-    createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Home),
+    createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
+
+
     createPillColumn(
       EntityKey.STATE,
       ColumnLabel.STATE,

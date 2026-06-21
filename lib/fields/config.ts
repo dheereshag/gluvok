@@ -23,7 +23,7 @@ import {
 
 export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.CENTERS]: [
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Center F", type: FieldType.TEXT, icon: Building },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Center F", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.COMMODITIES]: [
@@ -37,7 +37,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   [ProjectSlug.CUSTOMERS]: [
     { key: EntityKey.GOVT_ID, label: ColumnLabel.GOVT_ID, placeholder: "e.g. 1001", type: FieldType.NUMBER, icon: ShieldCheck },
     { key: EntityKey.ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder("User"), type: FieldType.TEXT, icon: Hash },
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT, icon: User },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FATHER_NAME, label: ColumnLabel.FATHER_NAME, placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT, icon: User },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder("Village"), type: FieldType.TEXT, icon: Home },
   ],
@@ -72,7 +72,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.IS_ACTIVE, label: ColumnLabel.IS_ACTIVE, placeholder: "", type: FieldType.CHECKBOX, icon: Power },
   ],
   [ProjectSlug.FACTORIES]: [
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Factory },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder("Village"), type: FieldType.TEXT, icon: Home },
   ],
   [ProjectSlug.ASSIGNMENTS]: [
@@ -94,7 +94,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
       icon: Fingerprint,
     },
     { key: EntityKey.USER_ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder("User"), type: FieldType.TEXT, icon: Hash },
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT, icon: User },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.USERS]: [
@@ -102,7 +102,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.ROLE, label: ColumnLabel.ROLE, placeholder: "Select role...", type: FieldType.ROLE, icon: ShieldCheck },
   ],
   [ProjectSlug.VILLAGES]: [
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ludhiana", type: FieldType.TEXT, icon: Home },
+    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ludhiana", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.STATE, label: ColumnLabel.STATE, placeholder: "Select state...", type: FieldType.STATE, icon: Globe },
   ],
 }

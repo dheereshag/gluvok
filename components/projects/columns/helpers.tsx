@@ -7,7 +7,7 @@ export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants"
 import { useEntitiesStore } from "@/lib/store"
 import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Commodity, type Customer } from "@/types"
-import { User, Factory, Home, Tag, Users, ShieldCheck } from "lucide-react"
+import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint } from "lucide-react"
 
 export function createBaseColumn<T>(
   key: EntityKey, label: ColumnLabel | string, Icon: React.ComponentType<{ className?: string }>, cell: ColumnDef<T>["cell"], id?: string
@@ -381,7 +381,7 @@ export function createProfileNameColumn<T>(): ColumnDef<T> {
 export function createProfileAadharColumn<T>(): ColumnDef<T> {
   const id = "profile_aadhar"
   const label = ColumnLabel.AADHAR_NUMBER
-  const Icon = User
+  const Icon = Fingerprint
   return {
     id,
     accessorFn: (row: T) => {
