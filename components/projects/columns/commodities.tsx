@@ -2,7 +2,8 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Tag } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
-import { createCustomColumn, getCommodityIcon } from "./helpers"
+import { createCustomColumn } from "./helpers"
+import { getCommodityIcon } from "@/lib/fields"
 
 export function getCommoditiesColumns<T>(): ColumnDef<T>[] {
   return [

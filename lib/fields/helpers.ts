@@ -9,7 +9,7 @@ export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   return EntityKey.ID
 }
 
-export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | null {
+export function getReferencedEntitySlug(key: string | EntityKey): string | null {
   switch (key) {
     case EntityKey.FACTORY_ID:
       return ProjectSlug.FACTORIES
@@ -27,7 +27,7 @@ export function getReferencedEntitySlug(key: string | EntityKey): ProjectSlug | 
     case EntityKey.CUSTOMER_ID:
       return ProjectSlug.CUSTOMERS
     case EntityKey.USER_ID:
-      return ProjectSlug.USERS
+      return "users"
     default:
       return null
   }

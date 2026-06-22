@@ -157,30 +157,8 @@ export function checkEditUniqueness(
       }
       break
     }
-    case ProjectSlug.USERS: {
-      const currentEmail = String(getField(item, EntityKey.EMAIL) ?? "").trim().toLowerCase()
-      const newEmail = String(values[EntityKey.EMAIL] ?? "").trim().toLowerCase()
-
-      if (newEmail !== currentEmail) {
-        const list = useEntitiesStore.getState().entities[ProjectSlug.USERS] || []
-        const exists = list.some((e) => {
-          if (String(getField(e, EntityKey.ID)) === String(getField(item, EntityKey.ID))) {
-            return false
-          }
-          const email = String(getField(e, EntityKey.EMAIL) ?? "").trim().toLowerCase()
-          return email === newEmail
-        })
-
-        if (exists) {
-          return {
-            field: EntityKey.EMAIL,
-            message: "A user with this email already exists",
-          }
-        }
-      }
-      break
-    }
     default:
+      break
       break
   }
 

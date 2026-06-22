@@ -22,15 +22,15 @@ export function EntityCombobox({
   contextSlug,
   fieldKey,
 }: EntityComboboxProps) {
-  const comboboxData = useEntityOptions(entitySlug, contextSlug, fieldKey)
+  const { options, loading } = useEntityOptions(entitySlug, contextSlug, fieldKey)
 
   return (
     <BaseCombobox
       value={value}
       onChange={onChange}
-      data={comboboxData}
+      data={options}
       type={entitySlug}
-      placeholder={placeholder}
+      placeholder={loading ? "Loading..." : placeholder}
       id={id}
     />
   )

@@ -5,8 +5,7 @@ import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
-import { useAuthStore, getPermissions, resetAllEntitiesData, useEntitiesStore } from "@/lib/store"
-import { toast } from "sonner"
+import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
 
 interface UseProjectTableProps {
   projectSlug: string
@@ -27,7 +26,6 @@ export function useProjectTable({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState("")
-  const [isReloading, setIsReloading] = React.useState(false)
   const { setEditingItem, setDeletingItem } = dialogStates
 
   const user = useAuthStore((state) => state.user)
@@ -106,8 +104,6 @@ export function useProjectTable({
 
   const filterKey = React.useMemo(() => {
     switch (projectSlug) {
-      case ProjectSlug.USERS:
-        return EntityKey.EMAIL
       case ProjectSlug.ASSIGNMENTS:
         return EntityKey.PROFILE_NAME
       case ProjectSlug.AFFILIATIONS:
@@ -122,21 +118,12 @@ export function useProjectTable({
   }, [projectSlug])
 
   const handleReload = React.useCallback(() => {
-    setIsReloading(true)
-
-    resetAllEntitiesData()
-
-    setTimeout(() => {
-      setIsReloading(false)
-      toast.success("All tables reloaded", {
-        description: `Reset all dashboard data back to initial seed state.`,
-      })
-    }, 600)
+    window.location.reload()
   }, [])
 
   return {
     table,
-    isLoading: isLoading || isReloading,
+    isLoading,
     filterKey,
     permissions,
     handleReload,

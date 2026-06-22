@@ -47,7 +47,7 @@ export function useEditEntityForm({
     }
   }, [open, item, fields, form])
 
-  const onSubmit = (values: FieldValues) => {
+  const onSubmit = async (values: FieldValues) => {
     const uniquenessError = checkEditUniqueness(projectSlug as ProjectSlug, item, values)
     if (uniquenessError) {
       form.setError(uniquenessError.field as Path<FieldValues>, { message: uniquenessError.message })
@@ -55,7 +55,7 @@ export function useEditEntityForm({
     }
 
     try {
-      updateEntity(projectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
+      await updateEntity(projectSlug as ProjectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
       toast.success(`${projectName} updated successfully`)
       onOpenChange(false)
     } catch {

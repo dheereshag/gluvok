@@ -7,14 +7,12 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { LayoutDashboard, RotateCw } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
-import { useAuthStore, hasPageAccess, resetAllEntitiesData } from "@/lib/store"
+import { useAuthStore, hasPageAccess } from "@/lib/store"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
 
 export default function Page() {
   const user = useAuthStore((state) => state.user)
   const hydrated = useAuthStore((state) => state.hydrated)
-  const [isReloading, setIsReloading] = React.useState(false)
 
   const filteredProjects = React.useMemo(() => {
     if (!hydrated || !user) return []
@@ -22,14 +20,7 @@ export default function Page() {
   }, [hydrated, user])
 
   const handleReload = React.useCallback(() => {
-    setIsReloading(true)
-    resetAllEntitiesData()
-    setTimeout(() => {
-      setIsReloading(false)
-      toast.success("All tables reloaded", {
-        description: "Reset all dashboard data back to initial seed state.",
-      })
-    }, 600)
+    window.location.reload()
   }, [])
 
   return (
@@ -66,11 +57,10 @@ export default function Page() {
               variant="outline"
               size="sm"
               onClick={handleReload}
-              disabled={isReloading}
               className="h-9 gap-2 shadow-sm font-semibold transition-all duration-300 hover:bg-muted/50 text-muted-foreground hover:text-foreground"
             >
-              <RotateCw className={`h-4 w-4 ${isReloading ? "animate-spin" : ""}`} />
-              Reload and Reset Data
+              <RotateCw className="h-4 w-4" />
+              Reload Page
             </Button>
           </div>
         </div>

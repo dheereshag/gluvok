@@ -28,7 +28,7 @@ export default async function ProjectPage({ params }: Props) {
 
   if (!config) notFound();
 
-  const { name: projectName, icon: IconComponent, data } = config;
+  const { name: projectName, icon: IconComponent } = config;
 
   return (
     <>
@@ -39,7 +39,7 @@ export default async function ProjectPage({ params }: Props) {
           key={projectSlug}
           projectName={projectName}
           projectSlug={projectSlug}
-          initialData={data}
+          initialData={[]}
         />
       </main>
     </>

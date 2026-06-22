@@ -9,7 +9,6 @@ export interface Permission {
 
 export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   [Role.SUPER_ADMIN]: {
-    [ProjectSlug.USERS]: { read: true, write: true, delete: true },
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: true },
     [ProjectSlug.VILLAGES]: { read: true, write: true, delete: true },
     [ProjectSlug.FACTORIES]: { read: true, write: true, delete: true },
@@ -22,7 +21,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.AFFILIATIONS]: { read: true, write: true, delete: true },
   },
   [Role.ADMIN]: {
-    [ProjectSlug.USERS]: { read: true, write: false, delete: false },
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: true },
     [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false },
     [ProjectSlug.FACTORIES]: { read: true, write: true, delete: true },
@@ -35,7 +33,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.AFFILIATIONS]: { read: true, write: true, delete: true },
   },
   [Role.MANAGER]: {
-    [ProjectSlug.USERS]: { read: true, write: false, delete: false },
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: false },
     [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false },
     [ProjectSlug.FACTORIES]: { read: true, write: false, delete: false },
@@ -48,7 +45,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.AFFILIATIONS]: { read: true, write: false, delete: false },
   },
   [Role.OPERATOR]: {
-    [ProjectSlug.USERS]: { read: true, write: false, delete: false },
     [ProjectSlug.PROFILES]: { read: true, write: false, delete: false },
     [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false },
     [ProjectSlug.FACTORIES]: { read: true, write: false, delete: false },
@@ -61,7 +57,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.AFFILIATIONS]: { read: true, write: false, delete: false },
   },
   [Role.BASE]: {
-    [ProjectSlug.USERS]: { read: true, write: false, delete: false },
     [ProjectSlug.PROFILES]: { read: true, write: false, delete: false },
     [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false },
     [ProjectSlug.FACTORIES]: { read: true, write: false, delete: false },

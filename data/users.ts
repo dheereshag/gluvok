@@ -1,4 +1,9 @@
-import { type User } from "@/types";
+interface User {
+  id: string
+  email: string
+  created_at?: string
+  updated_at?: string
+}
 
 export const users: User[] = [
   // Super Admin

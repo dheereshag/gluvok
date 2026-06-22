@@ -64,9 +64,9 @@ export function useAddEntityForm({
     }
   }, [open, form, projectSlug, userProfileId])
 
-  const onSubmit = (values: FieldValues) => {
+  const onSubmit = async (values: FieldValues) => {
     try {
-      addEntity(projectSlug, primaryIdKey, values)
+      await addEntity(projectSlug as ProjectSlug, primaryIdKey, values)
       toast.success(`${projectName} created successfully`)
       onOpenChange(false)
     } catch {

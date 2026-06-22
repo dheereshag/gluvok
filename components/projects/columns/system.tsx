@@ -3,7 +3,8 @@ import { ShieldCheck, Hash, Calendar, CalendarClock, Fingerprint, Tag, type Luci
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { formatDateTime } from "@/lib/utils"
-import { createCustomColumn, getCommodityIcon } from "./helpers"
+import { createCustomColumn } from "./helpers"
+import { getCommodityIcon } from "@/lib/fields"
 
 interface PrimaryKeyConfig {
   label: ColumnLabel
