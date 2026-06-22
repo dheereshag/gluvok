@@ -88,6 +88,7 @@ export interface Profile {
   aadhar_number: string
   name: string
   role: Role
+  preferences?: Record<string, string[]>
   created_at: string
   updated_at: string
 }

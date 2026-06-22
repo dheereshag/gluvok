@@ -83,6 +83,7 @@ Details of human resources/users linked to login accounts.
 | `aadhar_number` | `CHAR(12)` | Unique, Not Null, CHECK (`aadhar_number ~ '^\d{12}$'`) | Aadhar number — unique profile identifier. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the profile owner. |
 | `role` | `role_enum` | Not Null, Default: `'base'` | User role defining access permissions. |
+| `preferences` | `JSONB` | Not Null, Default: `'{}'` | Profile preferences such as visible columns. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 

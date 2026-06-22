@@ -17,6 +17,7 @@ interface EntitiesState {
   deleteEntity: (slug: string, key: string, id: string) => void
   setHydrated: (state: boolean) => void
   resetAllEntities: () => void
+  updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => void
 }
 
 const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
@@ -127,6 +128,44 @@ export const useEntitiesStore = create<EntitiesState>()(
             initialEntities[slug] = PROJECT_REGISTRY[slug].data
           })
           return { entities: initialEntities }
+        }),
+      updateColumnPreferences: (profileId, projectSlug, visibleColumns) =>
+        set((state) => {
+          const currentProfiles = (state.entities[ProjectSlug.PROFILES] || []) as Profile[]
+          const updatedProfiles = currentProfiles.map((p) => {
+            if (Number(p.id) === Number(profileId)) {
+              const currentPrefs = p.preferences || {}
+              return {
+                ...p,
+                preferences: {
+                  ...currentPrefs,
+                  [projectSlug]: visibleColumns,
+                },
+                updated_at: getTimestamp(),
+              } as Profile
+            }
+            return p
+          })
+
+          const currentUser = useAuthStore.getState().user
+          if (currentUser && currentUser.profile && Number(currentUser.profile.id) === Number(profileId)) {
+            const updatedProfile = updatedProfiles.find((p) => Number(p.id) === Number(profileId))
+            if (updatedProfile) {
+              useAuthStore.setState({
+                user: {
+                  ...currentUser,
+                  profile: updatedProfile,
+                },
+              })
+            }
+          }
+
+          return {
+            entities: {
+              ...state.entities,
+              [ProjectSlug.PROFILES]: updatedProfiles,
+            },
+          }
         }),
     }),
     {
