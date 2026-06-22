@@ -63,10 +63,7 @@ export function filterEntitiesForUser(
                 if (myProfile && Number(profile.id) === Number(myProfile.id)) {
                   return true
                 }
-                return (
-                  profileIdsInMyFactories.includes(Number(profile.id)) ||
-                  (profile.factory_id !== undefined && myFactoryIds.includes(Number(profile.factory_id)))
-                )
+                return profileIdsInMyFactories.includes(Number(profile.id))
               })
             }
 
@@ -77,10 +74,7 @@ export function filterEntitiesForUser(
                 .filter(Boolean)
               return rawData.filter((item) => {
                 const customer = item as Customer
-                return (
-                  customerIdsInMyFactories.includes(Number(customer.id)) ||
-                  (customer.factory_id !== undefined && myFactoryIds.includes(Number(customer.factory_id)))
-                )
+                return customerIdsInMyFactories.includes(Number(customer.id))
               })
             }
 
@@ -105,10 +99,7 @@ export function filterEntitiesForUser(
                 const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
                   case true:
-                    return (
-                      profileIdsInMyFactories.includes(Number(userProfile!.id)) ||
-                      (userProfile!.factory_id !== undefined && myFactoryIds.includes(Number(userProfile!.factory_id)))
-                    )
+                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
                   default:
                     return false
                 }
@@ -185,10 +176,7 @@ export function filterOptionsForUser(
                 if (myProfile && Number(profile.id) === Number(myProfile.id)) {
                   return true
                 }
-                return (
-                  profileIdsInMyFactories.includes(Number(profile.id)) ||
-                  (profile.factory_id !== undefined && myFactoryIds.includes(Number(profile.factory_id)))
-                )
+                return profileIdsInMyFactories.includes(Number(profile.id))
               })
             }
 
@@ -199,10 +187,7 @@ export function filterOptionsForUser(
                 .filter(Boolean)
               return dataList.filter((item) => {
                 const customer = item as Customer
-                return (
-                  customerIdsInMyFactories.includes(Number(customer.id)) ||
-                  (customer.factory_id !== undefined && myFactoryIds.includes(Number(customer.factory_id)))
-                )
+                return customerIdsInMyFactories.includes(Number(customer.id))
               })
             }
 
@@ -219,10 +204,7 @@ export function filterOptionsForUser(
                 const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
                 switch (!!userProfile) {
                   case true:
-                    return (
-                      profileIdsInMyFactories.includes(Number(userProfile!.id)) ||
-                      (userProfile!.factory_id !== undefined && myFactoryIds.includes(Number(userProfile!.factory_id)))
-                    )
+                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
                   default:
                     return false
                 }

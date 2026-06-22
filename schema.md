@@ -82,7 +82,6 @@ Details of human resources/users linked to login accounts.
 | `user_id` | `UUID` | Unique, Not Null, FK → `auth.users(id)`, On Delete Cascade | References Supabase Auth user. |
 | `aadhar_number` | `CHAR(12)` | Unique, Not Null, CHECK (`aadhar_number ~ '^\d{12}$'`) | Aadhar number — unique profile identifier. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the profile owner. |
-| `factory_id` | `INTEGER` | FK → `factories.id`, Nullable | Associated home factory. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 

@@ -165,7 +165,6 @@ CREATE TABLE public.profiles (
   user_id UUID NOT NULL UNIQUE,
   aadhar_number CHAR(12) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
-  factory_id INTEGER,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
@@ -173,11 +172,6 @@ CREATE TABLE public.profiles (
     FOREIGN KEY (user_id)
     REFERENCES auth.users(id)
     ON DELETE RESTRICT,
-    
-  CONSTRAINT fk_profile_factory
-    FOREIGN KEY (factory_id)
-    REFERENCES public.factories(id)
-    ON DELETE SET NULL,
     
   CONSTRAINT check_aadhar_format
     CHECK (aadhar_number ~ '^\d{12}$')

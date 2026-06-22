@@ -31,8 +31,8 @@ export function useAddEntityForm({
     switch (!!currentUser) {
       case true: {
         const currentUserId = currentUser?.id
-        const profile = profilesList.find((p) => String(p.id) === String(currentUserId))
-        return profile?.aadhar_number || ""
+        const profile = profilesList.find((p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
+        return profile ? String(profile.id) : ""
       }
       default:
         return ""

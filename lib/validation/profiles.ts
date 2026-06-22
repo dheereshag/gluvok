@@ -14,7 +14,6 @@ const baseProfileSchema = z.object({
     ),
   [EntityKey.USER_ID]: uuidSchema(ColumnLabel.USER),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
-  [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 })
 
 export const addProfileSchema = baseProfileSchema
@@ -46,7 +45,6 @@ export const editProfileSchema = z.object({
     ),
   [EntityKey.USER_ID]: uuidSchema(ColumnLabel.USER),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
-  [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 }).refine((data) => {
   const aadharVal = data[EntityKey.AADHAR_NUMBER]
   const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []

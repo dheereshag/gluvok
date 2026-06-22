@@ -5,7 +5,7 @@ import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 export { getCommodityIcon } from "@/lib/fields"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
-import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Customer } from "@/types"
+import { type Factory as FactoryType, type User as UserType, type Village as VillageType, type Assignment, type Profile, type Customer, type Affiliation } from "@/types"
 import { User, Factory, Home, Tag, Users, ShieldCheck, Fingerprint, Package, Building } from "lucide-react"
 
 export function createBaseColumn<T>(
@@ -72,7 +72,7 @@ export function createUserEmailColumn<T>(
   }
 }
 
-export function createFactoryIdColumn<T>(): ColumnDef<T> {
+export function createFactoryIdColumn<T>(resolveIds?: (row: T) => number[]): ColumnDef<T> {
   const id = EntityKey.FACTORY_ID
   const label = ColumnLabel.FACTORY_ID
   const Icon = Factory
@@ -80,7 +80,7 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const factoryIds = resolveFactoryIds(record)
+      const factoryIds = resolveIds ? resolveIds(row) : resolveFactoryIds(record)
       return factoryIds.length > 0 ? factoryIds.join(", ") : ""
     },
     header: ({ column }) => (
@@ -97,7 +97,7 @@ export function createFactoryIdColumn<T>(): ColumnDef<T> {
   }
 }
 
-export function createFactoryNameColumn<T>(): ColumnDef<T> {
+export function createFactoryNameColumn<T>(resolveIds?: (row: T) => number[]): ColumnDef<T> {
   const id = EntityKey.FACTORY_NAME
   const label = ColumnLabel.FACTORY_NAME
   const Icon = Factory
@@ -105,7 +105,7 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
     id,
     accessorFn: (row: T) => {
       const record = row as Record<string, unknown>
-      const factoryIds = resolveFactoryIds(record)
+      const factoryIds = resolveIds ? resolveIds(row) : resolveFactoryIds(record)
       if (factoryIds.length === 0) return ""
       const activeFactories = useEntitiesStore.getState().entities[ProjectSlug.FACTORIES] as FactoryType[] || []
       const names = factoryIds.map((fid) => {
@@ -127,6 +127,47 @@ export function createFactoryNameColumn<T>(): ColumnDef<T> {
     meta: { icon: Icon, label },
   }
 }
+
+export function createProfileFactoryIdColumn<T>(): ColumnDef<T> {
+  return createFactoryIdColumn<T>((row) => {
+    const p = row as unknown as Profile
+    const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+    return activeAssignments
+      .filter((a) => Number(a.profile_id) === Number(p.id))
+      .map((a) => a.factory_id)
+  })
+}
+
+export function createProfileFactoryNameColumn<T>(): ColumnDef<T> {
+  return createFactoryNameColumn<T>((row) => {
+    const p = row as unknown as Profile
+    const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+    return activeAssignments
+      .filter((a) => Number(a.profile_id) === Number(p.id))
+      .map((a) => a.factory_id)
+  })
+}
+
+export function createCustomerFactoryIdColumn<T>(): ColumnDef<T> {
+  return createFactoryIdColumn<T>((row) => {
+    const c = row as unknown as Customer
+    const activeAffiliations = useEntitiesStore.getState().entities[ProjectSlug.AFFILIATIONS] as Affiliation[] || []
+    return activeAffiliations
+      .filter((a) => Number(a.customer_id) === Number(c.id))
+      .map((a) => a.factory_id)
+  })
+}
+
+export function createCustomerFactoryNameColumn<T>(): ColumnDef<T> {
+  return createFactoryNameColumn<T>((row) => {
+    const c = row as unknown as Customer
+    const activeAffiliations = useEntitiesStore.getState().entities[ProjectSlug.AFFILIATIONS] as Affiliation[] || []
+    return activeAffiliations
+      .filter((a) => Number(a.customer_id) === Number(c.id))
+      .map((a) => a.factory_id)
+  })
+}
+
 
 export function createVillageNameColumn<T>(): ColumnDef<T> {
   const id = EntityKey.VILLAGE_NAME
@@ -322,6 +363,7 @@ function resolveFactoryIds(record: Record<string, unknown>): number[] {
     return [Number(factId)]
   }
 
+  // Fallback for other records referencing a profile/user
   let profileId: number | null = null
   const profId = record[EntityKey.PROFILE_ID]
   if (profId) {

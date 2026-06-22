@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Mail, Fingerprint, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
-import { createTextColumn, createUserEmailColumn, createFactoryIdColumn, createFactoryNameColumn } from "./helpers"
+import { createTextColumn, createUserEmailColumn, createProfileFactoryIdColumn, createProfileFactoryNameColumn } from "./helpers"
 
 export function getProfilesColumns<T>(): ColumnDef<T>[] {
   return [
@@ -10,9 +10,7 @@ export function getProfilesColumns<T>(): ColumnDef<T>[] {
     createUserEmailColumn(ColumnLabel.EMAIL, Mail),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
 
-
-    createFactoryIdColumn(),
-    createFactoryNameColumn(),
+    createProfileFactoryIdColumn(),
+    createProfileFactoryNameColumn(),
   ]
 }
-

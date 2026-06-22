@@ -31,7 +31,6 @@ export interface Customer {
   name: string
   father_name: string
   village_id: number
-  factory_id?: number
   user_id?: string
   created_at: string
   updated_at: string
@@ -88,7 +87,6 @@ export interface Profile {
   user_id: string
   aadhar_number: string
   name: string
-  factory_id?: number
   created_at: string
   updated_at: string
 }

@@ -10,7 +10,6 @@ const baseCustomerSchema = z.object({
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
-  [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 })
 
 export const addCustomerSchema = baseCustomerSchema
@@ -39,7 +38,6 @@ export const editCustomerSchema = z.object({
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
-  [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 }).refine((data) => {
   const govtIdVal = data[EntityKey.GOVT_ID]
   const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
