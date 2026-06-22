@@ -129,43 +129,35 @@ export function createFactoryNameColumn<T>(resolveIds?: (row: T) => number[]): C
 }
 
 export function createProfileFactoryIdColumn<T>(): ColumnDef<T> {
-  return createFactoryIdColumn<T>((row) => {
-    const p = row as unknown as Profile
-    const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-    return activeAssignments
-      .filter((a) => Number(a.profile_id) === Number(p.id))
-      .map((a) => a.factory_id)
-  })
+  return createFactoryIdColumn<T>(resolveProfileFactoryIds)
 }
 
 export function createProfileFactoryNameColumn<T>(): ColumnDef<T> {
-  return createFactoryNameColumn<T>((row) => {
-    const p = row as unknown as Profile
-    const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
-    return activeAssignments
-      .filter((a) => Number(a.profile_id) === Number(p.id))
-      .map((a) => a.factory_id)
-  })
+  return createFactoryNameColumn<T>(resolveProfileFactoryIds)
 }
 
 export function createCustomerFactoryIdColumn<T>(): ColumnDef<T> {
-  return createFactoryIdColumn<T>((row) => {
-    const c = row as unknown as Customer
-    const activeAffiliations = useEntitiesStore.getState().entities[ProjectSlug.AFFILIATIONS] as Affiliation[] || []
-    return activeAffiliations
-      .filter((a) => Number(a.customer_id) === Number(c.id))
-      .map((a) => a.factory_id)
-  })
+  return createFactoryIdColumn<T>(resolveCustomerFactoryIds)
 }
 
 export function createCustomerFactoryNameColumn<T>(): ColumnDef<T> {
-  return createFactoryNameColumn<T>((row) => {
-    const c = row as unknown as Customer
-    const activeAffiliations = useEntitiesStore.getState().entities[ProjectSlug.AFFILIATIONS] as Affiliation[] || []
-    return activeAffiliations
-      .filter((a) => Number(a.customer_id) === Number(c.id))
-      .map((a) => a.factory_id)
-  })
+  return createFactoryNameColumn<T>(resolveCustomerFactoryIds)
+}
+
+function resolveProfileFactoryIds(row: unknown): number[] {
+  const p = row as Profile
+  const activeAssignments = useEntitiesStore.getState().entities[ProjectSlug.ASSIGNMENTS] as Assignment[] || []
+  return activeAssignments
+    .filter((a) => Number(a.profile_id) === Number(p.id))
+    .map((a) => a.factory_id)
+}
+
+function resolveCustomerFactoryIds(row: unknown): number[] {
+  const c = row as Customer
+  const activeAffiliations = useEntitiesStore.getState().entities[ProjectSlug.AFFILIATIONS] as Affiliation[] || []
+  return activeAffiliations
+    .filter((a) => Number(a.customer_id) === Number(c.id))
+    .map((a) => a.factory_id)
 }
 
 
