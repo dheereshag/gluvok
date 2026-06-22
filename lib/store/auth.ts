@@ -20,7 +20,6 @@ export interface RegisteredUser {
   name: string
   email: string
   password?: string
-  role: Role
 }
 
 interface AuthStore {
@@ -29,7 +28,7 @@ interface AuthStore {
   hydrated: boolean
   login: (email: string, password: string) => boolean
   logout: () => void
-  registerUser: (user: Omit<RegisteredUser, "role" | "id"> & { role?: Role }) => boolean
+  registerUser: (user: Omit<RegisteredUser, "id">) => boolean
   resetPassword: (email: string, newPassword: string) => boolean
   setHydrated: (state: boolean) => void
   resetAuth: () => void
@@ -40,7 +39,6 @@ const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
   name: u.email.split("@")[0],
   email: u.email,
   password: "password123",
-  role: u.role,
 }))
 
 function generateUUID(): string {
@@ -74,7 +72,7 @@ export const useAuthStore = create<AuthStore>()(
               name: found.name,
               email: found.email,
               avatar: "/avatars/shadcn.jpg",
-              role: profile?.role || found.role || Role.BASE,
+              role: profile?.role || Role.BASE,
               profile,
             },
           })
@@ -90,25 +88,37 @@ export const useAuthStore = create<AuthStore>()(
         if (users.some((u) => u.email.toLowerCase() === user.email.toLowerCase())) {
           return false
         }
-        const userWithRole: RegisteredUser = {
+        const userWithoutRole: RegisteredUser = {
           id: generateUUID(),
           name: user.name,
           email: user.email,
           password: user.password,
-          role: user.role || Role.BASE,
         }
-        const updatedUsers = [...users, userWithRole]
+        const updatedUsers = [...users, userWithoutRole]
+
+        const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
         const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-        const profile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(userWithRole.id).trim().toLowerCase())
+        const newProfile: Profile = {
+          id: activeProfiles.reduce((max, p) => p.id > max ? p.id : max, 0) + 1,
+          user_id: userWithoutRole.id,
+          name: user.name,
+          aadhar_number: "000000000000",
+          role: Role.BASE,
+          preferences: {},
+          created_at: getTimestamp(),
+          updated_at: getTimestamp(),
+        }
+        useEntitiesStore.getState().setEntities(ProjectSlug.PROFILES, [newProfile, ...activeProfiles])
+
         set({
           registeredUsers: updatedUsers,
           user: {
-            id: userWithRole.id,
-            name: userWithRole.name,
-            email: userWithRole.email,
+            id: userWithoutRole.id,
+            name: userWithoutRole.name,
+            email: userWithoutRole.email,
             avatar: "/avatars/shadcn.jpg",
-            role: profile?.role || userWithRole.role,
-            profile,
+            role: Role.BASE,
+            profile: newProfile,
           },
         })
         return true
@@ -133,7 +143,6 @@ export const useAuthStore = create<AuthStore>()(
             name: u.email.split("@")[0],
             email: u.email,
             password: "password123",
-            role: u.role,
           })),
         })
       },
