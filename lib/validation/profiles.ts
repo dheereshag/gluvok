@@ -1,8 +1,7 @@
 import * as z from "zod"
 import { useEntitiesStore, getField } from "@/lib/store"
-import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
-import { ColumnLabel } from "@/lib/constants/enums"
-import { integerIdSchema, nameSchema, uuidSchema } from "./helpers"
+import { ProjectSlug, EntityKey, Role, ColumnLabel } from "@/lib/constants/enums"
+import { nameSchema, uuidSchema } from "./helpers"
 
 const baseProfileSchema = z.object({
   [EntityKey.AADHAR_NUMBER]: z
@@ -14,6 +13,9 @@ const baseProfileSchema = z.object({
     ),
   [EntityKey.USER_ID]: uuidSchema(ColumnLabel.USER),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
+  [EntityKey.ROLE]: z.enum(Role, {
+    message: "Please select a valid role",
+  }),
 })
 
 export const addProfileSchema = baseProfileSchema
@@ -45,6 +47,9 @@ export const editProfileSchema = z.object({
     ),
   [EntityKey.USER_ID]: uuidSchema(ColumnLabel.USER),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
+  [EntityKey.ROLE]: z.nativeEnum(Role, {
+    message: "Please select a valid role",
+  }),
 }).refine((data) => {
   const aadharVal = data[EntityKey.AADHAR_NUMBER]
   const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []

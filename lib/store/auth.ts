@@ -74,7 +74,7 @@ export const useAuthStore = create<AuthStore>()(
               name: found.name,
               email: found.email,
               avatar: "/avatars/shadcn.jpg",
-              role: found.role || Role.BASE,
+              role: profile?.role || found.role || Role.BASE,
               profile,
             },
           })
@@ -107,7 +107,7 @@ export const useAuthStore = create<AuthStore>()(
             name: userWithRole.name,
             email: userWithRole.email,
             avatar: "/avatars/shadcn.jpg",
-            role: userWithRole.role,
+            role: profile?.role || userWithRole.role,
             profile,
           },
         })

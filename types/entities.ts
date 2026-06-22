@@ -87,6 +87,7 @@ export interface Profile {
   user_id: string
   aadhar_number: string
   name: string
+  role: Role
   created_at: string
   updated_at: string
 }

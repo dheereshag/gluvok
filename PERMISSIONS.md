@@ -8,16 +8,17 @@ Source: [lib/store/access.ts](lib/store/access.ts) (RBAC_MATRIX)
 
 | Entity (slug) | SUPER_ADMIN | ADMIN | MANAGER | OPERATOR | BASE |
 |---|---:|---:|---:|---:|---:|
-| Users (users) | R, W, D | - | - | - | - |
-| Profiles (profiles) | R, W, D | R, W, D | R, W | - | - |
-| Villages (villages) | R, W, D | R | R | R | - |
-| Factories (factories) | R, W, D | R, W, D | R | R | - |
-| Centers (centers) | R, W, D | R, W, D | R | R | - |
-| Commodities (commodities) | R, W, D | R | R | R | - |
-| Rates (rates) | R, W, D | R, W, D | R, W | R | - |
-| Customers (customers) | R, W, D | R, W, D | R, W | R, W | - |
+| Users (users) | R, W, D | R | R | R | R |
+| Profiles (profiles) | R, W, D | R, W, D | R, W | R | R |
+| Villages (villages) | R, W, D | R | R | R | R |
+| Factories (factories) | R, W, D | R, W, D | R | R | R |
+| Centers (centers) | R, W, D | R, W, D | R | R | R |
+| Commodities (commodities) | R, W, D | R | R | R | R |
+| Rates (rates) | R, W, D | R, W, D | R, W | R | R |
+| Customers (customers) | R, W, D | R, W, D | R, W | R, W | R |
 | Weighments (weighments) | R, W, D | R, W, D | R, W | R, W | R |
-| Assignments (assignments) | R, W, D | R, W, D | R | - | - |
+| Assignments (assignments) | R, W, D | R, W, D | R | R | R |
+
 
 Notes:
 - `Write` covers both Create and Update operations in the codebase (`write: boolean`).
