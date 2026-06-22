@@ -283,6 +283,3 @@ CREATE TRIGGER set_timestamp_affiliations
   BEFORE UPDATE ON public.affiliations
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
-
-
-
