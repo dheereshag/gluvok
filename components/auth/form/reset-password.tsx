@@ -42,19 +42,19 @@ export function ResetPasswordForm({
     },
   })
 
-  const onSubmit = (data: ResetPasswordInput) => {
+  const onSubmit = async (data: ResetPasswordInput) => {
     if (!email) {
       toast.error("Invalid reset link. Missing email address.")
       return
     }
 
-    const success = resetPassword(email, data.password)
+    const success = await resetPassword(email, data.password)
 
     if (success) {
       toast.success("Successfully reset your password!")
       router.push(AppRoutes.LOGIN)
     } else {
-      toast.error("Failed to reset password. Email might not be registered.")
+      toast.error("Failed to reset password. Please try again.")
     }
   }
 

@@ -32,6 +32,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     useAuthStore.getState().setHydrated(true)
     useEntitiesStore.getState().setHydrated(true)
+    const unsubscribe = useAuthStore.getState().initAuth()
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {

@@ -44,8 +44,8 @@ export function SignupForm({
     },
   })
 
-  const onSubmit = (data: SignupInput) => {
-    const success = registerUser({
+  const onSubmit = async (data: SignupInput) => {
+    const success = await registerUser({
       name: data.name,
       email: data.email,
       password: data.password,
@@ -56,7 +56,7 @@ export function SignupForm({
       router.push(AppRoutes.HOME)
       router.refresh()
     } else {
-      toast.error("User with this email already exists.")
+      toast.error("Failed to create account. User might already exist.")
     }
   }
 

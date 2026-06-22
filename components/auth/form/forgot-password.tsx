@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FieldGroup, FieldDescription } from "@/components/ui/field"
 import { AuthCard, AuthInput } from "../common"
-import { useAuthStore } from "@/lib/store"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
@@ -26,7 +25,6 @@ export function ForgotPasswordForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
-  const registeredUsers = useAuthStore((state) => state.registeredUsers)
 
   const form = useForm<ForgotPasswordInput>({
     resolver: standardSchemaResolver(forgotPasswordSchema),
@@ -35,22 +33,22 @@ export function ForgotPasswordForm({
     },
   })
 
-  const onSubmit = (data: ForgotPasswordInput) => {
-    const userExists = registeredUsers.some(
-      (u) => u.email.toLowerCase() === data.email.toLowerCase()
-    )
+  const onSubmit = async (data: ForgotPasswordInput) => {
+    // Dynamically import supabase to keep it simple and clean
+    const { supabase } = await import("@/lib/supabase")
 
-    if (!userExists) {
-      form.setError("email", {
-        type: "manual",
-        message: "This email is not registered.",
-      })
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${window.location.origin}${AppRoutes.RESET_PASSWORD}`,
+    })
+
+    if (error) {
+      toast.error(error.message)
       return
     }
 
     toast.success("Password reset link sent! Check your email inbox.")
     
-    // Simulate clicking the email link after a brief delay
+    // Simulate clicking the email link after a brief delay for testing convenience
     setTimeout(() => {
       router.push(`${AppRoutes.RESET_PASSWORD}?email=${encodeURIComponent(data.email)}`)
     }, 1500)

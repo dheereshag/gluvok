@@ -37,8 +37,8 @@ export function LoginForm({
     },
   })
 
-  const onSubmit = (data: LoginInput) => {
-    const success = login(data.email, data.password)
+  const onSubmit = async (data: LoginInput) => {
+    const success = await login(data.email, data.password)
 
     if (success) {
       toast.success("Successfully logged in!")

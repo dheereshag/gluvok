@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { users as seedUsers } from "@/data"
+import { supabase } from "@/lib/supabase"
 
 import { Role, ProjectSlug } from "@/lib/constants/enums"
 import { type Profile } from "@/types"
@@ -26,10 +27,12 @@ interface AuthStore {
   user: AuthUser | null
   registeredUsers: RegisteredUser[]
   hydrated: boolean
-  login: (email: string, password: string) => boolean
-  logout: () => void
-  registerUser: (user: Omit<RegisteredUser, "id">) => boolean
-  resetPassword: (email: string, newPassword: string) => boolean
+  initialized: boolean
+  initAuth: () => () => void
+  login: (email: string, password: string) => Promise<boolean>
+  logout: () => Promise<void>
+  registerUser: (user: Omit<RegisteredUser, "id">) => Promise<boolean>
+  resetPassword: (email: string, newPassword: string) => Promise<boolean>
   setHydrated: (state: boolean) => void
   resetAuth: () => void
 }
@@ -41,101 +44,105 @@ const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
   password: "password123",
 }))
 
-function generateUUID(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID()
-  }
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0
-    const v = c === "x" ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       user: null,
       registeredUsers: DEFAULT_USERS,
       hydrated: false,
-      login: (email, password) => {
-        const users = get().registeredUsers
-        const found = users.find(
-          (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-        )
-        if (found) {
-          const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-          const profile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(found.id).trim().toLowerCase())
-          set({
-            user: {
-              id: found.id,
-              name: found.name,
-              email: found.email,
-              avatar: "/avatars/shadcn.jpg",
-              role: profile?.role || Role.BASE,
-              profile,
-            },
-          })
-          return true
+      initialized: false,
+      initAuth: () => {
+        if (get().initialized) {
+          return () => {}
         }
-        return false
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+          if (session?.user) {
+            const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
+            let profile = activeProfiles.find(
+              (p) => String(p.user_id).trim().toLowerCase() === String(session.user.id).trim().toLowerCase()
+            )
+
+            if (!profile) {
+              const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
+              const nextId = activeProfiles.reduce((max, p) => p.id > max ? p.id : max, 0) + 1
+              profile = {
+                id: nextId,
+                user_id: session.user.id,
+                name: session.user.user_metadata?.name || session.user.email?.split("@")[0] || "User",
+                aadhar_number: "000000000000",
+                role: Role.BASE,
+                preferences: {},
+                created_at: getTimestamp(),
+                updated_at: getTimestamp(),
+              }
+              useEntitiesStore.getState().setEntities(ProjectSlug.PROFILES, [profile, ...activeProfiles])
+            }
+
+            set({
+              user: {
+                id: session.user.id,
+                name: profile.name,
+                email: session.user.email || "",
+                avatar: "/avatars/shadcn.jpg",
+                role: profile.role,
+                profile,
+              }
+            })
+          } else {
+            set({ user: null })
+          }
+        })
+
+        set({ initialized: true })
+        return () => {
+          subscription.unsubscribe()
+        }
       },
-      logout: () => {
-        set({ user: null })
-      },
-      registerUser: (user) => {
-        const users = get().registeredUsers
-        if (users.some((u) => u.email.toLowerCase() === user.email.toLowerCase())) {
+      login: async (email, password) => {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        if (error) {
           return false
         }
-        const userWithoutRole: RegisteredUser = {
-          id: generateUUID(),
-          name: user.name,
-          email: user.email,
-          password: user.password,
-        }
-        const updatedUsers = [...users, userWithoutRole]
-
-        const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
-        const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-        const newProfile: Profile = {
-          id: activeProfiles.reduce((max, p) => p.id > max ? p.id : max, 0) + 1,
-          user_id: userWithoutRole.id,
-          name: user.name,
-          aadhar_number: "000000000000",
-          role: Role.BASE,
-          preferences: {},
-          created_at: getTimestamp(),
-          updated_at: getTimestamp(),
-        }
-        useEntitiesStore.getState().setEntities(ProjectSlug.PROFILES, [newProfile, ...activeProfiles])
-
-        set({
-          registeredUsers: updatedUsers,
-          user: {
-            id: userWithoutRole.id,
-            name: userWithoutRole.name,
-            email: userWithoutRole.email,
-            avatar: "/avatars/shadcn.jpg",
-            role: Role.BASE,
-            profile: newProfile,
-          },
-        })
         return true
       },
-      resetPassword: (email, newPassword) => {
-        const users = get().registeredUsers
-        const index = users.findIndex((u) => u.email.toLowerCase() === email.toLowerCase())
-        if (index === -1) {
+      logout: async () => {
+        await supabase.auth.signOut()
+        set({ user: null })
+      },
+      registerUser: async (user) => {
+        if (!user.password) {
           return false
         }
-        const updatedUsers = [...users]
-        updatedUsers[index] = { ...updatedUsers[index], password: newPassword }
-        set({ registeredUsers: updatedUsers })
+        const { data, error } = await supabase.auth.signUp({
+          email: user.email,
+          password: user.password,
+          options: {
+            data: {
+              name: user.name,
+            }
+          }
+        })
+        if (error || !data.user) {
+          return false
+        }
+        return true
+      },
+      resetPassword: async (email, newPassword) => {
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword,
+        })
+        if (error) {
+          return false
+        }
         return true
       },
       setHydrated: (state) => set({ hydrated: state }),
       resetAuth: () => {
+        supabase.auth.signOut()
         set({
           user: null,
           registeredUsers: seedUsers.map((u) => ({
@@ -153,4 +160,3 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 )
-

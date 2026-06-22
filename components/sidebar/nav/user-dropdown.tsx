@@ -23,8 +23,8 @@ export function NavUserDropdown({ user, isMobile }: NavUserDropdownProps) {
   const router = useRouter()
   const logout = useAuthStore((state) => state.logout)
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     router.push(AppRoutes.LOGIN)
     router.refresh()
   }
