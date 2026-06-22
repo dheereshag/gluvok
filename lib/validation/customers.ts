@@ -8,7 +8,7 @@ const baseCustomerSchema = z.object({
   [EntityKey.GOVT_ID]: integerIdSchema(ColumnLabel.GOVT_ID),
   [EntityKey.USER_ID]: z.string().uuid(`${ColumnLabel.USER} must be a valid User selection`).optional().or(z.literal("")).transform((v) => v === "" ? undefined : v),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
-  [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
+  [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
 })
 
@@ -36,7 +36,7 @@ export const editCustomerSchema = z.object({
   [EntityKey.GOVT_ID]: integerIdSchema(ColumnLabel.GOVT_ID),
   [EntityKey.USER_ID]: z.string().uuid(`${ColumnLabel.USER} must be a valid User selection`).optional().or(z.literal("")).transform((v) => v === "" ? undefined : v),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
-  [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME).optional().or(z.literal("")),
+  [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
 }).refine((data) => {
   const govtIdVal = data[EntityKey.GOVT_ID]

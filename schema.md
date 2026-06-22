@@ -66,7 +66,7 @@ Represents workers/customers identified by government ID. No auth login required
 | `id` | `SERIAL` | Primary Key | Unique customer ID. |
 | `govt_id` | `INTEGER` | Unique, Not Null | Government-issued ID, unique per customer. |
 | `name` | `VARCHAR(255)` | Not Null | Full name of the customer. |
-| `father_name` | `VARCHAR(255)` | Nullable | Father's full name (additional identifier). |
+| `father_name` | `VARCHAR(255)` | Not Null | Father's full name (additional identifier). |
 | `village_id` | `INTEGER` | FK → `villages.id`, Not Null | Registered home village. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |

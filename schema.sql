@@ -141,7 +141,7 @@ CREATE TABLE public.customers (
   id SERIAL PRIMARY KEY,
   govt_id INTEGER NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
-  father_name VARCHAR(255),
+  father_name VARCHAR(255) NOT NULL,
   village_id INTEGER NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -285,43 +285,4 @@ CREATE TRIGGER set_timestamp_affiliations
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- 4. ROW LEVEL SECURITY (RLS) & SUPABASE AUTH TRIGGERS
--- ----------------------------------------------------
--- Enable RLS on tables for Supabase integration
-ALTER TABLE public.villages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.factories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.centers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.commodities ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.rates ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.weighments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.affiliations ENABLE ROW LEVEL SECURITY;
 
--- Note: Define appropriate SELECT, INSERT, UPDATE, DELETE policies in Supabase dashboard 
--- or using SQL editor based on user roles (e.g. auth.uid() matching user_id in profiles).
-
--- Example policy for Profiles table:
--- CREATE POLICY "Allow users to view all profiles" ON public.profiles FOR SELECT USING (true);
--- CREATE POLICY "Allow users to update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = user_id);
-
--- Optional: Automated trigger to create a public profile when a new user signs up in auth.users
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS trigger AS $$
-BEGIN
-  INSERT INTO public.profiles (user_id, name, aadhar_number, factory_id)
-  VALUES (
-    new.id,
-    COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
-    COALESCE(new.raw_user_meta_data->>'aadhar_number', '000000000000'), -- Fallback placeholder
-    NULL
-  );
-  RETURN new;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Trigger to execute handler when a record is inserted in auth.users
--- CREATE TRIGGER on_auth_user_created
---   AFTER INSERT ON auth.users
---   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
