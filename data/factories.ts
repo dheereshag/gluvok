@@ -15,11 +15,4 @@ export const factories: Factory[] = [
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
-  {
-    id: 3,
-    name: "Jaipur Commodity Hub",
-    village_id: 3,
-    created_at: "2026-06-07 11:50:14.658144",
-    updated_at: "2026-06-07 11:50:14.658144",
-  },
 ]

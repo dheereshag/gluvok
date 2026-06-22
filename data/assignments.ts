@@ -21,14 +21,4 @@ export const assignments: Assignment[] = [
   { id: 17, factory_id: 2, profile_id: 15, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // operator2b
   { id: 18, factory_id: 2, profile_id: 16, created_at: "2026-06-07 11:52:00", updated_at: "2026-06-07 11:52:00" }, // base2a
   { id: 19, factory_id: 2, profile_id: 17, created_at: "2026-06-07 11:52:00", updated_at: "2026-06-07 11:52:00" }, // base2b
-
-  // Factory 3 Users (Jaipur Commodity Hub)
-  { id: 20, factory_id: 3, profile_id: 18, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // admin3a
-  { id: 21, factory_id: 3, profile_id: 19, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // admin3b
-  { id: 22, factory_id: 3, profile_id: 20, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // manager3a
-  { id: 23, factory_id: 3, profile_id: 21, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // manager3b
-  { id: 24, factory_id: 3, profile_id: 22, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // operator3a
-  { id: 25, factory_id: 3, profile_id: 23, created_at: "2026-06-07 11:50:14", updated_at: "2026-06-07 11:50:14" }, // operator3b
-  { id: 26, factory_id: 3, profile_id: 24, created_at: "2026-06-07 11:52:00", updated_at: "2026-06-07 11:52:00" }, // base3a
-  { id: 27, factory_id: 3, profile_id: 25, created_at: "2026-06-07 11:52:00", updated_at: "2026-06-07 11:52:00" }, // base3b
 ]

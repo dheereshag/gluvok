@@ -55,18 +55,3 @@ INSERT INTO auth.users (
 ('206c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'base2a@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "base"}'::jsonb, '{"name": "base2a"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
 ('216c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'base2b@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "base"}'::jsonb, '{"name": "base2b"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
 ON CONFLICT (id) DO NOTHING;
-
--- 4. Factory 3 Users
-INSERT INTO auth.users (
-  id, instance_id, email, encrypted_password, email_confirmed_at,
-  raw_app_meta_data, raw_user_meta_data, created_at, updated_at, aud, role
-) VALUES
-('256c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'admin3a@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "admin"}'::jsonb, '{"name": "admin3a"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('3b6c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'admin3b@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "admin"}'::jsonb, '{"name": "admin3b"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('3c6c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'manager3a@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "manager"}'::jsonb, '{"name": "manager3a"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('3d6c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'manager3b@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "manager"}'::jsonb, '{"name": "manager3b"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('3e6c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'operator3a@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "operator"}'::jsonb, '{"name": "operator3a"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('3f6c8f39-b406-4f2d-bca2-304b5645b342', '00000000-0000-0000-0000-000000000000', 'operator3b@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "operator"}'::jsonb, '{"name": "operator3b"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('306c8f39-b406-4f2d-bca2-304b5645b343', '00000000-0000-0000-0000-000000000000', 'base3a@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "base"}'::jsonb, '{"name": "base3a"}'::jsonb, now(), now(), 'authenticated', 'authenticated'),
-('316c8f39-b406-4f2d-bca2-304b5645b343', '00000000-0000-0000-0000-000000000000', 'base3b@example.com', crypt('password123', gen_salt('bf')), now(), '{"provider": "email", "providers": ["email"], "role": "base"}'::jsonb, '{"name": "base3b"}'::jsonb, now(), now(), 'authenticated', 'authenticated')
-ON CONFLICT (id) DO NOTHING;

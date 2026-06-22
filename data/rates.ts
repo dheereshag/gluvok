@@ -25,7 +25,7 @@ export const rates: Rate[] = [
     commodity_id: 3, // Corn
     unit_price: "21500.00",
     unit: Unit.Q,
-    factory_id: 3,
+    factory_id: 2,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
@@ -34,7 +34,7 @@ export const rates: Rate[] = [
     commodity_id: 4, // Crude Oil
     unit_price: "72000.00",
     unit: Unit.GAL,
-    factory_id: 3,
+    factory_id: 2,
     created_at: "2026-06-07 11:50:14.658144",
     updated_at: "2026-06-07 11:50:14.658144",
   },
