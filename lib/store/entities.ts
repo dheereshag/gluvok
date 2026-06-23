@@ -6,15 +6,8 @@ import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { ProjectSlug, Role } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
-import {
-  fetchAssignments,
-  fetchAffiliations,
-  fetchProfiles,
-  fetchEntityList,
-  insertRow,
-  updateRow,
-  deleteRow,
-} from "@/lib/services"
+import { fetchAssignments, fetchAffiliations, fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
+import { getPermissions } from "./access"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>
@@ -27,6 +20,8 @@ interface EntitiesState {
   resetAllEntities: () => void
   loadEntities: (slug: ProjectSlug) => Promise<void>
   updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => Promise<void>
+  weighmentsUpdatedTrigger: number
+  triggerWeighmentsUpdate: () => void
 }
 
 export const useEntitiesStore = create<EntitiesState>((set, get) => ({
@@ -34,6 +29,8 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   hydrated: false,
   setEntities: (slug, data) => set((state) => ({ entities: { ...state.entities, [slug]: data } })),
   setHydrated: (state) => set({ hydrated: state }),
+  weighmentsUpdatedTrigger: 0,
+  triggerWeighmentsUpdate: () => set((state) => ({ weighmentsUpdatedTrigger: state.weighmentsUpdatedTrigger + 1 })),
 
   loadEntities: async (slug) => {
     try {
@@ -63,6 +60,16 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
         }
       }
 
+      if (slug === ProjectSlug.WEIGHMENTS) {
+        set((state) => ({
+          entities: {
+            ...state.entities,
+            [slug]: [],
+          },
+        }))
+        return
+      }
+
       const data = await fetchEntityList(slug)
       set((state) => ({
         entities: {
@@ -83,6 +90,10 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       const nextEntities = { ...state.entities, [slug]: [enrichedRecord, ...currentList] }
       return { entities: nextEntities }
     })
+
+    if (slug === ProjectSlug.WEIGHMENTS) {
+      get().triggerWeighmentsUpdate()
+    }
 
     // Auto-assign admin/creator to new factory
     if (slug === ProjectSlug.FACTORIES) {
@@ -123,6 +134,10 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       )
       return { entities: { ...state.entities, [slug]: updatedList } }
     })
+
+    if (slug === ProjectSlug.WEIGHMENTS) {
+      get().triggerWeighmentsUpdate()
+    }
   },
 
   deleteEntity: async (slug, idKey, id) => {
@@ -131,6 +146,10 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       const updatedList = (state.entities[slug] || []).filter((item) => String(getField(item, idKey)) !== String(id))
       return { entities: { ...state.entities, [slug]: updatedList } }
     })
+
+    if (slug === ProjectSlug.WEIGHMENTS) {
+      get().triggerWeighmentsUpdate()
+    }
   },
 
   resetAllEntities: () => {
@@ -148,33 +167,53 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       [projectSlug]: visibleColumns,
     }
 
-    const updatedProfile = await updateRow(ProjectSlug.PROFILES, profileId, {
+    const updatedProfileLocal = {
+      ...targetProfile,
       preferences: updatedPrefs,
-    })
+    }
 
-    set((state) => {
-      const profiles = (state.entities[ProjectSlug.PROFILES] || []) as Profile[]
-      const nextProfiles = profiles.map((p) =>
-        Number(p.id) === Number(profileId) ? (updatedProfile as Profile) : p
-      )
+    const updateLocalState = (profileData: Profile) => {
+      set((state) => {
+        const profiles = (state.entities[ProjectSlug.PROFILES] || []) as Profile[]
+        const nextProfiles = profiles.map((p) =>
+          Number(p.id) === Number(profileId) ? profileData : p
+        )
 
-      const currentUser = useAuthStore.getState().user
-      if (currentUser && currentUser.profile && Number(currentUser.profile.id) === Number(profileId)) {
-        useAuthStore.setState({
-          user: {
-            ...currentUser,
-            profile: updatedProfile as Profile,
+        const currentUser = useAuthStore.getState().user
+        if (currentUser && currentUser.profile && Number(currentUser.profile.id) === Number(profileId)) {
+          useAuthStore.setState({
+            user: {
+              ...currentUser,
+              profile: profileData,
+            },
+          })
+        }
+
+        return {
+          entities: {
+            ...state.entities,
+            [ProjectSlug.PROFILES]: nextProfiles,
           },
-        })
-      }
+        }
+      })
+    }
 
-      return {
-        entities: {
-          ...state.entities,
-          [ProjectSlug.PROFILES]: nextProfiles,
-        },
+    const currentUser = useAuthStore.getState().user
+    const canWriteProfiles = currentUser && getPermissions(currentUser.role, ProjectSlug.PROFILES).write
+
+    if (canWriteProfiles) {
+      try {
+        const updatedProfile = await updateRow(ProjectSlug.PROFILES, profileId, {
+          preferences: updatedPrefs,
+        })
+        updateLocalState(updatedProfile as Profile)
+      } catch (err) {
+        console.error("Failed to update column preferences in database:", err)
+        updateLocalState(updatedProfileLocal as Profile)
       }
-    })
+    } else {
+      updateLocalState(updatedProfileLocal as Profile)
+    }
   },
 }))
 

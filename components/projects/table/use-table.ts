@@ -6,6 +6,7 @@ import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
 import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
+import { fetchWeighmentsPaginated } from "@/lib/services"
 
 interface UseProjectTableProps {
   projectSlug: string
@@ -59,26 +60,81 @@ export function useProjectTable({
   const [prevSlug, setPrevSlug] = React.useState(projectSlug)
   const [prevProfileId, setPrevProfileId] = React.useState(profile?.id)
 
+  const [weighmentsData, setWeighmentsData] = React.useState<EntityRecord[]>([])
+  const [weighmentsCount, setWeighmentsCount] = React.useState(0)
+  const [weighmentsLoading, setWeighmentsLoading] = React.useState(false)
+
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  const isWeighments = projectSlug === ProjectSlug.WEIGHMENTS
+  const weighmentsUpdatedTrigger = useEntitiesStore((state) => state.weighmentsUpdatedTrigger)
+
   if (projectSlug !== prevSlug || profile?.id !== prevProfileId) {
     setPrevSlug(projectSlug)
     setPrevProfileId(profile?.id)
     setColumnVisibility(initialColumnVisibility)
+    setPagination({ pageIndex: 0, pageSize: 10 })
   }
 
+  React.useEffect(() => {
+    if (!isWeighments) return
+
+    let cancelled = false
+    async function load() {
+      try {
+        setWeighmentsLoading(true)
+        const result = await fetchWeighmentsPaginated({
+          page: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+          sortColumn: sorting[0]?.id,
+          sortDesc: sorting[0]?.desc,
+          search: globalFilter,
+        })
+        if (!cancelled) {
+          setWeighmentsData(result.data)
+          setWeighmentsCount(result.count)
+        }
+      } catch (err) {
+        console.error("Failed to load paginated weighments:", err)
+      } finally {
+        if (!cancelled) setWeighmentsLoading(false)
+      }
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [isWeighments, pagination, sorting, globalFilter, weighmentsUpdatedTrigger])
+
   const table = useReactTable({
-    data: tableData,
+    data: isWeighments ? weighmentsData : tableData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "includesString",
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: isWeighments ? undefined : getPaginationRowModel(),
+    getSortedRowModel: isWeighments ? undefined : getSortedRowModel(),
+    getFilteredRowModel: isWeighments ? undefined : getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: { sorting, columnFilters, columnVisibility, rowSelection, globalFilter },
+    onPaginationChange: setPagination,
+    manualPagination: isWeighments,
+    manualSorting: isWeighments,
+    manualFiltering: isWeighments,
+    pageCount: isWeighments ? Math.ceil(weighmentsCount / pagination.pageSize) : undefined,
+    state: { 
+      sorting, 
+      columnFilters, 
+      columnVisibility, 
+      rowSelection, 
+      globalFilter,
+      pagination: isWeighments ? pagination : undefined,
+    },
   })
 
   React.useEffect(() => {
@@ -116,12 +172,19 @@ export function useProjectTable({
   }, [projectSlug])
 
   const handleReload = React.useCallback(() => {
-    window.location.reload()
-  }, [])
+    if (isWeighments) {
+      setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
+      setSorting([])
+      setGlobalFilter("")
+      useEntitiesStore.getState().triggerWeighmentsUpdate()
+    } else {
+      window.location.reload()
+    }
+  }, [isWeighments, pagination.pageSize])
 
   return {
     table,
-    isLoading,
+    isLoading: isWeighments ? weighmentsLoading : isLoading,
     filterKey,
     permissions,
     handleReload,

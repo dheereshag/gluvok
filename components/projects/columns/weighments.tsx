@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Power, Image, Package, Building, Factory, Fingerprint, User, ShieldCheck, Users } from "lucide-react"
+import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { cn } from "@/lib/utils"
@@ -28,8 +28,6 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     createIdColumn("rate_id", ColumnLabel.RATE_ID, Package),
     createIdColumn("center_id", ColumnLabel.CENTER_ID, Building),
     createTextColumn("center_name", ColumnLabel.CENTER_NAME, Building),
-    createIdColumn("factory_id", ColumnLabel.FACTORY_ID, Factory),
-    createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory),
     createTextColumn("profile_aadhar", ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
     createTextColumn("profile_name", ColumnLabel.PROFILE_NAME, User),
     createTextColumn("customer_govt_id", ColumnLabel.GOVT_ID, ShieldCheck, "font-mono text-muted-foreground text-xs"),

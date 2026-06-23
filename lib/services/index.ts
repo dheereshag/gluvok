@@ -34,9 +34,7 @@ export function slugToTable(slug: ProjectSlug | string): string {
 export async function fetchCenters(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("centers").select(`
     *,
-    factory:factories(id, name,
-      village:villages(id, name)
-    )
+    factory:factories(id, name)
   `)
 
   if (id !== undefined) {
@@ -49,8 +47,6 @@ export async function fetchCenters(id?: number): Promise<EntityRecord[]> {
   return (data || []).map((item: any) => ({
     ...item,
     factory_name: item.factory?.name,
-    factory_village_id: item.factory?.village?.id,
-    factory_village_name: item.factory?.village?.name,
   }))
 }
 
@@ -117,11 +113,7 @@ export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
 export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("weighments").select(`
     *,
-    center:centers(id, name,
-      factory:factories(id, name,
-        village:villages(id, name)
-      )
-    ),
+    center:centers(id, name),
     profile:profiles(id, name, aadhar_number),
     customer:customers(id, name, govt_id),
     rate:rates(id, unit_price, unit,
@@ -139,10 +131,6 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
   return (data || []).map((item: any) => ({
     ...item,
     center_name: item.center?.name,
-    factory_id: item.center?.factory?.id,
-    factory_name: item.center?.factory?.name,
-    village_id: item.center?.factory?.village?.id,
-    village_name: item.center?.factory?.village?.name,
     profile_name: item.profile?.name,
     profile_aadhar: item.profile?.aadhar_number,
     customer_name: item.customer?.name,
@@ -152,6 +140,100 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
     unit_price: item.rate?.unit_price,
     unit: item.rate?.unit,
   }))
+}
+
+export async function fetchWeighmentsPaginated(params: {
+  page: number
+  pageSize: number
+  sortColumn?: string
+  sortDesc?: boolean
+  search?: string
+}): Promise<{ data: EntityRecord[]; count: number }> {
+  const { page, pageSize, sortColumn, sortDesc, search } = params
+  const from = page * pageSize
+  const to = from + pageSize - 1
+
+  const { useAuthStore } = await import("@/lib/store/auth")
+  const { Role } = await import("@/lib/constants/enums")
+
+  const currentUser = useAuthStore.getState().user
+  let centerIds: number[] = []
+
+  if (currentUser && currentUser.role !== Role.SUPER_ADMIN && currentUser.profile) {
+    const profileId = currentUser.profile.id
+    const { data: assignments, error: assignmentsError } = await supabase
+      .from("assignments")
+      .select("factory_id")
+      .eq("profile_id", profileId)
+
+    if (assignmentsError) throw new Error(assignmentsError.message)
+    const factoryIds = (assignments || []).map((a: any) => a.factory_id)
+
+    if (factoryIds.length > 0) {
+      const { data: centers, error: centersError } = await supabase
+        .from("centers")
+        .select("id")
+        .in("factory_id", factoryIds)
+
+      if (centersError) throw new Error(centersError.message)
+      centerIds = (centers || []).map((c: any) => c.id)
+    }
+  }
+
+  let query = supabase.from("weighments").select(`
+    *,
+    center:centers(id, name),
+    profile:profiles(id, name, aadhar_number),
+    customer:customers(id, name, govt_id),
+    rate:rates(id, unit_price, unit,
+      commodity:commodities(id, name)
+    )
+  `, { count: "exact" })
+
+  if (currentUser && currentUser.role !== Role.SUPER_ADMIN) {
+    if (centerIds.length === 0) {
+      return { data: [], count: 0 }
+    }
+    query = query.in("center_id", centerIds)
+  }
+
+  if (search) {
+    query = query.ilike("vehicle_number", `%${search}%`)
+  }
+
+  const sortMap: Record<string, string> = {
+    vehicle_number: "vehicle_number",
+    weight: "weight",
+    center_name: "center_id",
+    profile_name: "profile_id",
+    customer_name: "customer_id",
+    created_at: "created_at",
+  }
+
+  const mappedSortColumn = sortColumn ? sortMap[sortColumn] || sortColumn : "created_at"
+  query = query.order(mappedSortColumn, { ascending: !sortDesc })
+  query = query.range(from, to)
+
+  const { data, count, error } = await query
+  if (error) throw new Error(error.message)
+
+  const enrichedData = (data || []).map((item: any) => ({
+    ...item,
+    center_name: item.center?.name,
+    profile_name: item.profile?.name,
+    profile_aadhar: item.profile?.aadhar_number,
+    customer_name: item.customer?.name,
+    customer_govt_id: item.customer?.govt_id,
+    commodity_id: item.rate?.commodity?.id,
+    commodity_name: item.rate?.commodity?.name,
+    unit_price: item.rate?.unit_price,
+    unit: item.rate?.unit,
+  }))
+
+  return {
+    data: enrichedData,
+    count: count || 0,
+  }
 }
 
 export async function fetchFactories(id?: number): Promise<EntityRecord[]> {

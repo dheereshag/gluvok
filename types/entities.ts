@@ -8,8 +8,6 @@ export interface Center {
   updated_at: string
   // Flattened join fields
   factory_name?: string
-  factory_village_id?: number | null
-  factory_village_name?: string
 }
 
 export interface Commodity {
@@ -101,10 +99,6 @@ export interface Weighment {
   updated_at: string
   // Flattened join fields
   center_name?: string
-  factory_id?: number
-  factory_name?: string
-  village_id?: number
-  village_name?: string
   profile_name?: string
   profile_aadhar?: string
   customer_name?: string

@@ -18,13 +18,14 @@ const ALL_PAGE_SIZES = [...SMALL_SIZES, ...LARGE_SIZES]
 export function DataTablePaginationPageSize<TData>({ table }: { table: Table<TData> }) {
   const pageSize = table.getState().pagination.pageSize
   const totalRows = table.getCoreRowModel().rows.length
+  const isManual = !!table.options.manualPagination
 
   // Only show sizes strictly less than totalRows
-  const smallSizes = SMALL_SIZES.filter((s) => s <= totalRows)
-  const largeSizes = LARGE_SIZES.filter((s) => s <= totalRows)
+  const smallSizes = isManual ? SMALL_SIZES : SMALL_SIZES.filter((s) => s <= totalRows)
+  const largeSizes = isManual ? LARGE_SIZES : LARGE_SIZES.filter((s) => s <= totalRows)
 
   // "All" option — the total itself, only if not already a standard size
-  const allOption = ALL_PAGE_SIZES.includes(totalRows) ? null : totalRows
+  const allOption = isManual ? null : (ALL_PAGE_SIZES.includes(totalRows) ? null : totalRows)
 
   const hasSmall = smallSizes.length > 0
   const hasLarge = largeSizes.length > 0
