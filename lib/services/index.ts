@@ -291,25 +291,125 @@ export async function fetchEntityListPaginated(
 
   if (search) {
     switch (slug) {
-      case ProjectSlug.WEIGHMENTS:
-        query = query.ilike("vehicle_number", `%${search}%`)
+      case ProjectSlug.CENTERS: {
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        if (factoryIds.length > 0) {
+          query = query.or(`name.ilike.%${search}%,factory_id.in.(${factoryIds.join(",")})`)
+        } else {
+          query = query.ilike("name", `%${search}%`)
+        }
         break
+      }
       case ProjectSlug.RATES: {
         const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
         const commodityIds = (commodities || []).map((c: any) => c.id)
-        query = query.in("commodity_id", commodityIds)
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        
+        const orConditions: string[] = [`unit.ilike.%${search}%`]
+        if (commodityIds.length > 0) orConditions.push(`commodity_id.in.(${commodityIds.join(",")})`)
+        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
+        query = query.or(orConditions.join(","))
+        break
+      }
+      case ProjectSlug.CUSTOMERS: {
+        const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
+        const villageIds = (villages || []).map((v: any) => v.id)
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        
+        let customerIdsFromFactories: number[] = []
+        if (factoryIds.length > 0) {
+          const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", factoryIds)
+          customerIdsFromFactories = (affiliations || []).map((a: any) => a.customer_id)
+        }
+
+        const orConditions: string[] = [
+          `name.ilike.%${search}%`,
+          `father_name.ilike.%${search}%`
+        ]
+        if (villageIds.length > 0) orConditions.push(`village_id.in.(${villageIds.join(",")})`)
+        if (customerIdsFromFactories.length > 0) orConditions.push(`id.in.(${customerIdsFromFactories.join(",")})`)
+        query = query.or(orConditions.join(","))
+        break
+      }
+      case ProjectSlug.WEIGHMENTS: {
+        const { data: centers } = await supabase.from("centers").select("id").ilike("name", `%${search}%`)
+        const centerIds = (centers || []).map((c: any) => c.id)
+        const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
+        const profileIds = (profiles || []).map((p: any) => p.id)
+        const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
+        const customerIds = (customers || []).map((c: any) => c.id)
+
+        const orConditions: string[] = [`vehicle_number.ilike.%${search}%`]
+        if (centerIds.length > 0) orConditions.push(`center_id.in.(${centerIds.join(",")})`)
+        if (profileIds.length > 0) orConditions.push(`profile_id.in.(${profileIds.join(",")})`)
+        if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
+        query = query.or(orConditions.join(","))
+        break
+      }
+      case ProjectSlug.FACTORIES: {
+        const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
+        const villageIds = (villages || []).map((v: any) => v.id)
+        if (villageIds.length > 0) {
+          query = query.or(`name.ilike.%${search}%,village_id.in.(${villageIds.join(",")})`)
+        } else {
+          query = query.ilike("name", `%${search}%`)
+        }
+        break
+      }
+      case ProjectSlug.PROFILES: {
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        let profileIdsFromFactories: number[] = []
+        if (factoryIds.length > 0) {
+          const { data: assignments } = await supabase.from("assignments").select("profile_id").in("factory_id", factoryIds)
+          profileIdsFromFactories = (assignments || []).map((a: any) => a.profile_id)
+        }
+
+        const orConditions: string[] = [
+          `name.ilike.%${search}%`,
+          `aadhar_number.ilike.%${search}%`
+        ]
+        if (profileIdsFromFactories.length > 0) orConditions.push(`id.in.(${profileIdsFromFactories.join(",")})`)
+        query = query.or(orConditions.join(","))
         break
       }
       case ProjectSlug.ASSIGNMENTS: {
         const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
         const profileIds = (profiles || []).map((p: any) => p.id)
-        query = query.in("profile_id", profileIds)
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        
+        const orConditions: string[] = []
+        if (profileIds.length > 0) orConditions.push(`profile_id.in.(${profileIds.join(",")})`)
+        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
+        if (orConditions.length > 0) {
+          query = query.or(orConditions.join(","))
+        } else {
+          return { data: [], count: 0 }
+        }
         break
       }
       case ProjectSlug.AFFILIATIONS: {
         const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
         const customerIds = (customers || []).map((c: any) => c.id)
-        query = query.in("customer_id", customerIds)
+        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+        const factoryIds = (factories || []).map((f: any) => f.id)
+        
+        const orConditions: string[] = []
+        if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
+        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
+        if (orConditions.length > 0) {
+          query = query.or(orConditions.join(","))
+        } else {
+          return { data: [], count: 0 }
+        }
+        break
+      }
+      case ProjectSlug.VILLAGES: {
+        query = query.or(`name.ilike.%${search}%,state.ilike.%${search}%`)
         break
       }
       default:
