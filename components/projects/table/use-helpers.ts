@@ -5,7 +5,7 @@ import { type EntityRecord } from "@/types"
 import { useEntitiesStore, useAuthStore, filterEntitiesForUser } from "@/lib/store"
 import { ProjectSlug } from "@/lib/constants/enums"
 
-export function useProjectStoreSync(projectSlug: string, initialData: EntityRecord[]) {
+export function useProjectStoreSync(projectSlug: string) {
   const [isMounted, setIsMounted] = React.useState(false)
   const user = useAuthStore((state) => state.user)
   const entities = useEntitiesStore((state) => state.entities)
@@ -43,10 +43,10 @@ export function useProjectStoreSync(projectSlug: string, initialData: EntityReco
   }, [projectSlug, loadEntities])
 
   const data = React.useMemo(() => {
-    if (!isMounted) return initialData
-    const rawData = entities[projectSlug] || initialData
+    if (!isMounted) return []
+    const rawData = entities[projectSlug] || []
     return filterEntitiesForUser(projectSlug, rawData, user, entities)
-  }, [projectSlug, initialData, user, entities, isMounted])
+  }, [projectSlug, user, entities, isMounted])
 
   return {
     tableData: data,

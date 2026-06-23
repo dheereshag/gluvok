@@ -39,7 +39,6 @@ export default async function ProjectPage({ params }: Props) {
           key={projectSlug}
           projectName={projectName}
           projectSlug={projectSlug}
-          initialData={[]}
         />
       </main>
     </>

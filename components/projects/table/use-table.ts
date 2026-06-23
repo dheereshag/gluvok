@@ -11,16 +11,14 @@ interface UseProjectTableProps {
   projectSlug: string
   primaryIdKey: string
   projectName: string
-  initialData: EntityRecord[]
 }
 
 export function useProjectTable({
   projectSlug,
   primaryIdKey,
   projectName,
-  initialData,
 }: UseProjectTableProps) {
-  const { tableData, isLoading } = useProjectStoreSync(projectSlug, initialData)
+  const { tableData, isLoading } = useProjectStoreSync(projectSlug)
   const dialogStates = useProjectDialogStates()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])

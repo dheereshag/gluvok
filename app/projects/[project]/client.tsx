@@ -1,17 +1,16 @@
 "use client"
 
-import { type EntityRecord } from "@/types"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
 import { ProjectToolbar, ProjectDialogs, ProjectTable, useProjectTable } from "@/components/projects"
 
 interface ProjectClientProps {
-  projectName: string; projectSlug: string; initialData: EntityRecord[]
+  projectName: string; projectSlug: string
 }
 
-export function ProjectClient({ projectName, projectSlug, initialData }: ProjectClientProps) {
+export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
-  const pt = useProjectTable({ projectSlug, primaryIdKey, projectName, initialData })
+  const pt = useProjectTable({ projectSlug, primaryIdKey, projectName })
   const { table, isLoading, filterKey, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
 
   return (
