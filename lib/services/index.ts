@@ -142,13 +142,16 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
   }))
 }
 
-export async function fetchWeighmentsPaginated(params: {
-  page: number
-  pageSize: number
-  sortColumn?: string
-  sortDesc?: boolean
-  search?: string
-}): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchEntityListPaginated(
+  slug: ProjectSlug,
+  params: {
+    page: number
+    pageSize: number
+    sortColumn?: string
+    sortDesc?: boolean
+    search?: string
+  }
+): Promise<{ data: EntityRecord[]; count: number }> {
   const { page, pageSize, sortColumn, sortDesc, search } = params
   const from = page * pageSize
   const to = from + pageSize - 1
@@ -157,7 +160,7 @@ export async function fetchWeighmentsPaginated(params: {
   const { Role } = await import("@/lib/constants/enums")
 
   const currentUser = useAuthStore.getState().user
-  let centerIds: number[] = []
+  let myFactoryIds: number[] = []
 
   if (currentUser && currentUser.role !== Role.SUPER_ADMIN && currentUser.profile) {
     const profileId = currentUser.profile.id
@@ -167,47 +170,160 @@ export async function fetchWeighmentsPaginated(params: {
       .eq("profile_id", profileId)
 
     if (assignmentsError) throw new Error(assignmentsError.message)
-    const factoryIds = (assignments || []).map((a: any) => a.factory_id)
-
-    if (factoryIds.length > 0) {
-      const { data: centers, error: centersError } = await supabase
-        .from("centers")
-        .select("id")
-        .in("factory_id", factoryIds)
-
-      if (centersError) throw new Error(centersError.message)
-      centerIds = (centers || []).map((c: any) => c.id)
-    }
+    myFactoryIds = (assignments || []).map((a: any) => a.factory_id)
   }
 
-  let query = supabase.from("weighments").select(`
-    *,
-    center:centers(id, name),
-    profile:profiles(id, name, aadhar_number),
-    customer:customers(id, name, govt_id),
-    rate:rates(id, unit_price, unit,
-      commodity:commodities(id, name)
-    )
-  `, { count: "exact" })
+  const table = slugToTable(slug)
+  let selectString = "*"
+
+  switch (slug) {
+    case ProjectSlug.CENTERS:
+      selectString = `
+        *,
+        factory:factories(id, name)
+      `
+      break
+    case ProjectSlug.RATES:
+      selectString = `
+        *,
+        commodity:commodities(id, name),
+        factory:factories(id, name)
+      `
+      break
+    case ProjectSlug.CUSTOMERS:
+      selectString = `
+        *,
+        village:villages(id, name),
+        affiliations:affiliations(
+          factory_id,
+          factory:factories(name)
+        )
+      `
+      break
+    case ProjectSlug.WEIGHMENTS:
+      selectString = `
+        *,
+        center:centers(id, name),
+        profile:profiles(id, name, aadhar_number),
+        customer:customers(id, name, govt_id),
+        rate:rates(id, unit_price, unit,
+          commodity:commodities(id, name)
+        )
+      `
+      break
+    case ProjectSlug.FACTORIES:
+      selectString = `
+        *,
+        village:villages(id, name)
+      `
+      break
+    case ProjectSlug.PROFILES:
+      selectString = `
+        *,
+        assignments:assignments(
+          factory_id,
+          factory:factories(name)
+        )
+      `
+      break
+    case ProjectSlug.ASSIGNMENTS:
+      selectString = `
+        *,
+        profile:profiles(id, name),
+        factory:factories(id, name)
+      `
+      break
+    case ProjectSlug.AFFILIATIONS:
+      selectString = `
+        *,
+        customer:customers(id, name),
+        factory:factories(id, name)
+      `
+      break
+    default:
+      break
+  }
+
+  const queryTable = slug === ProjectSlug.PROFILES ? "profiles_with_email" : table
+  let query = supabase.from(queryTable).select(selectString, { count: "exact" })
 
   if (currentUser && currentUser.role !== Role.SUPER_ADMIN) {
-    if (centerIds.length === 0) {
-      return { data: [], count: 0 }
+    switch (slug) {
+      case ProjectSlug.FACTORIES:
+        query = query.in("id", myFactoryIds)
+        break
+      case ProjectSlug.CENTERS:
+      case ProjectSlug.RATES:
+      case ProjectSlug.ASSIGNMENTS:
+      case ProjectSlug.AFFILIATIONS:
+        query = query.in("factory_id", myFactoryIds)
+        break
+      case ProjectSlug.WEIGHMENTS: {
+        let centerIds: number[] = []
+        if (myFactoryIds.length > 0) {
+          const { data: centers } = await supabase.from("centers").select("id").in("factory_id", myFactoryIds)
+          centerIds = (centers || []).map((c: any) => c.id)
+        }
+        if (centerIds.length === 0) return { data: [], count: 0 }
+        query = query.in("center_id", centerIds)
+        break
+      }
+      case ProjectSlug.PROFILES: {
+        const { data: assignments } = await supabase.from("assignments").select("profile_id").in("factory_id", myFactoryIds)
+        const userProfileId = currentUser.profile?.id
+        const allowedProfileIds = Array.from(new Set([
+          ...(assignments || []).map((a: any) => a.profile_id),
+          userProfileId
+        ].filter(Boolean) as number[]))
+        query = query.in("id", allowedProfileIds)
+        break
+      }
+      case ProjectSlug.CUSTOMERS: {
+        const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", myFactoryIds)
+        const allowedCustomerIds = (affiliations || []).map((a: any) => a.customer_id)
+        query = query.in("id", allowedCustomerIds)
+        break
+      }
+      default:
+        break
     }
-    query = query.in("center_id", centerIds)
   }
 
   if (search) {
-    query = query.ilike("vehicle_number", `%${search}%`)
+    switch (slug) {
+      case ProjectSlug.WEIGHMENTS:
+        query = query.ilike("vehicle_number", `%${search}%`)
+        break
+      case ProjectSlug.RATES: {
+        const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
+        const commodityIds = (commodities || []).map((c: any) => c.id)
+        query = query.in("commodity_id", commodityIds)
+        break
+      }
+      case ProjectSlug.ASSIGNMENTS: {
+        const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
+        const profileIds = (profiles || []).map((p: any) => p.id)
+        query = query.in("profile_id", profileIds)
+        break
+      }
+      case ProjectSlug.AFFILIATIONS: {
+        const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
+        const customerIds = (customers || []).map((c: any) => c.id)
+        query = query.in("customer_id", customerIds)
+        break
+      }
+      default:
+        query = query.ilike("name", `%${search}%`)
+        break
+    }
   }
 
   const sortMap: Record<string, string> = {
-    vehicle_number: "vehicle_number",
-    weight: "weight",
+    factory_name: "factory_id",
+    commodity_name: "commodity_id",
     center_name: "center_id",
     profile_name: "profile_id",
     customer_name: "customer_id",
-    created_at: "created_at",
   }
 
   const mappedSortColumn = sortColumn ? sortMap[sortColumn] || sortColumn : "created_at"
@@ -217,18 +333,84 @@ export async function fetchWeighmentsPaginated(params: {
   const { data, count, error } = await query
   if (error) throw new Error(error.message)
 
-  const enrichedData = (data || []).map((item: any) => ({
-    ...item,
-    center_name: item.center?.name,
-    profile_name: item.profile?.name,
-    profile_aadhar: item.profile?.aadhar_number,
-    customer_name: item.customer?.name,
-    customer_govt_id: item.customer?.govt_id,
-    commodity_id: item.rate?.commodity?.id,
-    commodity_name: item.rate?.commodity?.name,
-    unit_price: item.rate?.unit_price,
-    unit: item.rate?.unit,
-  }))
+  let enrichedData: EntityRecord[] = []
+  const rawList = data || []
+
+  switch (slug) {
+    case ProjectSlug.CENTERS:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        factory_name: item.factory?.name,
+      }))
+      break
+    case ProjectSlug.RATES:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        commodity_name: item.commodity?.name,
+        factory_name: item.factory?.name,
+      }))
+      break
+    case ProjectSlug.CUSTOMERS:
+      enrichedData = rawList.map((item: any) => {
+        const factory_ids = item.affiliations?.map((a: any) => a.factory_id) || []
+        const factory_names = item.affiliations?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
+        return {
+          ...item,
+          village_name: item.village?.name,
+          factory_ids,
+          factory_names,
+        }
+      })
+      break
+    case ProjectSlug.WEIGHMENTS:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        center_name: item.center?.name,
+        profile_name: item.profile?.name,
+        profile_aadhar: item.profile?.aadhar_number,
+        customer_name: item.customer?.name,
+        customer_govt_id: item.customer?.govt_id,
+        commodity_id: item.rate?.commodity?.id,
+        commodity_name: item.rate?.commodity?.name,
+        unit_price: item.rate?.unit_price,
+        unit: item.rate?.unit,
+      }))
+      break
+    case ProjectSlug.FACTORIES:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        village_name: item.village?.name,
+      }))
+      break
+    case ProjectSlug.PROFILES:
+      enrichedData = rawList.map((item: any) => {
+        const factory_ids = item.assignments?.map((a: any) => a.factory_id) || []
+        const factory_names = item.assignments?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
+        return {
+          ...item,
+          factory_ids,
+          factory_names,
+        }
+      })
+      break
+    case ProjectSlug.ASSIGNMENTS:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        profile_name: item.profile?.name,
+        factory_name: item.factory?.name,
+      }))
+      break
+    case ProjectSlug.AFFILIATIONS:
+      enrichedData = rawList.map((item: any) => ({
+        ...item,
+        customer_name: item.customer?.name,
+        factory_name: item.factory?.name,
+      }))
+      break
+    default:
+      enrichedData = rawList as unknown as EntityRecord[]
+      break
+  }
 
   return {
     data: enrichedData,

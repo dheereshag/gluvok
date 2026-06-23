@@ -7,11 +7,10 @@ import { ProjectToolbar, ProjectDialogs, ProjectTable, useProjectTable } from "@
 interface ProjectClientProps {
   projectName: string; projectSlug: string
 }
-
 export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
   const pt = useProjectTable({ projectSlug, primaryIdKey, projectName })
-  const { table, isLoading, filterKey, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
+  const { table, isLoading, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
 
   return (
     <div className="space-y-4">
@@ -19,7 +18,6 @@ export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) 
         table={table}
         projectSlug={projectSlug}
         projectName={projectName}
-        filterKey={filterKey}
         primaryIdKey={primaryIdKey}
         setCreating={setCreating}
         onReload={handleReload}

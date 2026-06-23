@@ -20,8 +20,8 @@ interface EntitiesState {
   resetAllEntities: () => void
   loadEntities: (slug: ProjectSlug) => Promise<void>
   updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => Promise<void>
-  weighmentsUpdatedTrigger: number
-  triggerWeighmentsUpdate: () => void
+  entitiesUpdatedTrigger: number
+  triggerEntitiesUpdate: () => void
 }
 
 export const useEntitiesStore = create<EntitiesState>((set, get) => ({
@@ -29,8 +29,8 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   hydrated: false,
   setEntities: (slug, data) => set((state) => ({ entities: { ...state.entities, [slug]: data } })),
   setHydrated: (state) => set({ hydrated: state }),
-  weighmentsUpdatedTrigger: 0,
-  triggerWeighmentsUpdate: () => set((state) => ({ weighmentsUpdatedTrigger: state.weighmentsUpdatedTrigger + 1 })),
+  entitiesUpdatedTrigger: 0,
+  triggerEntitiesUpdate: () => set((state) => ({ entitiesUpdatedTrigger: state.entitiesUpdatedTrigger + 1 })),
 
   loadEntities: async (slug) => {
     try {
@@ -60,7 +60,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
         }
       }
 
-      if (slug === ProjectSlug.WEIGHMENTS) {
+      if (slug === ProjectSlug.WEIGHMENTS || slug === ProjectSlug.CENTERS || slug === ProjectSlug.CUSTOMERS) {
         set((state) => ({
           entities: {
             ...state.entities,
@@ -91,9 +91,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       return { entities: nextEntities }
     })
 
-    if (slug === ProjectSlug.WEIGHMENTS) {
-      get().triggerWeighmentsUpdate()
-    }
+    get().triggerEntitiesUpdate()
 
     // Auto-assign admin/creator to new factory
     if (slug === ProjectSlug.FACTORIES) {
@@ -135,9 +133,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       return { entities: { ...state.entities, [slug]: updatedList } }
     })
 
-    if (slug === ProjectSlug.WEIGHMENTS) {
-      get().triggerWeighmentsUpdate()
-    }
+    get().triggerEntitiesUpdate()
   },
 
   deleteEntity: async (slug, idKey, id) => {
@@ -147,9 +143,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       return { entities: { ...state.entities, [slug]: updatedList } }
     })
 
-    if (slug === ProjectSlug.WEIGHMENTS) {
-      get().triggerWeighmentsUpdate()
-    }
+    get().triggerEntitiesUpdate()
   },
 
   resetAllEntities: () => {

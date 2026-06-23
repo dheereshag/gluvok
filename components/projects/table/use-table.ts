@@ -1,12 +1,12 @@
 import * as React from "react"
 import { type EntityRecord } from "@/types"
-import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel } from "@tanstack/react-table"
+import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel } from "@tanstack/react-table"
 import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
-import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { ProjectSlug } from "@/lib/constants/enums"
 import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
 import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
-import { fetchWeighmentsPaginated } from "@/lib/services"
+import { fetchEntityListPaginated } from "@/lib/services"
 
 interface UseProjectTableProps {
   projectSlug: string
@@ -19,7 +19,8 @@ export function useProjectTable({
   primaryIdKey,
   projectName,
 }: UseProjectTableProps) {
-  const { tableData, isLoading } = useProjectStoreSync(projectSlug)
+  // Sync helper tables/options in background
+  const { isLoading } = useProjectStoreSync(projectSlug)
   const dialogStates = useProjectDialogStates()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -60,17 +61,16 @@ export function useProjectTable({
   const [prevSlug, setPrevSlug] = React.useState(projectSlug)
   const [prevProfileId, setPrevProfileId] = React.useState(profile?.id)
 
-  const [weighmentsData, setWeighmentsData] = React.useState<EntityRecord[]>([])
-  const [weighmentsCount, setWeighmentsCount] = React.useState(0)
-  const [weighmentsLoading, setWeighmentsLoading] = React.useState(false)
+  const [localData, setLocalData] = React.useState<EntityRecord[]>([])
+  const [localCount, setLocalCount] = React.useState(0)
+  const [localLoading, setLocalLoading] = React.useState(false)
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
   })
 
-  const isWeighments = projectSlug === ProjectSlug.WEIGHMENTS
-  const weighmentsUpdatedTrigger = useEntitiesStore((state) => state.weighmentsUpdatedTrigger)
+  const entitiesUpdatedTrigger = useEntitiesStore((state) => state.entitiesUpdatedTrigger)
 
   if (projectSlug !== prevSlug || profile?.id !== prevProfileId) {
     setPrevSlug(projectSlug)
@@ -79,61 +79,74 @@ export function useProjectTable({
     setPagination({ pageIndex: 0, pageSize: 10 })
   }
 
-  React.useEffect(() => {
-    if (!isWeighments) return
+  // Debounced search logic to prevent spamming Supabase requests
+  const [debouncedFilter, setDebouncedFilter] = React.useState(globalFilter)
 
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedFilter(globalFilter)
+      // Reset to first page when search filter changes
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+    }, 300)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [globalFilter])
+
+  React.useEffect(() => {
     let cancelled = false
     async function load() {
       try {
-        setWeighmentsLoading(true)
-        const result = await fetchWeighmentsPaginated({
+        setLocalLoading(true)
+        const result = await fetchEntityListPaginated(projectSlug as ProjectSlug, {
           page: pagination.pageIndex,
           pageSize: pagination.pageSize,
           sortColumn: sorting[0]?.id,
           sortDesc: sorting[0]?.desc,
-          search: globalFilter,
+          search: debouncedFilter,
         })
         if (!cancelled) {
-          setWeighmentsData(result.data)
-          setWeighmentsCount(result.count)
+          setLocalData(result.data)
+          setLocalCount(result.count)
         }
       } catch (err) {
-        console.error("Failed to load paginated weighments:", err)
+        console.error(`Failed to load paginated ${projectSlug}:`, err)
       } finally {
-        if (!cancelled) setWeighmentsLoading(false)
+        if (!cancelled) setLocalLoading(false)
       }
     }
     load()
     return () => {
       cancelled = true
     }
-  }, [isWeighments, pagination, sorting, globalFilter, weighmentsUpdatedTrigger])
+  }, [projectSlug, pagination.pageIndex, pagination.pageSize, sorting, debouncedFilter, entitiesUpdatedTrigger])
 
   const table = useReactTable({
-    data: isWeighments ? weighmentsData : tableData,
+    data: localData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "includesString",
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: isWeighments ? undefined : getPaginationRowModel(),
-    getSortedRowModel: isWeighments ? undefined : getSortedRowModel(),
-    getFilteredRowModel: isWeighments ? undefined : getFilteredRowModel(),
+    getPaginationRowModel: undefined,
+    getSortedRowModel: undefined,
+    getFilteredRowModel: undefined,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
-    manualPagination: isWeighments,
-    manualSorting: isWeighments,
-    manualFiltering: isWeighments,
-    pageCount: isWeighments ? Math.ceil(weighmentsCount / pagination.pageSize) : undefined,
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    pageCount: Math.ceil(localCount / pagination.pageSize),
     state: { 
       sorting, 
       columnFilters, 
       columnVisibility, 
       rowSelection, 
       globalFilter,
-      pagination: isWeighments ? pagination : undefined,
+      pagination,
     },
   })
 
@@ -156,36 +169,16 @@ export function useProjectTable({
   }, [columnVisibility, profile?.id, projectSlug, savedVisibleColumns, table, updateColumnPreferences])
 
 
-  const filterKey = React.useMemo(() => {
-    switch (projectSlug) {
-      case ProjectSlug.ASSIGNMENTS:
-        return EntityKey.PROFILE_NAME
-      case ProjectSlug.AFFILIATIONS:
-        return EntityKey.CUSTOMER_NAME
-      case ProjectSlug.WEIGHMENTS:
-        return EntityKey.VEHICLE_NUMBER
-      case ProjectSlug.RATES:
-        return EntityKey.COMMODITY_NAME
-      default:
-        return EntityKey.NAME
-    }
-  }, [projectSlug])
-
   const handleReload = React.useCallback(() => {
-    if (isWeighments) {
-      setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
-      setSorting([])
-      setGlobalFilter("")
-      useEntitiesStore.getState().triggerWeighmentsUpdate()
-    } else {
-      window.location.reload()
-    }
-  }, [isWeighments, pagination.pageSize])
+    setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
+    setSorting([])
+    setGlobalFilter("")
+    useEntitiesStore.getState().triggerEntitiesUpdate()
+  }, [pagination.pageSize])
 
   return {
     table,
-    isLoading: isWeighments ? weighmentsLoading : isLoading,
-    filterKey,
+    isLoading: localLoading || isLoading,
     permissions,
     handleReload,
     ...dialogStates
