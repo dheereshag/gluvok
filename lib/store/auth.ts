@@ -107,7 +107,7 @@ export const useAuthStore = create<AuthStore>()(
         }
 
         // We fetch and set the profile to ensure login returns true/false when completed
-        const success = await fetchAndSetProfile(data.user, set)
+        await fetchAndSetProfile(data.user, set)
         // Login itself is successful (auth-wise), but we return true regardless of profile presence 
         // to let the user enter the site with the fallback role
         return true
