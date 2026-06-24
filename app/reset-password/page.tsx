@@ -1,5 +1,5 @@
 import React from "react"
-import { ResetPasswordForm } from "@/components/auth/form/reset-password"
+import { ResetPasswordForm } from "@/components/auth/form"
 import { AuthPageLayout } from "@/components/auth/common"
 
 export default function ResetPasswordPage() {

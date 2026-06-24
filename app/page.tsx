@@ -4,11 +4,10 @@ import * as React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { LayoutDashboard, RotateCw } from "lucide-react"
+import { LayoutDashboard } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
 import { useAuthStore, hasPageAccess } from "@/lib/store"
-import { Button } from "@/components/ui/button"
 
 export default function Page() {
   const user = useAuthStore((state) => state.user)
@@ -18,10 +17,6 @@ export default function Page() {
     if (!hydrated || !user) return []
     return PROJECTS.filter((p) => hasPageAccess(user.role, p.slug))
   }, [hydrated, user])
-
-  const handleReload = React.useCallback(() => {
-    window.location.reload()
-  }, [])
 
   return (
     <>
@@ -51,17 +46,6 @@ export default function Page() {
             <p className="text-muted-foreground text-sm max-w-xl">
               Welcome back. Access the platform tools, manage entities, configure visibility settings, and track operations.
             </p>
-          </div>
-          <div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleReload}
-              className="h-9 gap-2 shadow-sm font-semibold transition-all duration-300 hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-            >
-              <RotateCw className="h-4 w-4" />
-              Reload Page
-            </Button>
           </div>
         </div>
 
