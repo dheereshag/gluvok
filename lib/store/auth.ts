@@ -39,7 +39,10 @@ async function fetchAndSetProfile(
       .eq("user_id", sessionUser.id)
       .maybeSingle()
 
-    if (error || !profile) {
+    // Permission error (e.g. SECURITY INVOKER view + no RLS policy for this user).
+    // The account exists in auth but cannot query the view — treat as unlinked.
+    if (error) {
+      console.warn("profiles_with_email query error:", error.message, error.code)
       set({
         user: {
           id: sessionUser.id,
@@ -50,7 +53,23 @@ async function fetchAndSetProfile(
           profile: undefined,
         }
       })
-      toast.error("No profile linked to this account. Some features may be disabled. Please contact an administrator.")
+      toast.error("Unable to load your profile. You may not have permission to view it. Please contact an administrator.")
+      return false
+    }
+
+    // No error but no matching profile row — genuinely unlinked account.
+    if (!profile) {
+      set({
+        user: {
+          id: sessionUser.id,
+          name: sessionUser.user_metadata?.name || "User",
+          email: sessionUser.email || "",
+          avatar: "/avatars/profile-default.jpg",
+          role: Role.BASE,
+          profile: undefined,
+        }
+      })
+      toast.error("No profile linked to this account. Please contact an administrator to link your account.")
       return false
     }
 
