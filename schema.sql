@@ -318,79 +318,99 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- A. villages policies
 CREATE POLICY "villages_select" ON public.villages
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "villages_insert_update" ON public.villages
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
+CREATE POLICY "villages_insert" ON public.villages
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
+CREATE POLICY "villages_update" ON public.villages
+  FOR UPDATE TO authenticated USING (public.get_user_role() = 'super_admin');
 CREATE POLICY "villages_delete" ON public.villages
   FOR DELETE TO authenticated USING (public.get_user_role() = 'super_admin');
 
 -- B. factories policies
 CREATE POLICY "factories_select" ON public.factories
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "factories_insert_update" ON public.factories
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "factories_insert" ON public.factories
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "factories_update" ON public.factories
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 CREATE POLICY "factories_delete" ON public.factories
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- C. centers policies
 CREATE POLICY "centers_select" ON public.centers
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "centers_insert_update" ON public.centers
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "centers_insert" ON public.centers
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "centers_update" ON public.centers
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 CREATE POLICY "centers_delete" ON public.centers
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- D. commodities policies
 CREATE POLICY "commodities_select" ON public.commodities
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "commodities_insert_update" ON public.commodities
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
+CREATE POLICY "commodities_insert" ON public.commodities
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
+CREATE POLICY "commodities_update" ON public.commodities
+  FOR UPDATE TO authenticated USING (public.get_user_role() = 'super_admin');
 CREATE POLICY "commodities_delete" ON public.commodities
   FOR DELETE TO authenticated USING (public.get_user_role() = 'super_admin');
 
 -- H. rates policies
 CREATE POLICY "rates_select" ON public.rates
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "rates_insert_update" ON public.rates
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+CREATE POLICY "rates_insert" ON public.rates
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+CREATE POLICY "rates_update" ON public.rates
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
 CREATE POLICY "rates_delete" ON public.rates
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- E. customers policies
 CREATE POLICY "customers_select" ON public.customers
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "customers_insert_update" ON public.customers
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "customers_insert" ON public.customers
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "customers_update" ON public.customers
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
 CREATE POLICY "customers_delete" ON public.customers
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- F. profiles policies
 CREATE POLICY "profiles_select" ON public.profiles
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "profiles_insert_update" ON public.profiles
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+CREATE POLICY "profiles_insert" ON public.profiles
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+CREATE POLICY "profiles_update" ON public.profiles
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
 CREATE POLICY "profiles_delete" ON public.profiles
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- G. weighments policies
 CREATE POLICY "weighments_select" ON public.weighments
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "weighments_insert_update" ON public.weighments
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "weighments_insert" ON public.weighments
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "weighments_update" ON public.weighments
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
 CREATE POLICY "weighments_delete" ON public.weighments
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- I. assignments policies
 CREATE POLICY "assignments_select" ON public.assignments
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "assignments_insert_update" ON public.assignments
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "assignments_insert" ON public.assignments
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+CREATE POLICY "assignments_update" ON public.assignments
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 CREATE POLICY "assignments_delete" ON public.assignments
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- J. affiliations policies
 CREATE POLICY "affiliations_select" ON public.affiliations
   FOR SELECT TO authenticated USING (true);
-CREATE POLICY "affiliations_insert_update" ON public.affiliations
-  FOR INSERT OR UPDATE TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "affiliations_insert" ON public.affiliations
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+CREATE POLICY "affiliations_update" ON public.affiliations
+  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
 CREATE POLICY "affiliations_delete" ON public.affiliations
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
