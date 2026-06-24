@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
@@ -15,7 +15,7 @@ import { AppRoutes } from "@/lib/constants/enums"
 import Link from "next/link"
 
 const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  email: z.email("Invalid email address"),
 })
 
 type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
