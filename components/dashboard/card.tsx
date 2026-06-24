@@ -14,8 +14,8 @@ export function DashboardCard({ name, href, desc, icon: Icon, color }: Dashboard
   const cardId = `dashboard-card-${name.toLowerCase().replace(/\s+/g, "-")}`
   return (
     <Link href={href} id={cardId} className="group block">
-      <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer">
-        <CardHeader className="p-3">
+      <Card className="h-full border bg-card hover:border-muted-foreground/50 hover:bg-accent/50 transition-colors duration-200 cursor-pointer py-1">
+        <CardHeader className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className={`p-2 rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors duration-200 ${color}`}>
               <Icon className="h-4 w-4" />
