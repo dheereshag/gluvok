@@ -238,7 +238,7 @@ export async function fetchEntityListPaginated(
       }
       case ProjectSlug.PROFILES: {
         const { data: assignments } = await supabase.from("assignments").select("profile_id").in("factory_id", myFactoryIds)
-        const userProfileId = currentUser.profile?.id
+        const userProfileId = currentUser?.profile?.id
         const allowedProfileIds = Array.from(new Set([
           ...(assignments || []).map((a: any) => a.profile_id),
           userProfileId

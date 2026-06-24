@@ -28,6 +28,49 @@ interface AuthStore {
   resetAuth: () => void
 }
 
+async function fetchAndSetProfile(
+  sessionUser: { id: string; email?: string; user_metadata?: { name?: string } },
+  set: (state: Partial<AuthStore> | ((state: AuthStore) => Partial<AuthStore>)) => void
+): Promise<boolean> {
+  try {
+    const { data: profile, error } = await supabase
+      .from("profiles_with_email")
+      .select("*")
+      .eq("user_id", sessionUser.id)
+      .maybeSingle()
+
+    if (error || !profile) {
+      set({
+        user: {
+          id: sessionUser.id,
+          name: sessionUser.user_metadata?.name || "User",
+          email: sessionUser.email || "",
+          avatar: "/avatars/profile-default.jpg",
+          role: Role.BASE,
+          profile: undefined,
+        }
+      })
+      toast.error("No profile linked to this account. Some features may be disabled. Please contact an administrator.")
+      return false
+    }
+
+    set({
+      user: {
+        id: sessionUser.id,
+        name: profile.name,
+        email: sessionUser.email || profile.email || "",
+        avatar: "/avatars/profile-default.jpg",
+        role: profile.role,
+        profile: profile as Profile,
+      }
+    })
+    return true
+  } catch (err) {
+    console.error("Profile load error:", err)
+    return false
+  }
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -41,35 +84,7 @@ export const useAuthStore = create<AuthStore>()(
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (session?.user) {
-            try {
-              const { data: profile, error } = await supabase
-                .from("profiles_with_email")
-                .select("*")
-                .eq("user_id", session.user.id)
-                .maybeSingle()
-
-              if (error || !profile) {
-                await supabase.auth.signOut()
-                set({ user: null })
-                useEntitiesStore.setState({ entities: {} })
-                toast.error("No profile linked to this account. Please contact an administrator.")
-                return
-              }
-
-              set({
-                user: {
-                  id: session.user.id,
-                  name: profile.name,
-                  email: session.user.email || profile.email || "",
-                  avatar: "/avatars/profile-default.jpg",
-                  role: profile.role,
-                  profile: profile as Profile,
-                }
-              })
-
-            } catch (err) {
-              console.error("Auth state change callback error:", err)
-            }
+            await fetchAndSetProfile(session.user, set)
           } else {
             set({ user: null })
             useEntitiesStore.setState({ entities: {} })
@@ -91,37 +106,11 @@ export const useAuthStore = create<AuthStore>()(
           return false
         }
 
-        try {
-          const { data: profile, error: profileError } = await supabase
-            .from("profiles_with_email")
-            .select("*")
-            .eq("user_id", data.user.id)
-            .maybeSingle()
-
-          if (profileError || !profile) {
-            await supabase.auth.signOut()
-            set({ user: null })
-            useEntitiesStore.setState({ entities: {} })
-            toast.error("No profile linked to this account. Please contact an administrator.")
-            return false
-          }
-
-          set({
-            user: {
-              id: data.user.id,
-              name: profile.name,
-              email: data.user.email || profile.email || "",
-              avatar: "/avatars/profile-default.jpg",
-              role: profile.role,
-              profile: profile as Profile,
-            }
-          })
-
-          return true
-        } catch (err) {
-          console.error("Login profile load error:", err)
-          return false
-        }
+        // We fetch and set the profile to ensure login returns true/false when completed
+        const success = await fetchAndSetProfile(data.user, set)
+        // Login itself is successful (auth-wise), but we return true regardless of profile presence 
+        // to let the user enter the site with the fallback role
+        return true
       },
       logout: async () => {
         await supabase.auth.signOut()
