@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file app/page.tsx
+ * @description Main dashboard page component.
+ * Displays authorized projects/tables in a grid configuration based on RBAC (Role-Based Access Control) matrix filters.
+ */
+
 import * as React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
@@ -9,10 +15,16 @@ import { PROJECTS } from "@/lib/projects"
 import { DashboardCard } from "@/components/dashboard"
 import { useAuthStore, hasPageAccess } from "@/lib/store"
 
+/**
+ * Page Component
+ * Renders the home dashboard. Fetches current session status and filters the visible projects lists
+ * to only show the links the user has authorization to access.
+ */
 export default function Page() {
   const user = useAuthStore((state) => state.user)
   const hydrated = useAuthStore((state) => state.hydrated)
 
+  // Filters projects dynamically based on user role authorization and hydration state
   const filteredProjects = React.useMemo(() => {
     if (!hydrated || !user) return []
     return PROJECTS.filter((p) => hasPageAccess(user.role, p.slug))

@@ -1,3 +1,10 @@
+/*
+ * @file app/globals.css
+ * @description Global stylesheet for the gluvok platform.
+ * Imports Tailwind CSS layers, shadcn configuration, defines responsive variables,
+ * color maps, and root tokens for both light and dark mode styles using OKLCH colors.
+ */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
