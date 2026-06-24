@@ -59,8 +59,6 @@ export function SignupForm({
         toast.success("Successfully created account!")
         router.push(AppRoutes.HOME)
       }
-    } else {
-      toast.error("Failed to create account. User might already exist.")
     }
   }
 

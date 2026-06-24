@@ -49,8 +49,6 @@ export function ResetPasswordForm({
     if (success) {
       toast.success("Successfully reset your password!")
       router.push(AppRoutes.LOGIN)
-    } else {
-      toast.error("Failed to reset password. Please try again.")
     }
   }
 

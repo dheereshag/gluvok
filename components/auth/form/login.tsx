@@ -42,8 +42,6 @@ export function LoginForm({
     if (success) {
       toast.success("Successfully logged in!")
       router.push(AppRoutes.HOME)
-    } else {
-      toast.error("Invalid email or password.")
     }
   }
 
