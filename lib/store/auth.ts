@@ -22,7 +22,7 @@ interface AuthStore {
   initAuth: () => () => void
   login: (email: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
-  registerUser: (user: { name: string; email: string; password?: string }) => Promise<boolean>
+  registerUser: (user: { name: string; email: string; password?: string }) => Promise<{ success: boolean; requiresVerification: boolean }>
   resetPassword: (email: string, newPassword: string) => Promise<boolean>
   setHydrated: (state: boolean) => void
   resetAuth: () => void
@@ -131,7 +131,7 @@ export const useAuthStore = create<AuthStore>()(
       registerUser: async (user) => {
         if (!user.password) {
           toast.error("Password is required")
-          return false
+          return { success: false, requiresVerification: false }
         }
         const { data, error } = await supabase.auth.signUp({
           email: user.email,
@@ -144,9 +144,9 @@ export const useAuthStore = create<AuthStore>()(
         })
         if (error || !data.user) {
           toast.error(error?.message || "Failed to register user")
-          return false
+          return { success: false, requiresVerification: false }
         }
-        return true
+        return { success: true, requiresVerification: !data.session }
       },
       resetPassword: async (email, newPassword) => {
         const { error } = await supabase.auth.updateUser({

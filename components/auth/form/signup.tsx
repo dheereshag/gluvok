@@ -45,16 +45,20 @@ export function SignupForm({
   })
 
   const onSubmit = async (data: SignupInput) => {
-    const success = await registerUser({
+    const { success, requiresVerification } = await registerUser({
       name: data.name,
       email: data.email,
       password: data.password,
     })
 
     if (success) {
-      toast.success("Successfully created account!")
-      router.push(AppRoutes.HOME)
-      router.refresh()
+      if (requiresVerification) {
+        toast.success("Account created! Please check your email to verify your account.")
+        router.push(AppRoutes.LOGIN)
+      } else {
+        toast.success("Successfully created account!")
+        router.push(AppRoutes.HOME)
+      }
     } else {
       toast.error("Failed to create account. User might already exist.")
     }
