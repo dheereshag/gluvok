@@ -1,5 +1,3 @@
-"use client"
-
 import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
 import { ProjectToolbar, ProjectDialogs, ProjectTable, useProjectTable } from "@/components/projects"

@@ -1,5 +1,3 @@
-"use client"
-
 import { LoginForm } from "@/components/auth/form/login"
 import { AuthPageLayout } from "@/components/auth/common"
 

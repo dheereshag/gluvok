@@ -1,5 +1,3 @@
-"use client"
-
 import { ForgotPasswordForm } from "@/components/auth/form/forgot-password"
 import { AuthPageLayout } from "@/components/auth/common"
 
