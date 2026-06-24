@@ -15,9 +15,6 @@ export function getEntityDisplayName(
   if (!item) return ""
   let key: EntityKey
   switch (projectSlug) {
-    case ProjectSlug.USERS:
-      key = EntityKey.EMAIL
-      break
     case ProjectSlug.WEIGHMENTS:
       key = EntityKey.VEHICLE_NUMBER
       break

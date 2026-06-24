@@ -1,17 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Tag } from "lucide-react"
+import { Tag, Factory } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
-import { createTextColumn, createFactoryNameColumn, createFactoryIdColumn, createVillageIdColumn, createVillageNameColumn } from "./helpers"
+import { createTextColumn, createIdColumn } from "./helpers"
 
 export function getCentersColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
-    createFactoryIdColumn(),
-    createFactoryNameColumn(),
-    createVillageIdColumn(),
-    createVillageNameColumn(),
+    createIdColumn("factory_id", ColumnLabel.FACTORY_ID, Factory),
+    createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory),
   ]
 }
-
-

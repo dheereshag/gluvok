@@ -1,12 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { createFactoryNameColumn, createProfileNameColumn, createProfileAadharColumn, createFactoryIdColumn, createProfileIdColumn } from "./helpers"
+import { Factory, User } from "lucide-react"
+import { ColumnLabel } from "@/lib/constants/enums"
+import { createTextColumn, createIdColumn } from "./helpers"
 
 export function getAssignmentsColumns<T>(): ColumnDef<T>[] {
   return [
-    createFactoryIdColumn(),
-    createFactoryNameColumn(),
-    createProfileIdColumn(),
-    createProfileNameColumn(),
-    createProfileAadharColumn(),
+    createIdColumn("factory_id", ColumnLabel.FACTORY_ID, Factory),
+    createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory),
+    createIdColumn("profile_id", ColumnLabel.PROFILE_ID, User),
+    createTextColumn("profile_name", ColumnLabel.PROFILE_NAME, User),
   ]
 }

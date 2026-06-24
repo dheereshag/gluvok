@@ -1,9 +1,8 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
-import { users as seedUsers } from "@/data"
 import { supabase } from "@/lib/supabase"
-
-import { Role, ProjectSlug } from "@/lib/constants/enums"
+import { toast } from "sonner"
+import { Role } from "@/lib/constants/enums"
 import { type Profile } from "@/types"
 import { useEntitiesStore } from "./entities"
 
@@ -16,39 +15,23 @@ export interface AuthUser {
   profile?: Profile
 }
 
-export interface RegisteredUser {
-  id: string
-  name: string
-  email: string
-  password?: string
-}
-
 interface AuthStore {
   user: AuthUser | null
-  registeredUsers: RegisteredUser[]
   hydrated: boolean
   initialized: boolean
   initAuth: () => () => void
   login: (email: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
-  registerUser: (user: Omit<RegisteredUser, "id">) => Promise<boolean>
+  registerUser: (user: { name: string; email: string; password?: string }) => Promise<boolean>
   resetPassword: (email: string, newPassword: string) => Promise<boolean>
   setHydrated: (state: boolean) => void
   resetAuth: () => void
 }
 
-const DEFAULT_USERS: RegisteredUser[] = seedUsers.map((u) => ({
-  id: u.id,
-  name: u.email.split("@")[0],
-  email: u.email,
-  password: "password123",
-}))
-
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       user: null,
-      registeredUsers: DEFAULT_USERS,
       hydrated: false,
       initialized: false,
       initAuth: () => {
@@ -58,39 +41,38 @@ export const useAuthStore = create<AuthStore>()(
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (session?.user) {
-            const activeProfiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] as Profile[] || []
-            let profile = activeProfiles.find(
-              (p) => String(p.user_id).trim().toLowerCase() === String(session.user.id).trim().toLowerCase()
-            )
+            try {
+              const { data: profile, error } = await supabase
+                .from("profiles_with_email")
+                .select("*")
+                .eq("user_id", session.user.id)
+                .maybeSingle()
 
-            if (!profile) {
-              const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
-              const nextId = activeProfiles.reduce((max, p) => p.id > max ? p.id : max, 0) + 1
-              profile = {
-                id: nextId,
-                user_id: session.user.id,
-                name: session.user.user_metadata?.name || session.user.email?.split("@")[0] || "User",
-                aadhar_number: "000000000000",
-                role: Role.BASE,
-                preferences: {},
-                created_at: getTimestamp(),
-                updated_at: getTimestamp(),
+              if (error || !profile) {
+                await supabase.auth.signOut()
+                set({ user: null })
+                useEntitiesStore.setState({ entities: {} })
+                toast.error("No profile linked to this account. Please contact an administrator.")
+                return
               }
-              useEntitiesStore.getState().setEntities(ProjectSlug.PROFILES, [profile, ...activeProfiles])
+
+              set({
+                user: {
+                  id: session.user.id,
+                  name: profile.name,
+                  email: session.user.email || profile.email || "",
+                  avatar: "/avatars/profile-default.jpg",
+                  role: profile.role,
+                  profile: profile as Profile,
+                }
+              })
+
+            } catch (err) {
+              console.error("Auth state change callback error:", err)
             }
-
-            set({
-              user: {
-                id: session.user.id,
-                name: profile.name,
-                email: session.user.email || "",
-                avatar: "/avatars/shadcn.jpg",
-                role: profile.role,
-                profile,
-              }
-            })
           } else {
             set({ user: null })
+            useEntitiesStore.setState({ entities: {} })
           }
         })
 
@@ -100,21 +82,55 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
       login: async (email, password) => {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
-        if (error) {
+        if (error || !data.user) {
+          toast.error(error?.message || "Invalid email or password.")
           return false
         }
-        return true
+
+        try {
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles_with_email")
+            .select("*")
+            .eq("user_id", data.user.id)
+            .maybeSingle()
+
+          if (profileError || !profile) {
+            await supabase.auth.signOut()
+            set({ user: null })
+            useEntitiesStore.setState({ entities: {} })
+            toast.error("No profile linked to this account. Please contact an administrator.")
+            return false
+          }
+
+          set({
+            user: {
+              id: data.user.id,
+              name: profile.name,
+              email: data.user.email || profile.email || "",
+              avatar: "/avatars/profile-default.jpg",
+              role: profile.role,
+              profile: profile as Profile,
+            }
+          })
+
+          return true
+        } catch (err) {
+          console.error("Login profile load error:", err)
+          return false
+        }
       },
       logout: async () => {
         await supabase.auth.signOut()
         set({ user: null })
+        useEntitiesStore.setState({ entities: {} })
       },
       registerUser: async (user) => {
         if (!user.password) {
+          toast.error("Password is required")
           return false
         }
         const { data, error } = await supabase.auth.signUp({
@@ -127,6 +143,7 @@ export const useAuthStore = create<AuthStore>()(
           }
         })
         if (error || !data.user) {
+          toast.error(error?.message || "Failed to register user")
           return false
         }
         return true
@@ -136,6 +153,7 @@ export const useAuthStore = create<AuthStore>()(
           password: newPassword,
         })
         if (error) {
+          toast.error(error.message)
           return false
         }
         return true
@@ -143,15 +161,8 @@ export const useAuthStore = create<AuthStore>()(
       setHydrated: (state) => set({ hydrated: state }),
       resetAuth: () => {
         supabase.auth.signOut()
-        set({
-          user: null,
-          registeredUsers: seedUsers.map((u) => ({
-            id: u.id,
-            name: u.email.split("@")[0],
-            email: u.email,
-            password: "password123",
-          })),
-        })
+        set({ user: null })
+        useEntitiesStore.setState({ entities: {} })
       },
     }),
     {

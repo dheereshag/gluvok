@@ -8,7 +8,7 @@ import { BulkActions } from "./bulk-actions"
 import { useAuthStore, getPermissions } from "@/lib/store"
 
 interface ProjectToolbarProps<TData> {
-  table: Table<TData>; projectSlug: string; projectName: string; filterKey: string
+  table: Table<TData>; projectSlug: string; projectName: string
   primaryIdKey: string; setCreating: (open: boolean) => void; onReload: () => void
 }
 

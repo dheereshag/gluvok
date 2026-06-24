@@ -6,7 +6,6 @@ import { addCustomerSchema, editCustomerSchema } from "./customers"
 import { addWeighmentSchema, editWeighmentSchema } from "./weighments"
 import { addFactorySchema, editFactorySchema } from "./factories"
 import { addProfileSchema, editProfileSchema } from "./profiles"
-import { addUserSchema, editUserSchema } from "./users"
 import { addVillageSchema, editVillageSchema } from "./villages"
 import { addAssignmentSchema, editAssignmentSchema } from "./assignments"
 import { addAffiliationSchema, editAffiliationSchema } from "./affiliations"
@@ -19,7 +18,6 @@ export type EntityAddSchema =
   | typeof addWeighmentSchema
   | typeof addFactorySchema
   | typeof addProfileSchema
-  | typeof addUserSchema
   | typeof addVillageSchema
   | typeof addAssignmentSchema
   | typeof addAffiliationSchema
@@ -32,7 +30,6 @@ export type EntityEditSchema =
   | typeof editWeighmentSchema
   | typeof editFactorySchema
   | typeof editProfileSchema
-  | typeof editUserSchema
   | typeof editVillageSchema
   | typeof editAssignmentSchema
   | typeof editAffiliationSchema
@@ -45,7 +42,6 @@ export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.WEIGHMENTS]: addWeighmentSchema,
   [ProjectSlug.FACTORIES]: addFactorySchema,
   [ProjectSlug.PROFILES]: addProfileSchema,
-  [ProjectSlug.USERS]: addUserSchema,
   [ProjectSlug.VILLAGES]: addVillageSchema,
   [ProjectSlug.ASSIGNMENTS]: addAssignmentSchema,
   [ProjectSlug.AFFILIATIONS]: addAffiliationSchema,
@@ -59,9 +55,7 @@ export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
   [ProjectSlug.WEIGHMENTS]: editWeighmentSchema,
   [ProjectSlug.FACTORIES]: editFactorySchema,
   [ProjectSlug.PROFILES]: editProfileSchema,
-  [ProjectSlug.USERS]: editUserSchema,
   [ProjectSlug.VILLAGES]: editVillageSchema,
   [ProjectSlug.ASSIGNMENTS]: editAssignmentSchema,
   [ProjectSlug.AFFILIATIONS]: editAffiliationSchema,
 }
-

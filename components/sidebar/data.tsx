@@ -3,9 +3,9 @@ import { PROJECTS } from "@/lib/projects"
 
 export const SIDEBAR_DATA = {
   user: {
-    name: "shadcn",
+    name: "John Doe",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "/avatars/profile-default.jpg",
   },
   navSecondary: [
     {

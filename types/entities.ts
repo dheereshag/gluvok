@@ -6,6 +6,8 @@ export interface Center {
   factory_id: number
   created_at: string
   updated_at: string
+  // Flattened join fields
+  factory_name?: string
 }
 
 export interface Commodity {
@@ -23,6 +25,9 @@ export interface Rate {
   factory_id: number
   created_at: string
   updated_at: string
+  // Flattened join fields
+  commodity_name?: string
+  factory_name?: string
 }
 
 export interface Customer {
@@ -34,6 +39,10 @@ export interface Customer {
   user_id?: string
   created_at: string
   updated_at: string
+  // Flattened join fields
+  village_name?: string
+  factory_ids?: number[]
+  factory_names?: string
 }
 
 export interface Factory {
@@ -42,6 +51,8 @@ export interface Factory {
   village_id: number
   created_at: string
   updated_at: string
+  // Flattened join fields
+  village_name?: string
 }
 
 export interface Assignment {
@@ -50,6 +61,9 @@ export interface Assignment {
   profile_id: number
   created_at: string
   updated_at: string
+  // Flattened join fields
+  profile_name?: string
+  factory_name?: string
 }
 
 export interface Affiliation {
@@ -58,6 +72,9 @@ export interface Affiliation {
   customer_id: number
   created_at: string
   updated_at: string
+  // Flattened join fields
+  customer_name?: string
+  factory_name?: string
 }
 
 export interface Village {
@@ -80,6 +97,16 @@ export interface Weighment {
   is_active: boolean
   created_at: string
   updated_at: string
+  // Flattened join fields
+  center_name?: string
+  profile_name?: string
+  profile_aadhar?: string
+  customer_name?: string
+  customer_govt_id?: number
+  commodity_id?: number
+  commodity_name?: string
+  unit_price?: string
+  unit?: Unit
 }
 
 export interface Profile {
@@ -91,16 +118,21 @@ export interface Profile {
   preferences?: Record<string, string[]>
   created_at: string
   updated_at: string
-}
-
-export interface User {
-  id: string
-  email: string
-  created_at: string
-  updated_at: string
+  // Flattened join/view fields
+  email?: string
+  factory_ids?: number[]
+  factory_names?: string
 }
 
 /** Union of all entity types used across the app */
-export type EntityRecord = Center | Commodity | Rate | Customer | Weighment | Factory | Profile | User | Village | Assignment | Affiliation
-
-
+export type EntityRecord =
+  | Center
+  | Commodity
+  | Rate
+  | Customer
+  | Weighment
+  | Factory
+  | Profile
+  | Village
+  | Assignment
+  | Affiliation

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
@@ -43,7 +42,6 @@ export function LoginForm({
     if (success) {
       toast.success("Successfully logged in!")
       router.push(AppRoutes.HOME)
-      router.refresh()
     } else {
       toast.error("Invalid email or password.")
     }

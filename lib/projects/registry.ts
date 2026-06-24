@@ -5,47 +5,27 @@ import {
   ClipboardList,
   Factory,
   UserCog,
-  User,
   Home,
   Tag,
   UserCheck,
   Link,
 } from "lucide-react";
-import { type EntityRecord } from "@/types";
-import { ProjectName } from "@/lib/constants/enums";
-import { ProjectSlug } from "@/lib/constants/enums";
-
-import {
-  centers,
-  commodities,
-  rates,
-  customers,
-  weighments,
-  factories,
-  profiles,
-  users,
-  villages,
-  assignments,
-  affiliations,
-} from "@/data";
+import { ProjectName, ProjectSlug } from "@/lib/constants/enums";
 
 export interface ProjectConfig {
   name: ProjectName;
   icon: React.ComponentType<{ className?: string }>;
-  data: EntityRecord[];
 }
 
 export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
-  [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building, data: centers },
-  [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Tag, data: commodities },
-  [ProjectSlug.RATES]: { name: ProjectName.RATES, icon: IndianRupee, data: rates },
-  [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users, data: customers },
-  [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList, data: weighments },
-  [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory, data: factories },
-  [ProjectSlug.PROFILES]: { name: ProjectName.PROFILES, icon: UserCog, data: profiles },
-  [ProjectSlug.USERS]: { name: ProjectName.USERS, icon: User, data: users },
-  [ProjectSlug.VILLAGES]: { name: ProjectName.VILLAGES, icon: Home, data: villages },
-  [ProjectSlug.ASSIGNMENTS]: { name: ProjectName.ASSIGNMENTS, icon: UserCheck, data: assignments },
-  [ProjectSlug.AFFILIATIONS]: { name: ProjectName.AFFILIATIONS, icon: Link, data: affiliations },
+  [ProjectSlug.CENTERS]: { name: ProjectName.CENTERS, icon: Building },
+  [ProjectSlug.COMMODITIES]: { name: ProjectName.COMMODITIES, icon: Tag },
+  [ProjectSlug.RATES]: { name: ProjectName.RATES, icon: IndianRupee },
+  [ProjectSlug.CUSTOMERS]: { name: ProjectName.CUSTOMERS, icon: Users },
+  [ProjectSlug.WEIGHMENTS]: { name: ProjectName.WEIGHMENTS, icon: ClipboardList },
+  [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory },
+  [ProjectSlug.PROFILES]: { name: ProjectName.PROFILES, icon: UserCog },
+  [ProjectSlug.VILLAGES]: { name: ProjectName.VILLAGES, icon: Home },
+  [ProjectSlug.ASSIGNMENTS]: { name: ProjectName.ASSIGNMENTS, icon: UserCheck },
+  [ProjectSlug.AFFILIATIONS]: { name: ProjectName.AFFILIATIONS, icon: Link },
 };
-

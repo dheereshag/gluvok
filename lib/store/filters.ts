@@ -1,6 +1,6 @@
 import { Role } from "@/lib/constants/enums"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type User, type Customer, type Affiliation } from "@/types"
+import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type Customer, type Affiliation } from "@/types"
 import { type AuthUser } from "./auth"
 
 export function filterEntitiesForUser(
@@ -86,26 +86,6 @@ export function filterEntitiesForUser(
               return rawData.filter((item) => centerIdsInMyFactories.includes(Number((item as Weighment).center_id)))
             }
 
-            case ProjectSlug.USERS: {
-              const profileIdsInMyFactories = allAssignments
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.profile_id))
-                .filter(Boolean)
-              return rawData.filter((item) => {
-                const userId = String((item as User).id).trim().toLowerCase()
-                if (userId === String(user.id).trim().toLowerCase()) {
-                  return true
-                }
-                const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
-                switch (!!userProfile) {
-                  case true:
-                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
-                  default:
-                    return false
-                }
-              })
-            }
-
             default:
               return rawData
           }
@@ -119,20 +99,13 @@ export function filterOptionsForUser(
   entitySlug: string,
   dataList: EntityRecord[],
   currentUser: AuthUser | null,
-  allEntities: Record<string, EntityRecord[]>,
-  _contextSlug?: string,
-  _fieldKey?: string
+  allEntities: Record<string, EntityRecord[]>
 ): EntityRecord[] {
   switch (!!currentUser) {
     case false:
       return []
     default: {
       const user = currentUser!
-
-      switch (!!_contextSlug && !!_fieldKey) {
-        default:
-          break
-      }
 
       switch (user.role) {
         case Role.SUPER_ADMIN:
@@ -191,26 +164,6 @@ export function filterOptionsForUser(
               })
             }
 
-            case ProjectSlug.USERS: {
-              const profileIdsInMyFactories = allAssignments
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.profile_id))
-                .filter(Boolean)
-              return dataList.filter((item) => {
-                const userId = String((item as User).id).trim().toLowerCase()
-                if (userId === String(user.id).trim().toLowerCase()) {
-                  return true
-                }
-                const userProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === userId)
-                switch (!!userProfile) {
-                  case true:
-                    return profileIdsInMyFactories.includes(Number(userProfile!.id))
-                  default:
-                    return false
-                }
-              })
-            }
-
             default:
               return dataList
           }
@@ -219,4 +172,3 @@ export function filterOptionsForUser(
     }
   }
 }
-

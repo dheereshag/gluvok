@@ -13,7 +13,6 @@ import { getCustomersColumns } from "./customers"
 import { getWeighmentsColumns } from "./weighments"
 import { getFactoriesColumns } from "./factories"
 import { getProfilesColumns } from "./profiles"
-import { getUsersColumns } from "./users"
 import { getVillagesColumns } from "./villages"
 import { getAssignmentsColumns } from "./assignments"
 import { getAffiliationsColumns } from "./affiliations"
@@ -34,14 +33,12 @@ function getSpecificColumns<T>(projectSlug: string): ColumnDef<T>[] {
     case ProjectSlug.WEIGHMENTS: return getWeighmentsColumns<T>()
     case ProjectSlug.FACTORIES: return getFactoriesColumns<T>()
     case ProjectSlug.PROFILES: return getProfilesColumns<T>()
-    case ProjectSlug.USERS: return getUsersColumns<T>()
     case ProjectSlug.VILLAGES: return getVillagesColumns<T>()
     case ProjectSlug.ASSIGNMENTS: return getAssignmentsColumns<T>()
     case ProjectSlug.AFFILIATIONS: return getAffiliationsColumns<T>()
     default: return []
   }
 }
-
 
 export function getProjectColumns<T extends EntityRecord = EntityRecord>(
   projectSlug: string,

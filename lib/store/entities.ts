@@ -1,179 +1,215 @@
 "use client"
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
 import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
-import { PROJECT_REGISTRY } from "@/lib/projects/registry"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectSlug, Role } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
+import { fetchAssignments, fetchAffiliations, fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
+import { getPermissions } from "./access"
 
 interface EntitiesState {
   entities: Record<string, EntityRecord[]>
   hydrated: boolean
   setEntities: (slug: string, data: EntityRecord[]) => void
-  addEntity: (slug: string, key: string, newE: Record<string, string | number | boolean>) => void
-  updateEntity: (slug: string, key: string, id: string, fields: Record<string, string | number | boolean>) => void
-  deleteEntity: (slug: string, key: string, id: string) => void
+  addEntity: (slug: ProjectSlug, key: string, newE: Record<string, any>) => Promise<void>
+  updateEntity: (slug: ProjectSlug, key: string, id: string | number, fields: Record<string, any>) => Promise<void>
+  deleteEntity: (slug: ProjectSlug, key: string, id: string | number) => Promise<void>
   setHydrated: (state: boolean) => void
   resetAllEntities: () => void
-  updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => void
+  loadEntities: (slug: ProjectSlug) => Promise<void>
+  updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => Promise<void>
+  entitiesUpdatedTrigger: number
+  triggerEntitiesUpdate: () => void
 }
 
-const getTimestamp = () => new Date().toISOString().replace("T", " ").substring(0, 26)
+export const useEntitiesStore = create<EntitiesState>((set, get) => ({
+  entities: {},
+  hydrated: false,
+  setEntities: (slug, data) => set((state) => ({ entities: { ...state.entities, [slug]: data } })),
+  setHydrated: (state) => set({ hydrated: state }),
+  entitiesUpdatedTrigger: 0,
+  triggerEntitiesUpdate: () => set((state) => ({ entitiesUpdatedTrigger: state.entitiesUpdatedTrigger + 1 })),
 
-const getInitialEntities = () => {
-  const initialEntities: Record<string, EntityRecord[]> = {}
-  Object.keys(PROJECT_REGISTRY).forEach((slug) => {
-    initialEntities[slug] = PROJECT_REGISTRY[slug].data
-  })
-  return initialEntities
-}
+  loadEntities: async (slug) => {
+    try {
+      const user = useAuthStore.getState().user
+      const needsAccessData = user && user.role !== Role.SUPER_ADMIN
 
-export const useEntitiesStore = create<EntitiesState>()(
-  persist(
-    (set) => ({
-      entities: getInitialEntities(),
-      hydrated: false,
-      setEntities: (slug, data) => set((state) => ({ entities: { ...state.entities, [slug]: data } })),
-      addEntity: (slug, key, newE) =>
-        set((state) => {
-          const currentList = state.entities[slug] || []
+      if (needsAccessData) {
+        const state = get()
+        const fetches: Promise<any>[] = []
+        if (!state.entities[ProjectSlug.ASSIGNMENTS]) {
+          fetches.push(fetchAssignments().then(d => {
+            set((s) => ({ entities: { ...s.entities, [ProjectSlug.ASSIGNMENTS]: d } }))
+          }))
+        }
+        if (!state.entities[ProjectSlug.AFFILIATIONS]) {
+          fetches.push(fetchAffiliations().then(d => {
+            set((s) => ({ entities: { ...s.entities, [ProjectSlug.AFFILIATIONS]: d } }))
+          }))
+        }
+        if (!state.entities[ProjectSlug.PROFILES]) {
+          fetches.push(fetchProfiles().then(d => {
+            set((s) => ({ entities: { ...s.entities, [ProjectSlug.PROFILES]: d } }))
+          }))
+        }
+        if (fetches.length > 0) {
+          await Promise.all(fetches)
+        }
+      }
 
-          let id = newE[key]
-          switch (id === undefined || id === null || id === "") {
-            case true: {
-              const isNumericSerial = slug !== ProjectSlug.USERS
-              switch (isNumericSerial) {
-                case true: {
-                  const maxId = currentList.reduce((max, item) => {
-                    const itemId = Number(item.id || getField(item, key))
-                    return itemId > max ? itemId : max
-                  }, 0)
-                  id = maxId + 1
-                  break
-                }
-                default:
-                  id = Math.floor(Math.random() * 1000000).toString()
-                  break
-              }
-              break
-            }
-            default:
-              break
-          }
-          newE[key] = id
-          const entityToAdd = { ...newE, created_at: getTimestamp(), updated_at: getTimestamp() } as EntityRecord
+      if (slug === ProjectSlug.WEIGHMENTS || slug === ProjectSlug.CENTERS || slug === ProjectSlug.CUSTOMERS) {
+        set((state) => ({
+          entities: {
+            ...state.entities,
+            [slug]: [],
+          },
+        }))
+        return
+      }
 
-          const nextEntities = { ...state.entities, [slug]: [entityToAdd, ...currentList] }
-
-          // Auto-assign admin/creator to new factory
-          switch (slug as ProjectSlug) {
-            case ProjectSlug.FACTORIES: {
-              const currentUser = useAuthStore.getState().user
-              switch (!!currentUser) {
-                case true: {
-                  const currentUserId = currentUser!.id
-                  const activeProfiles = state.entities[ProjectSlug.PROFILES] as Profile[] || []
-                  const userProfile = activeProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
-                  switch (!!userProfile) {
-                    case true: {
-                      const currentAssignments = state.entities[ProjectSlug.ASSIGNMENTS] || []
-                      const newAssignment = {
-                        id: currentAssignments.length + 1,
-                        factory_id: Number(id),
-                        profile_id: Number(userProfile!.id),
-                        created_at: getTimestamp(),
-                        updated_at: getTimestamp()
-                      } as EntityRecord
-                      nextEntities[ProjectSlug.ASSIGNMENTS] = [newAssignment, ...currentAssignments]
-                      break
-                    }
-                    default:
-                      break
-                  }
-                  break
-                }
-                default:
-                  break
-              }
-              break
-            }
-            default:
-              break
-          }
-
-          return { entities: nextEntities }
-        }),
-      updateEntity: (slug, key, id, fields) =>
-        set((state) => {
-          const currentList = state.entities[slug] || []
-
-          const updatedList = currentList.map((item) =>
-            String(getField(item, key)) === String(id) ? { ...item, ...fields, updated_at: getTimestamp() } as EntityRecord : item
-          )
-
-          return { entities: { ...state.entities, [slug]: updatedList } }
-        }),
-      deleteEntity: (slug, idKey, id) =>
-        set((state) => {
-          const updatedList = (state.entities[slug] || []).filter((item) => String(getField(item, idKey)) !== String(id))
-          return { entities: { ...state.entities, [slug]: updatedList } }
-        }),
-      setHydrated: (state) => set({ hydrated: state }),
-      resetAllEntities: () =>
-        set(() => {
-          const initialEntities: Record<string, EntityRecord[]> = {}
-          Object.keys(PROJECT_REGISTRY).forEach((slug) => {
-            initialEntities[slug] = PROJECT_REGISTRY[slug].data
-          })
-          return { entities: initialEntities }
-        }),
-      updateColumnPreferences: (profileId, projectSlug, visibleColumns) =>
-        set((state) => {
-          const currentProfiles = (state.entities[ProjectSlug.PROFILES] || []) as Profile[]
-          const updatedProfiles = currentProfiles.map((p) => {
-            if (Number(p.id) === Number(profileId)) {
-              const currentPrefs = p.preferences || {}
-              return {
-                ...p,
-                preferences: {
-                  ...currentPrefs,
-                  [projectSlug]: visibleColumns,
-                },
-                updated_at: getTimestamp(),
-              } as Profile
-            }
-            return p
-          })
-
-          const currentUser = useAuthStore.getState().user
-          if (currentUser && currentUser.profile && Number(currentUser.profile.id) === Number(profileId)) {
-            const updatedProfile = updatedProfiles.find((p) => Number(p.id) === Number(profileId))
-            if (updatedProfile) {
-              useAuthStore.setState({
-                user: {
-                  ...currentUser,
-                  profile: updatedProfile,
-                },
-              })
-            }
-          }
-
-          return {
-            entities: {
-              ...state.entities,
-              [ProjectSlug.PROFILES]: updatedProfiles,
-            },
-          }
-        }),
-    }),
-    {
-      name: "gluvok-entities-storage",
-      storage: createJSONStorage(() => localStorage),
+      const data = await fetchEntityList(slug)
+      set((state) => ({
+        entities: {
+          ...state.entities,
+          [slug]: data,
+        },
+      }))
+    } catch (error) {
+      console.error(`Failed to load entities for ${slug}:`, error)
     }
-  )
-)
+  },
+
+  addEntity: async (slug, key, newE) => {
+    const enrichedRecord = await insertRow(slug, newE)
+
+    set((state) => {
+      const currentList = state.entities[slug] || []
+      const nextEntities = { ...state.entities, [slug]: [enrichedRecord, ...currentList] }
+      return { entities: nextEntities }
+    })
+
+    get().triggerEntitiesUpdate()
+
+    // Auto-assign admin/creator to new factory
+    if (slug === ProjectSlug.FACTORIES) {
+      const currentUser = useAuthStore.getState().user
+      if (currentUser) {
+        const currentUserId = currentUser.id
+        const activeProfiles = get().entities[ProjectSlug.PROFILES] as Profile[] || []
+        const userProfile = activeProfiles.find(
+          (p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase()
+        )
+        if (userProfile) {
+          try {
+            const newAssignment = await insertRow(ProjectSlug.ASSIGNMENTS, {
+              factory_id: enrichedRecord.id,
+              profile_id: userProfile.id,
+            })
+            set((state) => ({
+              entities: {
+                ...state.entities,
+                [ProjectSlug.ASSIGNMENTS]: [newAssignment, ...(state.entities[ProjectSlug.ASSIGNMENTS] || [])],
+              },
+            }))
+          } catch (err) {
+            console.error("Auto-assignment for new factory failed:", err)
+          }
+        }
+      }
+    }
+  },
+
+  updateEntity: async (slug, key, id, fields) => {
+    const enrichedRecord = await updateRow(slug, Number(id), fields)
+
+    set((state) => {
+      const currentList = state.entities[slug] || []
+      const updatedList = currentList.map((item) =>
+        String(getField(item, key)) === String(id) ? enrichedRecord : item
+      )
+      return { entities: { ...state.entities, [slug]: updatedList } }
+    })
+
+    get().triggerEntitiesUpdate()
+  },
+
+  deleteEntity: async (slug, idKey, id) => {
+    await deleteRow(slug, Number(id))
+    set((state) => {
+      const updatedList = (state.entities[slug] || []).filter((item) => String(getField(item, idKey)) !== String(id))
+      return { entities: { ...state.entities, [slug]: updatedList } }
+    })
+
+    get().triggerEntitiesUpdate()
+  },
+
+  resetAllEntities: () => {
+    set({ entities: {} })
+  },
+
+  updateColumnPreferences: async (profileId, projectSlug, visibleColumns) => {
+    const currentProfiles = (get().entities[ProjectSlug.PROFILES] || []) as Profile[]
+    const targetProfile = currentProfiles.find((p) => Number(p.id) === Number(profileId))
+    if (!targetProfile) return
+
+    const currentPrefs = targetProfile.preferences || {}
+    const updatedPrefs = {
+      ...currentPrefs,
+      [projectSlug]: visibleColumns,
+    }
+
+    const updatedProfileLocal = {
+      ...targetProfile,
+      preferences: updatedPrefs,
+    }
+
+    const updateLocalState = (profileData: Profile) => {
+      set((state) => {
+        const profiles = (state.entities[ProjectSlug.PROFILES] || []) as Profile[]
+        const nextProfiles = profiles.map((p) =>
+          Number(p.id) === Number(profileId) ? profileData : p
+        )
+
+        const currentUser = useAuthStore.getState().user
+        if (currentUser && currentUser.profile && Number(currentUser.profile.id) === Number(profileId)) {
+          useAuthStore.setState({
+            user: {
+              ...currentUser,
+              profile: profileData,
+            },
+          })
+        }
+
+        return {
+          entities: {
+            ...state.entities,
+            [ProjectSlug.PROFILES]: nextProfiles,
+          },
+        }
+      })
+    }
+
+    const currentUser = useAuthStore.getState().user
+    const canWriteProfiles = currentUser && getPermissions(currentUser.role, ProjectSlug.PROFILES).write
+
+    if (canWriteProfiles) {
+      try {
+        const updatedProfile = await updateRow(ProjectSlug.PROFILES, profileId, {
+          preferences: updatedPrefs,
+        })
+        updateLocalState(updatedProfile as Profile)
+      } catch (err) {
+        console.error("Failed to update column preferences in database:", err)
+        updateLocalState(updatedProfileLocal as Profile)
+      }
+    } else {
+      updateLocalState(updatedProfileLocal as Profile)
+    }
+  },
+}))
 
 export function resetAllEntitiesData() {
   useEntitiesStore.getState().resetAllEntities()
