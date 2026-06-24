@@ -31,7 +31,8 @@ export function ResetPasswordForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const email = searchParams.get("email") || ""
+  const user = useAuthStore((state) => state.user)
+  const email = searchParams.get("email") || user?.email || ""
   const resetPassword = useAuthStore((state) => state.resetPassword)
 
   const form = useForm<ResetPasswordInput>({
@@ -43,11 +44,6 @@ export function ResetPasswordForm({
   })
 
   const onSubmit = async (data: ResetPasswordInput) => {
-    if (!email) {
-      toast.error("Invalid reset link. Missing email address.")
-      return
-    }
-
     const success = await resetPassword(email, data.password)
 
     if (success) {

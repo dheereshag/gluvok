@@ -41,15 +41,27 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!authHydrated) return
 
-    if (!user && !isAuthPage) {
-      router.push(AppRoutes.LOGIN)
-    } else if (user && isAuthPage) {
-      router.push(AppRoutes.HOME)
-    } else if (user && projectSlug && !isAuthorized) {
-      toast.error("Access Denied: You do not have permission to access this page")
-      router.push(AppRoutes.HOME)
+    switch (true) {
+      // 1. Unauthenticated users trying to access protected pages
+      case !user && !isAuthPage:
+        router.push(AppRoutes.LOGIN)
+        break
+
+      // 2. Authenticated users trying to access general auth pages (except password reset)
+      case !!user && isAuthPage && pathname !== AppRoutes.RESET_PASSWORD:
+        router.push(AppRoutes.HOME)
+        break
+
+      // 3. Authenticated users trying to access projects they don't have access to
+      case !!user && !!projectSlug && !isAuthorized:
+        toast.error("Access Denied: You do not have permission to access this page")
+        router.push(AppRoutes.HOME)
+        break
+
+      default:
+        break
     }
-  }, [user, authHydrated, isAuthPage, projectSlug, isAuthorized, router])
+  }, [user, authHydrated, isAuthPage, pathname, projectSlug, isAuthorized, router])
 
   // Show loading during initial rehydration to prevent UI flash
   if (!authHydrated) {

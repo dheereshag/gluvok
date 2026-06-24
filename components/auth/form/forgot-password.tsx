@@ -4,7 +4,6 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FieldGroup, FieldDescription } from "@/components/ui/field"
 import { AuthCard, AuthInput } from "../common"
@@ -24,7 +23,6 @@ export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter()
 
   const form = useForm<ForgotPasswordInput>({
     resolver: standardSchemaResolver(forgotPasswordSchema),
@@ -47,11 +45,6 @@ export function ForgotPasswordForm({
     }
 
     toast.success("Password reset link sent! Check your email inbox.")
-    
-    // Simulate clicking the email link after a brief delay for testing convenience
-    setTimeout(() => {
-      router.push(`${AppRoutes.RESET_PASSWORD}?email=${encodeURIComponent(data.email)}`)
-    }, 1500)
   }
 
   return (
