@@ -6,7 +6,7 @@
  * Displays authorized projects/tables in a grid configuration based on RBAC (Role-Based Access Control) matrix filters.
  */
 
-import * as React from "react"
+import React from "react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
