@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * @file app/forgot-password/page.tsx
  * @description Page enabling users to request a password reset link.

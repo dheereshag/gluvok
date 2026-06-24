@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * @file app/login/page.tsx
  * @description Authentication login page.

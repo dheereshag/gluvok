@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * @file app/projects/[project]/client.tsx
  * @description Client-side component for rendering a generic project dashboard interface.

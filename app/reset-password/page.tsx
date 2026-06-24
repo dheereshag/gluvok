@@ -1,3 +1,5 @@
+"use client"
+
 /**
  * @file app/reset-password/page.tsx
  * @description Reset Password page of the application.
