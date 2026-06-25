@@ -13,7 +13,7 @@ export function Logo({ size = 32, className, ...props }: LogoProps) {
       alt="gluvok logo"
       width={size}
       height={size}
-      className={cn("object-contain", className)}
+      className={cn("object-contain w-auto h-auto", className)}
       {...props}
     />
   )
