@@ -69,8 +69,9 @@ export function useAddEntityForm({
       await addEntity(projectSlug as ProjectSlug, primaryIdKey, values)
       toast.success(`${projectName} created successfully`)
       onOpenChange(false)
-    } catch {
-      toast.error(`Failed to create ${projectName.toLowerCase()}`)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : `Failed to create ${projectName.toLowerCase()}`
+      toast.error(msg)
     }
   }
 

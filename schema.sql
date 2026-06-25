@@ -150,7 +150,7 @@ CREATE TABLE public.customers (
   CONSTRAINT fk_customer_auth_user
     FOREIGN KEY (user_id)
     REFERENCES auth.users(id)
-    ON DELETE SET NULL,
+    ON DELETE RESTRICT,
     
   CONSTRAINT fk_customer_village
     FOREIGN KEY (village_id)

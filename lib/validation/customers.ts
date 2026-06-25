@@ -1,6 +1,5 @@
 import * as z from "zod"
-import { useEntitiesStore, getField } from "@/lib/store"
-import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { integerIdSchema, nameSchema } from "./helpers"
 
@@ -13,23 +12,6 @@ const baseCustomerSchema = z.object({
 })
 
 export const addCustomerSchema = baseCustomerSchema
-  .refine((data) => {
-    const govtIdVal = data[EntityKey.GOVT_ID]
-    const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
-    return !list.some((item) => String(getField(item, EntityKey.GOVT_ID)) === String(govtIdVal))
-  }, {
-    message: "A customer with this Govt ID already exists",
-    path: [EntityKey.GOVT_ID],
-  })
-  .refine((data) => {
-    const userId = data[EntityKey.USER_ID]
-    if (!userId) return true
-    const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
-    return !list.some((item) => String(getField(item, EntityKey.USER_ID)) === String(userId))
-  }, {
-    message: "This user is already linked to another customer",
-    path: [EntityKey.USER_ID],
-  })
 
 export const editCustomerSchema = z.object({
   [EntityKey.ID]: z.coerce.number().optional(),
@@ -38,25 +20,4 @@ export const editCustomerSchema = z.object({
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME),
   [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
-}).refine((data) => {
-  const govtIdVal = data[EntityKey.GOVT_ID]
-  const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
-  return !list.some((item) => 
-    Number(getField(item, EntityKey.ID)) !== Number(data[EntityKey.ID]) &&
-    String(getField(item, EntityKey.GOVT_ID)) === String(govtIdVal)
-  )
-}, {
-  message: "A customer with this Govt ID already exists",
-  path: [EntityKey.GOVT_ID],
-}).refine((data) => {
-  const userId = data[EntityKey.USER_ID]
-  if (!userId) return true
-  const list = useEntitiesStore.getState().entities[ProjectSlug.CUSTOMERS] || []
-  return !list.some((item) =>
-    Number(getField(item, EntityKey.ID)) !== Number(data[EntityKey.ID]) &&
-    String(getField(item, EntityKey.USER_ID)) === String(userId)
-  )
-}, {
-  message: "This user is already linked to another customer",
-  path: [EntityKey.USER_ID],
 })

@@ -1,6 +1,5 @@
 import * as z from "zod"
-import { useEntitiesStore, getField } from "@/lib/store"
-import { ProjectSlug, EntityKey, Role, ColumnLabel } from "@/lib/constants/enums"
+import { EntityKey, Role, ColumnLabel } from "@/lib/constants/enums"
 import { nameSchema, uuidSchema } from "./helpers"
 
 const baseProfileSchema = z.object({
@@ -19,22 +18,6 @@ const baseProfileSchema = z.object({
 })
 
 export const addProfileSchema = baseProfileSchema
-  .refine((data) => {
-    const aadharVal = data[EntityKey.AADHAR_NUMBER]
-    const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
-    return !profiles.some((p) => String(getField(p, EntityKey.AADHAR_NUMBER)).replace(/\s/g, "") === String(aadharVal).replace(/\s/g, ""))
-  }, {
-    message: "A profile with this Aadhar number already exists",
-    path: [EntityKey.AADHAR_NUMBER],
-  })
-  .refine((data) => {
-    const userId = data[EntityKey.USER_ID]
-    const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
-    return !profiles.some((p) => String(getField(p, EntityKey.USER_ID)) === String(userId))
-  }, {
-    message: "A profile already exists for this user",
-    path: [EntityKey.USER_ID],
-  })
 
 export const editProfileSchema = z.object({
   [EntityKey.ID]: z.coerce.number().optional(),
@@ -50,24 +33,4 @@ export const editProfileSchema = z.object({
   [EntityKey.ROLE]: z.nativeEnum(Role, {
     message: "Please select a valid role",
   }),
-}).refine((data) => {
-  const aadharVal = data[EntityKey.AADHAR_NUMBER]
-  const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
-  return !profiles.some((p) => 
-    Number(getField(p, EntityKey.ID)) !== Number(data[EntityKey.ID]) &&
-    String(getField(p, EntityKey.AADHAR_NUMBER)).replace(/\s/g, "") === String(aadharVal).replace(/\s/g, "")
-  )
-}, {
-  message: "A profile with this Aadhar number already exists",
-  path: [EntityKey.AADHAR_NUMBER],
-}).refine((data) => {
-  const userId = data[EntityKey.USER_ID]
-  const profiles = useEntitiesStore.getState().entities[ProjectSlug.PROFILES] || []
-  return !profiles.some((p) => 
-    Number(getField(p, EntityKey.ID)) !== Number(data[EntityKey.ID]) &&
-    String(getField(p, EntityKey.USER_ID)) === String(userId)
-  )
-}, {
-  message: "A profile already exists for this user",
-  path: [EntityKey.USER_ID],
 })

@@ -58,8 +58,9 @@ export function useEditEntityForm({
       await updateEntity(projectSlug as ProjectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
       toast.success(`${projectName} updated successfully`)
       onOpenChange(false)
-    } catch {
-      toast.error(`Failed to update ${projectName.toLowerCase()}`)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : `Failed to update ${projectName.toLowerCase()}`
+      toast.error(msg)
     }
   }
 

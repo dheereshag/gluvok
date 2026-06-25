@@ -6,8 +6,7 @@ export const integerIdSchema = (fieldName: string) =>
     .int(`${fieldName} must be an integer`)
     .positive(`${fieldName} must be a positive integer`)
 
-export const uuidSchema = (fieldName: string) =>
-  z.string().uuid(`${fieldName} must be a valid UUID`)
+export const uuidSchema = (fieldName: string) =>z.uuid(`${fieldName} must be a valid UUID`)
 
 export const nameSchema = (fieldName: string, min = 3, max = 255) =>
   z.string()
