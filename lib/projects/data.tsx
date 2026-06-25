@@ -8,7 +8,6 @@ import {
   Home,
   Tag,
   UserCheck,
-  Link,
 } from "lucide-react"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { ProjectName } from "@/lib/constants/enums"
@@ -24,6 +23,4 @@ export const PROJECTS: ProjectMetadata[] = [
   { slug: ProjectSlug.PROFILES, name: ProjectName.PROFILES, desc: "Manage user profiles and credentials", icon: UserCog, color: "text-pink-500" },
   { slug: ProjectSlug.VILLAGES, name: ProjectName.VILLAGES, desc: "Database of geographical areas and metadata", icon: Home, color: "text-rose-500" },
   { slug: ProjectSlug.ASSIGNMENTS, name: ProjectName.ASSIGNMENTS, desc: "Manage user-factory station assignments", icon: UserCheck, color: "text-cyan-500" },
-  { slug: ProjectSlug.AFFILIATIONS, name: ProjectName.AFFILIATIONS, desc: "Manage customer-factory station affiliations", icon: Link, color: "text-violet-500" },
 ]
-

@@ -41,8 +41,6 @@ export interface Customer {
   updated_at: string
   // Flattened join fields
   village_name?: string
-  factory_ids?: number[]
-  factory_names?: string
 }
 
 export interface Factory {
@@ -66,16 +64,6 @@ export interface Assignment {
   factory_name?: string
 }
 
-export interface Affiliation {
-  id: number
-  factory_id: number
-  customer_id: number
-  created_at: string
-  updated_at: string
-  // Flattened join fields
-  customer_name?: string
-  factory_name?: string
-}
 
 export interface Village {
   id: number
@@ -135,4 +123,3 @@ export type EntityRecord =
   | Profile
   | Village
   | Assignment
-  | Affiliation

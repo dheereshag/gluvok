@@ -8,7 +8,6 @@ import {
   Home,
   Tag,
   UserCheck,
-  Link,
 } from "lucide-react";
 import { ProjectName, ProjectSlug } from "@/lib/constants/enums";
 
@@ -27,5 +26,4 @@ export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.PROFILES]: { name: ProjectName.PROFILES, icon: UserCog },
   [ProjectSlug.VILLAGES]: { name: ProjectName.VILLAGES, icon: Home },
   [ProjectSlug.ASSIGNMENTS]: { name: ProjectName.ASSIGNMENTS, icon: UserCheck },
-  [ProjectSlug.AFFILIATIONS]: { name: ProjectName.AFFILIATIONS, icon: Link },
 };

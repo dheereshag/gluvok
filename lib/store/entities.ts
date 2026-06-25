@@ -6,7 +6,7 @@ import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { ProjectSlug, Role } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
-import { fetchAssignments, fetchAffiliations, fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
+import { fetchAssignments, fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
 import { getPermissions } from "./access"
 
 interface EntitiesState {
@@ -43,11 +43,6 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
         if (!state.entities[ProjectSlug.ASSIGNMENTS]) {
           fetches.push(fetchAssignments().then(d => {
             set((s) => ({ entities: { ...s.entities, [ProjectSlug.ASSIGNMENTS]: d } }))
-          }))
-        }
-        if (!state.entities[ProjectSlug.AFFILIATIONS]) {
-          fetches.push(fetchAffiliations().then(d => {
-            set((s) => ({ entities: { ...s.entities, [ProjectSlug.AFFILIATIONS]: d } }))
           }))
         }
         if (!state.entities[ProjectSlug.PROFILES]) {

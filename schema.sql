@@ -143,9 +143,15 @@ CREATE TABLE public.customers (
   name VARCHAR(255) NOT NULL,
   father_name VARCHAR(255) NOT NULL,
   village_id INTEGER NOT NULL,
+  user_id UUID UNIQUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
+  CONSTRAINT fk_customer_auth_user
+    FOREIGN KEY (user_id)
+    REFERENCES auth.users(id)
+    ON DELETE SET NULL,
+    
   CONSTRAINT fk_customer_village
     FOREIGN KEY (village_id)
     REFERENCES public.villages(id)
@@ -258,34 +264,6 @@ CREATE TRIGGER set_timestamp_assignments
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- J. affiliations table
-CREATE TABLE public.affiliations (
-  id SERIAL PRIMARY KEY,
-  factory_id INTEGER NOT NULL,
-  customer_id INTEGER NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  
-  CONSTRAINT fk_affiliation_factory
-    FOREIGN KEY (factory_id)
-    REFERENCES public.factories(id)
-    ON DELETE RESTRICT,
-    
-  CONSTRAINT fk_affiliation_customer
-    FOREIGN KEY (customer_id)
-    REFERENCES public.customers(id)
-    ON DELETE RESTRICT,
-    
-  -- Unique constraint to avoid duplicate affiliations
-  CONSTRAINT uq_factory_customer_affiliation
-    UNIQUE (factory_id, customer_id)
-);
-
-CREATE TRIGGER set_timestamp_affiliations
-  BEFORE UPDATE ON public.affiliations
-  FOR EACH ROW
-  EXECUTE FUNCTION trigger_set_timestamp();
-
 
 -- 4. ROW LEVEL SECURITY (RLS) & POLICIES
 -- ---------------------------------------
@@ -299,7 +277,6 @@ ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.weighments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.affiliations ENABLE ROW LEVEL SECURITY;
 
 -- Helper function to extract user role from public.profiles table
 CREATE OR REPLACE FUNCTION public.get_user_role()
@@ -405,12 +382,3 @@ CREATE POLICY "assignments_update" ON public.assignments
 CREATE POLICY "assignments_delete" ON public.assignments
   FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
--- J. affiliations policies
-CREATE POLICY "affiliations_select" ON public.affiliations
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "affiliations_insert" ON public.affiliations
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
-CREATE POLICY "affiliations_update" ON public.affiliations
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
-CREATE POLICY "affiliations_delete" ON public.affiliations
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));

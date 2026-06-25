@@ -80,10 +80,6 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
     { key: EntityKey.PROFILE_ID, label: ColumnLabel.PROFILE, placeholder: getSelectPlaceholder("Profile"), type: FieldType.TEXT, icon: User },
   ],
-  [ProjectSlug.AFFILIATIONS]: [
-    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
-    { key: EntityKey.CUSTOMER_ID, label: ColumnLabel.CUSTOMER, placeholder: getSelectPlaceholder("Customer"), type: FieldType.TEXT, icon: Users },
-  ],
   [ProjectSlug.PROFILES]: [
     {
       key: EntityKey.AADHAR_NUMBER,

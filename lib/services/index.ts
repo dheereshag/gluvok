@@ -24,8 +24,6 @@ export function slugToTable(slug: ProjectSlug | string): string {
       return "villages"
     case ProjectSlug.ASSIGNMENTS:
       return "assignments"
-    case ProjectSlug.AFFILIATIONS:
-      return "affiliations"
     default:
       throw new Error(`Unknown project slug: ${slug}`)
   }
@@ -84,11 +82,7 @@ export async function fetchRates(id?: number): Promise<EntityRecord[]> {
 export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("customers").select(`
     *,
-    village:villages(id, name),
-    affiliations:affiliations(
-      factory_id,
-      factory:factories(name)
-    )
+    village:villages(id, name)
   `)
 
   if (id !== undefined) {
@@ -99,13 +93,9 @@ export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
   if (error) throw new Error(error.message)
 
   return (data || []).map((item: any) => {
-    const factory_ids = item.affiliations?.map((a: any) => a.factory_id) || []
-    const factory_names = item.affiliations?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
     return {
       ...item,
       village_name: item.village?.name,
-      factory_ids,
-      factory_names,
     }
   })
 }
@@ -193,11 +183,7 @@ export async function fetchEntityListPaginated(
     case ProjectSlug.CUSTOMERS:
       selectString = `
         *,
-        village:villages(id, name),
-        affiliations:affiliations(
-          factory_id,
-          factory:factories(name)
-        )
+        village:villages(id, name)
       `
       break
     case ProjectSlug.WEIGHMENTS:
@@ -233,13 +219,7 @@ export async function fetchEntityListPaginated(
         factory:factories(id, name)
       `
       break
-    case ProjectSlug.AFFILIATIONS:
-      selectString = `
-        *,
-        customer:customers(id, name),
-        factory:factories(id, name)
-      `
-      break
+
     default:
       break
   }
@@ -255,7 +235,6 @@ export async function fetchEntityListPaginated(
       case ProjectSlug.CENTERS:
       case ProjectSlug.RATES:
       case ProjectSlug.ASSIGNMENTS:
-      case ProjectSlug.AFFILIATIONS:
         query = query.in("factory_id", myFactoryIds)
         break
       case ProjectSlug.WEIGHMENTS: {
@@ -279,9 +258,7 @@ export async function fetchEntityListPaginated(
         break
       }
       case ProjectSlug.CUSTOMERS: {
-        const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", myFactoryIds)
-        const allowedCustomerIds = (affiliations || []).map((a: any) => a.customer_id)
-        query = query.in("id", allowedCustomerIds)
+        query = query.in("id", []) // Filter logic needs adjustment if required
         break
       }
       default:
@@ -316,21 +293,13 @@ export async function fetchEntityListPaginated(
       case ProjectSlug.CUSTOMERS: {
         const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
         const villageIds = (villages || []).map((v: any) => v.id)
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        
-        let customerIdsFromFactories: number[] = []
-        if (factoryIds.length > 0) {
-          const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", factoryIds)
-          customerIdsFromFactories = (affiliations || []).map((a: any) => a.customer_id)
-        }
 
+        
         const orConditions: string[] = [
           `name.ilike.%${search}%`,
           `father_name.ilike.%${search}%`
         ]
         if (villageIds.length > 0) orConditions.push(`village_id.in.(${villageIds.join(",")})`)
-        if (customerIdsFromFactories.length > 0) orConditions.push(`id.in.(${customerIdsFromFactories.join(",")})`)
         query = query.or(orConditions.join(","))
         break
       }
@@ -392,22 +361,7 @@ export async function fetchEntityListPaginated(
         }
         break
       }
-      case ProjectSlug.AFFILIATIONS: {
-        const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
-        const customerIds = (customers || []).map((c: any) => c.id)
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        
-        const orConditions: string[] = []
-        if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
-        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
-        if (orConditions.length > 0) {
-          query = query.or(orConditions.join(","))
-        } else {
-          return { data: [], count: 0 }
-        }
-        break
-      }
+
       case ProjectSlug.VILLAGES: {
         query = query.or(`name.ilike.%${search}%,state.ilike.%${search}%`)
         break
@@ -452,13 +406,9 @@ export async function fetchEntityListPaginated(
       break
     case ProjectSlug.CUSTOMERS:
       enrichedData = rawList.map((item: any) => {
-        const factory_ids = item.affiliations?.map((a: any) => a.factory_id) || []
-        const factory_names = item.affiliations?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
         return {
           ...item,
           village_name: item.village?.name,
-          factory_ids,
-          factory_names,
         }
       })
       break
@@ -500,13 +450,7 @@ export async function fetchEntityListPaginated(
         factory_name: item.factory?.name,
       }))
       break
-    case ProjectSlug.AFFILIATIONS:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        customer_name: item.customer?.name,
-        factory_name: item.factory?.name,
-      }))
-      break
+
     default:
       enrichedData = rawList as unknown as EntityRecord[]
       break
@@ -595,26 +539,7 @@ export async function fetchAssignments(id?: number): Promise<EntityRecord[]> {
   }))
 }
 
-export async function fetchAffiliations(id?: number): Promise<EntityRecord[]> {
-  let query = supabase.from("affiliations").select(`
-    *,
-    customer:customers(id, name),
-    factory:factories(id, name)
-  `)
 
-  if (id !== undefined) {
-    query = query.eq("id", id)
-  }
-
-  const { data, error } = await query
-  if (error) throw new Error(error.message)
-
-  return (data || []).map((item: any) => ({
-    ...item,
-    customer_name: item.customer?.name,
-    factory_name: item.factory?.name,
-  }))
-}
 
 // Fetch any single record by slug and id, returning the enriched representation
 export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<EntityRecord> {
@@ -647,9 +572,7 @@ export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<
     case ProjectSlug.ASSIGNMENTS:
       list = await fetchAssignments(id)
       break
-    case ProjectSlug.AFFILIATIONS:
-      list = await fetchAffiliations(id)
-      break
+
     default:
       throw new Error(`No fetch configured for single entity slug: ${slug}`)
   }
@@ -680,8 +603,7 @@ export async function fetchEntityList(slug: ProjectSlug | string): Promise<Entit
       return fetchVillages()
     case ProjectSlug.ASSIGNMENTS:
       return fetchAssignments()
-    case ProjectSlug.AFFILIATIONS:
-      return fetchAffiliations()
+
     default:
       throw new Error(`Unknown project slug: ${slug}`)
   }

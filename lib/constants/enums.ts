@@ -130,7 +130,6 @@ export enum ProjectSlug {
   PROFILES = "profiles",
   VILLAGES = "villages",
   ASSIGNMENTS = "assignments",
-  AFFILIATIONS = "affliations",
 }
 
 export enum FieldType {
@@ -207,5 +206,4 @@ export enum ProjectName {
   PROFILES = "Profiles",
   VILLAGES = "Villages",
   ASSIGNMENTS = "Assignments",
-  AFFILIATIONS = "Affliations",
 }

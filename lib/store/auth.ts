@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { Role } from "@/lib/constants/enums"
-import { type Profile } from "@/types"
+import { type Profile, type Customer } from "@/types"
 import { useEntitiesStore } from "./entities"
 
 export interface AuthUser {
@@ -13,6 +13,7 @@ export interface AuthUser {
   avatar?: string
   role: Role
   profile?: Profile
+  customer?: Customer
 }
 
 interface AuthStore {
@@ -34,7 +35,7 @@ async function fetchAndSetProfile(
 ): Promise<boolean> {
   try {
     const { data: profile, error } = await supabase
-      .from("profiles_with_email")
+      .from("profiles")
       .select("*")
       .eq("user_id", sessionUser.id)
       .maybeSingle()
@@ -59,6 +60,28 @@ async function fetchAndSetProfile(
 
     // No error but no matching profile row — genuinely unlinked account.
     if (!profile) {
+      // Fallback: check if the user is a customer
+      const { data: customer, error: customerError } = await supabase
+        .from("customers")
+        .select("*")
+        .eq("user_id", sessionUser.id)
+        .maybeSingle()
+        
+      if (!customerError && customer) {
+        set({
+          user: {
+            id: sessionUser.id,
+            name: customer.name,
+            email: sessionUser.email || "",
+            avatar: "/avatars/profile-default.jpg",
+            role: Role.BASE,
+            profile: undefined,
+            customer: customer as Customer,
+          }
+        })
+        return true
+      }
+
       set({
         user: {
           id: sessionUser.id,

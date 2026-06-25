@@ -4,7 +4,6 @@ import { useEntitiesStore } from "@/lib/store"
 import {
   type Rate,
   type Assignment,
-  type Affiliation,
   type EntityRecord,
 } from "@/types"
 
@@ -52,15 +51,6 @@ export const ENTITY_EXTRACTORS: Record<string, (item: any) => { id: string; name
     return {
       id: String(a.id),
       name: `${profileName} @ ${factoryName}`
-    }
-  },
-  [ProjectSlug.AFFILIATIONS]: (item) => {
-    const a = item as Affiliation
-    const factoryName = getEntityName(ProjectSlug.FACTORIES, a.factory_id, "Factory")
-    const customerName = getEntityName(ProjectSlug.CUSTOMERS, a.customer_id, "Customer")
-    return {
-      id: String(a.id),
-      name: `${customerName} @ ${factoryName}`
     }
   },
 }

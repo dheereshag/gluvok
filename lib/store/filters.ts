@@ -1,6 +1,6 @@
 import { Role } from "@/lib/constants/enums"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment, type Customer, type Affiliation } from "@/types"
+import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment } from "@/types"
 import { type AuthUser } from "./auth"
 
 export function filterEntitiesForUser(
@@ -20,7 +20,6 @@ export function filterEntitiesForUser(
         default: {
           // Scope by factory assignments for all other roles (ADMIN, MANAGER, OPERATOR, BASE)
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
-          const allAffiliations = (allEntities[ProjectSlug.AFFILIATIONS] || []) as Affiliation[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
@@ -50,9 +49,6 @@ export function filterEntitiesForUser(
             case ProjectSlug.ASSIGNMENTS:
               return rawData.filter((item) => myFactoryIds.includes(Number((item as Assignment).factory_id)))
 
-            case ProjectSlug.AFFILIATIONS:
-              return rawData.filter((item) => myFactoryIds.includes(Number((item as Affiliation).factory_id)))
-
             case ProjectSlug.PROFILES: {
               const profileIdsInMyFactories = allAssignments
                 .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
@@ -68,14 +64,7 @@ export function filterEntitiesForUser(
             }
 
             case ProjectSlug.CUSTOMERS: {
-              const customerIdsInMyFactories = allAffiliations
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.customer_id))
-                .filter(Boolean)
-              return rawData.filter((item) => {
-                const customer = item as Customer
-                return customerIdsInMyFactories.includes(Number(customer.id))
-              })
+              return rawData
             }
 
             case ProjectSlug.WEIGHMENTS: {
@@ -112,7 +101,6 @@ export function filterOptionsForUser(
           return dataList
         default: {
           const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
-          const allAffiliations = (allEntities[ProjectSlug.AFFILIATIONS] || []) as Affiliation[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
@@ -154,14 +142,7 @@ export function filterOptionsForUser(
             }
 
             case ProjectSlug.CUSTOMERS: {
-              const customerIdsInMyFactories = allAffiliations
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.customer_id))
-                .filter(Boolean)
-              return dataList.filter((item) => {
-                const customer = item as Customer
-                return customerIdsInMyFactories.includes(Number(customer.id))
-              })
+              return dataList
             }
 
             default:

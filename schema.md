@@ -68,6 +68,7 @@ Represents workers/customers identified by government ID. No auth login required
 | `name` | `VARCHAR(255)` | Not Null | Full name of the customer. |
 | `father_name` | `VARCHAR(255)` | Not Null | Father's full name (additional identifier). |
 | `village_id` | `INTEGER` | FK → `villages.id`, Not Null | Registered home village. |
+| `user_id` | `UUID` | Unique, FK → `auth.users(id)`, On Delete Set Null | Optional link to an auth account. |
 | `created_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Record creation time. |
 | `updated_at` | `TIMESTAMP` | Not Null, Default: `CURRENT_TIMESTAMP` | Last update time. |
 
