@@ -60,3 +60,11 @@ export async function executeAndOrderList(
   if (error) throw new Error(error.message)
   return data || []
 }
+
+export async function executePaginatedQuery(
+  query: any
+): Promise<{ data: any[]; count: number }> {
+  const { data, count, error } = await query
+  if (error) throw new Error(error.message)
+  return { data: data || [], count: count || 0 }
+}

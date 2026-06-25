@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { getScopingFilter, executeAndOrderList } from "../scoping"
@@ -24,7 +23,7 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
           .from("centers")
           .select("id")
           .eq("factory_id", scope.factoryId)
-        const centerIds = (centers || []).map((c: any) => c.id)
+        const centerIds = (centers || []).map((c: { id: number }) => c.id)
         if (centerIds.length > 0) {
           query = query.in("center_id", centerIds)
         } else {
@@ -36,7 +35,7 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
 
   const data = await executeAndOrderList(query, id)
 
-  return data.map((item: any) => ({
+  return data.map((item) => ({
     ...item,
     center_name: item.center?.name,
     profile_name: item.profile?.name,

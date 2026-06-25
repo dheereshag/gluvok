@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { getScopingFilter, executeAndOrderList } from "../scoping"
@@ -26,7 +25,7 @@ export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
 
   const data = await executeAndOrderList(query, id)
 
-  return data.map((item: any) => {
+  return data.map((item) => {
     return {
       ...item,
       factory_name: item.factory?.name || "",
