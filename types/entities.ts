@@ -41,6 +41,7 @@ export interface Customer {
   updated_at: string
   // Flattened join fields
   village_name?: string
+  user_email?: string
 }
 
 export interface Factory {

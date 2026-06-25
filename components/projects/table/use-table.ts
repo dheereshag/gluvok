@@ -4,7 +4,7 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRo
 import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { useProjectStoreSync, useProjectDialogStates } from "./use-helpers"
+import { useProjectDialogStates } from "./use-helpers"
 import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
 import { fetchEntityListPaginated } from "@/lib/services"
 
@@ -19,8 +19,6 @@ export function useProjectTable({
   primaryIdKey,
   projectName,
 }: UseProjectTableProps) {
-  // Sync helper tables/options in background
-  const { isLoading } = useProjectStoreSync(projectSlug)
   const dialogStates = useProjectDialogStates()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -182,7 +180,7 @@ export function useProjectTable({
 
   return {
     table,
-    isLoading: localLoading || isLoading,
+    isLoading: localLoading,
     permissions,
     handleReload,
     ...dialogStates

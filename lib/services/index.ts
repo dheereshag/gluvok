@@ -371,14 +371,26 @@ export async function fetchEntityListPaginated(
         factory_name: item.factory?.name,
       }))
       break
-    case ProjectSlug.CUSTOMERS:
+    case ProjectSlug.CUSTOMERS: {
+      const userIds = rawList.map((item: any) => item.user_id).filter(Boolean)
+      let profiles: any[] = []
+      if (userIds.length > 0) {
+        const { data: profileData } = await supabase
+          .from("profiles_with_email")
+          .select("user_id, email")
+          .in("user_id", userIds)
+        profiles = profileData || []
+      }
       enrichedData = rawList.map((item: any) => {
+        const profile = item.user_id ? profiles.find((p: any) => p.user_id === item.user_id) : null
         return {
           ...item,
           village_name: item.village?.name,
+          user_email: profile?.email || item.user_id || undefined,
         }
       })
       break
+    }
     case ProjectSlug.WEIGHMENTS:
       enrichedData = rawList.map((item: any) => ({
         ...item,

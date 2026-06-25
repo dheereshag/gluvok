@@ -9,7 +9,6 @@ import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { PROJECT_FIELDS } from "@/lib/fields"
 import { ENTITY_ADD_SCHEMAS } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
-import { type Profile } from "@/types"
 
 export function useAddEntityForm({
   open,
@@ -24,20 +23,10 @@ export function useAddEntityForm({
   const form = useForm<FieldValues>({ resolver: standardSchemaResolver(formSchema), defaultValues: {} })
 
   const currentUser = useAuthStore((state) => state.user)
-  const rawProfiles = useEntitiesStore((state) => state.entities[ProjectSlug.PROFILES]) as Profile[] | undefined
 
   const userProfileId = React.useMemo(() => {
-    const profilesList = rawProfiles || []
-    switch (!!currentUser) {
-      case true: {
-        const currentUserId = currentUser?.id
-        const profile = profilesList.find((p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase())
-        return profile ? String(profile.id) : ""
-      }
-      default:
-        return ""
-    }
-  }, [currentUser, rawProfiles])
+    return currentUser?.profile?.id ? String(currentUser.profile.id) : ""
+  }, [currentUser])
 
   React.useEffect(() => {
     switch (open) {

@@ -4,7 +4,6 @@ import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { Role } from "@/lib/constants/enums"
 import { type Profile, type Customer } from "@/types"
-import { useEntitiesStore } from "./entities"
 
 export interface AuthUser {
   id: string
@@ -129,7 +128,6 @@ export const useAuthStore = create<AuthStore>()(
             await fetchAndSetProfile(session.user, set)
           } else {
             set({ user: null })
-            useEntitiesStore.setState({ entities: {} })
           }
         })
 
@@ -157,7 +155,6 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         await supabase.auth.signOut()
         set({ user: null })
-        useEntitiesStore.setState({ entities: {} })
       },
       registerUser: async (user) => {
         if (!user.password) {
@@ -193,7 +190,6 @@ export const useAuthStore = create<AuthStore>()(
       resetAuth: () => {
         supabase.auth.signOut()
         set({ user: null })
-        useEntitiesStore.setState({ entities: {} })
       },
     }),
     {
