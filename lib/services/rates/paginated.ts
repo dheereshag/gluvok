@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { getScopingFilter, applyPaginationAndSorting, type PaginatedParams } from "../scoping"
+import { getScopingFilter, applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
   const { search } = params
@@ -20,9 +19,9 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
 
   if (search) {
     const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
-    const commodityIds = (commodities || []).map((c: any) => c.id)
+    const commodityIds = (commodities || []).map((c: { id: number }) => c.id)
     const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-    const factoryIds = (factories || []).map((f: any) => f.id)
+    const factoryIds = (factories || []).map((f: { id: number }) => f.id)
 
     const orConditions: string[] = [`unit.ilike.%${search}%`]
     if (commodityIds.length > 0) orConditions.push(`commodity_id.in.(${commodityIds.join(",")})`)
@@ -35,14 +34,13 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
     commodity_name: "commodity_id",
   })
 
-  const { data, count, error } = await query
-  if (error) throw new Error(error.message)
+  const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = (data || []).map((item: any) => ({
+  const enrichedData = data.map((item) => ({
     ...item,
     commodity_name: item.commodity?.name,
     factory_name: item.factory?.name,
   }))
 
-  return { data: enrichedData, count: count || 0 }
+  return { data: enrichedData, count }
 }

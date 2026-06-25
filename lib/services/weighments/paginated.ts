@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { getScopingFilter, applyPaginationAndSorting, type PaginatedParams } from "../scoping"
+import { getScopingFilter, applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
   const { search } = params
@@ -25,7 +24,7 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
       let centerIds: number[] = []
       if (myFactoryIds.length > 0) {
         const { data: centers } = await supabase.from("centers").select("id").in("factory_id", myFactoryIds)
-        centerIds = (centers || []).map((c: any) => c.id)
+        centerIds = (centers || []).map((c: { id: number }) => c.id)
       }
       if (centerIds.length === 0) return { data: [], count: 0 }
       query = query.in("center_id", centerIds)
@@ -34,11 +33,11 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
 
   if (search) {
     const { data: centers } = await supabase.from("centers").select("id").ilike("name", `%${search}%`)
-    const centerIds = (centers || []).map((c: any) => c.id)
+    const centerIds = (centers || []).map((c: { id: number }) => c.id)
     const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
-    const profileIds = (profiles || []).map((p: any) => p.id)
+    const profileIds = (profiles || []).map((p: { id: number }) => p.id)
     const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
-    const customerIds = (customers || []).map((c: any) => c.id)
+    const customerIds = (customers || []).map((c: { id: number }) => c.id)
 
     const orConditions: string[] = [`vehicle_number.ilike.%${search}%`]
     if (centerIds.length > 0) orConditions.push(`center_id.in.(${centerIds.join(",")})`)
@@ -53,10 +52,9 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
     customer_name: "customer_id",
   })
 
-  const { data, count, error } = await query
-  if (error) throw new Error(error.message)
+  const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = (data || []).map((item: any) => ({
+  const enrichedData = data.map((item) => ({
     ...item,
     center_name: item.center?.name,
     profile_name: item.profile?.name,
@@ -69,5 +67,5 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
     unit: item.rate?.unit,
   }))
 
-  return { data: enrichedData, count: count || 0 }
+  return { data: enrichedData, count }
 }

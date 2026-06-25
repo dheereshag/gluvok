@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { getScopingFilter, applyPaginationAndSorting, type PaginatedParams } from "../scoping"
+import { getScopingFilter, applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
   const { search } = params
@@ -17,7 +16,7 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
     const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", myFactoryIds)
     const userProfileId = scope.userProfileId
     const allowedProfileIds = Array.from(new Set([
-      ...(profiles || []).map((p: any) => p.id),
+      ...(profiles || []).map((p: { id: number }) => p.id),
       userProfileId
     ].filter(Boolean) as number[]))
     query = query.in("id", allowedProfileIds)
@@ -25,11 +24,11 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
   if (search) {
     const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-    const factoryIds = (factories || []).map((f: any) => f.id)
+    const factoryIds = (factories || []).map((f: { id: number }) => f.id)
     let profileIdsFromFactories: number[] = []
     if (factoryIds.length > 0) {
       const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", factoryIds)
-      profileIdsFromFactories = (profiles || []).map((p: any) => p.id)
+      profileIdsFromFactories = (profiles || []).map((p: { id: number }) => p.id)
     }
 
     const orConditions: string[] = [
@@ -42,13 +41,12 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
   query = applyPaginationAndSorting(query, params, { factory_name: "factory_id" })
 
-  const { data, count, error } = await query
-  if (error) throw new Error(error.message)
+  const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = (data || []).map((item: any) => ({
+  const enrichedData = data.map((item) => ({
     ...item,
     factory_name: item.factory?.name || "",
   }))
 
-  return { data: enrichedData, count: count || 0 }
+  return { data: enrichedData, count }
 }
