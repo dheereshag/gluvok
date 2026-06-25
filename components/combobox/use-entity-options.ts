@@ -1,7 +1,5 @@
 import * as React from "react"
-import { useAuthStore, filterOptionsForUser } from "@/lib/store"
 import { ENTITY_EXTRACTORS, type Entity } from "./entity-extractors"
-import { type EntityRecord } from "@/types"
 import { fetchEntityList } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
 import { SystemSlug } from "@/lib/constants/enums"
@@ -9,7 +7,6 @@ import { SystemSlug } from "@/lib/constants/enums"
 export function useEntityOptions(entitySlug: string, contextSlug?: string, fieldKey?: string) {
   const [options, setOptions] = React.useState<{ value: string; label: string }[]>([])
   const [loading, setLoading] = React.useState(true)
-  const user = useAuthStore((state) => state.user)
 
   React.useEffect(() => {
     let active = true
@@ -27,16 +24,13 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
 
         if (!active) return
 
-        const filteredList = entitySlug === SystemSlug.USERS 
-          ? rawList 
-          : filterOptionsForUser(entitySlug, rawList as EntityRecord[], user)
         const extractor = ENTITY_EXTRACTORS[entitySlug]
         if (!extractor) {
           setOptions([])
           return
         }
 
-        const opts = filteredList.map((item) => {
+        const opts = rawList.map((item) => {
           const { id, name } = extractor(item)
           const displayId = id.length > 8 ? `${id.substring(0, 8)}...` : id
           return {
@@ -55,7 +49,7 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
     return () => {
       active = false
     }
-  }, [entitySlug, user, contextSlug, fieldKey])
+  }, [entitySlug, contextSlug, fieldKey])
 
   return { options, loading }
 }

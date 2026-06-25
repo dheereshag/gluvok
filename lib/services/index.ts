@@ -27,6 +27,26 @@ export function slugToTable(slug: ProjectSlug | string): string {
   }
 }
 
+interface ScopingFilter {
+  isSuperAdmin: boolean
+  factoryId?: number
+  userProfileId?: number
+}
+
+async function getScopingFilter(): Promise<ScopingFilter | null> {
+  const { useAuthStore } = await import("@/lib/store/auth")
+  const { Role } = await import("@/lib/constants/enums")
+  
+  const currentUser = useAuthStore.getState().user
+  if (!currentUser) return null
+
+  return {
+    isSuperAdmin: currentUser.role === Role.SUPER_ADMIN,
+    factoryId: currentUser.profile?.factory_id ? Number(currentUser.profile.factory_id) : undefined,
+    userProfileId: currentUser.profile?.id ? Number(currentUser.profile.id) : undefined,
+  }
+}
+
 export async function fetchCenters(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("centers").select(`
     *,
@@ -35,6 +55,11 @@ export async function fetchCenters(id?: number): Promise<EntityRecord[]> {
 
   if (id !== undefined) {
     query = query.eq("id", id)
+  } else {
+    const scope = await getScopingFilter()
+    if (scope && !scope.isSuperAdmin && scope.factoryId) {
+      query = query.eq("factory_id", scope.factoryId)
+    }
   }
 
   const { data, error } = await query
@@ -65,6 +90,11 @@ export async function fetchRates(id?: number): Promise<EntityRecord[]> {
 
   if (id !== undefined) {
     query = query.eq("id", id)
+  } else {
+    const scope = await getScopingFilter()
+    if (scope && !scope.isSuperAdmin && scope.factoryId) {
+      query = query.eq("factory_id", scope.factoryId)
+    }
   }
 
   const { data, error } = await query
@@ -111,6 +141,20 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
 
   if (id !== undefined) {
     query = query.eq("id", id)
+  } else {
+    const scope = await getScopingFilter()
+    if (scope && !scope.isSuperAdmin && scope.factoryId) {
+      const { data: centers } = await supabase
+        .from("centers")
+        .select("id")
+        .eq("factory_id", scope.factoryId)
+      const centerIds = (centers || []).map((c: any) => c.id)
+      if (centerIds.length > 0) {
+        query = query.in("center_id", centerIds)
+      } else {
+        return []
+      }
+    }
   }
 
   const { data, error } = await query
@@ -144,18 +188,8 @@ export async function fetchEntityListPaginated(
   const from = page * pageSize
   const to = from + pageSize - 1
 
-  const { useAuthStore } = await import("@/lib/store/auth")
-  const { Role } = await import("@/lib/constants/enums")
-
-  const currentUser = useAuthStore.getState().user
-  let myFactoryIds: number[] = []
-
-  if (currentUser && currentUser.role !== Role.SUPER_ADMIN && currentUser.profile) {
-    const factoryId = currentUser.profile.factory_id
-    if (factoryId) {
-      myFactoryIds = [factoryId]
-    }
-  }
+  const scope = await getScopingFilter()
+  const myFactoryIds: number[] = scope?.factoryId ? [scope.factoryId] : []
 
   const table = slugToTable(slug)
   let selectString = "*"
@@ -211,7 +245,7 @@ export async function fetchEntityListPaginated(
   const queryTable = slug === ProjectSlug.PROFILES ? "profiles_with_email" : table
   let query = supabase.from(queryTable).select(selectString, { count: "exact" })
 
-  if (currentUser && currentUser.role !== Role.SUPER_ADMIN) {
+  if (scope && !scope.isSuperAdmin) {
     switch (slug) {
       case ProjectSlug.FACTORIES:
         query = query.in("id", myFactoryIds)
@@ -232,7 +266,7 @@ export async function fetchEntityListPaginated(
       }
       case ProjectSlug.PROFILES: {
         const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", myFactoryIds)
-        const userProfileId = currentUser?.profile?.id
+        const userProfileId = scope.userProfileId
         const allowedProfileIds = Array.from(new Set([
           ...(profiles || []).map((p: any) => p.id),
           userProfileId
@@ -439,6 +473,11 @@ export async function fetchFactories(id?: number): Promise<EntityRecord[]> {
 
   if (id !== undefined) {
     query = query.eq("id", id)
+  } else {
+    const scope = await getScopingFilter()
+    if (scope && !scope.isSuperAdmin && scope.factoryId) {
+      query = query.eq("id", scope.factoryId)
+    }
   }
 
   const { data, error } = await query
@@ -458,6 +497,19 @@ export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
 
   if (id !== undefined) {
     query = query.eq("id", id)
+  } else {
+    const scope = await getScopingFilter()
+    if (scope && !scope.isSuperAdmin) {
+      const userProfileId = scope.userProfileId
+      const factoryId = scope.factoryId
+      if (factoryId) {
+        query = query.or(`factory_id.eq.${factoryId},id.eq.${userProfileId}`)
+      } else if (userProfileId) {
+        query = query.eq("id", userProfileId)
+      } else {
+        return []
+      }
+    }
   }
 
   const { data, error } = await query
