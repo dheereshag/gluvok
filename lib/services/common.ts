@@ -2,15 +2,15 @@
 import { supabase } from "@/lib/supabase"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { type EntityRecord } from "@/types"
-import { fetchCenters } from "./centers"
+import { fetchCenters, fetchCentersPaginated } from "./centers"
 import { fetchCommodities } from "./commodities"
-import { fetchRates } from "./rates"
-import { fetchCustomers } from "./customers"
-import { fetchWeighments } from "./weighments"
-import { fetchFactories } from "./factories"
-import { fetchProfiles } from "./profiles"
+import { fetchRates, fetchRatesPaginated } from "./rates"
+import { fetchCustomers, fetchCustomersPaginated } from "./customers"
+import { fetchWeighments, fetchWeighmentsPaginated } from "./weighments"
+import { fetchFactories, fetchFactoriesPaginated } from "./factories"
+import { fetchProfiles, fetchProfilesPaginated } from "./profiles"
 import { fetchVillages } from "./villages"
-
+import { type PaginatedParams } from "./scoping"
 
 export function slugToTable(slug: ProjectSlug | string): string {
   switch (slug) {
@@ -30,7 +30,6 @@ export function slugToTable(slug: ProjectSlug | string): string {
       return "profiles"
     case ProjectSlug.VILLAGES:
       return "villages"
-
     default:
       throw new Error(`Unknown project slug: ${slug}`)
   }
@@ -100,311 +99,27 @@ export async function fetchEntityList(slug: ProjectSlug | string): Promise<Entit
 
 export async function fetchEntityListPaginated(
   slug: ProjectSlug,
-  params: {
-    page: number
-    pageSize: number
-    sortColumn?: string
-    sortDesc?: boolean
-    search?: string
-  }
+  params: PaginatedParams
 ): Promise<{ data: EntityRecord[]; count: number }> {
-  const { page, pageSize, sortColumn, sortDesc, search } = params
-  const from = page * pageSize
-  const to = from + pageSize - 1
-
-  const { useAuthStore } = await import("@/lib/store/auth")
-  const { Role } = await import("@/lib/constants/enums")
-
-  const currentUser = useAuthStore.getState().user
-  let myFactoryIds: number[] = []
-
-  if (currentUser && currentUser.role !== Role.SUPER_ADMIN && currentUser.profile) {
-    const factoryId = currentUser.profile.factory_id
-    if (factoryId) {
-      myFactoryIds = [factoryId]
-    }
-  }
-
-  const table = slugToTable(slug)
-  let selectString = "*"
-
   switch (slug) {
     case ProjectSlug.CENTERS:
-      selectString = `
-        *,
-        factory:factories(id, name)
-      `
-      break
+      return fetchCentersPaginated(params)
     case ProjectSlug.RATES:
-      selectString = `
-        *,
-        commodity:commodities(id, name),
-        factory:factories(id, name)
-      `
-      break
+      return fetchRatesPaginated(params)
     case ProjectSlug.CUSTOMERS:
-      selectString = `
-        *,
-        village:villages(id, name),
-        affiliations:affiliations(
-          factory_id,
-          factory:factories(name)
-        )
-      `
-      break
+      return fetchCustomersPaginated(params)
     case ProjectSlug.WEIGHMENTS:
-      selectString = `
-        *,
-        center:centers(id, name),
-        profile:profiles(id, name, aadhar_number),
-        customer:customers(id, name, govt_id),
-        rate:rates(id, unit_price, unit,
-          commodity:commodities(id, name)
-        )
-      `
-      break
+      return fetchWeighmentsPaginated(params)
     case ProjectSlug.FACTORIES:
-      selectString = `
-        *,
-        village:villages(id, name)
-      `
-      break
+      return fetchFactoriesPaginated(params)
     case ProjectSlug.PROFILES:
-      selectString = `
-        *,
-        factory:factories(name)
-      `
-      break
-
+      return fetchProfilesPaginated(params)
     default:
-      break
-  }
-
-  const queryTable = slug === ProjectSlug.PROFILES ? "profiles_with_email" : table
-  let query = supabase.from(queryTable).select(selectString, { count: "exact" })
-
-  if (currentUser && currentUser.role !== Role.SUPER_ADMIN) {
-    switch (slug) {
-      case ProjectSlug.FACTORIES:
-        query = query.in("id", myFactoryIds)
-        break
-      case ProjectSlug.CENTERS:
-      case ProjectSlug.RATES:
-        query = query.in("factory_id", myFactoryIds)
-        break
-      case ProjectSlug.WEIGHMENTS: {
-        let centerIds: number[] = []
-        if (myFactoryIds.length > 0) {
-          const { data: centers } = await supabase.from("centers").select("id").in("factory_id", myFactoryIds)
-          centerIds = (centers || []).map((c: any) => c.id)
-        }
-        if (centerIds.length === 0) return { data: [], count: 0 }
-        query = query.in("center_id", centerIds)
-        break
-      }
-      case ProjectSlug.PROFILES: {
-        const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", myFactoryIds)
-        const userProfileId = currentUser?.profile?.id
-        const allowedProfileIds = Array.from(new Set([
-          ...(profiles || []).map((p: any) => p.id),
-          userProfileId
-        ].filter(Boolean) as number[]))
-        query = query.in("id", allowedProfileIds)
-        break
-      }
-      case ProjectSlug.CUSTOMERS: {
-        const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", myFactoryIds)
-        const allowedCustomerIds = (affiliations || []).map((a: any) => a.customer_id)
-        query = query.in("id", allowedCustomerIds)
-        break
-      }
-      default:
-        break
-    }
-  }
-
-  if (search) {
-    switch (slug) {
-      case ProjectSlug.CENTERS: {
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        if (factoryIds.length > 0) {
-          query = query.or(`name.ilike.%${search}%,factory_id.in.(${factoryIds.join(",")})`)
-        } else {
-          query = query.ilike("name", `%${search}%`)
-        }
-        break
-      }
-      case ProjectSlug.RATES: {
-        const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
-        const commodityIds = (commodities || []).map((c: any) => c.id)
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        
-        const orConditions: string[] = [`unit.ilike.%${search}%`]
-        if (commodityIds.length > 0) orConditions.push(`commodity_id.in.(${commodityIds.join(",")})`)
-        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
-        query = query.or(orConditions.join(","))
-        break
-      }
-      case ProjectSlug.CUSTOMERS: {
-        const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
-        const villageIds = (villages || []).map((v: any) => v.id)
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        
-        let customerIdsFromFactories: number[] = []
-        if (factoryIds.length > 0) {
-          const { data: affiliations } = await supabase.from("affiliations").select("customer_id").in("factory_id", factoryIds)
-          customerIdsFromFactories = (affiliations || []).map((a: any) => a.customer_id)
-        }
-
-        const orConditions: string[] = [
-          `name.ilike.%${search}%`,
-          `father_name.ilike.%${search}%`
-        ]
-        if (villageIds.length > 0) orConditions.push(`village_id.in.(${villageIds.join(",")})`)
-        if (customerIdsFromFactories.length > 0) orConditions.push(`id.in.(${customerIdsFromFactories.join(",")})`)
-        query = query.or(orConditions.join(","))
-        break
-      }
-      case ProjectSlug.WEIGHMENTS: {
-        const { data: centers } = await supabase.from("centers").select("id").ilike("name", `%${search}%`)
-        const centerIds = (centers || []).map((c: any) => c.id)
-        const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
-        const profileIds = (profiles || []).map((p: any) => p.id)
-        const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
-        const customerIds = (customers || []).map((c: any) => c.id)
-
-        const orConditions: string[] = [`vehicle_number.ilike.%${search}%`]
-        if (centerIds.length > 0) orConditions.push(`center_id.in.(${centerIds.join(",")})`)
-        if (profileIds.length > 0) orConditions.push(`profile_id.in.(${profileIds.join(",")})`)
-        if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
-        query = query.or(orConditions.join(","))
-        break
-      }
-      case ProjectSlug.FACTORIES: {
-        const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
-        const villageIds = (villages || []).map((v: any) => v.id)
-        if (villageIds.length > 0) {
-          query = query.or(`name.ilike.%${search}%,village_id.in.(${villageIds.join(",")})`)
-        } else {
-          query = query.ilike("name", `%${search}%`)
-        }
-        break
-      }
-      case ProjectSlug.PROFILES: {
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        let profileIdsFromFactories: number[] = []
-        if (factoryIds.length > 0) {
-          const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", factoryIds)
-          profileIdsFromFactories = (profiles || []).map((p: any) => p.id)
-        }
-
-        const orConditions: string[] = [
-          `name.ilike.%${search}%`,
-          `aadhar_number.ilike.%${search}%`
-        ]
-        if (profileIdsFromFactories.length > 0) orConditions.push(`id.in.(${profileIdsFromFactories.join(",")})`)
-        query = query.or(orConditions.join(","))
-        break
-      }
-
-      case ProjectSlug.VILLAGES: {
-        query = query.or(`name.ilike.%${search}%,state.ilike.%${search}%`)
-        break
-      }
-      default:
-        query = query.ilike("name", `%${search}%`)
-        break
-    }
-  }
-
-  const sortMap: Record<string, string> = {
-    factory_name: "factory_id",
-    commodity_name: "commodity_id",
-    center_name: "center_id",
-    profile_name: "profile_id",
-    customer_name: "customer_id",
-  }
-
-  const mappedSortColumn = sortColumn ? sortMap[sortColumn] || sortColumn : "created_at"
-  query = query.order(mappedSortColumn, { ascending: !sortDesc })
-  query = query.range(from, to)
-
-  const { data, count, error } = await query
-  if (error) throw new Error(error.message)
-
-  let enrichedData: EntityRecord[] = []
-  const rawList = data || []
-
-  switch (slug) {
-    case ProjectSlug.CENTERS:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        factory_name: item.factory?.name,
-      }))
-      break
-    case ProjectSlug.RATES:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        commodity_name: item.commodity?.name,
-        factory_name: item.factory?.name,
-      }))
-      break
-    case ProjectSlug.CUSTOMERS:
-      enrichedData = rawList.map((item: any) => {
-        const factory_ids = item.affiliations?.map((a: any) => a.factory_id) || []
-        const factory_names = item.affiliations?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
-        return {
-          ...item,
-          village_name: item.village?.name,
-          factory_ids,
-          factory_names,
-        }
-      })
-      break
-    case ProjectSlug.WEIGHMENTS:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        center_name: item.center?.name,
-        profile_name: item.profile?.name,
-        profile_aadhar: item.profile?.aadhar_number,
-        customer_name: item.customer?.name,
-        customer_govt_id: item.customer?.govt_id,
-        commodity_id: item.rate?.commodity?.id,
-        commodity_name: item.rate?.commodity?.name,
-        unit_price: item.rate?.unit_price,
-        unit: item.rate?.unit,
-      }))
-      break
-    case ProjectSlug.FACTORIES:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        village_name: item.village?.name,
-      }))
-      break
-    case ProjectSlug.PROFILES:
-      enrichedData = rawList.map((item: any) => {
-        return {
-          ...item,
-          factory_name: item.factory?.name,
-        }
-      })
-      break
-
-    default:
-      enrichedData = rawList as unknown as EntityRecord[]
-      break
-  }
-
-  return {
-    data: enrichedData,
-    count: count || 0,
+      throw new Error(`Pagination not configured for slug: ${slug}`)
   }
 }
 
+// Mutate functions
 export async function insertRow(slug: ProjectSlug, record: any): Promise<EntityRecord> {
   const table = slugToTable(slug)
   const { data, error } = await supabase.from(table).insert(record).select("id").maybeSingle()

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
+import { getScopingFilter, executeAndOrderList } from "../scoping"
 
 export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("weighments").select(`
@@ -13,14 +14,29 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
     )
   `)
 
-  if (id !== undefined) {
-    query = query.eq("id", id)
+  if (id === undefined) {
+    const scope = await getScopingFilter()
+    if (scope) {
+      if (scope.customerId) {
+        query = query.eq("customer_id", scope.customerId)
+      } else if (!scope.isSuperAdmin && scope.factoryId) {
+        const { data: centers } = await supabase
+          .from("centers")
+          .select("id")
+          .eq("factory_id", scope.factoryId)
+        const centerIds = (centers || []).map((c: any) => c.id)
+        if (centerIds.length > 0) {
+          query = query.in("center_id", centerIds)
+        } else {
+          return []
+        }
+      }
+    }
   }
 
-  const { data, error } = await query
-  if (error) throw new Error(error.message)
+  const data = await executeAndOrderList(query, id)
 
-  return (data || []).map((item: any) => ({
+  return data.map((item: any) => ({
     ...item,
     center_name: item.center?.name,
     profile_name: item.profile?.name,
