@@ -22,34 +22,8 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   triggerEntitiesUpdate: () => set((state) => ({ entitiesUpdatedTrigger: state.entitiesUpdatedTrigger + 1 })),
 
   addEntity: async (slug, key, newE) => {
-    const enrichedRecord = await insertRow(slug, newE)
-
+    await insertRow(slug, newE)
     get().triggerEntitiesUpdate()
-
-    // Auto-assign admin/creator to new factory
-    if (slug === ProjectSlug.FACTORIES) {
-      const currentUser = useAuthStore.getState().user
-      if (currentUser && currentUser.profile && !currentUser.profile.factory_id) {
-        try {
-          await get().updateEntity(ProjectSlug.PROFILES, "id", currentUser.profile.id, {
-            factory_id: enrichedRecord.id,
-          })
-          
-          // Sync profile factory_id locally in auth store
-          useAuthStore.setState({
-            user: {
-              ...currentUser,
-              profile: {
-                ...currentUser.profile,
-                factory_id: enrichedRecord.id,
-              }
-            }
-          })
-        } catch (err) {
-          console.error("Auto-assignment for new factory failed:", err)
-        }
-      }
-    }
   },
 
   updateEntity: async (slug, key, id, fields) => {
@@ -105,6 +79,3 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   },
 }))
 
-export function resetAllEntitiesData() {
-  useAuthStore.getState().resetAuth()
-}

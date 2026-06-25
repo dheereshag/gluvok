@@ -25,7 +25,6 @@ interface AuthStore {
   registerUser: (user: { name: string; email: string; password?: string }) => Promise<{ success: boolean; requiresVerification: boolean }>
   resetPassword: (email: string, newPassword: string) => Promise<boolean>
   setHydrated: (state: boolean) => void
-  resetAuth: () => void
 }
 
 async function fetchAndSetProfile(
@@ -187,10 +186,6 @@ export const useAuthStore = create<AuthStore>()(
         return true
       },
       setHydrated: (state) => set({ hydrated: state }),
-      resetAuth: () => {
-        supabase.auth.signOut()
-        set({ user: null })
-      },
     }),
     {
       name: "gluvok-auth-storage",
