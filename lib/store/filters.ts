@@ -1,6 +1,6 @@
 import { Role } from "@/lib/constants/enums"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile, type Assignment } from "@/types"
+import { type EntityRecord, type Factory, type Center, type Rate, type Weighment, type Profile } from "@/types"
 import { type AuthUser } from "./auth"
 
 export function filterEntitiesForUser(
@@ -19,21 +19,12 @@ export function filterEntitiesForUser(
           return rawData
         default: {
           // Scope by factory assignments for all other roles (ADMIN, MANAGER, OPERATOR, BASE)
-          const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
           let myFactoryIds: number[] = []
-          switch (!!myProfile) {
-            case true: {
-              const profileId = myProfile!.id
-              myFactoryIds = allAssignments
-                .filter((a) => Number(a.profile_id) === Number(profileId))
-                .map((a) => Number(a.factory_id))
-              break
-            }
-            default:
-              break
+          if (myProfile && myProfile.factory_id) {
+            myFactoryIds = [Number(myProfile.factory_id)]
           }
 
           switch (projectSlug as ProjectSlug) {
@@ -46,13 +37,10 @@ export function filterEntitiesForUser(
             case ProjectSlug.RATES:
               return rawData.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
 
-            case ProjectSlug.ASSIGNMENTS:
-              return rawData.filter((item) => myFactoryIds.includes(Number((item as Assignment).factory_id)))
-
             case ProjectSlug.PROFILES: {
-              const profileIdsInMyFactories = allAssignments
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.profile_id))
+              const profileIdsInMyFactories = allProfiles
+                .filter((p) => myFactoryIds.includes(Number(p.factory_id)))
+                .map((p) => Number(p.id))
                 .filter(Boolean)
               return rawData.filter((item) => {
                 const profile = item as Profile
@@ -100,21 +88,12 @@ export function filterOptionsForUser(
         case Role.SUPER_ADMIN:
           return dataList
         default: {
-          const allAssignments = (allEntities[ProjectSlug.ASSIGNMENTS] || []) as Assignment[]
           const allProfiles = (allEntities[ProjectSlug.PROFILES] || []) as Profile[]
           const myProfile = allProfiles.find((p) => String(p.user_id).trim().toLowerCase() === String(user.id).trim().toLowerCase())
 
           let myFactoryIds: number[] = []
-          switch (!!myProfile) {
-            case true: {
-              const profileId = myProfile!.id
-              myFactoryIds = allAssignments
-                .filter((a) => Number(a.profile_id) === Number(profileId))
-                .map((a) => Number(a.factory_id))
-              break
-            }
-            default:
-              break
+          if (myProfile && myProfile.factory_id) {
+            myFactoryIds = [Number(myProfile.factory_id)]
           }
 
           switch (entitySlug as ProjectSlug) {
@@ -128,9 +107,9 @@ export function filterOptionsForUser(
               return dataList.filter((item) => myFactoryIds.includes(Number((item as Rate).factory_id)))
 
             case ProjectSlug.PROFILES: {
-              const profileIdsInMyFactories = allAssignments
-                .filter((a) => myFactoryIds.includes(Number(a.factory_id)))
-                .map((a) => Number(a.profile_id))
+              const profileIdsInMyFactories = allProfiles
+                .filter((p) => myFactoryIds.includes(Number(p.factory_id)))
+                .map((p) => Number(p.id))
                 .filter(Boolean)
               return dataList.filter((item) => {
                 const profile = item as Profile

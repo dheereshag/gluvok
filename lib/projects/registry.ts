@@ -7,7 +7,6 @@ import {
   UserCog,
   Home,
   Tag,
-  UserCheck,
 } from "lucide-react";
 import { ProjectName, ProjectSlug } from "@/lib/constants/enums";
 
@@ -25,5 +24,4 @@ export const PROJECT_REGISTRY: Record<string, ProjectConfig> = {
   [ProjectSlug.FACTORIES]: { name: ProjectName.FACTORIES, icon: Factory },
   [ProjectSlug.PROFILES]: { name: ProjectName.PROFILES, icon: UserCog },
   [ProjectSlug.VILLAGES]: { name: ProjectName.VILLAGES, icon: Home },
-  [ProjectSlug.ASSIGNMENTS]: { name: ProjectName.ASSIGNMENTS, icon: UserCheck },
 };

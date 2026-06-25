@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { User, Mail, ShieldCheck, Tag, Factory, Home } from "lucide-react"
+import { User, Mail, ShieldCheck, Tag, Home } from "lucide-react"
 import { EntityKey, ProjectSlug } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { createTextColumn, createIdColumn, createCustomColumn } from "./helpers"
@@ -19,9 +19,5 @@ export function getCustomersColumns<T>(): ColumnDef<T>[] {
     createTextColumn(EntityKey.FATHER_NAME, ColumnLabel.FATHER_NAME, User, "text-muted-foreground text-xs"),
     createIdColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home),
     createTextColumn("village_name", ColumnLabel.VILLAGE_NAME, Home),
-    createCustomColumn("factory_ids", ColumnLabel.FACTORY_ID, Factory, (val) => {
-      return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
-    }),
-    createTextColumn("factory_names", ColumnLabel.FACTORY_NAME, Factory),
   ]
 }

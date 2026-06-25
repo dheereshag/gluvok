@@ -129,7 +129,6 @@ export enum ProjectSlug {
   FACTORIES = "factories",
   PROFILES = "profiles",
   VILLAGES = "villages",
-  ASSIGNMENTS = "assignments",
 }
 
 export enum FieldType {
@@ -205,5 +204,9 @@ export enum ProjectName {
   FACTORIES = "Factories",
   PROFILES = "Profiles",
   VILLAGES = "Villages",
-  ASSIGNMENTS = "Assignments",
 }
+
+export enum SystemSlug {
+  USERS = "users",
+}
+

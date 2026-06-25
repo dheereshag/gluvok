@@ -51,7 +51,11 @@ export function useProjectTable({
     columns.forEach((col) => {
       const colId = col.id || ('accessorKey' in col ? String(col.accessorKey) : undefined)
       if (colId) {
-        visibility[colId] = savedVisibleColumns.includes(colId)
+        if (colId === "actions" || colId === "select") {
+          visibility[colId] = true
+        } else {
+          visibility[colId] = savedVisibleColumns.includes(colId)
+        }
       }
     })
     return visibility

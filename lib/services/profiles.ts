@@ -5,10 +5,7 @@ import { type EntityRecord } from "@/types"
 export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("profiles_with_email").select(`
     *,
-    assignments:assignments(
-      factory_id,
-      factory:factories(name)
-    )
+    factory:factories(name)
   `)
 
   if (id !== undefined) {
@@ -19,12 +16,9 @@ export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
   if (error) throw new Error(error.message)
 
   return (data || []).map((item: any) => {
-    const factory_ids = item.assignments?.map((a: any) => a.factory_id) || []
-    const factory_names = item.assignments?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
     return {
       ...item,
-      factory_ids,
-      factory_names,
+      factory_name: item.factory?.name || "",
     }
   })
 }

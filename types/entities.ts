@@ -53,17 +53,6 @@ export interface Factory {
   village_name?: string
 }
 
-export interface Assignment {
-  id: number
-  factory_id: number
-  profile_id: number
-  created_at: string
-  updated_at: string
-  // Flattened join fields
-  profile_name?: string
-  factory_name?: string
-}
-
 
 export interface Village {
   id: number
@@ -106,10 +95,11 @@ export interface Profile {
   preferences?: Record<string, string[]>
   created_at: string
   updated_at: string
+  factory_id?: number | null
+  factory?: { name: string } | null
   // Flattened join/view fields
   email?: string
-  factory_ids?: number[]
-  factory_names?: string
+  factory_name?: string
 }
 
 /** Union of all entity types used across the app */
@@ -122,4 +112,4 @@ export type EntityRecord =
   | Factory
   | Profile
   | Village
-  | Assignment
+

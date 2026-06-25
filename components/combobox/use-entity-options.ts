@@ -4,6 +4,7 @@ import { ENTITY_EXTRACTORS, type Entity } from "./entity-extractors"
 import { type EntityRecord } from "@/types"
 import { fetchEntityList } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
+import { SystemSlug } from "@/lib/constants/enums"
 
 export function useEntityOptions(entitySlug: string, contextSlug?: string, fieldKey?: string) {
   const [options, setOptions] = React.useState<{ value: string; label: string }[]>([])
@@ -17,7 +18,7 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
       try {
         setLoading(true)
         let rawList: Entity[] = []
-        if (entitySlug === "users") {
+        if (entitySlug === SystemSlug.USERS) {
           const { data, error } = await supabase.rpc("get_users")
           if (error) throw new Error(error.message)
           rawList = data || []
@@ -27,7 +28,7 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
 
         if (!active) return
 
-        const filteredList = entitySlug === "users" 
+        const filteredList = entitySlug === SystemSlug.USERS 
           ? rawList 
           : filterOptionsForUser(entitySlug, rawList as EntityRecord[], user, allEntities)
         const extractor = ENTITY_EXTRACTORS[entitySlug]

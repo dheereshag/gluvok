@@ -7,7 +7,7 @@ import { addWeighmentSchema, editWeighmentSchema } from "./weighments"
 import { addFactorySchema, editFactorySchema } from "./factories"
 import { addProfileSchema, editProfileSchema } from "./profiles"
 import { addVillageSchema, editVillageSchema } from "./villages"
-import { addAssignmentSchema, editAssignmentSchema } from "./assignments"
+
 
 export type EntityAddSchema =
   | typeof addCenterSchema
@@ -18,7 +18,6 @@ export type EntityAddSchema =
   | typeof addFactorySchema
   | typeof addProfileSchema
   | typeof addVillageSchema
-  | typeof addAssignmentSchema
 
 export type EntityEditSchema =
   | typeof editCenterSchema
@@ -29,7 +28,6 @@ export type EntityEditSchema =
   | typeof editFactorySchema
   | typeof editProfileSchema
   | typeof editVillageSchema
-  | typeof editAssignmentSchema
 
 export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.CENTERS]: addCenterSchema,
@@ -40,7 +38,6 @@ export const ENTITY_ADD_SCHEMAS: Record<ProjectSlug, EntityAddSchema> = {
   [ProjectSlug.FACTORIES]: addFactorySchema,
   [ProjectSlug.PROFILES]: addProfileSchema,
   [ProjectSlug.VILLAGES]: addVillageSchema,
-  [ProjectSlug.ASSIGNMENTS]: addAssignmentSchema,
 }
 
 export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
@@ -52,5 +49,4 @@ export const ENTITY_EDIT_SCHEMAS: Record<ProjectSlug, EntityEditSchema> = {
   [ProjectSlug.FACTORIES]: editFactorySchema,
   [ProjectSlug.PROFILES]: editProfileSchema,
   [ProjectSlug.VILLAGES]: editVillageSchema,
-  [ProjectSlug.ASSIGNMENTS]: editAssignmentSchema,
 }

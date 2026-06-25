@@ -22,8 +22,6 @@ export function slugToTable(slug: ProjectSlug | string): string {
       return "profiles"
     case ProjectSlug.VILLAGES:
       return "villages"
-    case ProjectSlug.ASSIGNMENTS:
-      return "assignments"
     default:
       throw new Error(`Unknown project slug: ${slug}`)
   }
@@ -153,14 +151,10 @@ export async function fetchEntityListPaginated(
   let myFactoryIds: number[] = []
 
   if (currentUser && currentUser.role !== Role.SUPER_ADMIN && currentUser.profile) {
-    const profileId = currentUser.profile.id
-    const { data: assignments, error: assignmentsError } = await supabase
-      .from("assignments")
-      .select("factory_id")
-      .eq("profile_id", profileId)
-
-    if (assignmentsError) throw new Error(assignmentsError.message)
-    myFactoryIds = (assignments || []).map((a: any) => a.factory_id)
+    const factoryId = currentUser.profile.factory_id
+    if (factoryId) {
+      myFactoryIds = [factoryId]
+    }
   }
 
   const table = slugToTable(slug)
@@ -206,17 +200,7 @@ export async function fetchEntityListPaginated(
     case ProjectSlug.PROFILES:
       selectString = `
         *,
-        assignments:assignments(
-          factory_id,
-          factory:factories(name)
-        )
-      `
-      break
-    case ProjectSlug.ASSIGNMENTS:
-      selectString = `
-        *,
-        profile:profiles(id, name),
-        factory:factories(id, name)
+        factory:factories(name)
       `
       break
 
@@ -234,7 +218,6 @@ export async function fetchEntityListPaginated(
         break
       case ProjectSlug.CENTERS:
       case ProjectSlug.RATES:
-      case ProjectSlug.ASSIGNMENTS:
         query = query.in("factory_id", myFactoryIds)
         break
       case ProjectSlug.WEIGHMENTS: {
@@ -248,10 +231,10 @@ export async function fetchEntityListPaginated(
         break
       }
       case ProjectSlug.PROFILES: {
-        const { data: assignments } = await supabase.from("assignments").select("profile_id").in("factory_id", myFactoryIds)
+        const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", myFactoryIds)
         const userProfileId = currentUser?.profile?.id
         const allowedProfileIds = Array.from(new Set([
-          ...(assignments || []).map((a: any) => a.profile_id),
+          ...(profiles || []).map((p: any) => p.id),
           userProfileId
         ].filter(Boolean) as number[]))
         query = query.in("id", allowedProfileIds)
@@ -333,8 +316,8 @@ export async function fetchEntityListPaginated(
         const factoryIds = (factories || []).map((f: any) => f.id)
         let profileIdsFromFactories: number[] = []
         if (factoryIds.length > 0) {
-          const { data: assignments } = await supabase.from("assignments").select("profile_id").in("factory_id", factoryIds)
-          profileIdsFromFactories = (assignments || []).map((a: any) => a.profile_id)
+          const { data: profiles } = await supabase.from("profiles").select("id").in("factory_id", factoryIds)
+          profileIdsFromFactories = (profiles || []).map((p: any) => p.id)
         }
 
         const orConditions: string[] = [
@@ -343,22 +326,6 @@ export async function fetchEntityListPaginated(
         ]
         if (profileIdsFromFactories.length > 0) orConditions.push(`id.in.(${profileIdsFromFactories.join(",")})`)
         query = query.or(orConditions.join(","))
-        break
-      }
-      case ProjectSlug.ASSIGNMENTS: {
-        const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
-        const profileIds = (profiles || []).map((p: any) => p.id)
-        const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-        const factoryIds = (factories || []).map((f: any) => f.id)
-        
-        const orConditions: string[] = []
-        if (profileIds.length > 0) orConditions.push(`profile_id.in.(${profileIds.join(",")})`)
-        if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
-        if (orConditions.length > 0) {
-          query = query.or(orConditions.join(","))
-        } else {
-          return { data: [], count: 0 }
-        }
         break
       }
 
@@ -434,21 +401,11 @@ export async function fetchEntityListPaginated(
       break
     case ProjectSlug.PROFILES:
       enrichedData = rawList.map((item: any) => {
-        const factory_ids = item.assignments?.map((a: any) => a.factory_id) || []
-        const factory_names = item.assignments?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
         return {
           ...item,
-          factory_ids,
-          factory_names,
+          factory_name: item.factory?.name,
         }
       })
-      break
-    case ProjectSlug.ASSIGNMENTS:
-      enrichedData = rawList.map((item: any) => ({
-        ...item,
-        profile_name: item.profile?.name,
-        factory_name: item.factory?.name,
-      }))
       break
 
     default:
@@ -484,10 +441,7 @@ export async function fetchFactories(id?: number): Promise<EntityRecord[]> {
 export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
   let query = supabase.from("profiles_with_email").select(`
     *,
-    assignments:assignments(
-      factory_id,
-      factory:factories(name)
-    )
+    factory:factories(name)
   `)
 
   if (id !== undefined) {
@@ -498,12 +452,9 @@ export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
   if (error) throw new Error(error.message)
 
   return (data || []).map((item: any) => {
-    const factory_ids = item.assignments?.map((a: any) => a.factory_id) || []
-    const factory_names = item.assignments?.map((a: any) => a.factory?.name).filter(Boolean).join(", ") || ""
     return {
       ...item,
-      factory_ids,
-      factory_names,
+      factory_name: item.factory?.name || "",
     }
   })
 }
@@ -516,27 +467,6 @@ export async function fetchVillages(id?: number): Promise<EntityRecord[]> {
   const { data, error } = await query
   if (error) throw new Error(error.message)
   return data || []
-}
-
-export async function fetchAssignments(id?: number): Promise<EntityRecord[]> {
-  let query = supabase.from("assignments").select(`
-    *,
-    profile:profiles(id, name),
-    factory:factories(id, name)
-  `)
-
-  if (id !== undefined) {
-    query = query.eq("id", id)
-  }
-
-  const { data, error } = await query
-  if (error) throw new Error(error.message)
-
-  return (data || []).map((item: any) => ({
-    ...item,
-    profile_name: item.profile?.name,
-    factory_name: item.factory?.name,
-  }))
 }
 
 
@@ -569,9 +499,6 @@ export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<
     case ProjectSlug.VILLAGES:
       list = await fetchVillages(id)
       break
-    case ProjectSlug.ASSIGNMENTS:
-      list = await fetchAssignments(id)
-      break
 
     default:
       throw new Error(`No fetch configured for single entity slug: ${slug}`)
@@ -601,8 +528,6 @@ export async function fetchEntityList(slug: ProjectSlug | string): Promise<Entit
       return fetchProfiles()
     case ProjectSlug.VILLAGES:
       return fetchVillages()
-    case ProjectSlug.ASSIGNMENTS:
-      return fetchAssignments()
 
     default:
       throw new Error(`Unknown project slug: ${slug}`)

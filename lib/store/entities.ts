@@ -6,7 +6,7 @@ import { type EntityRecord, type Profile } from "@/types"
 import { getField } from "./helpers"
 import { ProjectSlug, Role } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
-import { fetchAssignments, fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
+import { fetchProfiles, fetchEntityList, insertRow, updateRow, deleteRow } from "@/lib/services"
 import { getPermissions } from "./access"
 
 interface EntitiesState {
@@ -40,11 +40,6 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       if (needsAccessData) {
         const state = get()
         const fetches: Promise<any>[] = []
-        if (!state.entities[ProjectSlug.ASSIGNMENTS]) {
-          fetches.push(fetchAssignments().then(d => {
-            set((s) => ({ entities: { ...s.entities, [ProjectSlug.ASSIGNMENTS]: d } }))
-          }))
-        }
         if (!state.entities[ProjectSlug.PROFILES]) {
           fetches.push(fetchProfiles().then(d => {
             set((s) => ({ entities: { ...s.entities, [ProjectSlug.PROFILES]: d } }))
@@ -97,18 +92,11 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
         const userProfile = activeProfiles.find(
           (p) => String(p.user_id).trim().toLowerCase() === String(currentUserId).trim().toLowerCase()
         )
-        if (userProfile) {
+        if (userProfile && !userProfile.factory_id) {
           try {
-            const newAssignment = await insertRow(ProjectSlug.ASSIGNMENTS, {
+            await get().updateEntity(ProjectSlug.PROFILES, "id", userProfile.id, {
               factory_id: enrichedRecord.id,
-              profile_id: userProfile.id,
             })
-            set((state) => ({
-              entities: {
-                ...state.entities,
-                [ProjectSlug.ASSIGNMENTS]: [newAssignment, ...(state.entities[ProjectSlug.ASSIGNMENTS] || [])],
-              },
-            }))
           } catch (err) {
             console.error("Auto-assignment for new factory failed:", err)
           }

@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import React from "react"
 import { ChevronsUpDown, Check, LucideIcon } from "lucide-react"
 import { Combobox, ComboboxTrigger, ComboboxContent, ComboboxInput, ComboboxList, ComboboxEmpty, ComboboxGroup, ComboboxItem } from "@/components/kibo-ui/combobox"
 import { getItemIcon } from "@/lib/fields"

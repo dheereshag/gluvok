@@ -76,10 +76,6 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder("Village"), type: FieldType.TEXT, icon: Home },
   ],
-  [ProjectSlug.ASSIGNMENTS]: [
-    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
-    { key: EntityKey.PROFILE_ID, label: ColumnLabel.PROFILE, placeholder: getSelectPlaceholder("Profile"), type: FieldType.TEXT, icon: User },
-  ],
   [ProjectSlug.PROFILES]: [
     {
       key: EntityKey.AADHAR_NUMBER,
@@ -97,6 +93,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.USER_ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder("User"), type: FieldType.TEXT, icon: Hash },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Amit Sharma", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.ROLE, label: ColumnLabel.ROLE, placeholder: "Select role...", type: FieldType.ROLE, icon: ShieldCheck },
+    { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder("Factory"), type: FieldType.TEXT, icon: Factory },
   ],
   [ProjectSlug.VILLAGES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ludhiana", type: FieldType.TEXT, icon: Tag },

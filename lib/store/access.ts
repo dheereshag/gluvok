@@ -17,7 +17,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: true, delete: true },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
-    [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
   },
   [Role.ADMIN]: {
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: true },
@@ -28,7 +27,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: true, delete: true },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: true },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: true },
-    [ProjectSlug.ASSIGNMENTS]: { read: true, write: true, delete: true },
   },
   [Role.MANAGER]: {
     [ProjectSlug.PROFILES]: { read: true, write: true, delete: false },
@@ -39,7 +37,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: true, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
-    [ProjectSlug.ASSIGNMENTS]: { read: true, write: false, delete: false },
   },
   [Role.OPERATOR]: {
     [ProjectSlug.PROFILES]: { read: true, write: false, delete: false },
@@ -50,7 +47,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: false, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: true, write: true, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: true, delete: false },
-    [ProjectSlug.ASSIGNMENTS]: { read: true, write: false, delete: false },
   },
   [Role.BASE]: {
     [ProjectSlug.PROFILES]: { read: true, write: false, delete: false },
@@ -61,7 +57,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.RATES]: { read: true, write: false, delete: false },
     [ProjectSlug.CUSTOMERS]: { read: true, write: false, delete: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: false, delete: false },
-    [ProjectSlug.ASSIGNMENTS]: { read: true, write: false, delete: false },
   },
 }
 

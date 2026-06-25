@@ -15,6 +15,7 @@ const baseProfileSchema = z.object({
   [EntityKey.ROLE]: z.enum(Role, {
     message: "Please select a valid role",
   }),
+  [EntityKey.FACTORY_ID]: z.coerce.number().optional().nullable(),
 })
 
 export const addProfileSchema = baseProfileSchema
@@ -33,4 +34,5 @@ export const editProfileSchema = z.object({
   [EntityKey.ROLE]: z.nativeEnum(Role, {
     message: "Please select a valid role",
   }),
+  [EntityKey.FACTORY_ID]: z.coerce.number().optional().nullable(),
 })
