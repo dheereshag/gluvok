@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useEntitiesStore, getField, getEntityDisplayName } from "@/lib/store"
+import { useEntitiesStore, getField } from "@/lib/store"
 import { type DeleteContentProps } from "./types"
 import { getSingularName } from "@/lib/utils"
 import { ProjectSlug } from "@/lib/constants/enums"
@@ -18,25 +18,24 @@ export function DeleteEntityDialogContent({
   onOpenChange, projectSlug, projectName, primaryIdKey, item, items, onSuccess, customDisplayName, onConfirm
 }: DeleteContentProps) {
   const deleteEntity = useEntitiesStore((state) => state.deleteEntity)
-  const isBulk = items && items.length > 1
+  const isBulk = !!items && items.length > 0
   const count = items?.length || 0
 
   const onDeleteConfirm = async () => {
-    if (onConfirm) {
-      onConfirm()
-      onOpenChange(false)
-      return
-    }
-
     try {
-      const pName = projectName || "Item"
-      if (isBulk) {
-        await Promise.all(items.map(i => deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, String(getField(i, primaryIdKey!)))))
-        toast.success(`${count} ${pName.toLowerCase()} deleted successfully`)
-      } else if (item) {
-        await deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, String(getField(item, primaryIdKey!)))
-        const singularName = getSingularName(pName)
-        const primaryKeyValue = String(getField(item, primaryIdKey!))
+      if (onConfirm) {
+        await onConfirm()
+      } else if (isBulk) {
+        await Promise.all(items.map(i => {
+          const idVal = getField(i, primaryIdKey!)
+          return deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, idVal as string | number)
+        }))
+        toast.success(`${projectName} records deleted successfully`)
+      } else {
+        const idVal = getField(item!, primaryIdKey!)
+        const primaryKeyValue = String(idVal || "")
+        await deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, idVal as string | number)
+        const singularName = getSingularName(projectName || "Item")
         toast.success(`${singularName} "${primaryKeyValue}" deleted successfully`)
       }
       
@@ -51,7 +50,7 @@ export function DeleteEntityDialogContent({
 
   const displayName = customDisplayName || (isBulk
     ? `${count} selected items`
-    : getEntityDisplayName(item, projectSlug!, primaryIdKey!))
+    : item ? `ID: ${getField(item, primaryIdKey!)}` : "")
 
   return (
     <>
