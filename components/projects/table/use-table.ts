@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 import { type EntityRecord } from "@/types"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel } from "@tanstack/react-table"
 import { useReactTable } from "@/lib/utils"
@@ -91,7 +91,7 @@ export function useProjectTable({
       setDebouncedFilter(globalFilter)
       // Reset to first page when search filter changes
       setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-    }, 300)
+    }, 0)
 
     return () => {
       clearTimeout(handler)
@@ -144,11 +144,11 @@ export function useProjectTable({
     manualSorting: true,
     manualFiltering: true,
     pageCount: Math.ceil(localCount / pagination.pageSize),
-    state: { 
-      sorting, 
-      columnFilters, 
-      columnVisibility, 
-      rowSelection, 
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
       globalFilter,
       pagination,
     },
@@ -163,7 +163,7 @@ export function useProjectTable({
       .map((col) => col.id)
       .filter((id) => id !== "actions")
 
-    const hasDiff = !savedVisibleColumns || 
+    const hasDiff = !savedVisibleColumns ||
       savedVisibleColumns.length !== visibleColumnsList.length ||
       visibleColumnsList.some(colId => !savedVisibleColumns.includes(colId))
 
