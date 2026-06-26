@@ -3,6 +3,7 @@ import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, Shield
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { cn } from "@/lib/utils"
+import { type Weighment } from "@/types"
 import { createTextColumn, createBaseColumn, createCustomColumn, createIdColumn } from "./helpers"
 import { WeighmentImagesCell } from "./weighments-cell"
 
@@ -22,9 +23,19 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       ),
       enableGlobalFilter: false,
     },
-    createCustomColumn(EntityKey.WEIGHT, ColumnLabel.WEIGHT, Weight, (val) => {
-      return <div className="font-mono text-xs font-semibold text-foreground">{val} tons</div>
-    }),
+    createBaseColumn(
+      EntityKey.WEIGHT,
+      ColumnLabel.WEIGHT,
+      Weight,
+      ({ row }) => {
+        const val = row.original as Weighment
+        return (
+          <div className="font-mono text-xs font-semibold text-foreground">
+            {val.weight} {val.unit || "kg"}
+          </div>
+        )
+      }
+    ),
     createIdColumn("rate_id", ColumnLabel.RATE_ID, Package),
     createIdColumn("center_id", ColumnLabel.CENTER_ID, Building),
     createTextColumn("center_name", ColumnLabel.CENTER_NAME, Building),

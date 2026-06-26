@@ -68,6 +68,7 @@ export interface Weighment {
   id: number
   vehicle_number: string
   weight: string
+  unit: Unit
   images: string[]
   rate_id: number
   center_id: number
@@ -85,7 +86,6 @@ export interface Weighment {
   commodity_id?: number
   commodity_name?: string
   unit_price?: string
-  unit?: Unit
 }
 
 export interface Profile {

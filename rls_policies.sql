@@ -16,6 +16,10 @@ END; $$;
 -- Add missing factory_id column to customers table
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS factory_id int REFERENCES factories(id);
 
+-- Add missing unit column to weighments table
+ALTER TABLE weighments ADD COLUMN IF NOT EXISTS unit unit_enum NOT NULL DEFAULT 'kg';
+
+
 -- 1. Helper functions to avoid multiple joins in RLS policies
 
 -- Get current user's role from profiles

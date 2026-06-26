@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { State, ColumnLabel } from "@/lib/constants/enums"
+import { State, ColumnLabel, Unit } from "@/lib/constants/enums"
 import { EntityKey } from "@/lib/constants/enums"
 import { integerIdSchema } from "./helpers"
 
@@ -22,6 +22,7 @@ export const addWeighmentSchema = z.object({
       }
     ),
   [EntityKey.WEIGHT]: z.coerce.number({ message: `${ColumnLabel.WEIGHT} must be a number` }).positive(`Measured ${ColumnLabel.WEIGHT.toLowerCase()} must be a positive number`),
+  [EntityKey.UNIT]: z.enum(Unit, { message: `${ColumnLabel.UNIT} must be a valid unit (kg, q, or gal)` }),
   [EntityKey.RATE_ID]: integerIdSchema(ColumnLabel.RATE),
   [EntityKey.CENTER_ID]: integerIdSchema(ColumnLabel.CENTER),
   [EntityKey.PROFILE_ID]: integerIdSchema(ColumnLabel.PROFILE),
@@ -31,3 +32,4 @@ export const addWeighmentSchema = z.object({
 })
 
 export const editWeighmentSchema = addWeighmentSchema
+

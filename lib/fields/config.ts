@@ -55,6 +55,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     },
     { key: EntityKey.IMAGES, label: ColumnLabel.IMAGES, placeholder: "Upload weighment photos...", type: FieldType.IMAGES, icon: Image },
     { key: EntityKey.WEIGHT, label: ColumnLabel.WEIGHT, placeholder: "e.g. 15.5", type: FieldType.NUMBER, icon: Weight },
+    { key: EntityKey.UNIT, label: ColumnLabel.UNIT, placeholder: "Select unit...", type: FieldType.UNIT, icon: Weight },
     { key: EntityKey.RATE_ID, label: ColumnLabel.RATE, placeholder: getSelectPlaceholder("Rate"), type: FieldType.TEXT, icon: Package },
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER, placeholder: getSelectPlaceholder("Center"), type: FieldType.TEXT, icon: Building },
     {
