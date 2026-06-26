@@ -1,19 +1,15 @@
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 
-import { executeAndOrderList, getScopingFilter } from "../scoping"
+import { executeAndOrderList } from "../scoping"
 
 export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
-  let query = supabase.from("customers").select(`
+  const query = supabase.from("customers").select(`
     *,
     village:villages(id, name)
   `)
 
   if (id === undefined) {
-    const scope = await getScopingFilter()
-    if (scope && !scope.isSuperAdmin && scope.factoryId) {
-      query = query.eq("factory_id", scope.factoryId)
-    }
   }
 
   const data = await executeAndOrderList(query, id)

@@ -1,22 +1,15 @@
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { getScopingFilter, applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
   const { search } = params
-  const scope = await getScopingFilter()
-  const myFactoryIds = scope?.factoryId ? [scope.factoryId] : []
 
   let query = supabase.from("rates").select(`
     *,
     commodity:commodities(id, name),
     factory:factories(id, name)
   `, { count: "exact" })
-
-  if (scope && !scope.isSuperAdmin) {
-    query = query.in("factory_id", myFactoryIds)
-  }
-
   if (search) {
     const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
     const commodityIds = (commodities || []).map((c: { id: number }) => c.id)

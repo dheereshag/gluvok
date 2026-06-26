@@ -37,6 +37,7 @@ export interface Customer {
   father_name: string
   village_id: number
   user_id?: string
+  factory_id: number
   created_at: string
   updated_at: string
   // Flattened join fields

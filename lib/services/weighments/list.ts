@@ -1,9 +1,9 @@
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { getScopingFilter, executeAndOrderList } from "../scoping"
+import { executeAndOrderList } from "../scoping"
 
 export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
-  let query = supabase.from("weighments").select(`
+  const query = supabase.from("weighments").select(`
     *,
     center:centers(id, name),
     profile:profiles(id, name, aadhar_number),
@@ -13,25 +13,6 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
     )
   `)
 
-  if (id === undefined) {
-    const scope = await getScopingFilter()
-    if (scope) {
-      if (scope.customerId) {
-        query = query.eq("customer_id", scope.customerId)
-      } else if (!scope.isSuperAdmin && scope.factoryId) {
-        const { data: centers } = await supabase
-          .from("centers")
-          .select("id")
-          .eq("factory_id", scope.factoryId)
-        const centerIds = (centers || []).map((c: { id: number }) => c.id)
-        if (centerIds.length > 0) {
-          query = query.in("center_id", centerIds)
-        } else {
-          return []
-        }
-      }
-    }
-  }
 
   const data = await executeAndOrderList(query, id)
 

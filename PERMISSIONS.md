@@ -17,11 +17,14 @@ Source: [lib/store/access.ts](lib/store/access.ts) (RBAC_MATRIX)
 | Rates (rates) | R, W, D | R, W, D | R, W | R | R |
 | Customers (customers) | R, W, D | R, W, D | R, W | R, W | R |
 | Weighments (weighments) | R, W, D | R, W, D | R, W | R, W | R |
-| Assignments (assignments) | R, W, D | R, W, D | R | R | R |
-
 
 Notes:
 - `Write` covers both Create and Update operations in the codebase (`write: boolean`).
 - The matrix is authoritative as defined in `lib/store/access.ts`.
 
-If you want this merged into the main `README.md` or exported as CSV/JSON, I can add that next.
+### Data Isolation (Row Level Security)
+- **Multi-Tenant Model:** The application implements a multi-tenant isolation strategy based on `factory_id`.
+- **Super Admin Bypass:** The `SUPER_ADMIN` role has unrestricted access and bypasses all `factory_id` filters.
+- **Factory Scope:** `Profiles`, `Customers`, `Centers`, `Rates`, and `Weighments` are strictly isolated so users can only access data belonging to their assigned `factory_id`.
+- **Factory Entities:** `ADMIN` users can only edit their own assigned factory and cannot create new ones.
+- **Weighments for Customers:** Customers can only view weighment records where `weighment.customer_id` matches their own `customer_id`.
