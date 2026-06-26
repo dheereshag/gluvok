@@ -18,7 +18,7 @@ export function ProjectToolbar<TData>({
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const user = useAuthStore((state) => state.user)
   const permissions = getPermissions(user?.role, projectSlug)
-  const canWrite = permissions.write
+  const canCreate = permissions.create
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -51,7 +51,7 @@ export function ProjectToolbar<TData>({
             >
               <RotateCw className="h-4 w-4" />
             </Button>
-            {canWrite && (
+            {canCreate && (
               <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
                 <Plus className="h-4 w-4" />
                 Add {projectName}

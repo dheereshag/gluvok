@@ -19,11 +19,14 @@ const data = [
 ]
 
 export function RoleCombobox({ value, onChange, id }: RoleComboboxProps) {
+  // Exclude SUPER_ADMIN from selection options unless it is already the selected value
+  const filteredData = data.filter((item) => item.value !== Role.SUPER_ADMIN || value === Role.SUPER_ADMIN)
+
   return (
     <BaseCombobox
       value={value}
       onChange={onChange}
-      data={data}
+      data={filteredData}
       type="role"
       icon={Shield}
       placeholder="Select role..."
@@ -31,3 +34,4 @@ export function RoleCombobox({ value, onChange, id }: RoleComboboxProps) {
     />
   )
 }
+
