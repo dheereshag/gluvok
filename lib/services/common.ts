@@ -3,13 +3,13 @@ import { supabase } from "@/lib/supabase"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { type EntityRecord } from "@/types"
 import { fetchCenters, fetchCentersPaginated } from "./centers"
-import { fetchCommodities } from "./commodities"
+import { fetchCommodities, fetchCommoditiesPaginated } from "./commodities"
 import { fetchRates, fetchRatesPaginated } from "./rates"
 import { fetchCustomers, fetchCustomersPaginated } from "./customers"
 import { fetchWeighments, fetchWeighmentsPaginated } from "./weighments"
 import { fetchFactories, fetchFactoriesPaginated } from "./factories"
 import { fetchProfiles, fetchProfilesPaginated } from "./profiles"
-import { fetchVillages } from "./villages"
+import { fetchVillages, fetchVillagesPaginated } from "./villages"
 import { type PaginatedParams } from "./scoping"
 
 export function slugToTable(slug: ProjectSlug | string): string {
@@ -114,6 +114,10 @@ export async function fetchEntityListPaginated(
       return fetchFactoriesPaginated(params)
     case ProjectSlug.PROFILES:
       return fetchProfilesPaginated(params)
+    case ProjectSlug.VILLAGES:
+      return fetchVillagesPaginated(params)
+    case ProjectSlug.COMMODITIES:
+      return fetchCommoditiesPaginated(params)
     default:
       throw new Error(`Pagination not configured for slug: ${slug}`)
   }
