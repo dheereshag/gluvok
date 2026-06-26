@@ -9,7 +9,5 @@ export const addCommoditySchema = z.object({
   [EntityKey.NAME]: commodityNameField,
 })
 
-export const editCommoditySchema = z.object({
-  [EntityKey.ID]: z.coerce.number().optional(),
-  [EntityKey.NAME]: commodityNameField,
-})
+export const editCommoditySchema = addCommoditySchema
+

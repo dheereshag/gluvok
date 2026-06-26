@@ -21,7 +21,6 @@ const baseProfileSchema = z.object({
 export const addProfileSchema = baseProfileSchema
 
 export const editProfileSchema = z.object({
-  [EntityKey.ID]: z.coerce.number().optional(),
   [EntityKey.AADHAR_NUMBER]: z
     .preprocess(
       (val) => typeof val === "string" ? val.replace(/\s/g, "") : val,
