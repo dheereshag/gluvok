@@ -144,17 +144,23 @@ CREATE TABLE public.customers (
   father_name VARCHAR(255) NOT NULL,
   village_id INTEGER NOT NULL,
   user_id UUID UNIQUE,
+  factory_id INTEGER NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
   CONSTRAINT fk_customer_auth_user
     FOREIGN KEY (user_id)
     REFERENCES auth.users(id)
-    ON DELETE RESTRICT,
+    ON DELETE SET NULL,
     
   CONSTRAINT fk_customer_village
     FOREIGN KEY (village_id)
     REFERENCES public.villages(id)
+    ON DELETE RESTRICT,
+    
+  CONSTRAINT fk_customer_factory
+    FOREIGN KEY (factory_id)
+    REFERENCES public.factories(id)
     ON DELETE RESTRICT
 );
 

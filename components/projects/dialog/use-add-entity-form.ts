@@ -32,6 +32,12 @@ export function useAddEntityForm({
     switch (open) {
       case true: {
         const defaultVals: Record<string, unknown> = { is_active: true }
+        
+        const userFactoryId = currentUser?.profile?.factory_id ? String(currentUser.profile.factory_id) : ""
+        if (userFactoryId && fields.some(f => f.key === EntityKey.FACTORY_ID)) {
+          defaultVals[EntityKey.FACTORY_ID] = userFactoryId
+        }
+
         switch (projectSlug as ProjectSlug) {
           case ProjectSlug.WEIGHMENTS:
             switch (!!userProfileId) {
@@ -51,7 +57,7 @@ export function useAddEntityForm({
       default:
         break
     }
-  }, [open, form, projectSlug, userProfileId])
+  }, [open, form, projectSlug, userProfileId, currentUser, fields])
 
   const onSubmit = async (values: FieldValues) => {
     try {

@@ -57,7 +57,8 @@ export function EntityDialogContent({
               break
           }
 
-          const disabled = isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin
+          const disabled = (isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin) ||
+                           (field.key === EntityKey.FACTORY_ID && !isSuperAdmin)
 
           switch (field.type) {
             case FieldType.CHECKBOX:
