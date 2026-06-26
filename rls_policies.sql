@@ -8,23 +8,19 @@
 DO $$ 
 DECLARE 
   r RECORD; 
-BEGIN 
-  FOR r IN (
-    SELECT schemaname, tablename, policyname 
-    FROM pg_policies 
-    WHERE schemaname = 'public'
-  ) LOOP 
-    EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename); 
-  END LOOP; 
-END $$;
+END; $$;
 */
 -- ============================================================================
+
+-- 0. Schema Updates
+-- Add missing factory_id column to customers table
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS factory_id int REFERENCES factories(id);
 
 -- 1. Helper functions to avoid multiple joins in RLS policies
 
 -- Get current user's role from profiles
 CREATE OR REPLACE FUNCTION current_user_role() RETURNS text AS $$
-  SELECT role FROM profiles WHERE user_id = auth.uid() LIMIT 1;
+  SELECT role::text FROM profiles WHERE user_id = auth.uid() LIMIT 1;
 $$ LANGUAGE sql SECURITY DEFINER;
 
 -- Get current user's factory_id from either profiles or customers
@@ -48,7 +44,7 @@ DROP POLICY IF EXISTS "profiles_isolation_policy" ON profiles;
 CREATE POLICY "profiles_isolation_policy" ON profiles
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR factory_id = current_user_factory_id()
 );
 
@@ -60,7 +56,7 @@ DROP POLICY IF EXISTS "customers_isolation_policy" ON customers;
 CREATE POLICY "customers_isolation_policy" ON customers
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR factory_id = current_user_factory_id()
 );
 
@@ -74,12 +70,12 @@ DROP POLICY IF EXISTS "factories_isolation_policy" ON factories;
 CREATE POLICY "factories_isolation_policy" ON factories
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR id = current_user_factory_id()
 )
 WITH CHECK (
-  current_user_role() = 'SUPER_ADMIN'
-  OR (id = current_user_factory_id() AND current_user_role() = 'ADMIN') -- Admin can edit
+  current_user_role() = 'super_admin'
+  OR (id = current_user_factory_id() AND current_user_role() = 'admin') -- Admin can edit
 );
 
 
@@ -90,7 +86,7 @@ DROP POLICY IF EXISTS "centers_isolation_policy" ON centers;
 CREATE POLICY "centers_isolation_policy" ON centers
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR factory_id = current_user_factory_id()
 );
 
@@ -102,7 +98,7 @@ DROP POLICY IF EXISTS "rates_isolation_policy" ON rates;
 CREATE POLICY "rates_isolation_policy" ON rates
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR factory_id = current_user_factory_id()
 );
 
@@ -116,7 +112,7 @@ DROP POLICY IF EXISTS "weighments_isolation_policy" ON weighments;
 CREATE POLICY "weighments_isolation_policy" ON weighments
 FOR ALL TO authenticated
 USING (
-  current_user_role() = 'SUPER_ADMIN'
+  current_user_role() = 'super_admin'
   OR (
     center_id IN (SELECT id FROM centers WHERE factory_id = current_user_factory_id())
     AND
@@ -128,4 +124,61 @@ USING (
       customer_id = current_customer_id()
     )
   )
+);
+
+
+-- 8. Villages
+-- Read: Anyone who is authenticated and has a profile/customer record (factory_id is not null) or SUPER_ADMIN
+-- Write: SUPER_ADMIN only
+ALTER TABLE villages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "villages_select_policy" ON villages;
+CREATE POLICY "villages_select_policy" ON villages
+FOR SELECT TO authenticated
+USING (
+  current_user_factory_id() IS NOT NULL
+  OR current_user_role() = 'super_admin'
+);
+
+DROP POLICY IF EXISTS "villages_all_policy" ON villages;
+CREATE POLICY "villages_all_policy" ON villages
+FOR ALL TO authenticated
+USING (current_user_role() = 'super_admin')
+WITH CHECK (current_user_role() = 'super_admin');
+
+
+-- 9. Commodities
+-- Read: Anyone who is authenticated and has a profile/customer record or SUPER_ADMIN
+-- Write: SUPER_ADMIN only
+ALTER TABLE commodities ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "commodities_select_policy" ON commodities;
+CREATE POLICY "commodities_select_policy" ON commodities
+FOR SELECT TO authenticated
+USING (
+  current_user_factory_id() IS NOT NULL
+  OR current_user_role() = 'super_admin'
+);
+
+DROP POLICY IF EXISTS "commodities_all_policy" ON commodities;
+CREATE POLICY "commodities_all_policy" ON commodities
+FOR ALL TO authenticated
+USING (current_user_role() = 'super_admin')
+WITH CHECK (current_user_role() = 'super_admin');
+
+
+-- ============================================================================
+-- IMPORTANT FIX: Recreate the 'profiles_with_email' view WITHOUT security_invoker.
+-- This allows it to run as Owner (Security Definer) so it has access to 'auth.users'.
+-- To keep it secure and enforce tenant isolation, we add the WHERE clause filter.
+-- ============================================================================
+DROP VIEW IF EXISTS profiles_with_email;
+
+CREATE OR REPLACE VIEW profiles_with_email AS
+SELECT p.*, u.email
+FROM profiles p
+LEFT JOIN auth.users u ON p.user_id = u.id
+WHERE (
+  current_user_role() = 'super_admin'
+  OR p.factory_id = current_user_factory_id()
 );
