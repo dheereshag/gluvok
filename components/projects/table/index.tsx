@@ -32,7 +32,7 @@ export function ProjectTable<TData>({ table, isLoading, columnsCount }: ProjectT
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="hover:bg-muted/10 transition-colors duration-150 border-b last:border-b-0 data-[state=selected]:bg-muted/20"
+                className="hover:bg-muted/10 transition-colors duration-150 border-b last:border-b-0"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id} className="py-3 text-xs">
