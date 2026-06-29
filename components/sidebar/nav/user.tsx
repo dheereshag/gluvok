@@ -17,6 +17,7 @@ export function NavUser({ user }: { user: UserInfo }) {
               id="user-menu-trigger"
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              closeOnMobileClick={false}
             >
               <UserAvatarInfo user={user} />
               <ChevronsUpDownIcon className="ml-auto size-4" />
