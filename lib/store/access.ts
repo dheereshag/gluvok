@@ -69,7 +69,7 @@ export function getPermissions(role: Role | null | undefined, projectSlug: strin
 }
 
 export function hasPageAccess(role: Role | null | undefined, projectSlug: string): boolean {
-  return getPermissions(role, projectSlug).read
+  return getPermissions(role, projectSlug).write
 }
 
 export function hasWriteAccess(role: Role | null | undefined, projectSlug: string): boolean {

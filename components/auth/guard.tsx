@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore, hasPageAccess } from "@/lib/store"
 import { AppRoutes } from "@/lib/constants/enums"
 import { AUTH_ROUTES } from "@/lib/constants"
-import { toast } from "sonner"
+import NotFound from "@/app/not-found"
 
 function FullScreenStatus({ message }: { message: string }) {
   return (
@@ -51,12 +51,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         router.push(AppRoutes.HOME)
         break
 
-      // 3. Authenticated users trying to access projects they don't have access to
-      case !!user && !!projectSlug && !isAuthorized:
-        toast.error("Access Denied: You do not have permission to access this page")
-        router.push(AppRoutes.HOME)
-        break
-
       default:
         break
     }
@@ -72,7 +66,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (user && projectSlug && !isAuthorized) {
-    return <FullScreenStatus message="Access Denied..." />
+    return <NotFound />
   }
 
   return <>{children}</>
