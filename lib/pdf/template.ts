@@ -6,12 +6,9 @@ export function generatePdfHtml(
   rowsHtml: string,
   selectedCount: number
 ): string {
-  const logoSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="background: #e0e7ff; padding: 6px; border-radius: 8px;">
-      <circle cx="12" cy="5" r="3" />
-      <path d="M4.5 12h15c.8 0 1.5.7 1.5 1.5v5c0 1.1-.9 2-2 2h-14c-1.1 0-2-.9-2-2v-5c0-.8.7-1.5 1.5-1.5z" />
-      <path d="M12 8v4" />
-    </svg>
+  const logoUrl = typeof window !== "undefined" ? `${window.location.origin}/logo.png` : "/logo.png"
+  const logoHtml = `
+    <img src="${logoUrl}" width="32" height="32" alt="gluvok logo" style="object-fit: contain; border-radius: 8px;" />
   `
   return `
     <!DOCTYPE html>
@@ -23,7 +20,7 @@ export function generatePdfHtml(
       <body>
         <header>
           <div class="brand">
-            ${logoSvg}
+            ${logoHtml}
             <div class="brand-text">
               <h1>gluvok</h1>
               <div class="subtitle">Scale Management Platform</div>
