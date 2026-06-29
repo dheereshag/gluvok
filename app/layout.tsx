@@ -13,8 +13,8 @@ import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout-wrapper";
 
 // Configured fonts via Next.js Google Fonts optimization
-const geist = Geist({ subsets: ['latin'] });
-const outfit = Outfit({ subsets: ['latin'] });
+const geist = Geist({ subsets: ['latin'], display: 'fallback' });
+const outfit = Outfit({ subsets: ['latin'], display: 'fallback' });
 
 /**
  * Root metadata settings for SEO and browser representation.
