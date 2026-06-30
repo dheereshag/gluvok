@@ -9,6 +9,7 @@ import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { PROJECT_FIELDS } from "@/lib/fields"
 import { ENTITY_ADD_SCHEMAS } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
+import { processImageUploadsAndDeletions } from "@/components/form/image/upload"
 
 export function useAddEntityForm({
   open,
@@ -61,6 +62,9 @@ export function useAddEntityForm({
 
   const onSubmit = async (values: FieldValues) => {
     try {
+      if (Array.isArray(values[EntityKey.IMAGES])) {
+        values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], [])
+      }
       await addEntity(projectSlug as ProjectSlug, primaryIdKey, values)
       toast.success(`${projectName} created successfully`)
       onOpenChange(false)

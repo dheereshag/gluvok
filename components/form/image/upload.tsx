@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
 import { Dropzone, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
@@ -9,6 +9,13 @@ import { supabase } from "@/lib/supabase"
 import { useAuthStore } from "@/lib/store"
 import { Role } from "@/lib/constants/enums"
 
+const BUCKET_NAME = "gluvok"
+const CACHE_CONTROL = "3600"
+const UPLOAD_PATH_FOLDER = "weighments"
+const PUBLIC_URL_INDICATOR = "/public/gluvok/"
+const MAX_IMAGE_FILES = 10
+const MAX_IMAGE_SIZE = 1024 * 1024 * 10 // 10MB
+
 interface ImageUploadProps {
   id?: string
   value?: string[]
@@ -16,25 +23,52 @@ interface ImageUploadProps {
   disabled?: boolean
 }
 
-export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
-  const [fileNameMap, setFileNameMap] = useState<Record<string, string>>({})
-  const user = useAuthStore((state) => state.user)
-  const factoryId = user?.profile?.factory_id ?? user?.customer?.factory_id
-  const isSuperAdmin = user?.role === Role.SUPER_ADMIN
+// Shared registry in memory mapping object URLs to original File objects
+export const pendingImageUploads = new Map<string, File>()
+
+export async function processImageUploadsAndDeletions(
+  submittedImages: string[],
+  originalImages: string[] = []
+): Promise<string[]> {
+  const currentUser = useAuthStore.getState().user
+  const factoryId = currentUser?.profile?.factory_id ?? currentUser?.customer?.factory_id
+  const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN
   const factoryPrefix = isSuperAdmin ? "global" : String(factoryId ?? "unknown")
 
-  const handleDrop = async (acceptedFiles: File[]) => {
-    toast.loading("Uploading images...", { id: "upload-progress" })
-    try {
-      const uploadPromises = acceptedFiles.map(async (file) => {
+  // 1. Identify which images to delete (present in original, but not in submitted)
+  const imagesToDelete = originalImages.filter((img) => !submittedImages.includes(img))
+  if (imagesToDelete.length > 0) {
+    const filePathsToDelete = imagesToDelete
+      .filter((img) => img.includes(PUBLIC_URL_INDICATOR))
+      .map((img) => img.split(PUBLIC_URL_INDICATOR)[1])
+
+    if (filePathsToDelete.length > 0) {
+      const { error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .remove(filePathsToDelete)
+      if (error) {
+        console.error("Failed to delete removed files from Supabase storage:", error.message)
+      }
+    }
+  }
+
+  // 2. Upload any new blob images
+  const finalImages = await Promise.all(
+    submittedImages.map(async (img) => {
+      if (img.startsWith("blob:")) {
+        const file = pendingImageUploads.get(img)
+        if (!file) {
+          throw new Error("Local file not found in memory")
+        }
+
         const fileExt = file.name.split(".").pop()
         const uniqueId = Math.random().toString(36).substring(2, 15) + "-" + Date.now()
-        const filePath = `f_${factoryPrefix}/weighments/${uniqueId}.${fileExt}`
+        const filePath = `f_${factoryPrefix}/${UPLOAD_PATH_FOLDER}/${uniqueId}.${fileExt}`
 
         const { error } = await supabase.storage
-          .from("gluvok")
+          .from(BUCKET_NAME)
           .upload(filePath, file, {
-            cacheControl: "3600",
+            cacheControl: CACHE_CONTROL,
             upsert: false,
           })
 
@@ -43,51 +77,67 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
         }
 
         const { data } = supabase.storage
-          .from("gluvok")
+          .from(BUCKET_NAME)
           .getPublicUrl(filePath)
 
-        return {
-          url: data.publicUrl,
-          name: file.name,
+        // Clear the file from memory
+        pendingImageUploads.delete(img)
+        URL.revokeObjectURL(img)
+
+        return data.publicUrl
+      }
+      return img
+    })
+  )
+
+  return finalImages
+}
+
+export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
+  const [fileNameMap, setFileNameMap] = useState<Record<string, string>>({})
+
+  const valueRef = useRef(value)
+
+  useEffect(() => {
+    valueRef.current = value
+  }, [value])
+
+  useEffect(() => {
+    return () => {
+      // Clean up object URLs on unmount to prevent memory leaks
+      valueRef.current.forEach((img) => {
+        if (img.startsWith("blob:")) {
+          pendingImageUploads.delete(img)
+          URL.revokeObjectURL(img)
         }
       })
+    }
+  }, [])
 
-      const results = await Promise.all(uploadPromises)
-
-      setFileNameMap((prev) => {
-        const next = { ...prev }
-        results.forEach((res) => {
-          next[res.url] = res.name
-        })
-        return next
+  const handleDrop = (acceptedFiles: File[]) => {
+    try {
+      const newBlobUrls = acceptedFiles.map((file) => {
+        const blobUrl = URL.createObjectURL(file)
+        pendingImageUploads.set(blobUrl, file)
+        setFileNameMap((prev) => ({ ...prev, [blobUrl]: file.name }))
+        return blobUrl
       })
 
-      const newUrls = results.map((res) => res.url)
-      onChange([...value, ...newUrls])
-      toast.success(`Successfully uploaded ${acceptedFiles.length} image(s)`, { id: "upload-progress" })
+      onChange([...value, ...newBlobUrls])
+      toast.success(`Selected ${acceptedFiles.length} image(s) for upload`)
     } catch (err: unknown) {
-      console.error("Error uploading files:", err)
-      const message = err instanceof Error ? err.message : "Failed to upload files to storage"
-      toast.error(message, { id: "upload-progress" })
+      console.error("Error reading files:", err)
+      toast.error("Failed to read files")
     }
   }
 
-  const handleRemove = async (indexToRemove: number) => {
+  const handleRemove = (indexToRemove: number) => {
     const urlToDelete = value[indexToRemove]
     onChange(value.filter((_, i) => i !== indexToRemove))
 
-    if (urlToDelete.includes("/public/gluvok/")) {
-      const filePath = urlToDelete.split("/public/gluvok/")[1]
-      const { error } = await supabase.storage
-        .from("gluvok")
-        .remove([filePath])
-
-      if (error) {
-        console.error("Failed to delete image from Supabase storage:", error.message)
-        toast.error("Failed to delete image from storage server")
-      } else {
-        toast.success("Image deleted from storage")
-      }
+    if (urlToDelete.startsWith("blob:")) {
+      pendingImageUploads.delete(urlToDelete)
+      URL.revokeObjectURL(urlToDelete)
     }
   }
 
@@ -105,8 +155,8 @@ export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps
       {!disabled && (
         <Dropzone
           accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
-          maxFiles={10}
-          maxSize={1024 * 1024 * 10}
+          maxFiles={MAX_IMAGE_FILES}
+          maxSize={MAX_IMAGE_SIZE}
           onDrop={handleDrop}
           onError={(err) => {
             console.error(err)

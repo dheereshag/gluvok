@@ -1,6 +1,6 @@
 "use client"
 
-import { Pencil, Plus, Save, X } from "lucide-react"
+import { Pencil, Plus, Save, X, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
@@ -102,11 +102,16 @@ export function EntityDialogContent({
           }
         })}
         <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
-          <Button id={`${mode}-entity-cancel`} type="button" variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5 h-8 px-3 text-xs">
+          <Button id={`${mode}-entity-cancel`} type="button" variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5 h-8 px-3 text-xs" disabled={form.formState.isSubmitting}>
             <X className="h-3.5 w-3.5" /> Cancel
           </Button>
-          <Button id={`${mode}-entity-submit`} type="submit" size="sm" className="gap-1.5 h-8 px-3 text-xs shadow-sm">
-            <Save className="h-3.5 w-3.5" /> {isEdit ? "Save changes" : `Save ${projectName}`}
+          <Button id={`${mode}-entity-submit`} type="submit" size="sm" className="gap-1.5 h-8 px-3 text-xs shadow-sm" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Save className="h-3.5 w-3.5" />
+            )}
+            {form.formState.isSubmitting ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save changes" : `Save ${projectName}`)}
           </Button>
         </DialogFooter>
       </form>
