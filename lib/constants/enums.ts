@@ -159,6 +159,7 @@ export enum EntityKey {
   PROFILE_ID = "profile_id",
   CUSTOMER_ID = "customer_id",
   EMAIL = "email",
+  USER_EMAIL = "user_email",
   ROLE = "role",
   CREATED_AT = "created_at",
   UPDATED_AT = "updated_at",

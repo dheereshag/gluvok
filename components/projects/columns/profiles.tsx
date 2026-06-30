@@ -10,16 +10,16 @@ export function getProfilesColumns<T>(): ColumnDef<T>[] {
 
   const columns: ColumnDef<T>[] = [
     createTextColumn(EntityKey.AADHAR_NUMBER, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
-    createTextColumn("email", ColumnLabel.EMAIL, Mail),
+    createTextColumn(EntityKey.EMAIL, ColumnLabel.EMAIL, Mail),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
   ]
 
   if (isSuperAdmin) {
     columns.push(
-      createCustomColumn("factory_id", ColumnLabel.FACTORY_ID, Factory, (val) => {
+      createCustomColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory, (val) => {
         return <div className="font-mono text-muted-foreground text-xs">{val || "—"}</div>
       }),
-      createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory)
+      createTextColumn(EntityKey.FACTORY_NAME, ColumnLabel.FACTORY_NAME, Factory)
     )
   }
 

@@ -3,12 +3,21 @@ import { IndianRupee, Weight, Tag, Factory } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { createCustomColumn, createTextColumn, createIdColumn } from "./helpers"
+import { getCommodityIcon } from "@/lib/fields"
 
 export function getRatesColumns<T>(): ColumnDef<T>[] {
   return [
-    createTextColumn("commodity_name", ColumnLabel.COMMODITY_NAME, Tag),
-    createIdColumn("factory_id", ColumnLabel.FACTORY_ID, Factory),
-    createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory),
+    createCustomColumn<T>(EntityKey.COMMODITY_NAME, ColumnLabel.COMMODITY_NAME, Tag, (val) => {
+      const Icon = getCommodityIcon(val)
+      return (
+        <div className="flex items-center gap-1.5 font-semibold text-foreground text-xs">
+          <Icon className="h-3.5 w-3.5 text-muted-foreground/75" />
+          {val}
+        </div>
+      )
+    }),
+    createIdColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory),
+    createTextColumn(EntityKey.FACTORY_NAME, ColumnLabel.FACTORY_NAME, Factory),
     createCustomColumn(EntityKey.UNIT_PRICE, ColumnLabel.UNIT_PRICE, IndianRupee, (val) => {
       const price = parseFloat(val)
       const formatted = new Intl.NumberFormat("en-IN", {

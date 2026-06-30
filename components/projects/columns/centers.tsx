@@ -7,7 +7,7 @@ import { createTextColumn, createIdColumn } from "./helpers"
 export function getCentersColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
-    createIdColumn("factory_id", ColumnLabel.FACTORY_ID, Factory),
-    createTextColumn("factory_name", ColumnLabel.FACTORY_NAME, Factory),
+    createIdColumn(EntityKey.FACTORY_ID, ColumnLabel.FACTORY_ID, Factory),
+    createTextColumn(EntityKey.FACTORY_NAME, ColumnLabel.FACTORY_NAME, Factory),
   ]
 }

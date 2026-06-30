@@ -7,7 +7,7 @@ import { createTextColumn, createIdColumn } from "./helpers"
 export function getFactoriesColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
-    createIdColumn("village_id", ColumnLabel.VILLAGE_ID, Home),
-    createTextColumn("village_name", ColumnLabel.VILLAGE_NAME, Home),
+    createIdColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home),
+    createTextColumn(EntityKey.VILLAGE_NAME, ColumnLabel.VILLAGE_NAME, Home),
   ]
 }
