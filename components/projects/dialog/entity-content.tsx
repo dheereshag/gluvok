@@ -6,7 +6,7 @@ import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/co
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
 import { FieldType, ProjectSlug, EntityKey } from "@/lib/constants/enums"
-import { isPrimaryKeyEditable } from "@/lib/fields"
+import { getSingularName } from "@/lib/fields"
 import { useAuthStore } from "@/lib/store"
 import { Role } from "@/lib/constants/enums"
 
@@ -16,15 +16,18 @@ export function EntityDialogContent({
   const currentUser = useAuthStore((state) => state.user)
   const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN
   const Icon = isEdit ? Pencil : Plus
+  const singularName = getSingularName(projectName)
   const desc = isEdit
     ? "Update the attributes of this record. Click save when done."
-    : `Enter the details for the new ${projectName.toLowerCase()}. Click save when done.`
+    : `Enter the details for the new ${singularName.toLowerCase()}. Click save when done.`
+
+  const originalText = isEdit ? "Save changes" : `Save ${singularName}`
 
   return (
     <>
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 text-foreground">
-          <Icon className="h-4 w-4 text-primary" /> {isEdit ? "Edit" : "Add"} {projectName}
+          <Icon className="h-4 w-4 text-primary" /> {isEdit ? "Edit" : "Add"} {singularName}
         </DialogTitle>
         <DialogDescription>{desc}</DialogDescription>
       </DialogHeader>
@@ -57,7 +60,7 @@ export function EntityDialogContent({
               break
           }
 
-          const disabled = (isEdit && field.key === primaryIdKey && !isPrimaryKeyEditable(projectSlug) && !isSuperAdmin) ||
+          const disabled = (isEdit && field.key === primaryIdKey) ||
                            (field.key === EntityKey.FACTORY_ID && !isSuperAdmin)
 
           switch (field.type) {
@@ -111,7 +114,7 @@ export function EntityDialogContent({
             ) : (
               <Save className="h-3.5 w-3.5" />
             )}
-            {form.formState.isSubmitting ? (isEdit ? "Saving..." : "Creating...") : (isEdit ? "Save changes" : `Save ${projectName}`)}
+            {originalText}
           </Button>
         </DialogFooter>
       </form>

@@ -211,3 +211,14 @@ export enum SystemSlug {
   USERS = "users",
 }
 
+export enum SingularEntityName {
+  CENTER = "Center",
+  COMMODITY = "Commodity",
+  RATE = "Rate",
+  CUSTOMER = "Customer",
+  WEIGHMENT = "Weighment",
+  FACTORY = "Factory",
+  PROFILE = "Profile",
+  VILLAGE = "Village",
+}
+

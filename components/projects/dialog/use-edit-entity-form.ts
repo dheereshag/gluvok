@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
 import { useEntitiesStore, getField } from "@/lib/store"
 import { ProjectSlug, FieldType, EntityKey } from "@/lib/constants/enums"
-import { PROJECT_FIELDS } from "@/lib/fields"
+import { PROJECT_FIELDS, getSingularName } from "@/lib/fields"
 import { ENTITY_EDIT_SCHEMAS, checkEditUniqueness } from "@/lib/validation"
 import { type EntityFormProps } from "./types"
 import { ActiveStatus } from "@/lib/constants/enums"
@@ -55,16 +55,17 @@ export function useEditEntityForm({
       return
     }
 
+    const singularName = getSingularName(projectName)
     try {
       if (Array.isArray(values[EntityKey.IMAGES])) {
         const originalImages = (getField(item, EntityKey.IMAGES) || []) as string[]
         values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], originalImages)
       }
       await updateEntity(projectSlug as ProjectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
-      toast.success(`${projectName} updated successfully`)
+      toast.success(`${singularName} updated successfully`)
       onOpenChange(false)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : `Failed to update ${projectName.toLowerCase()}`
+      const msg = err instanceof Error ? err.message : `Failed to update ${singularName.toLowerCase()}`
       toast.error(msg)
     }
   }

@@ -1,4 +1,4 @@
-import { ProjectSlug, EntityKey, CommodityName } from "@/lib/constants/enums"
+import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName } from "@/lib/constants/enums"
 import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
@@ -27,18 +27,10 @@ export function getReferencedEntitySlug(key: string | EntityKey): string | null 
     case EntityKey.CUSTOMER_ID:
       return ProjectSlug.CUSTOMERS
     case EntityKey.USER_ID:
-      return "users"
+      return SystemSlug.USERS
     default:
       return null
   }
-}
-
-export function isPrimaryKeyEditable(slug: string | ProjectSlug): boolean {
-  switch (slug) {
-    default:
-      break
-  }
-  return false
 }
 
 export function isCommoditySlug(slug: string | ProjectSlug): boolean {
@@ -73,4 +65,33 @@ export function getItemIcon(type: string | ProjectSlug, label: string): LucideIc
 
 export function getSelectPlaceholder(entity: string): string {
   return `Select ${entity.toLowerCase()}...`
+}
+
+export function getSingularName(name: string): string {
+  switch (name) {
+    case ProjectName.CENTERS:
+      return SingularEntityName.CENTER
+    case ProjectName.COMMODITIES:
+      return SingularEntityName.COMMODITY
+    case ProjectName.RATES:
+      return SingularEntityName.RATE
+    case ProjectName.CUSTOMERS:
+      return SingularEntityName.CUSTOMER
+    case ProjectName.WEIGHMENTS:
+      return SingularEntityName.WEIGHMENT
+    case ProjectName.FACTORIES:
+      return SingularEntityName.FACTORY
+    case ProjectName.PROFILES:
+      return SingularEntityName.PROFILE
+    case ProjectName.VILLAGES:
+      return SingularEntityName.VILLAGE
+    default:
+      if (name.endsWith("ies")) {
+        return name.slice(0, -3) + "y"
+      }
+      if (name.endsWith("s")) {
+        return name.slice(0, -1)
+      }
+      return name
+  }
 }
