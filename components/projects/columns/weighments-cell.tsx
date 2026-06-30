@@ -55,7 +55,9 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
   }, [api, isOpen])
 
   const hasImages = images && images.length > 0
-  const firstImage = hasImages ? (images[0].startsWith("/") ? images[0] : `/${images[0]}`) : null
+  const firstImage = hasImages
+    ? (images[0].startsWith("/") || images[0].startsWith("http") ? images[0] : `/${images[0]}`)
+    : null
 
   return (
     <>
@@ -104,7 +106,7 @@ export function WeighmentImagesCell({ images = [], vehicleNumber }: WeighmentIma
               <Carousel setApi={setApi} className="w-full max-w-full relative px-10">
                 <CarouselContent>
                   {images.map((img, i) => {
-                    const src = img.startsWith("/") ? img : `/${img}`
+                    const src = img.startsWith("/") || img.startsWith("http") ? img : `/${img}`
                     return (
                       <CarouselItem key={i} className="flex flex-col items-center justify-center min-w-0">
                         <div className="relative aspect-[4/3] w-full rounded-xl border border-muted-foreground/10 bg-card overflow-hidden shadow-md group">

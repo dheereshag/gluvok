@@ -5,6 +5,9 @@ import { Upload } from "lucide-react"
 import { toast } from "sonner"
 import { Dropzone, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
 import { ImagePreviewCarousel } from "@/components/form/image/preview-carousel"
+import { supabase } from "@/lib/supabase"
+import { useAuthStore } from "@/lib/store"
+import { Role } from "@/lib/constants/enums"
 
 interface ImageUploadProps {
   id?: string
@@ -15,44 +18,77 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
   const [fileNameMap, setFileNameMap] = useState<Record<string, string>>({})
+  const user = useAuthStore((state) => state.user)
+  const factoryId = user?.profile?.factory_id ?? user?.customer?.factory_id
+  const isSuperAdmin = user?.role === Role.SUPER_ADMIN
+  const factoryPrefix = isSuperAdmin ? "global" : String(factoryId ?? "unknown")
 
-  const handleDrop = (acceptedFiles: File[]) => {
-    const promises = acceptedFiles.map(
-      (file) =>
-        new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = (e) => {
-            if (typeof e.target?.result === "string") {
-              resolve(e.target.result)
-            } else {
-              reject(new Error("Failed to read file"))
-            }
-          }
-          reader.onerror = () => reject(reader.error)
-          reader.readAsDataURL(file)
-        })
-    )
+  const handleDrop = async (acceptedFiles: File[]) => {
+    toast.loading("Uploading images...", { id: "upload-progress" })
+    try {
+      const uploadPromises = acceptedFiles.map(async (file) => {
+        const fileExt = file.name.split(".").pop()
+        const uniqueId = Math.random().toString(36).substring(2, 15) + "-" + Date.now()
+        const filePath = `f_${factoryPrefix}/weighments/${uniqueId}.${fileExt}`
 
-    Promise.all(promises)
-      .then((base64Strings) => {
-        setFileNameMap((prev) => {
-          const next = { ...prev }
-          base64Strings.forEach((b64, i) => {
-            next[b64] = acceptedFiles[i].name
+        const { error } = await supabase.storage
+          .from("gluvok")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false,
           })
-          return next
+
+        if (error) {
+          throw error
+        }
+
+        const { data } = supabase.storage
+          .from("gluvok")
+          .getPublicUrl(filePath)
+
+        return {
+          url: data.publicUrl,
+          name: file.name,
+        }
+      })
+
+      const results = await Promise.all(uploadPromises)
+
+      setFileNameMap((prev) => {
+        const next = { ...prev }
+        results.forEach((res) => {
+          next[res.url] = res.name
         })
-        onChange([...value, ...base64Strings])
-        toast.success(`Successfully uploaded ${acceptedFiles.length} image(s)`)
+        return next
       })
-      .catch((err) => {
-        console.error("Error reading files:", err)
-        toast.error("Failed to read uploaded files")
-      })
+
+      const newUrls = results.map((res) => res.url)
+      onChange([...value, ...newUrls])
+      toast.success(`Successfully uploaded ${acceptedFiles.length} image(s)`, { id: "upload-progress" })
+    } catch (err: unknown) {
+      console.error("Error uploading files:", err)
+      const message = err instanceof Error ? err.message : "Failed to upload files to storage"
+      toast.error(message, { id: "upload-progress" })
+    }
   }
 
-  const handleRemove = (indexToRemove: number) => {
+  const handleRemove = async (indexToRemove: number) => {
+    const urlToDelete = value[indexToRemove]
     onChange(value.filter((_, i) => i !== indexToRemove))
+
+    if (urlToDelete.includes("/public/gluvok/")) {
+      const filePath = urlToDelete.split("/public/gluvok/")[1]
+      const { error } = await supabase.storage
+        .from("gluvok")
+        .remove([filePath])
+
+      if (error) {
+        console.error("Failed to delete image from Supabase storage:", error.message)
+        toast.error("Failed to delete image from storage server")
+      } else {
+        toast.success("Image deleted from storage")
+      }
+    }
   }
 
   return (
