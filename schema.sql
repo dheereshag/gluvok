@@ -203,6 +203,7 @@ CREATE TABLE public.weighments (
   vehicle_number VARCHAR(10) NOT NULL,
   weight DECIMAL(12, 3) NOT NULL,
   images JSONB DEFAULT '[]'::jsonb,
+  unit unit_enum NOT NULL DEFAULT 'kg',
   rate_id INTEGER NOT NULL,
   center_id INTEGER NOT NULL,
   profile_id INTEGER NOT NULL,

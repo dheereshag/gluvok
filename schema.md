@@ -99,6 +99,7 @@ Details of human resources/users linked to login accounts.
 | `vehicle_number` | `VARCHAR(10)` | Indexed, Non-Unique | Plate or tag of the transport unit. |
 | `weight` | `DECIMAL` | Not Null | Precise measured weight. |
 | `images` | `JSONB` | Nullable | Array of object-storage paths. |
+| `unit` | `unit_enum` | Not Null, Default: `'kg'` | Price unit (e.g. 'kg', 'q', 'gal'). |
 | `rate_id` | `INTEGER` | FK → `rates.id`, Not Null | Link to the specific commodity price rate. |
 | `center_id` | `INTEGER` | FK → `centers.id`, Not Null | Physical location where weighing occurred. |
 | `profile_id` | `INTEGER` | FK → `profiles.id`, Not Null | Profile who managed the scale/vehicle. |

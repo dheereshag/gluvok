@@ -26,6 +26,6 @@ export async function fetchWeighments(id?: number): Promise<EntityRecord[]> {
     commodity_id: item.rate?.commodity?.id,
     commodity_name: item.rate?.commodity?.name,
     unit_price: item.rate?.unit_price,
-    unit: item.rate?.unit,
+    unit: item.unit ?? item.rate?.unit,
   }))
 }
