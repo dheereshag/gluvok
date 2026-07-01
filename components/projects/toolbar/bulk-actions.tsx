@@ -3,9 +3,15 @@
 import * as React from "react"
 import { type Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { FileDown, FileSpreadsheet, Trash2, X } from "lucide-react"
+import { FileDown, FileSpreadsheet, Trash2, X, ChevronDown, FileText } from "lucide-react"
 import { DeleteEntityDialog } from "@/components/projects/dialog/delete"
 import { downloadPDF, downloadCSV } from "@/lib/csv/exporter"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 
 import { useAuthStore, getPermissions } from "@/lib/store"
 
@@ -39,8 +45,25 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
       </div>
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={() => table.resetRowSelection()} className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" />Clear</Button>
-        <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="h-8 gap-1.5 text-xs bg-background shadow-xs hover:bg-muted"><FileDown className="h-3.5 w-3.5" />Download PDF</Button>
-        <Button variant="outline" size="sm" onClick={handleDownloadCSV} className="h-8 gap-1.5 text-xs bg-background shadow-xs hover:bg-muted"><FileSpreadsheet className="h-3.5 w-3.5" />Download CSV</Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs bg-background shadow-xs hover:bg-muted">
+              <FileDown className="h-3.5 w-3.5" />
+              Download
+              <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={handleDownloadCSV} className="text-xs cursor-pointer gap-2 py-2">
+              <FileSpreadsheet className="h-3.5 w-3.5 text-muted-foreground" />
+              CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDownloadPDF} className="text-xs cursor-pointer gap-2 py-2">
+              <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+              PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         {canDelete && (
           <Button variant="destructive" size="sm" onClick={() => setOpen(true)} className="h-8 gap-1.5 text-xs shadow-xs">
             <Trash2 className="h-3.5 w-3.5" />Delete Selected
