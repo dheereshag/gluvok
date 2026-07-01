@@ -16,7 +16,8 @@ CREATE TYPE role_enum AS ENUM (
   'admin',
   'manager',
   'operator',
-  'base'
+  'base',
+  'hardware'
 );
 
 -- Commodity rates pricing units
@@ -241,6 +242,25 @@ CREATE TRIGGER set_timestamp_weighments
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
 
+-- Enforce that only super_admin or admin can edit weight or unit
+CREATE OR REPLACE FUNCTION public.check_weighments_update_columns()
+RETURNS trigger AS $$
+BEGIN
+  IF (public.get_user_role() NOT IN ('super_admin', 'admin')) THEN
+    IF (NEW.weight IS DISTINCT FROM OLD.weight OR NEW.unit IS DISTINCT FROM OLD.unit) THEN
+      RAISE EXCEPTION 'Only super_admin or admin can modify weight or unit.';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER tr_weighments_update_columns
+  BEFORE UPDATE ON public.weighments
+  FOR EACH ROW
+  EXECUTE FUNCTION public.check_weighments_update_columns();
+
+
 
 -- I. assignments table
 CREATE TABLE public.assignments (
@@ -373,7 +393,7 @@ CREATE POLICY "profiles_delete" ON public.profiles
 CREATE POLICY "weighments_select" ON public.weighments
   FOR SELECT TO authenticated USING (true);
 CREATE POLICY "weighments_insert" ON public.weighments
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator', 'hardware'));
 CREATE POLICY "weighments_update" ON public.weighments
   FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
 CREATE POLICY "weighments_delete" ON public.weighments

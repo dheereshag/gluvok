@@ -44,6 +44,7 @@ export enum Role {
   MANAGER = "manager",
   OPERATOR = "operator",
   BASE = "base",
+  HARDWARE = "hardware",
 }
 
 export enum Unit {
@@ -58,6 +59,7 @@ export enum RoleLabel {
   MANAGER = "MANAGER",
   OPERATOR = "OPERATOR",
   BASE = "BASE",
+  HARDWARE = "HARDWARE",
 }
 
 export enum ColumnLabel {
@@ -220,5 +222,6 @@ export enum SingularEntityName {
   FACTORY = "Factory",
   PROFILE = "Profile",
   VILLAGE = "Village",
+  USER = "User",
 }
 

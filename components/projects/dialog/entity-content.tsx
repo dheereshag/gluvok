@@ -14,7 +14,6 @@ export function EntityDialogContent({
   mode, onOpenChange, projectName, projectSlug, isEdit, fields, form, onSubmit, primaryIdKey
 }: EntityDialogContentProps) {
   const currentUser = useAuthStore((state) => state.user)
-  const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN
   const Icon = isEdit ? Pencil : Plus
   const singularName = getSingularName(projectName)
   const desc = isEdit
@@ -34,34 +33,22 @@ export function EntityDialogContent({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fields.map((field) => {
           const isFieldVisible = (() => {
-            switch (projectSlug as ProjectSlug) {
-              case ProjectSlug.WEIGHMENTS:
-                switch (field.key) {
-                  case EntityKey.PROFILE_ID:
-                    switch (currentUser?.role) {
-                      case Role.SUPER_ADMIN:
-                      case Role.ADMIN:
-                        return true
-                      default:
-                        return false
-                    }
-                  default:
-                    return true
-                }
-              default:
-                return true
+            const role = currentUser?.role as Role
+            if (field.visibleRoles && !field.visibleRoles.includes(role)) {
+              return false
             }
+            if (isEdit && field.editVisibleRoles && !field.editVisibleRoles.includes(role)) {
+              return false
+            }
+            return true
           })()
 
-          switch (isFieldVisible) {
-            case false:
-              return null
-            default:
-              break
+          if (!isFieldVisible) {
+            return null
           }
 
           const disabled = (isEdit && field.key === primaryIdKey) ||
-                           (field.key === EntityKey.FACTORY_ID && !isSuperAdmin)
+                           (field.editableRoles && !field.editableRoles.includes(currentUser?.role as Role))
 
           switch (field.type) {
             case FieldType.CHECKBOX:

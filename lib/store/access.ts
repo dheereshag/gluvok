@@ -59,6 +59,16 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.CUSTOMERS]: { read: true, write: false, delete: false, create: false },
     [ProjectSlug.WEIGHMENTS]: { read: true, write: false, delete: false, create: false },
   },
+  [Role.HARDWARE]: {
+    [ProjectSlug.PROFILES]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.VILLAGES]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.FACTORIES]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.CENTERS]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.RATES]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.CUSTOMERS]: { read: true, write: false, delete: false, create: false },
+    [ProjectSlug.WEIGHMENTS]: { read: true, write: false, delete: false, create: true },
+  },
 }
 
 export function getPermissions(role: Role | null | undefined, projectSlug: string): Permission {
