@@ -38,15 +38,6 @@ export function splitFileName(filename: string): [string, string] {
   return [filename.slice(0, lastDotIndex), filename.slice(lastDotIndex)]
 }
 
-export function getSingularName(pluralName: string): string {
-  if (!pluralName) return ""
-  if (pluralName.endsWith("ies")) {
-    return pluralName.slice(0, -3) + "y"
-  }
-  if (pluralName.endsWith("s")) {
-    return pluralName.slice(0, -1)
-  }
-  return pluralName
-}
+export { getSingularName } from "@/lib/fields"
 
 export { useReactTable } from "@tanstack/react-table"

@@ -1,10 +1,16 @@
 "use client"
 
+import * as React from "react"
+import { useForm, type FieldValues, type Path } from "react-hook-form"
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
+import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
-import { DialogMode } from "@/lib/constants/enums"
+import { DialogMode, ProjectSlug, FieldType, EntityKey, ActiveStatus } from "@/lib/constants/enums"
+import { PROJECT_FIELDS, getSingularName } from "@/lib/fields"
+import { ENTITY_ADD_SCHEMAS, ENTITY_EDIT_SCHEMAS, checkEditUniqueness } from "@/lib/validation"
+import { useEntitiesStore, useAuthStore, getField } from "@/lib/store"
 import { type EntityFormProps } from "./types"
-import { useAddEntityForm } from "./use-add-entity-form"
-import { useEditEntityForm } from "./use-edit-entity-form"
+import { processImageUploadsAndDeletions } from "@/components/form/image/upload"
 
 interface UseEntityFormProps extends EntityFormProps {
   mode: DialogMode
@@ -22,27 +28,91 @@ export function useEntityForm({
 }: UseEntityFormProps) {
   const isEdit = mode === DialogMode.EDIT
 
-  const addForm = useAddEntityForm({
-    open: open && !isEdit,
-    onOpenChange,
-    projectSlug,
-    projectName,
-    primaryIdKey,
+  const addEntity = useEntitiesStore((state) => state.addEntity)
+  const updateEntity = useEntitiesStore((state) => state.updateEntity)
+  const currentUser = useAuthStore((state) => state.user)
+
+  const fields = React.useMemo(() => PROJECT_FIELDS[projectSlug] || [], [projectSlug])
+  
+  const formSchema = React.useMemo(() => {
+    return isEdit 
+      ? ENTITY_EDIT_SCHEMAS[projectSlug as ProjectSlug] 
+      : ENTITY_ADD_SCHEMAS[projectSlug as ProjectSlug]
+  }, [isEdit, projectSlug])
+
+  const form = useForm<FieldValues>({ 
+    resolver: standardSchemaResolver(formSchema), 
+    defaultValues: {} 
   })
 
-  const editForm = useEditEntityForm({
-    open: open && isEdit,
-    onOpenChange,
-    projectSlug,
-    projectName,
-    primaryIdKey,
-    item: item ?? ({} as EntityRecord),
-  })
+  const userProfileId = React.useMemo(() => {
+    return currentUser?.profile?.id ? String(currentUser.profile.id) : ""
+  }, [currentUser])
 
-  return {
-    form: isEdit ? editForm.form : addForm.form,
-    fields: isEdit ? editForm.fields : addForm.fields,
-    onSubmit: isEdit ? editForm.onSubmit : addForm.onSubmit,
-    isEdit,
+  React.useEffect(() => {
+    if (!open) return
+
+    if (isEdit) {
+      if (!item) return
+      const defaults: Record<string, unknown> = {}
+      fields.forEach((field) => {
+        let rawVal = getField(item, field.key)
+        if (field.transformOnChange && typeof rawVal === "string") {
+          rawVal = field.transformOnChange(rawVal)
+        }
+        if (field.type === FieldType.CHECKBOX) {
+          defaults[field.key] = String(rawVal) === "true" || String(rawVal) === ActiveStatus.ACTIVE
+        } else {
+          defaults[field.key] = Array.isArray(rawVal) ? rawVal : (rawVal !== undefined && rawVal !== null ? String(rawVal) : "")
+        }
+      })
+      form.reset(defaults)
+    } else {
+      const defaultVals: Record<string, unknown> = { is_active: true }
+      
+      const userFactoryId = currentUser?.profile?.factory_id ? String(currentUser.profile.factory_id) : ""
+      if (userFactoryId && fields.some(f => f.key === EntityKey.FACTORY_ID)) {
+        defaultVals[EntityKey.FACTORY_ID] = userFactoryId
+      }
+
+      if (projectSlug as ProjectSlug === ProjectSlug.WEIGHMENTS && userProfileId) {
+        defaultVals[EntityKey.PROFILE_ID] = userProfileId
+      }
+      form.reset(defaultVals)
+    }
+  }, [open, isEdit, item, fields, form, projectSlug, userProfileId, currentUser])
+
+  const onSubmit = async (values: FieldValues) => {
+    const singularName = getSingularName(projectName)
+    try {
+      if (isEdit) {
+        if (!item) return
+        const uniquenessError = checkEditUniqueness(projectSlug as ProjectSlug, item, values)
+        if (uniquenessError) {
+          form.setError(uniquenessError.field as Path<FieldValues>, { message: uniquenessError.message })
+          return
+        }
+
+        if (Array.isArray(values[EntityKey.IMAGES])) {
+          const originalImages = (getField(item, EntityKey.IMAGES) || []) as string[]
+          values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], originalImages)
+        }
+        await updateEntity(projectSlug as ProjectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
+        toast.success(`${singularName} updated successfully`)
+      } else {
+        if (Array.isArray(values[EntityKey.IMAGES])) {
+          values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], [])
+        }
+        await addEntity(projectSlug as ProjectSlug, primaryIdKey, values)
+        toast.success(`${singularName} created successfully`)
+      }
+      onOpenChange(false)
+    } catch (err) {
+      const action = isEdit ? "update" : "create"
+      const msg = err instanceof Error ? err.message : `Failed to ${action} ${singularName.toLowerCase()}`
+      toast.error(msg)
+    }
   }
+
+  return { form, fields, onSubmit, isEdit }
 }
