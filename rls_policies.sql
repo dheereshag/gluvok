@@ -117,6 +117,7 @@ CREATE POLICY "weighments_isolation_policy" ON weighments
 FOR ALL TO authenticated
 USING (
   current_user_role() = 'super_admin'
+  OR current_user_role() = 'hardware'
   OR (
     center_id IN (SELECT id FROM centers WHERE factory_id = current_user_factory_id())
     AND
