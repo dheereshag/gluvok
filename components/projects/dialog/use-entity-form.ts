@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useForm, type FieldValues, type Path } from "react-hook-form"
+import { useForm, type FieldValues, type Path, type Resolver } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { toast } from "sonner"
 import { type EntityRecord } from "@/types"
@@ -41,7 +41,7 @@ export function useEntityForm({
   }, [isEdit, projectSlug])
 
   const form = useForm<FieldValues>({ 
-    resolver: standardSchemaResolver(formSchema), 
+    resolver: standardSchemaResolver(formSchema as never) as unknown as Resolver<FieldValues>, 
     defaultValues: {} 
   })
 
