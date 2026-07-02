@@ -35,7 +35,7 @@ async function fetchAndSetProfile(
   try {
     const { data: profile, error } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id, user_id, name, role, aadhar_number, factory_id, preferences, created_at, updated_at")
       .eq("user_id", sessionUser.id)
       .maybeSingle()
 
@@ -62,7 +62,7 @@ async function fetchAndSetProfile(
       // Fallback: check if the user is a customer
       const { data: customer, error: customerError } = await supabase
         .from("customers")
-        .select("*")
+        .select("id, name, govt_id, father_name, village_id, factory_id, user_id, created_at, updated_at")
         .eq("user_id", sessionUser.id)
         .maybeSingle()
         
@@ -99,7 +99,7 @@ async function fetchAndSetProfile(
       user: {
         id: sessionUser.id,
         name: profile.name,
-        email: sessionUser.email || profile.email || "",
+        email: sessionUser.email || "",
         avatar: DEFAULT_AVATAR,
         role: profile.role,
         profile: profile as Profile,
@@ -176,7 +176,10 @@ export const useAuthStore = create<AuthStore>()(
         }
         return { success: true, requiresVerification: !data.session }
       },
-      resetPassword: async (email, newPassword) => {
+      resetPassword: async (_email, newPassword) => {
+        // NOTE: supabase.auth.updateUser requires an active session.
+        // This is called from /reset-password after Supabase exchanges the
+        // magic-link token for a session automatically via onAuthStateChange.
         const { error } = await supabase.auth.updateUser({
           password: newPassword,
         })
@@ -191,6 +194,9 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "gluvok-auth-storage",
       storage: createJSONStorage(() => localStorage),
+      // Persist nothing — Supabase SDK manages its own session token in storage.
+      // Storing role/profile here risks client-side privilege escalation via DevTools.
+      partialize: () => ({}),
     }
   )
 )

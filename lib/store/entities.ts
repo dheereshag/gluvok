@@ -1,6 +1,5 @@
 "use client"
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand"
 import { type Profile } from "@/types"
 import { ProjectSlug } from "@/lib/constants/enums"
@@ -9,8 +8,8 @@ import { insertRow, updateRow, deleteRow } from "@/lib/services"
 import { getPermissions } from "./access"
 
 interface EntitiesState {
-  addEntity: (slug: ProjectSlug, key: string, newE: Record<string, any>) => Promise<void>
-  updateEntity: (slug: ProjectSlug, key: string, id: string | number, fields: Record<string, any>) => Promise<void>
+  addEntity: (slug: ProjectSlug, key: string, newE: Record<string, unknown>) => Promise<void>
+  updateEntity: (slug: ProjectSlug, key: string, id: string | number, fields: Record<string, unknown>) => Promise<void>
   deleteEntity: (slug: ProjectSlug, key: string, id: string | number) => Promise<void>
   updateColumnPreferences: (profileId: number, projectSlug: string, visibleColumns: string[]) => Promise<void>
   entitiesUpdatedTrigger: number

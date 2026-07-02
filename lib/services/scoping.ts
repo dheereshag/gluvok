@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuthStore } from "@/lib/store/auth"
 import { Role } from "@/lib/constants/enums"
 
@@ -29,11 +28,17 @@ export async function getScopingFilter(): Promise<ScopingFilter | null> {
   }
 }
 
+// The `query` param is a Supabase PostgrestFilterBuilder whose generic type
+// depends on the generated DB schema. Until Supabase types are generated,
+// we use `unknown` and cast internally — suppressed per-line below.
+
 export function applyPaginationAndSorting(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any,
   params: PaginatedParams,
   sortMap: Record<string, string> = {},
   defaultSort = "updated_at"
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   const { page, pageSize, sortColumn, sortDesc } = params
   const from = page * pageSize
@@ -47,10 +52,11 @@ export function applyPaginationAndSorting(
 }
 
 export async function executeAndOrderList(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any,
   id?: number,
   defaultOrder = "updated_at"
-): Promise<any[]> {
+): Promise<any[]> { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (id !== undefined) {
     query = query.eq("id", id)
   } else {
@@ -62,8 +68,9 @@ export async function executeAndOrderList(
 }
 
 export async function executePaginatedQuery(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: any
-): Promise<{ data: any[]; count: number }> {
+): Promise<{ data: any[]; count: number }> { // eslint-disable-line @typescript-eslint/no-explicit-any
   const { data, count, error } = await query
   if (error) throw new Error(error.message)
   return { data: data || [], count: count || 0 }

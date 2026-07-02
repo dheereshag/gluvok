@@ -69,8 +69,6 @@ export function useProjectTable({
   }, [savedVisibleColumns, columns])
 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialColumnVisibility)
-  const [prevSlug, setPrevSlug] = React.useState(projectSlug)
-  const [prevProfileId, setPrevProfileId] = React.useState(profile?.id)
 
   const [localData, setLocalData] = React.useState<EntityRecord[]>([])
   const [localCount, setLocalCount] = React.useState(0)
@@ -83,12 +81,6 @@ export function useProjectTable({
 
   const entitiesUpdatedTrigger = useEntitiesStore((state) => state.entitiesUpdatedTrigger)
 
-  if (projectSlug !== prevSlug || profile?.id !== prevProfileId) {
-    setPrevSlug(projectSlug)
-    setPrevProfileId(profile?.id)
-    setColumnVisibility(initialColumnVisibility)
-    setPagination({ pageIndex: 0, pageSize: 10 })
-  }
 
   // Debounced search logic to prevent spamming Supabase requests
   const [debouncedFilter, setDebouncedFilter] = React.useState(globalFilter)
@@ -98,7 +90,7 @@ export function useProjectTable({
       setDebouncedFilter(globalFilter)
       // Reset to first page when search filter changes
       setPagination((prev) => ({ ...prev, pageIndex: 0 }))
-    }, 0)
+    }, 300)
 
     return () => {
       clearTimeout(handler)

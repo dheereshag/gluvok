@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { supabase } from "@/lib/supabase"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { type EntityRecord } from "@/types"
@@ -124,7 +124,7 @@ export async function fetchEntityListPaginated(
 }
 
 // Mutate functions
-export async function insertRow(slug: ProjectSlug, record: any): Promise<EntityRecord> {
+export async function insertRow(slug: ProjectSlug, record: Record<string, unknown>): Promise<EntityRecord> {
   const table = slugToTable(slug)
   const { data, error } = await supabase.from(table).insert(record).select("id").maybeSingle()
   if (error) throw new Error(error.message)
@@ -134,7 +134,7 @@ export async function insertRow(slug: ProjectSlug, record: any): Promise<EntityR
   return fetchSingleEntity(slug, data.id)
 }
 
-export async function updateRow(slug: ProjectSlug, id: number, record: any): Promise<EntityRecord> {
+export async function updateRow(slug: ProjectSlug, id: number, record: Record<string, unknown>): Promise<EntityRecord> {
   const table = slugToTable(slug)
   const { data, error } = await supabase.from(table).update(record).eq("id", id).select("id").maybeSingle()
   if (error) throw new Error(error.message)
