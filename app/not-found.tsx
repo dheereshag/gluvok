@@ -37,7 +37,7 @@ export default function NotFound() {
         </div>
       </header>
 
-      <main className="flex flex-col items-center justify-center flex-1 p-6 md:p-12 text-center select-none min-h-[calc(100vh-4rem)]">
+      <main className="flex flex-col items-center justify-center flex-1 p-6 md:p-12 text-center select-none">
         <div className="max-w-md w-full space-y-8 flex flex-col items-center justify-center">
           {/* Illustration container */}
           <div className="relative">

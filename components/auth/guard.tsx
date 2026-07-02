@@ -6,6 +6,8 @@ import { useAuthStore, hasPageAccess } from "@/lib/store"
 import { AppRoutes } from "@/lib/constants/enums"
 import { AUTH_ROUTES } from "@/lib/constants"
 import NotFound from "@/app/not-found"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/sidebar"
 
 function FullScreenStatus({ message }: { message: string }) {
   return (
@@ -66,7 +68,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (user && projectSlug && !isAuthorized) {
-    return <NotFound />
+    return (
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <NotFound />
+        </SidebarInset>
+      </SidebarProvider>
+    )
   }
 
   return <>{children}</>
