@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/auth/guard.tsx
+ * @description Authentication and authorization guard wrapper.
+ * Protects client routes and redirects unauthenticated or unauthorized users appropriately.
+ */
+
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore, hasPageAccess } from "@/lib/store"
@@ -9,6 +15,10 @@ import NotFound from "@/app/not-found"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/sidebar"
 
+/**
+ * FullScreenStatus Component
+ * Displays a minimal, centered loading or redirecting message covering the viewport.
+ */
 function FullScreenStatus({ message }: { message: string }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center text-xs font-mono text-muted-foreground">
@@ -17,6 +27,12 @@ function FullScreenStatus({ message }: { message: string }) {
   )
 }
 
+/**
+ * AuthGuard Component
+ * Handles client-side routing protection.
+ * Ensures users are authenticated to view pages, validates project-level permissions (authorization),
+ * and redirects logged-in users away from authentication pages.
+ */
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user)
   const authHydrated = useAuthStore((state) => state.hydrated)

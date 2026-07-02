@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/auth/form/login.tsx
+ * @description Sign in form component.
+ * Integrates with standard authentication schemas and the auth store.
+ */
+
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
@@ -21,6 +27,11 @@ const loginSchema = z.object({
 
 type LoginInput = z.infer<typeof loginSchema>
 
+/**
+ * LoginForm Component
+ * Handles the login interface, input validation, authentication request,
+ * toast feedback, and redirecting the user upon success.
+ */
 export function LoginForm({
   className,
   ...props

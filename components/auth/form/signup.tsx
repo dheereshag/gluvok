@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/auth/form/signup.tsx
+ * @description Sign up/Registration form component.
+ * Integrates schema validation, database inserts, and email verification workflows.
+ */
+
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
@@ -27,6 +33,11 @@ const signupSchema = z.object({
 
 type SignupInput = z.infer<typeof signupSchema>
 
+/**
+ * SignupForm Component
+ * Renders the signup fields (Name, Email, Password, Confirmation), handles registration requests,
+ * and redirects or guides users depending on whether email verification is active.
+ */
 export function SignupForm({
   className,
   ...props

@@ -1,9 +1,20 @@
 "use client"
 
+/**
+ * @file components/auth/unlinked-profile.tsx
+ * @description Page/component shown when a user is successfully logged in to Auth
+ * but does not yet have a linked Profile row in the database.
+ */
+
 import { useAuthStore } from "@/lib/store"
 import { UserX, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+/**
+ * UnlinkedProfile Component
+ * Renders an informative fallback screen telling the user they lack a database profile,
+ * providing a log out action so they can switch accounts or try again.
+ */
 export function UnlinkedProfile() {
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)

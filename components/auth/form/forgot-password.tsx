@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/auth/form/forgot-password.tsx
+ * @description Form component for requesting a password reset email via Supabase Auth.
+ */
+
 import React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
@@ -19,6 +24,10 @@ const forgotPasswordSchema = z.object({
 
 type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
 
+/**
+ * ForgotPasswordForm Component
+ * Renders the form allowing users to submit their email to receive a password reset link.
+ */
 export function ForgotPasswordForm({
   className,
   ...props

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ProjectSlug, ColumnLabel, SystemSlug } from "@/lib/constants/enums"
+import { ProjectSlug, SystemSlug } from "@/lib/constants/enums"
 import {
   type Rate,
   type EntityRecord,
@@ -24,11 +23,9 @@ export const ENTITY_EXTRACTORS: Record<string, (item: any) => { id: string; name
   [SystemSlug.USERS]: (item) => ({ id: item.id, name: item.email }),
   [ProjectSlug.RATES]: (item) => {
     const p = item as Rate
-    const factoryName = p.factory_name || `${ColumnLabel.FACTORY} ${p.factory_id}`
-    const commodityName = p.commodity_name || `${ColumnLabel.COMMODITY} ${p.commodity_id}`
     return {
       id: String(p.id),
-      name: `${commodityName} (${factoryName}) (₹${parseFloat(p.unit_price)})`
+      name: `${p.commodity_name} (${p.factory_name}) (₹${parseFloat(p.unit_price)})`
     }
   },
 }

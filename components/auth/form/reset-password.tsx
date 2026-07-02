@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/auth/form/reset-password.tsx
+ * @description Reset Password form component.
+ * Validates match requirements and updates user password in Supabase Auth.
+ */
+
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
@@ -25,6 +31,11 @@ const resetPasswordSchema = z.object({
 
 type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 
+/**
+ * ResetPasswordForm Component
+ * Allows users to set a new password, matching it against a confirmation field
+ * and saving it using the auth store.
+ */
 export function ResetPasswordForm({
   className,
   ...props
