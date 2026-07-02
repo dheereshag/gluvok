@@ -1,3 +1,8 @@
+/**
+ * @file components/dashboard/card.tsx
+ * @description Dashboard card component used on the main home screen to navigate to different project tables.
+ */
+
 import Link from "next/link"
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
@@ -10,6 +15,10 @@ interface DashboardCardProps {
   color: string
 }
 
+/**
+ * DashboardCard Component
+ * Displays a clickable grid card with an icon, name, description, and hover animations.
+ */
 export function DashboardCard({ name, href, desc, icon: Icon, color }: DashboardCardProps) {
   const cardId = `dashboard-card-${name.toLowerCase().replace(/\s+/g, "-")}`
   return (

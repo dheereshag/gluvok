@@ -1,5 +1,14 @@
+/**
+ * @file components/projects/table/loading.tsx
+ * @description Loading overlay component rendered inside the table while fetching data.
+ */
+
 import { Spinner } from "@/components/kibo-ui/spinner"
 
+/**
+ * ProjectTableLoading Component
+ * Displays a centered loading indicator with a spinner and text.
+ */
 export function ProjectTableLoading() {
   return (
     <div className="space-y-4">

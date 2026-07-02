@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/sidebar/nav/user-dropdown.tsx
+ * @description Dropdown panel content showing account details, billing, notifications, and log out options.
+ */
+
 import { SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -19,6 +24,10 @@ const MENU_ITEMS = [
   { id: "user-menu-notifications", label: "Notifications", icon: BellIcon },
 ]
 
+/**
+ * NavUserDropdown Component
+ * Populates dropdown options for the user profile trigger in the sidebar footer.
+ */
 export function NavUserDropdown({ user, isMobile }: NavUserDropdownProps) {
   const router = useRouter()
   const logout = useAuthStore((state) => state.logout)

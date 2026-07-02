@@ -1,6 +1,15 @@
+/**
+ * @file components/projects/table/empty.tsx
+ * @description Fallback component rendered inside the table row when no records match filter criteria.
+ */
+
 import { SearchX } from "lucide-react"
 import { TableRow, TableCell } from "@/components/ui/table"
 
+/**
+ * ProjectTableEmpty Component
+ * Renders an empty search state indicator taking up the full width of the table.
+ */
 export function ProjectTableEmpty({ columnsCount }: { columnsCount: number }) {
   return (
     <TableRow>

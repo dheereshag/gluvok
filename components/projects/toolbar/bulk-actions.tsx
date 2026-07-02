@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/projects/toolbar/bulk-actions.tsx
+ * @description Toolbar helper rendering bulk actions (CSV/PDF export, delete confirmation) for selected rows.
+ */
+
 import * as React from "react"
 import { type Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
@@ -19,6 +24,10 @@ interface BulkActionsProps<TData> {
   table: Table<TData>; projectSlug: string; projectName: string; primaryIdKey: string
 }
 
+/**
+ * BulkActions Component
+ * Renders actions like download PDF/CSV and bulk delete when rows are selected in the table.
+ */
 export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdKey }: BulkActionsProps<TData>) {
   const [open, setOpen] = React.useState(false)
   const selectedRows = table.getFilteredSelectedRowModel().rows

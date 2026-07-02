@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/form/standard-input.tsx
+ * @description Standard HTML text/number input fields, with validation and transform-on-change hook bindings.
+ */
+
 import { type UseFormReturn, type FieldValues } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { type FieldConfig } from "@/lib/fields"
@@ -12,6 +17,10 @@ interface StandardInputProps {
   disabled?: boolean
 }
 
+/**
+ * StandardInput Component
+ * Text/number input field registering onChange hooks and transform functions to hook-form state.
+ */
 export function StandardInput({ field, form, fieldId, disabled }: StandardInputProps) {
   return (
     <Input

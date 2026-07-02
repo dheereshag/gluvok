@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/toolbar/index.tsx
+ * @description Toolbar section displayed above the table grid, housing filters, search input, reload button, view controls, and action buttons.
+ */
+
 import { Table } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -12,6 +17,10 @@ interface ProjectToolbarProps<TData> {
   primaryIdKey: string; setCreating: (open: boolean) => void; onReload: () => void
 }
 
+/**
+ * ProjectToolbar Component
+ * Renders search bar, reload, bulk actions (if rows selected), view options, and creation triggers based on user permissions.
+ */
 export function ProjectToolbar<TData>({
   table, projectSlug, projectName, primaryIdKey, setCreating, onReload
 }: ProjectToolbarProps<TData>) {

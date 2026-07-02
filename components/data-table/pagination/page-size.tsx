@@ -1,3 +1,8 @@
+/**
+ * @file components/data-table/pagination/page-size.tsx
+ * @description Page size selector dropdown for the DataTable pagination component.
+ */
+
 import { type Table } from "@tanstack/react-table"
 import { List } from "lucide-react"
 import {
@@ -15,6 +20,10 @@ const SMALL_SIZES = [5, 10, 20]
 const LARGE_SIZES = [30, 40, 50]
 const ALL_PAGE_SIZES = [...SMALL_SIZES, ...LARGE_SIZES]
 
+/**
+ * DataTablePaginationPageSize Component
+ * Dropdown selector that adjusts table page size, hiding option levels exceeding total dataset row counts.
+ */
 export function DataTablePaginationPageSize<TData>({ table }: { table: Table<TData> }) {
   const pageSize = table.getState().pagination.pageSize
   const totalRows = table.getCoreRowModel().rows.length

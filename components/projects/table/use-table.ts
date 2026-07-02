@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/table/use-table.ts
+ * @description Hook managing state (sorting, filters, pagination, column preferences, row selection) for dynamic tables.
+ */
+
 import React from "react"
 import { type EntityRecord } from "@/types"
 import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel } from "@tanstack/react-table"
@@ -14,6 +19,10 @@ interface UseProjectTableProps {
   projectName: string
 }
 
+/**
+ * useProjectTable Hook
+ * Manages queries, page indexes, column visibility states, and connects tables to TanStack Table instance.
+ */
 export function useProjectTable({
   projectSlug,
   primaryIdKey,

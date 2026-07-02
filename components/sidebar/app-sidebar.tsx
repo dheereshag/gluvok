@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/sidebar/app-sidebar.tsx
+ * @description Main application sidebar wrapper.
+ * Houses headers, platform logo, main navigation routes, secondary links, and the logged-in user profile block.
+ */
+
 import * as React from "react"
 import Link from "next/link"
 import { Logo } from "@/components/ui/logo"
@@ -19,6 +25,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+/**
+ * AppSidebar Component
+ * Sidebar navigation tree. Applies user-role filters to selectively render projects/features.
+ */
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAuthStore((state) => state.user)
   const hydrated = useAuthStore((state) => state.hydrated)

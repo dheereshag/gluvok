@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/not-found.tsx
+ * @description Sub-components for building the 404 page (header, illustration, message, actions).
+ */
+
 import Link from "next/link"
 import { Compass, Home } from "lucide-react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"

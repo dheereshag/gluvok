@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/sidebar/nav/main-item.tsx
+ * @description Single collapsible navigation item rendering with optional child routes inside the sidebar.
+ */
+
 import Link from "next/link"
 import { ChevronRightIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -13,6 +18,10 @@ interface NavItem {
   items?: { title: string; url: string }[]
 }
 
+/**
+ * NavMainItem Component
+ * Renders a main menu item, supporting sub-item collapsible triggers and transition animations.
+ */
 export function NavMainItem({ item }: { item: NavItem }) {
   const mainLinkId = `sidebar-link-${item.title.toLowerCase().replace(/\s+/g, "-")}`
   return (

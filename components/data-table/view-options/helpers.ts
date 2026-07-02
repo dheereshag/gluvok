@@ -1,6 +1,15 @@
+/**
+ * @file components/data-table/view-options/helpers.ts
+ * @description Helpers for mapping column IDs to human-readable names and display icons.
+ */
+
 import { Hash, Globe, Calendar, CalendarClock, Image, Tag, Factory } from "lucide-react"
 import { ColumnLabel, EntityKey } from "@/lib/constants/enums"
 
+/**
+ * COLUMN_ICONS mapping
+ * Icons associated with common column keys (id, name, dates, etc.).
+ */
 export const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   [EntityKey.ID]: Hash,
   [EntityKey.NAME]: Tag,
@@ -12,6 +21,10 @@ export const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: stri
   [EntityKey.FACTORY_NAME]: Factory,
 }
 
+/**
+ * getColumnLabel utility
+ * Maps an database entity key/column ID to its corresponding UI label string.
+ */
 export function getColumnLabel(id: string): string {
   switch (id) {
     case EntityKey.ID: return ColumnLabel.ID

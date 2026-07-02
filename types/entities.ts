@@ -1,5 +1,15 @@
+/**
+ * @file types/entities.ts
+ * @description Core TypeScript interfaces representing the application's database entities.
+ * Includes flattened and computed fields used across views and forms.
+ */
+
 import { Role, State, Unit } from "@/lib/constants/enums"
 
+/**
+ * Center Entity
+ * Represents physical collection centers.
+ */
 export interface Center {
   id: number
   name: string
@@ -10,6 +20,10 @@ export interface Center {
   factory_name?: string
 }
 
+/**
+ * Commodity Entity
+ * Represents raw products/materials (e.g. sugar cane, wheat).
+ */
 export interface Commodity {
   id: number
   name: string

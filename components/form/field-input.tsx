@@ -1,5 +1,12 @@
 "use client"
 
+/**
+ * @file components/form/field-input.tsx
+ * @description Dynamic form field input factory selector.
+ * Instantiates the correct input component (standard input, combobox, image upload, checkbox)
+ * based on field configuration properties.
+ */
+
 import { useWatch, type UseFormReturn, type FieldValues } from "react-hook-form"
 import { StateCombobox, EntityCombobox, RoleCombobox, UnitCombobox } from "@/components/combobox"
 import { FieldType } from "@/lib/constants/enums"
@@ -16,6 +23,10 @@ interface FormFieldInputProps {
   projectSlug?: string
 }
 
+/**
+ * FormFieldInput Component
+ * Evaluates field.type and returns the designated component. Integrates with react-hook-form control state.
+ */
 export function FormFieldInput({ field, form, idPrefix, disabled, projectSlug }: FormFieldInputProps) {
   const referencedSlug = getReferencedEntitySlug(field.key)
   const fieldId = `${idPrefix}-field-${field.key}`

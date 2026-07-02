@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/dialog/index.tsx
+ * @description Orchestrates the active form dialogs (Create, Edit, Delete) for the current entity page.
+ */
+
 import { type EntityRecord } from "@/types"
 import { DialogMode } from "@/lib/constants/enums"
 import { EntityDialog } from "./entity"
@@ -15,6 +20,10 @@ interface ProjectDialogsProps {
   primaryIdKey: string
 }
 
+/**
+ * ProjectDialogs Component
+ * Mounts Create/Edit dialogs and Delete confirmation overlays, wiring them up to layout state.
+ */
 export function ProjectDialogs({
   creating,
   setCreating,

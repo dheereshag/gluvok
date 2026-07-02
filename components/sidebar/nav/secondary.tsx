@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/sidebar/nav/secondary.tsx
+ * @description Secondary navigation sidebar section (Support, Feedback, settings, etc.).
+ */
+
 import * as React from "react"
 import Link from "next/link"
 
@@ -11,6 +16,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+/**
+ * NavSecondary Component
+ * Renders support and feedback options inside a secondary SidebarGroup.
+ */
 export function NavSecondary({
   items,
   ...props

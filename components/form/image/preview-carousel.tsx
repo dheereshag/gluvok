@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/form/image/preview-carousel.tsx
+ * @description Image carousel rendering uploaded previews, displaying metadata, and handling image removals.
+ */
+
 import { useState } from "react"
 import Image from "next/image"
 import { X as XIcon } from "lucide-react"
@@ -21,6 +26,10 @@ interface ImagePreviewCarouselProps {
   onRemove: (index: number) => void
 }
 
+/**
+ * ImagePreviewCarousel Component
+ * Displays a list of image previews with dynamic delete confirmation dialogs and pagination arrows.
+ */
 export function ImagePreviewCarousel({
   images,
   fileNames,

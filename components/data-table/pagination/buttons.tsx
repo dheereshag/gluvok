@@ -1,7 +1,16 @@
+/**
+ * @file components/data-table/pagination/buttons.tsx
+ * @description First, previous, next, and last pagination buttons for DataTable navigation.
+ */
+
 import { type Table } from "@tanstack/react-table"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+/**
+ * DataTablePaginationButtons Component
+ * Renders page navigation actions and current page status indicator (e.g. Page 1 of 5).
+ */
 export function DataTablePaginationButtons<TData>({ table }: { table: Table<TData> }) {
   const buttons = [
     { label: "first", icon: ChevronsLeft, onClick: () => table.setPageIndex(0), disabled: !table.getCanPreviousPage() },

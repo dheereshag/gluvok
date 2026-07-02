@@ -1,9 +1,19 @@
+/**
+ * @file components/combobox/use-entity-options.ts
+ * @description Hook to fetch list records for a given entity slug and format them into combobox options.
+ */
+
 import * as React from "react"
 import { ENTITY_EXTRACTORS, type Entity } from "./entity-extractors"
 import { fetchEntityList } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
 import { SystemSlug } from "@/lib/constants/enums"
 
+/**
+ * useEntityOptions Hook
+ * Performs API or RPC request depending on the entity type, pulls rows,
+ * extracts display attributes using custom mappings, and manages loading state.
+ */
 export function useEntityOptions(entitySlug: string, contextSlug?: string, fieldKey?: string) {
   const [options, setOptions] = React.useState<{ value: string; label: string }[]>([])
   const [loading, setLoading] = React.useState(true)

@@ -1,3 +1,8 @@
+/**
+ * @file components/combobox/index.ts
+ * @description Barrel file exporting all combobox components.
+ */
+
 export * from "./entity"
 export * from "./state"
 export * from "./role"

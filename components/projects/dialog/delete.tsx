@@ -1,9 +1,18 @@
 "use client"
 
+/**
+ * @file components/projects/dialog/delete.tsx
+ * @description Dialog modal wrapper for confirmation prompts when deleting entity records.
+ */
+
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { DeleteEntityDialogContent } from "./delete-content"
 import { type DeleteEntityDialogProps } from "./types"
 
+/**
+ * DeleteEntityDialog Component
+ * Renders the modal overlay container and embeds DeleteEntityDialogContent for handling delete actions.
+ */
 export function DeleteEntityDialog({
   open,
   onOpenChange,

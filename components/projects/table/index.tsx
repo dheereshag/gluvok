@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/table/index.tsx
+ * @description Renders the core table grid with loading and empty fallbacks using TanStack React Table context.
+ */
+
 import { Table, flexRender } from "@tanstack/react-table"
 import { Table as TableGrid, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ProjectTableLoading } from "./loading"
@@ -9,6 +14,10 @@ interface ProjectTableProps<TData> {
   columnsCount: number
 }
 
+/**
+ * ProjectTable Component
+ * Generates the header rows and cell renders for each entity page. Handles loading states.
+ */
 export function ProjectTable<TData>({ table, isLoading, columnsCount }: ProjectTableProps<TData>) {
   if (isLoading) return <ProjectTableLoading />
 

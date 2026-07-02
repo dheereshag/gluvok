@@ -1,3 +1,8 @@
+/**
+ * @file components/sidebar/index.ts
+ * @description Barrel file exporting sidebar layout components.
+ */
+
 export * from "./app-sidebar"
 export * from "./nav/main"
 export * from "./nav/secondary"

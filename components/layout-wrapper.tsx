@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/layout-wrapper.tsx
+ * @description Layout wrapper component for the application.
+ * Manages route guarding, main layouts, sidebar rendering, and unlinked profile screens.
+ */
+
 import * as React from "react"
 import { usePathname } from "next/navigation"
 import { AppSidebar } from "@/components/sidebar"
@@ -10,6 +16,11 @@ import { AUTH_ROUTES } from "@/lib/constants"
 import { useAuthStore } from "@/lib/store"
 import { UnlinkedProfile } from "@/components/auth/unlinked-profile"
 
+/**
+ * MainLayout Component
+ * Conditionally wraps page content based on authentication state, active route type,
+ * and profile link status. Adds the AppSidebar structure for authorized dashboard routes.
+ */
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const isAuthPage = AUTH_ROUTES.includes(pathname as AppRoutes)

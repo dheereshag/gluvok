@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/data-table/view-options/index.tsx
+ * @description Dropdown checklist for toggling column visibility dynamically in a DataTable.
+ */
+
 import { type Table } from "@tanstack/react-table"
 import { Settings2, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,6 +22,10 @@ interface DataTableViewOptionsProps<TData> {
   table: Table<TData>
 }
 
+/**
+ * DataTableViewOptions Component
+ * Column visibility toggle menu. Loops through hideable columns and displays checkboxes with matching icons and labels.
+ */
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu modal={false}>

@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/title.tsx
+ * @description Heading component displayed at the top of each project dashboard.
+ */
+
 import * as React from "react"
 
 interface ProjectTitleProps {
@@ -5,6 +10,10 @@ interface ProjectTitleProps {
   Icon: React.ComponentType<{ className?: string }>;
 }
 
+/**
+ * ProjectTitle Component
+ * Renders the main page header name, icon, and dynamic descriptive subtitle.
+ */
 export function ProjectTitle({ projectName, Icon }: ProjectTitleProps) {
   return (
     <div className="flex flex-col gap-1.5 mb-6">

@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/combobox/base.tsx
+ * @description Standard combobox UI component.
+ * Integrates search input, items list, icon overrides (like commodity icons), and custom selection styles.
+ */
+
 import React from "react"
 import { ChevronsUpDown, Check, LucideIcon } from "lucide-react"
 import { Combobox, ComboboxTrigger, ComboboxContent, ComboboxInput, ComboboxList, ComboboxEmpty, ComboboxGroup, ComboboxItem } from "@/components/kibo-ui/combobox"
@@ -24,8 +30,10 @@ interface BaseComboboxProps {
   id?: string
 }
 
-
-
+/**
+ * BaseCombobox Component
+ * Multi-purpose searchable dropdown selector, integrating custom icons, labels, and badges.
+ */
 export function BaseCombobox({
   value,
   onChange,

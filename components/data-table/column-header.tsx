@@ -1,3 +1,8 @@
+/**
+ * @file components/data-table/column-header.tsx
+ * @description Header cell renderer for DataTable columns supporting sorting controls and hide actions.
+ */
+
 import { type Column } from "@tanstack/react-table"
 import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -15,6 +20,10 @@ interface DataTableColumnHeaderProps<TData, TValue> extends Omit<React.HTMLAttri
   title: React.ReactNode
 }
 
+/**
+ * DataTableColumnHeader Component
+ * Column header cell wrapper rendering sort toggle dropdowns and visibility hide button.
+ */
 export function DataTableColumnHeader<TData, TValue>({
   column, title, className,
 }: DataTableColumnHeaderProps<TData, TValue>) {

@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/form/image/upload.tsx
+ * @description Upload component for handling drag-and-drop local image selection,
+ * Supabase storage uploading/deletions, and caching.
+ */
+
 import { useState, useEffect, useRef } from "react"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
@@ -23,9 +29,18 @@ interface ImageUploadProps {
   disabled?: boolean
 }
 
-// Shared registry in memory mapping object URLs to original File objects
+/**
+ * pendingImageUploads
+ * In-memory registry mapping generated object URLs (blob URL) to raw browser File objects,
+ * storing them until form submission.
+ */
 export const pendingImageUploads = new Map<string, File>()
 
+/**
+ * processImageUploadsAndDeletions utility
+ * Resolves local file blob uploads and removes deleted items from the remote Supabase Storage bucket.
+ * Returns the final public URL arrays.
+ */
 export async function processImageUploadsAndDeletions(
   submittedImages: string[],
   originalImages: string[] = []
@@ -93,6 +108,11 @@ export async function processImageUploadsAndDeletions(
   return finalImages
 }
 
+/**
+ * ImageUpload Component
+ * Dropzone component that registers dropped local files, maps object URLs,
+ * and passes the blob URL list up to the parent form.
+ */
 export function ImageUpload({ value = [], onChange, disabled }: ImageUploadProps) {
   const [fileNameMap, setFileNameMap] = useState<Record<string, string>>({})
 

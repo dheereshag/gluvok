@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/combobox/unit.tsx
+ * @description Unit selector combobox component (kg, quintals, gallons).
+ */
+
 import { Weight } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { Unit } from "@/lib/constants/enums"
@@ -16,6 +21,10 @@ const data = [
   { value: Unit.GAL, label: Unit.GAL },
 ]
 
+/**
+ * UnitCombobox Component
+ * Renders a dropdown to select a unit of measurement.
+ */
 export function UnitCombobox({ value, onChange, id }: UnitComboboxProps) {
   return (
     <BaseCombobox

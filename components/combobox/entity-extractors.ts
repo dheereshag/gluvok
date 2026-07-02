@@ -1,3 +1,9 @@
+/**
+ * @file components/combobox/entity-extractors.ts
+ * @description Helpers for mapping raw database records of different types (customers, rates, users)
+ * to a standardized `{ id, name }` shape.
+ */
+
 import { ProjectSlug, SystemSlug } from "@/lib/constants/enums"
 import {
   type Rate,
@@ -6,6 +12,10 @@ import {
 
 export type Entity = EntityRecord | { id: string; email: string }
 
+/**
+ * Standard extractor helper
+ * Extract ID and name fields directly from simple database records.
+ */
 const extractByIdAndName = (item: any) => {
   return {
     id: String(item.id),
@@ -13,6 +23,10 @@ const extractByIdAndName = (item: any) => {
   }
 }
 
+/**
+ * ENTITY_EXTRACTORS map
+ * Registry of mapping functions for converting database rows into `{ id, name }` display properties.
+ */
 export const ENTITY_EXTRACTORS: Record<string, (item: any) => { id: string; name: string }> = {
   [ProjectSlug.CUSTOMERS]: extractByIdAndName,
   [ProjectSlug.PROFILES]: extractByIdAndName,

@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/combobox/role.tsx
+ * @description Combobox selector specifically built for selecting user roles.
+ * Limits option lists depending on the current user's role/value.
+ */
+
 import { Shield } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { Role, RoleLabel } from "@/lib/constants/enums"
@@ -10,6 +16,11 @@ interface RoleComboboxProps {
   id?: string
 }
 
+/**
+ * RoleCombobox Component
+ * Renders a dropdown to select a role. Ensures SUPER_ADMIN is only selectable
+ * if the user being edited is already a SUPER_ADMIN.
+ */
 export function RoleCombobox({ value, onChange, id }: RoleComboboxProps) {
   const data = [
     ...(value === Role.SUPER_ADMIN ? [{ value: Role.SUPER_ADMIN, label: RoleLabel.SUPER_ADMIN }] : []),

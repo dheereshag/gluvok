@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * @file components/combobox/entity.tsx
+ * @description Dropdown selector for database entities.
+ * Fetches option rows asynchronously and maps them to a selectable combobox list.
+ */
+
 import { BaseCombobox } from "./base"
 import { useEntityOptions } from "./use-entity-options"
 
@@ -13,6 +19,11 @@ interface EntityComboboxProps {
   fieldKey?: string
 }
 
+/**
+ * EntityCombobox Component
+ * Custom combobox that loads options for a specific database table (entitySlug)
+ * and shows them in a searchable selection menu.
+ */
 export function EntityCombobox({
   entitySlug,
   value,

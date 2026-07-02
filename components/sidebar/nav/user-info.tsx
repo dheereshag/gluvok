@@ -1,5 +1,10 @@
 "use client"
 
+/**
+ * @file components/sidebar/nav/user-info.tsx
+ * @description Small avatar block displaying user name, email, and profile avatar image.
+ */
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export interface UserInfo {
@@ -8,6 +13,10 @@ export interface UserInfo {
   avatar: string
 }
 
+/**
+ * UserAvatarInfo Component
+ * Renders avatar image with fallback initials, along with user name and email metadata.
+ */
 export function UserAvatarInfo({ user }: { user: UserInfo }) {
   return (
     <>
