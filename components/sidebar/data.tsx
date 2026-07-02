@@ -5,6 +5,7 @@
 
 import { LifeBuoy, Send } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
+import { DEFAULT_AVATAR } from "@/lib/constants"
 
 /**
  * SIDEBAR_DATA configuration
@@ -14,7 +15,7 @@ export const SIDEBAR_DATA = {
   user: {
     name: "John Doe",
     email: "m@example.com",
-    avatar: "/avatars/profile-default.jpg",
+    avatar: DEFAULT_AVATAR,
   },
   navSecondary: [
     {

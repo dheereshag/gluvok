@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { Role } from "@/lib/constants/enums"
+import { DEFAULT_AVATAR } from "@/lib/constants"
 import { type Profile, type Customer } from "@/types"
 
 export interface AuthUser {
@@ -47,7 +48,7 @@ async function fetchAndSetProfile(
           id: sessionUser.id,
           name: sessionUser.user_metadata?.name || "User",
           email: sessionUser.email || "",
-          avatar: "/avatars/profile-default.jpg",
+          avatar: DEFAULT_AVATAR,
           role: Role.BASE,
           profile: undefined,
         }
@@ -71,7 +72,7 @@ async function fetchAndSetProfile(
             id: sessionUser.id,
             name: customer.name,
             email: sessionUser.email || "",
-            avatar: "/avatars/profile-default.jpg",
+            avatar: DEFAULT_AVATAR,
             role: Role.BASE,
             profile: undefined,
             customer: customer as Customer,
@@ -85,7 +86,7 @@ async function fetchAndSetProfile(
           id: sessionUser.id,
           name: sessionUser.user_metadata?.name || "User",
           email: sessionUser.email || "",
-          avatar: "/avatars/profile-default.jpg",
+          avatar: DEFAULT_AVATAR,
           role: Role.BASE,
           profile: undefined,
         }
@@ -99,7 +100,7 @@ async function fetchAndSetProfile(
         id: sessionUser.id,
         name: profile.name,
         email: sessionUser.email || profile.email || "",
-        avatar: "/avatars/profile-default.jpg",
+        avatar: DEFAULT_AVATAR,
         role: profile.role,
         profile: profile as Profile,
       }
