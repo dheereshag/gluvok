@@ -4,10 +4,12 @@ import { Role } from "@/lib/constants/enums"
 import {
   getScopingFilter,
   applyPaginationAndSorting,
-  executeAndOrderList,
+  executeListQuery,
+  executeSingleQuery,
   executePaginatedQuery,
   type AnyQuery,
 } from "./scoping"
+
 
 type ScopedAuthStoreState = ReturnType<typeof useAuthStore.getState>
 
@@ -171,62 +173,89 @@ describe("Query Scoping Services", () => {
     })
   })
 
-  describe("executeAndOrderList", () => {
-    it("should filter by ID if ID is provided", async () => {
-      const mockResult = [{ id: 42, name: "Test" }]
+  describe("executeListQuery", () => {
+    it("should apply ordering and return list", async () => {
+      const mockResult = [{ id: 1 }, { id: 2 }]
       const mockQuery = {
-        eq: vi.fn().mockReturnThis(),
         order: vi.fn().mockReturnThis(),
         then: vi.fn().mockImplementation((onfulfilled) => {
           return Promise.resolve(onfulfilled({ data: mockResult, error: null }))
         }),
       }
 
-      const result = await executeAndOrderList(
+      const result = await executeListQuery(
+        mockQuery as unknown as AnyQuery<Record<string, unknown>>,
+        "name"
+      )
+
+      expect(mockQuery.order).toHaveBeenCalledWith("name", { ascending: false })
+      expect(result).toEqual(mockResult)
+    })
+
+    it("should throw error if list query fails", async () => {
+      const mockQuery = {
+        order: vi.fn().mockReturnThis(),
+        then: vi.fn().mockImplementation((onfulfilled) => {
+          return Promise.resolve(onfulfilled({ data: null, error: { message: "List Error" } }))
+        }),
+      }
+
+      await expect(
+        executeListQuery(mockQuery as unknown as AnyQuery<Record<string, unknown>>)
+      ).rejects.toThrow("List Error")
+    })
+  })
+
+  describe("executeSingleQuery", () => {
+    it("should filter by ID, call maybeSingle and return record", async () => {
+      const mockResult = { id: 42, name: "Test" }
+      const mockQuery = {
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockReturnThis(),
+        then: vi.fn().mockImplementation((onfulfilled) => {
+          return Promise.resolve(onfulfilled({ data: mockResult, error: null }))
+        }),
+      }
+
+      const result = await executeSingleQuery(
         mockQuery as unknown as AnyQuery<Record<string, unknown>>,
         42
       )
 
       expect(mockQuery.eq).toHaveBeenCalledWith("id", 42)
-      expect(mockQuery.order).not.toHaveBeenCalled()
+      expect(mockQuery.maybeSingle).toHaveBeenCalled()
       expect(result).toEqual(mockResult)
     })
 
-    it("should apply default ordering if ID is not provided", async () => {
-      const mockResult = [{ id: 1 }, { id: 2 }]
+    it("should throw if record not found", async () => {
       const mockQuery = {
         eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockReturnThis(),
         then: vi.fn().mockImplementation((onfulfilled) => {
-          return Promise.resolve(onfulfilled({ data: mockResult, error: null }))
-        }),
-      }
-
-      const result = await executeAndOrderList(
-        mockQuery as unknown as AnyQuery<Record<string, unknown>>,
-        undefined,
-        "name"
-      )
-
-      expect(mockQuery.eq).not.toHaveBeenCalled()
-      expect(mockQuery.order).toHaveBeenCalledWith("name", { ascending: false })
-      expect(result).toEqual(mockResult)
-    })
-
-    it("should throw error if query fails", async () => {
-      const mockQuery = {
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((onfulfilled) => {
-          return Promise.resolve(onfulfilled({ data: null, error: { message: "Database Error" } }))
+          return Promise.resolve(onfulfilled({ data: null, error: null }))
         }),
       }
 
       await expect(
-        executeAndOrderList(mockQuery as unknown as AnyQuery<Record<string, unknown>>)
-      ).rejects.toThrow("Database Error")
+        executeSingleQuery(mockQuery as unknown as AnyQuery<Record<string, unknown>>, 42)
+      ).rejects.toThrow("Record with ID 42 not found")
+    })
+
+    it("should throw error if single query fails", async () => {
+      const mockQuery = {
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockReturnThis(),
+        then: vi.fn().mockImplementation((onfulfilled) => {
+          return Promise.resolve(onfulfilled({ data: null, error: { message: "Single Error" } }))
+        }),
+      }
+
+      await expect(
+        executeSingleQuery(mockQuery as unknown as AnyQuery<Record<string, unknown>>, 42)
+      ).rejects.toThrow("Single Error")
     })
   })
+
 
   describe("executePaginatedQuery", () => {
     it("should return data and count from execution", async () => {

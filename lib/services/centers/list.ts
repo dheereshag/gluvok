@@ -7,11 +7,13 @@ import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
 
+const SELECT_QUERY = `
+  *,
+  factory:factories(id, name)
+`
+
 export async function fetchCenters(): Promise<EntityRecord[]> {
-  const query = supabase.from("centers").select(`
-    *,
-    factory:factories(id, name)
-  `)
+  const query = supabase.from("centers").select(SELECT_QUERY)
 
   const data = await executeListQuery(query)
 
@@ -22,10 +24,7 @@ export async function fetchCenters(): Promise<EntityRecord[]> {
 }
 
 export async function fetchCenterById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("centers").select(`
-    *,
-    factory:factories(id, name)
-  `)
+  const query = supabase.from("centers").select(SELECT_QUERY)
 
   const item = await executeSingleQuery(query, id)
 
@@ -34,4 +33,5 @@ export async function fetchCenterById(id: number): Promise<EntityRecord> {
     factory_name: item.factory?.name,
   }
 }
+
 

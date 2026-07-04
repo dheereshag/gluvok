@@ -82,22 +82,6 @@ export function applyPaginationAndSorting<T extends Record<string, unknown>>(
     .range(from, to)
 }
 
-export async function executeAndOrderList<T extends Record<string, unknown>>(
-  query: AnyQuery<T>,
-  id?: number,
-  defaultOrder = "updated_at"
-): Promise<T[]> {
-  let activeQuery = query
-  if (id !== undefined) {
-    activeQuery = activeQuery.eq("id" as never, id)
-  } else {
-    activeQuery = activeQuery.order(defaultOrder, { ascending: false })
-  }
-  const { data, error } = await activeQuery
-  if (error) throw new Error(error.message)
-  return data || []
-}
-
 export async function executeListQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
   defaultOrder = "updated_at"

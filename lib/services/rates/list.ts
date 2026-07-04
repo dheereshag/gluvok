@@ -7,12 +7,14 @@ import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
 
+const SELECT_QUERY = `
+  *,
+  commodity:commodities(id, name),
+  factory:factories(id, name)
+`
+
 export async function fetchRates(): Promise<EntityRecord[]> {
-  const query = supabase.from("rates").select(`
-    *,
-    commodity:commodities(id, name),
-    factory:factories(id, name)
-  `)
+  const query = supabase.from("rates").select(SELECT_QUERY)
 
   const data = await executeListQuery(query)
 
@@ -24,11 +26,7 @@ export async function fetchRates(): Promise<EntityRecord[]> {
 }
 
 export async function fetchRateById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("rates").select(`
-    *,
-    commodity:commodities(id, name),
-    factory:factories(id, name)
-  `)
+  const query = supabase.from("rates").select(SELECT_QUERY)
 
   const item = await executeSingleQuery(query, id)
 
@@ -38,4 +36,5 @@ export async function fetchRateById(id: number): Promise<EntityRecord> {
     factory_name: item.factory?.name,
   }
 }
+
 
