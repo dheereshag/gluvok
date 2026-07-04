@@ -36,15 +36,6 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         )
       }
     ),
-    createIdColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package),
-    createIdColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building),
-    createTextColumn(EntityKey.CENTER_NAME, ColumnLabel.CENTER_NAME, Building),
-    createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User),
-    createTextColumn(EntityKey.PROFILE_NAME, ColumnLabel.PROFILE_NAME, User),
-    createTextColumn(EntityKey.PROFILE_AADHAR, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
-    createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users),
-    createTextColumn(EntityKey.CUSTOMER_NAME, ColumnLabel.CUSTOMER_NAME, Users),
-    createTextColumn(EntityKey.CUSTOMER_GOVT_ID, ColumnLabel.GOVT_ID, ShieldCheck, "font-mono text-muted-foreground text-xs"),
     {
       ...createBaseColumn(
         EntityKey.IMAGES,
@@ -58,6 +49,15 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       ),
       enableGlobalFilter: false,
     },
+    createIdColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package),
+    createIdColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building),
+    createTextColumn(EntityKey.CENTER_NAME, ColumnLabel.CENTER_NAME, Building),
+    createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User),
+    createTextColumn(EntityKey.PROFILE_NAME, ColumnLabel.PROFILE_NAME, User),
+    createTextColumn(EntityKey.PROFILE_AADHAR, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
+    createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users),
+    createTextColumn(EntityKey.CUSTOMER_NAME, ColumnLabel.CUSTOMER_NAME, Users),
+    createTextColumn(EntityKey.CUSTOMER_GOVT_ID, ColumnLabel.GOVT_ID, ShieldCheck, "font-mono text-muted-foreground text-xs"),
     createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, Power, (val) => {
       const isActive = val === "true"
       return (
