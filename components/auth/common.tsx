@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { UseFormRegisterReturn, FieldError as HookFieldError } from "react-hook-form"
-import { Logo } from "@/components/logo"
+import { Logo, LogoVertical } from "@/components/logo"
 import Link from "next/link"
 
 interface AuthCardProps {
@@ -85,7 +85,7 @@ export function AuthPageLayout({ children }: AuthPageLayoutProps) {
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Link href="#" className="flex items-center gap-2 self-center font-medium">
-          <Logo size={100} />
+          <LogoVertical />
         </Link>
         {children}
       </div>

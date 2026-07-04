@@ -8,7 +8,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Logo } from "@/components/logo"
+import { Logo, LogoHorizontal } from "@/components/logo"
 
 import { NavMain } from "./nav/main"
 import { NavSecondary } from "./nav/secondary"
@@ -54,7 +54,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <Logo size={60} />
+                <LogoHorizontal />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
