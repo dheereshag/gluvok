@@ -40,6 +40,58 @@ CREATE OR REPLACE FUNCTION current_customer_id() RETURNS int AS $$
   SELECT id FROM customers WHERE user_id = auth.uid() LIMIT 1;
 $$ LANGUAGE sql SECURITY DEFINER;
 
+-- Get current user's email securely from auth.users (running as SECURITY DEFINER)
+CREATE OR REPLACE FUNCTION get_user_email(u_id uuid) RETURNS text AS $$
+  SELECT email::text FROM auth.users WHERE id = u_id LIMIT 1;
+$$ LANGUAGE sql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION public.get_user_email(uuid) TO authenticated;
+
+-- Get list of users from auth.users securely and isolated by factory (running as SECURITY DEFINER)
+-- Only returns users who are registered in the system (have a profile or customer record).
+-- Ghost auth accounts (no profile, no customer) are never returned.
+-- super_admin and hardware role accounts are always excluded.
+CREATE OR REPLACE FUNCTION get_users()
+RETURNS TABLE (id uuid, email text) AS $$
+BEGIN
+  IF (SELECT public.current_user_role() = 'super_admin') THEN
+    -- Super admin sees all registered users with non-excluded roles
+    RETURN QUERY
+    SELECT u.id, u.email::text
+    FROM auth.users u
+    WHERE EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.user_id = u.id
+      AND p.role::text NOT IN ('super_admin', 'hardware')
+    )
+    OR EXISTS (
+      SELECT 1 FROM public.customers c
+      WHERE c.user_id = u.id
+    );
+  ELSE
+    -- Non-super-admin sees only their factory's users (non-excluded roles)
+    RETURN QUERY
+    SELECT u.id, u.email::text
+    FROM auth.users u
+    WHERE (
+      EXISTS (
+        SELECT 1 FROM public.profiles p
+        WHERE p.user_id = u.id
+        AND p.role::text NOT IN ('super_admin', 'hardware')
+        AND p.factory_id = public.current_user_factory_id()
+      )
+      OR EXISTS (
+        SELECT 1 FROM public.customers c
+        WHERE c.user_id = u.id
+        AND c.factory_id = public.current_user_factory_id()
+      )
+    );
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION public.get_users() TO authenticated;
+
 
 -- 2. Profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
@@ -49,7 +101,18 @@ CREATE POLICY "profiles_isolation_policy" ON profiles
 FOR ALL TO authenticated
 USING (
   current_user_role() = 'super_admin'
-  OR factory_id = current_user_factory_id()
+  OR (
+    factory_id = current_user_factory_id()
+    AND (
+      user_id = auth.uid()
+      OR (
+        current_user_role() = 'admin' AND role::text IN ('manager', 'operator', 'base')
+      )
+      OR (
+        current_user_role() = 'manager' AND role::text IN ('operator', 'base')
+      )
+    )
+  )
 );
 
 
@@ -174,16 +237,29 @@ WITH CHECK (current_user_role() = 'super_admin');
 
 -- ============================================================================
 -- IMPORTANT FIX: Recreate the 'profiles_with_email' view WITHOUT security_invoker.
--- This allows it to run as Owner (Security Definer) so it has access to 'auth.users'.
+-- This allows it to run as Owner (Security Definer) so it has access to 'auth.users'
+-- via the get_user_email SECURITY DEFINER function.
 -- To keep it secure and enforce tenant isolation, we add the WHERE clause filter.
 -- ============================================================================
-DROP VIEW IF EXISTS profiles_with_email;
+DROP VIEW IF EXISTS profiles_with_email CASCADE;
 
 CREATE OR REPLACE VIEW profiles_with_email AS
-SELECT p.*, u.email
+SELECT p.*, get_user_email(p.user_id) AS email
 FROM profiles p
-LEFT JOIN auth.users u ON p.user_id = u.id
 WHERE (
   current_user_role() = 'super_admin'
-  OR p.factory_id = current_user_factory_id()
+  OR (
+    p.factory_id = current_user_factory_id()
+    AND (
+      p.user_id = auth.uid()
+      OR (
+        current_user_role() = 'admin' AND p.role::text IN ('manager', 'operator', 'base')
+      )
+      OR (
+        current_user_role() = 'manager' AND p.role::text IN ('operator', 'base')
+      )
+    )
+  )
 );
+
+GRANT SELECT ON public.profiles_with_email TO authenticated;
