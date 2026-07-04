@@ -12,26 +12,24 @@ const SELECT_QUERY = `
   village:villages(id, name)
 `
 
-export async function fetchFactories(): Promise<EntityRecord[]> {
-  const query = supabase.from("factories").select(SELECT_QUERY)
+const buildQuery = () => supabase.from("factories").select(SELECT_QUERY)
 
-  const data = await executeListQuery(query)
-
-  return data.map((item) => ({
-    ...item,
-    village_name: item.village?.name,
-  }))
-}
-
-export async function fetchFactoryById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("factories").select(SELECT_QUERY)
-
-  const item = await executeSingleQuery(query, id)
-
+function enrichFactory<T extends { village?: { id: number; name: string } | null }>(
+  item: T
+): EntityRecord {
   return {
     ...item,
     village_name: item.village?.name,
-  }
+  } as unknown as EntityRecord
 }
 
 
+export async function fetchFactories(): Promise<EntityRecord[]> {
+  const data = await executeListQuery(buildQuery())
+  return data.map(enrichFactory)
+}
+
+export async function fetchFactoryById(id: number): Promise<EntityRecord> {
+  const item = await executeSingleQuery(buildQuery(), id)
+  return enrichFactory(item)
+}

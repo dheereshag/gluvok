@@ -12,6 +12,8 @@ const SELECT_QUERY = `
     village:villages(id, name)
 `
 
+const buildQuery = () => supabase.from("customers").select(SELECT_QUERY)
+
 async function enrichCustomers<
   T extends { user_id?: string | null; village?: { id: number; name: string } | null }
 >(data: T[]): Promise<EntityRecord[]> {
@@ -38,18 +40,12 @@ async function enrichCustomers<
 
 
 export async function fetchCustomers(): Promise<EntityRecord[]> {
-  const query = supabase.from("customers").select(SELECT_QUERY)
-
-  const data = await executeListQuery(query)
+  const data = await executeListQuery(buildQuery())
   return enrichCustomers(data)
 }
 
 export async function fetchCustomerById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("customers").select(SELECT_QUERY)
-
-  const item = await executeSingleQuery(query, id)
+  const item = await executeSingleQuery(buildQuery(), id)
   const enriched = await enrichCustomers([item])
   return enriched[0]
 }
-
-

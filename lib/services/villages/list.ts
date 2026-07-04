@@ -7,13 +7,14 @@ import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
 
+const buildQuery = () => supabase.from("villages").select("*")
+
 export async function fetchVillages(): Promise<EntityRecord[]> {
-  const query = supabase.from("villages").select("*")
-  return executeListQuery(query)
+  return executeListQuery(buildQuery())
 }
 
 export async function fetchVillageById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("villages").select("*")
-  return executeSingleQuery(query, id)
+  return executeSingleQuery(buildQuery(), id)
 }
+
 

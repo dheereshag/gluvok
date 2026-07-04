@@ -17,6 +17,8 @@ const SELECT_QUERY = `
   )
 `
 
+const buildQuery = () => supabase.from("weighments").select(SELECT_QUERY)
+
 function enrichWeighments<
   T extends {
     center?: { name: string } | null
@@ -42,17 +44,11 @@ function enrichWeighments<
 
 
 export async function fetchWeighments(): Promise<EntityRecord[]> {
-  const query = supabase.from("weighments").select(SELECT_QUERY)
-
-  const data = await executeListQuery(query)
+  const data = await executeListQuery(buildQuery())
   return enrichWeighments(data)
 }
 
 export async function fetchWeighmentById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("weighments").select(SELECT_QUERY)
-
-  const item = await executeSingleQuery(query, id)
+  const item = await executeSingleQuery(buildQuery(), id)
   return enrichWeighments([item])[0]
 }
-
-

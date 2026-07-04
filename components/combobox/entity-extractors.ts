@@ -16,7 +16,7 @@ export type Entity = EntityRecord | { id: string; email: string }
  * Standard extractor helper
  * Extract ID and name fields directly from simple database records.
  */
-const extractByIdAndName = (item: { id: string | number; name: string }) => {
+const extractByIdAndName = (item: { id: number; name: string }) => {
   return {
     id: String(item.id),
     name: item.name,
@@ -31,16 +31,17 @@ export const ENTITY_EXTRACTORS: Record<
   string,
   (item: Entity) => { id: string; name: string }
 > = {
-  [ProjectSlug.CUSTOMERS]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
-  [ProjectSlug.PROFILES]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
-  [ProjectSlug.CENTERS]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
-  [ProjectSlug.COMMODITIES]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
-  [ProjectSlug.FACTORIES]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
-  [ProjectSlug.VILLAGES]: (item) => extractByIdAndName(item as { id: string | number; name: string }),
+  [ProjectSlug.CUSTOMERS]: (item) => extractByIdAndName(item as { id: number; name: string }),
+  [ProjectSlug.PROFILES]: (item) => extractByIdAndName(item as { id: number; name: string }),
+  [ProjectSlug.CENTERS]: (item) => extractByIdAndName(item as { id: number; name: string }),
+  [ProjectSlug.COMMODITIES]: (item) => extractByIdAndName(item as { id: number; name: string }),
+  [ProjectSlug.FACTORIES]: (item) => extractByIdAndName(item as { id: number; name: string }),
+  [ProjectSlug.VILLAGES]: (item) => extractByIdAndName(item as { id: number; name: string }),
   [SystemSlug.USERS]: (item) => {
     const u = item as { id: string; email: string }
     return { id: u.id, name: u.email }
   },
+
   [ProjectSlug.RATES]: (item) => {
     const p = item as Rate
     return {

@@ -82,12 +82,16 @@ export function applyPaginationAndSorting<T extends Record<string, unknown>>(
     .range(from, to)
 }
 
+function checkError(error: { message: string } | null): void {
+  if (error) throw new Error(error.message)
+}
+
 export async function executeListQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
   defaultOrder = "updated_at"
 ): Promise<T[]> {
   const { data, error } = await query.order(defaultOrder, { ascending: false })
-  if (error) throw new Error(error.message)
+  checkError(error)
   return data || []
 }
 
@@ -96,7 +100,7 @@ export async function executeSingleQuery<T extends Record<string, unknown>>(
   id: number
 ): Promise<T> {
   const { data, error } = await query.eq("id" as never, id).maybeSingle()
-  if (error) throw new Error(error.message)
+  checkError(error)
   if (!data) {
     throw new Error(`Record with ID ${id} not found`)
   }
@@ -107,7 +111,8 @@ export async function executePaginatedQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>
 ): Promise<{ data: T[]; count: number }> {
   const { data, count, error } = await query
-  if (error) throw new Error(error.message)
+  checkError(error)
   return { data: data || [], count: count || 0 }
 }
+
 

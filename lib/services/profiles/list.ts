@@ -7,31 +7,30 @@ import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
 
+const TABLE_NAME = "profiles_with_email"
 const SELECT_QUERY = `
   *,
   factory:factories(name)
 `
 
-export async function fetchProfiles(): Promise<EntityRecord[]> {
-  const query = supabase.from("profiles_with_email").select(SELECT_QUERY)
+const buildQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
 
-  const data = await executeListQuery(query)
-
-  return data.map((item) => ({
-    ...item,
-    factory_name: item.factory?.name || "",
-  }))
-}
-
-export async function fetchProfileById(id: number): Promise<EntityRecord> {
-  const query = supabase.from("profiles_with_email").select(SELECT_QUERY)
-
-  const item = await executeSingleQuery(query, id)
-
+function enrichProfile<T extends { factory?: { name: string } | null }>(item: T): EntityRecord {
   return {
     ...item,
     factory_name: item.factory?.name || "",
-  }
+  } as unknown as EntityRecord
 }
 
 
+export async function fetchProfiles(): Promise<EntityRecord[]> {
+  const data = await executeListQuery(buildQuery())
+
+  return data.map(enrichProfile)
+}
+
+export async function fetchProfileById(id: number): Promise<EntityRecord> {
+  const item = await executeSingleQuery(buildQuery(), id)
+
+  return enrichProfile(item)
+}
