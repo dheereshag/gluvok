@@ -7,11 +7,11 @@ export interface LogoProps extends Omit<React.ComponentPropsWithoutRef<typeof Im
 }
 
 export interface LogoHorizontalProps extends Omit<React.ComponentPropsWithoutRef<typeof Image>, "src" | "alt"> {
-  height?: number
+  size?: number
 }
 
 export interface LogoVerticalProps extends Omit<React.ComponentPropsWithoutRef<typeof Image>, "src" | "alt"> {
-  height?: number
+  size?: number
 }
 
 /**
@@ -33,13 +33,13 @@ export function Logo({ size = 32, className, ...props }: LogoProps) {
 /**
  * Horizontal logo (wide) — uses /logo-horizontal.png
  */
-export function LogoHorizontal({ height = 64, width = 64, className, ...props }: LogoHorizontalProps) {
+export function LogoHorizontal({ size = 64, className, ...props }: LogoHorizontalProps) {
   return (
     <Image
       src="/logo-horizontal.png"
       alt="Gluvok logo"
-      width={width}
-      height={height}
+      width={size}
+      height={0}
       className={cn("object-contain w-auto h-auto", className)}
       {...props}
     />
@@ -49,13 +49,13 @@ export function LogoHorizontal({ height = 64, width = 64, className, ...props }:
 /**
  * Vertical logo (stacked) — uses /logo-vertical.png
  */
-export function LogoVertical({ height = 64, width = 64, className, ...props }: LogoVerticalProps) {
+export function LogoVertical({ size = 64, className, ...props }: LogoVerticalProps) {
   return (
     <Image
       src="/logo-vertical.png"
       alt="Gluvok logo"
-      width={width}
-      height={height}
+      width={0}
+      height={size}
       className={cn("object-contain w-auto h-auto", className)}
       {...props}
     />
