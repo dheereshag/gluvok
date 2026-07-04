@@ -5,8 +5,10 @@
 
 import { supabase } from "@/lib/supabase"
 import { type Customer } from "@/types"
+import { TABLE_NAME as PROFILES_TABLE } from "../profiles"
+import { ProjectSlug } from "@/lib/constants/enums"
 
-export const TABLE_NAME = "customers"
+export const TABLE_NAME = ProjectSlug.CUSTOMERS
 
 export const SELECT_QUERY = `
   *,
@@ -24,7 +26,7 @@ export async function enrichCustomer(item: {
   let email: string | undefined = undefined
   if (item.user_id) {
     const { data } = await supabase
-      .from("profiles_with_email")
+      .from(PROFILES_TABLE)
       .select("email")
       .eq("user_id", item.user_id)
       .maybeSingle()
@@ -41,7 +43,7 @@ export async function enrichCustomers(data: {
   let profiles: { user_id: string; email: string }[] = []
   if (userIds.length > 0) {
     const { data: profileData } = await supabase
-      .from("profiles_with_email")
+      .from(PROFILES_TABLE)
       .select("user_id, email")
       .in("user_id", userIds)
     profiles = (profileData || []) as { user_id: string; email: string }[]

@@ -7,6 +7,7 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Profile } from "@/types"
 import { buildPaginatedQuery, enrichProfile } from "./query"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as FACTORIES_TABLE } from "../factories"
 
 export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{ data: Profile[]; count: number }> {
   const { search, filters = {} } = params
@@ -15,7 +16,7 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
 
   if (search) {
-    const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+    const { data: factories } = await supabase.from(FACTORIES_TABLE).select("id").ilike("name", `%${search}%`)
     const factoryIds = (factories || []).map((f: { id: number }) => f.id)
 
     const orConditions: string[] = [

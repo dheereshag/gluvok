@@ -8,6 +8,7 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Center } from "@/types"
 import { buildPaginatedQuery, enrichCenter } from "./query"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as FACTORIES_TABLE } from "../factories"
 
 export async function fetchCentersPaginated(params: PaginatedParams): Promise<{ data: Center[]; count: number }> {
   const { search } = params
@@ -17,7 +18,7 @@ export async function fetchCentersPaginated(params: PaginatedParams): Promise<{ 
 
 
   if (search) {
-    const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
+    const { data: factories } = await supabase.from(FACTORIES_TABLE).select("id").ilike("name", `%${search}%`)
     const factoryIds = (factories || []).map((f: { id: number }) => f.id)
     if (factoryIds.length > 0) {
       query = query.or(`name.ilike.%${search}%,factory_id.in.(${factoryIds.join(",")})`)

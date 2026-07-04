@@ -4,8 +4,9 @@
  */
 
 import { supabase } from "@/lib/supabase"
+import { ProjectSlug } from "@/lib/constants/enums"
 
-export const TABLE_NAME = "commodities"
+export const TABLE_NAME = ProjectSlug.COMMODITIES
 
 export const SELECT_QUERY = "*"
 

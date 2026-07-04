@@ -83,7 +83,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       return
     }
     try {
-      const { data, error } = await supabase.from("villages").select("id, name").order("name")
+      const { data, error } = await supabase.from(ProjectSlug.VILLAGES).select("id, name").order("name")
       if (error) throw error
       set((state) => ({
         villages: (data as Village[]) || [],
@@ -109,10 +109,10 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     }
     try {
       const [c, p, cu, r] = await Promise.all([
-        supabase.from("centers").select("id, name").order("name"),
-        supabase.from("profiles").select("id, name").order("name"),
-        supabase.from("customers").select("id, name").order("name"),
-        supabase.from("rates").select("id, unit_price, unit, commodity:commodities(name)").order("id"),
+        supabase.from(ProjectSlug.CENTERS).select("id, name").order("name"),
+        supabase.from(ProjectSlug.PROFILES).select("id, name").order("name"),
+        supabase.from(ProjectSlug.CUSTOMERS).select("id, name").order("name"),
+        supabase.from(ProjectSlug.RATES).select(`id, unit_price, unit, commodity:${ProjectSlug.COMMODITIES}(name)`).order("id"),
       ])
 
       const centers = (c.data as IdNamePair[]) || []

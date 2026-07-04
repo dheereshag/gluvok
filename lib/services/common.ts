@@ -17,28 +17,6 @@ import { fetchProfiles, fetchProfilesPaginated, fetchProfileById } from "./profi
 import { fetchVillages, fetchVillagesPaginated, fetchVillageById } from "./villages"
 import { type PaginatedParams } from "./scoping"
 
-export function slugToTable(slug: ProjectSlug | string): string {
-  switch (slug) {
-    case ProjectSlug.CENTERS:
-      return "centers"
-    case ProjectSlug.COMMODITIES:
-      return "commodities"
-    case ProjectSlug.RATES:
-      return "rates"
-    case ProjectSlug.CUSTOMERS:
-      return "customers"
-    case ProjectSlug.WEIGHMENTS:
-      return "weighments"
-    case ProjectSlug.FACTORIES:
-      return "factories"
-    case ProjectSlug.PROFILES:
-      return "profiles"
-    case ProjectSlug.VILLAGES:
-      return "villages"
-    default:
-      throw new Error(`Unknown project slug: ${slug}`)
-  }
-}
 
 export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<EntityRecord> {
   switch (slug) {
@@ -116,7 +94,7 @@ export async function fetchEntityListPaginated(
 
 // Mutate functions
 export async function insertRow(slug: ProjectSlug, record: Record<string, unknown>): Promise<EntityRecord> {
-  const table = slugToTable(slug)
+  const table = slug
   const { data, error } = await supabase.from(table).insert(record).select("id").maybeSingle()
   if (error) throw new Error(error.message)
   if (!data) {
@@ -126,7 +104,7 @@ export async function insertRow(slug: ProjectSlug, record: Record<string, unknow
 }
 
 export async function updateRow(slug: ProjectSlug, id: number, record: Record<string, unknown>): Promise<EntityRecord> {
-  const table = slugToTable(slug)
+  const table = slug
   const { data, error } = await supabase.from(table).update(record).eq("id", id).select("id").maybeSingle()
   if (error) throw new Error(error.message)
   if (!data) {
@@ -136,7 +114,7 @@ export async function updateRow(slug: ProjectSlug, id: number, record: Record<st
 }
 
 export async function deleteRow(slug: ProjectSlug, id: number): Promise<void> {
-  const table = slugToTable(slug)
+  const table = slug
   const { error } = await supabase.from(table).delete().eq("id", id)
   if (error) throw new Error(error.message)
 }

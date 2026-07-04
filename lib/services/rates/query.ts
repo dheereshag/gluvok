@@ -5,8 +5,9 @@
 
 import { supabase } from "@/lib/supabase"
 import { type Rate } from "@/types"
+import { ProjectSlug } from "@/lib/constants/enums"
 
-export const TABLE_NAME = "rates"
+export const TABLE_NAME = ProjectSlug.RATES
 
 export const SELECT_QUERY = `
   *,

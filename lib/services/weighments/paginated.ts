@@ -7,6 +7,9 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Weighment } from "@/types"
 import { buildPaginatedQuery, enrichWeighments } from "./query"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as CENTERS_TABLE } from "../centers"
+import { TABLE_NAME as PROFILES_TABLE } from "../profiles"
+import { TABLE_NAME as CUSTOMERS_TABLE } from "../customers"
 
 export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise<{ data: Weighment[]; count: number }> {
   const { search, filters = {} } = params
@@ -17,9 +20,9 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
 
   if (search) {
     const [centersRes, profilesRes, customersRes] = await Promise.all([
-      supabase.from("centers").select("id").ilike("name", `%${search}%`),
-      supabase.from("profiles").select("id").ilike("name", `%${search}%`),
-      supabase.from("customers").select("id").ilike("name", `%${search}%`),
+      supabase.from(CENTERS_TABLE).select("id").ilike("name", `%${search}%`),
+      supabase.from(PROFILES_TABLE).select("id").ilike("name", `%${search}%`),
+      supabase.from(CUSTOMERS_TABLE).select("id").ilike("name", `%${search}%`),
     ])
 
     const centerIds = (centersRes.data || []).map((c: { id: number }) => c.id)

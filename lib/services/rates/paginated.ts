@@ -7,6 +7,8 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Rate } from "@/types"
 import { buildPaginatedQuery, enrichRate } from "./query"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as COMMODITIES_TABLE } from "../commodities"
+import { TABLE_NAME as FACTORIES_TABLE } from "../factories"
 
 export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: Rate[]; count: number }> {
   const { search } = params
@@ -25,8 +27,8 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
 
   if (search) {
     const [commoditiesRes, factoriesRes] = await Promise.all([
-      supabase.from("commodities").select("id").ilike("name", `%${search}%`),
-      supabase.from("factories").select("id").ilike("name", `%${search}%`),
+      supabase.from(COMMODITIES_TABLE).select("id").ilike("name", `%${search}%`),
+      supabase.from(FACTORIES_TABLE).select("id").ilike("name", `%${search}%`),
     ])
 
     const commodityIds = (commoditiesRes.data || []).map((c: { id: number }) => c.id)

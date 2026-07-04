@@ -7,6 +7,7 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Factory } from "@/types"
 import { buildPaginatedQuery, enrichFactory } from "./query"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as VILLAGES_TABLE } from "../villages"
 
 export async function fetchFactoriesPaginated(params: PaginatedParams): Promise<{ data: Factory[]; count: number }> {
   const { search } = params
@@ -15,7 +16,7 @@ export async function fetchFactoriesPaginated(params: PaginatedParams): Promise<
 
 
   if (search) {
-    const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
+    const { data: villages } = await supabase.from(VILLAGES_TABLE).select("id").ilike("name", `%${search}%`)
     const villageIds = (villages || []).map((v: { id: number }) => v.id)
     if (villageIds.length > 0) {
       query = query.or(`name.ilike.%${search}%,village_id.in.(${villageIds.join(",")})`)

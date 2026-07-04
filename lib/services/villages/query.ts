@@ -4,8 +4,9 @@
  */
 
 import { supabase } from "@/lib/supabase"
+import { ProjectSlug } from "@/lib/constants/enums"
 
-export const TABLE_NAME = "villages"
+export const TABLE_NAME = ProjectSlug.VILLAGES
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select("*")
 
