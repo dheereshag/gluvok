@@ -5,7 +5,6 @@
  * @description Dynamic filter router for each project entity slug.
  */
 
-import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { RatesFilters } from "./rates"
