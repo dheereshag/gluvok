@@ -8,6 +8,8 @@ import { ProjectSlug } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.VILLAGES
 
-export const buildListQuery = () => supabase.from(TABLE_NAME).select("*")
+export const SELECT_QUERY = "*"
 
-export const buildPaginatedQuery = () => supabase.from(TABLE_NAME).select("*", { count: "exact" })
+export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
+
+export const buildPaginatedQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY, { count: "exact" })

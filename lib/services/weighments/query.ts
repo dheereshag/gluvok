@@ -5,17 +5,17 @@
 
 import { supabase } from "@/lib/supabase"
 import { type Weighment } from "@/types"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.WEIGHMENTS
 
 export const SELECT_QUERY = `
   *,
-  center:centers(id, name),
-  profile:profiles(id, name, aadhar_number),
-  customer:customers(id, name, govt_id),
-  rate:rates(id, unit_price, unit,
-    commodity:commodities(id, name)
+  center:${ProjectSlug.CENTERS}(${EntityKey.ID}, ${EntityKey.NAME}),
+  profile:${ProjectSlug.PROFILES}(${EntityKey.ID}, ${EntityKey.NAME}, ${EntityKey.AADHAR_NUMBER}),
+  customer:${ProjectSlug.CUSTOMERS}(${EntityKey.ID}, ${EntityKey.NAME}, ${EntityKey.GOVT_ID}),
+  rate:${ProjectSlug.RATES}(${EntityKey.ID}, ${EntityKey.UNIT_PRICE}, ${EntityKey.UNIT},
+    commodity:${ProjectSlug.COMMODITIES}(${EntityKey.ID}, ${EntityKey.NAME})
   )
 `
 

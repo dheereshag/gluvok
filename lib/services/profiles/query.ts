@@ -6,11 +6,13 @@
 import { supabase } from "@/lib/supabase"
 import { type Profile } from "@/types"
 
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
+
 export const TABLE_NAME = "profiles_with_email"
 
 export const SELECT_QUERY = `
   *,
-  factory:factories(name)
+  factory:${ProjectSlug.FACTORIES}(${EntityKey.NAME})
 `
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)

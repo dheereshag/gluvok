@@ -6,11 +6,14 @@
 import { create } from "zustand"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
-import { Role } from "@/lib/constants/enums"
+import { Role, EntityKey } from "@/lib/constants/enums"
 import { DEFAULT_AVATAR } from "@/lib/constants"
 import { type Profile, type Customer } from "@/types"
 import { TABLE_NAME as PROFILES_TABLE } from "@/lib/services/profiles"
 import { TABLE_NAME as CUSTOMERS_TABLE } from "@/lib/services/customers"
+
+export const PROFILE_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.USER_ID}, ${EntityKey.NAME}, ${EntityKey.ROLE}, ${EntityKey.AADHAR_NUMBER}, ${EntityKey.FACTORY_ID}, ${EntityKey.CREATED_AT}, ${EntityKey.UPDATED_AT}`
+export const CUSTOMER_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}, ${EntityKey.GOVT_ID}, ${EntityKey.FATHER_NAME}, ${EntityKey.VILLAGE_ID}, ${EntityKey.FACTORY_ID}, ${EntityKey.USER_ID}, ${EntityKey.CREATED_AT}, ${EntityKey.UPDATED_AT}`
 
 export interface AuthUser {
   id: string
@@ -41,8 +44,8 @@ async function fetchAndSetProfile(
   try {
     const { data: profile, error } = await supabase
       .from(PROFILES_TABLE)
-      .select("id, user_id, name, role, aadhar_number, factory_id, created_at, updated_at")
-      .eq("user_id", sessionUser.id)
+      .select(PROFILE_SELECT_FIELDS)
+      .eq(EntityKey.USER_ID, sessionUser.id)
       .maybeSingle()
 
     // Permission error (e.g. SECURITY INVOKER view + no RLS policy for this user).
@@ -68,8 +71,8 @@ async function fetchAndSetProfile(
       // Fallback: check if the user is a customer
       const { data: customer, error: customerError } = await supabase
         .from(CUSTOMERS_TABLE)
-        .select("id, name, govt_id, father_name, village_id, factory_id, user_id, created_at, updated_at")
-        .eq("user_id", sessionUser.id)
+        .select(CUSTOMER_SELECT_FIELDS)
+        .eq(EntityKey.USER_ID, sessionUser.id)
         .maybeSingle()
         
       if (!customerError && customer) {

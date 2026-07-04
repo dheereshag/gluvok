@@ -7,9 +7,15 @@
 
 import { create } from "zustand"
 import { type Commodity } from "@/types"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { insertRow, updateRow, deleteRow, fetchCommodities } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
+
+export const VILLAGES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
+export const CENTERS_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
+export const PROFILES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
+export const CUSTOMERS_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
+export const RATES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.UNIT_PRICE}, ${EntityKey.UNIT}, commodity:${ProjectSlug.COMMODITIES}(${EntityKey.NAME})`
 
 export interface IdNamePair { id: number; name: string }
 export interface RateOption { id: number; label: string }
@@ -83,7 +89,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       return
     }
     try {
-      const { data, error } = await supabase.from(ProjectSlug.VILLAGES).select("id, name").order("name")
+      const { data, error } = await supabase.from(ProjectSlug.VILLAGES).select(VILLAGES_SELECT_FIELDS).order("name")
       if (error) throw error
       set((state) => ({
         villages: (data as Village[]) || [],
@@ -109,10 +115,10 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     }
     try {
       const [c, p, cu, r] = await Promise.all([
-        supabase.from(ProjectSlug.CENTERS).select("id, name").order("name"),
-        supabase.from(ProjectSlug.PROFILES).select("id, name").order("name"),
-        supabase.from(ProjectSlug.CUSTOMERS).select("id, name").order("name"),
-        supabase.from(ProjectSlug.RATES).select(`id, unit_price, unit, commodity:${ProjectSlug.COMMODITIES}(name)`).order("id"),
+        supabase.from(ProjectSlug.CENTERS).select(CENTERS_SELECT_FIELDS).order("name"),
+        supabase.from(ProjectSlug.PROFILES).select(PROFILES_SELECT_FIELDS).order("name"),
+        supabase.from(ProjectSlug.CUSTOMERS).select(CUSTOMERS_SELECT_FIELDS).order("name"),
+        supabase.from(ProjectSlug.RATES).select(RATES_SELECT_FIELDS).order("id"),
       ])
 
       const centers = (c.data as IdNamePair[]) || []

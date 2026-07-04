@@ -6,13 +6,13 @@
 import { supabase } from "@/lib/supabase"
 import { type Customer } from "@/types"
 import { TABLE_NAME as PROFILES_TABLE } from "../profiles"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.CUSTOMERS
 
 export const SELECT_QUERY = `
   *,
-  village:villages(id, name)
+  village:${ProjectSlug.VILLAGES}(${EntityKey.ID}, ${EntityKey.NAME})
 `
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
@@ -27,8 +27,8 @@ export async function enrichCustomer(item: {
   if (item.user_id) {
     const { data } = await supabase
       .from(PROFILES_TABLE)
-      .select("email")
-      .eq("user_id", item.user_id)
+      .select(EntityKey.EMAIL)
+      .eq(EntityKey.USER_ID, item.user_id)
       .maybeSingle()
     email = data?.email || item.user_id
   }
@@ -44,8 +44,8 @@ export async function enrichCustomers(data: {
   if (userIds.length > 0) {
     const { data: profileData } = await supabase
       .from(PROFILES_TABLE)
-      .select("user_id, email")
-      .in("user_id", userIds)
+      .select(`${EntityKey.USER_ID}, ${EntityKey.EMAIL}`)
+      .in(EntityKey.USER_ID, userIds)
     profiles = (profileData || []) as { user_id: string; email: string }[]
   }
 

@@ -5,13 +5,13 @@
 
 import { supabase } from "@/lib/supabase"
 import { type Center } from "@/types"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.CENTERS
 
 export const SELECT_QUERY = `
   *,
-  factory:factories(id, name)
+  factory:${ProjectSlug.FACTORIES}(${EntityKey.ID}, ${EntityKey.NAME})
 `
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
