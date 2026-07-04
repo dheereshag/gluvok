@@ -29,27 +29,30 @@ export function useProjectTable({
   projectName,
 }: UseProjectTableProps) {
   const dialogStates = useProjectDialogStates()
+  const user = useAuthStore((state) => state.user)
+  const profile = user?.profile
+
+  const savedFilters = React.useMemo(() => {
+    return (profile?.preferences?.[`${projectSlug}_filters`] || {}) as Record<string, unknown>
+  }, [profile?.preferences, projectSlug])
+
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(() => {
+    return Object.entries(savedFilters).map(([id, value]) => ({ id, value }))
+  })
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState("")
   const { setEditingItem, setDeletingItem } = dialogStates
 
-  const user = useAuthStore((state) => state.user)
-  const profile = user?.profile
   const updateColumnPreferences = useEntitiesStore((state) => state.updateColumnPreferences)
 
   const savedVisibleColumns = React.useMemo(() => {
     return profile?.preferences?.[projectSlug]
   }, [profile?.preferences, projectSlug])
 
-  const savedFilters = React.useMemo(() => {
-    return (profile?.preferences?.[`${projectSlug}_filters`] || {}) as Record<string, unknown>
-  }, [profile?.preferences, projectSlug])
-
   const updateFilterPreferences = useEntitiesStore((state) => state.updateFilterPreferences)
 
-  const hasSyncedInitialFilters = React.useRef(false)
+  const hasSyncedInitialFilters = React.useRef(Object.keys(savedFilters).length > 0)
   React.useEffect(() => {
     if (profile?.id && !hasSyncedInitialFilters.current && Object.keys(savedFilters).length > 0) {
       setColumnFilters(Object.entries(savedFilters).map(([id, value]) => ({ id, value })))
@@ -95,7 +98,7 @@ export function useProjectTable({
 
   const [localData, setLocalData] = React.useState<EntityRecord[]>([])
   const [localCount, setLocalCount] = React.useState(0)
-  const [localLoading, setLocalLoading] = React.useState(false)
+  const [localLoading, setLocalLoading] = React.useState(true)
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -190,16 +193,20 @@ export function useProjectTable({
 
 
   const handleReload = React.useCallback(() => {
-    setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
-    setSorting([])
-    setGlobalFilter("")
-    setColumnFilters([])
     useEntitiesStore.getState().triggerEntitiesUpdate()
-  }, [pagination.pageSize])
+  }, [])
+
+  const [isReady, setIsReady] = React.useState(false)
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsReady(true), 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   return {
     table,
     isLoading: localLoading,
+    isReady,
     permissions,
     handleReload,
     ...dialogStates

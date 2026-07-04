@@ -6,9 +6,11 @@
  * Coordinates the toolbar, data table, pagination, and modals/dialogs for the selected project.
  */
 
+import * as React from "react"
 import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
 import { ProjectToolbar, ProjectDialogs, ProjectTable, useProjectTable } from "@/components/projects"
+import { Spinner } from "@/components/kibo-ui/spinner"
 
 interface ProjectClientProps {
   projectName: string;
@@ -24,7 +26,27 @@ interface ProjectClientProps {
 export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) {
   const primaryIdKey = getPrimaryIdKey(projectSlug)
   const pt = useProjectTable({ projectSlug, primaryIdKey, projectName })
-  const { table, isLoading, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
+  const { table, isLoading, isReady, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
+
+  const [hasLoadedOnce, setHasLoadedOnce] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!isLoading && isReady) {
+      const timer = setTimeout(() => {
+        setHasLoadedOnce(true)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [isLoading, isReady])
+
+  if (!isReady || !hasLoadedOnce) {
+    return (
+      <div className="min-h-[250px] flex flex-col items-center justify-center gap-3 bg-card border rounded-xl shadow-sm">
+        <Spinner variant="circle-filled" className="size-5 text-primary" />
+        <span className="text-xs font-medium text-muted-foreground/70">Loading {projectName.toLowerCase()}...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">

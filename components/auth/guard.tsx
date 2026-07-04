@@ -19,7 +19,7 @@ import { AppSidebar } from "@/components/sidebar"
  * FullScreenStatus Component
  * Displays a minimal, centered loading or redirecting message covering the viewport.
  */
-function FullScreenStatus({ message }: { message: string }) {
+export function FullScreenStatus({ message }: { message: string }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center text-xs font-mono text-muted-foreground">
       {message}
@@ -57,7 +57,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!authHydrated) return
+    if (!authHydrated || !initialized) return
 
     switch (true) {
       // 1. Unauthenticated users trying to access protected pages
@@ -73,7 +73,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       default:
         break
     }
-  }, [user, authHydrated, isAuthPage, pathname, projectSlug, isAuthorized, router])
+  }, [user, authHydrated, initialized, isAuthPage, pathname, projectSlug, isAuthorized, router])
 
   // Show loading during initial rehydration or before auth initialized to prevent UI flash
   if (!authHydrated || !initialized) {

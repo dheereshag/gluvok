@@ -3,11 +3,10 @@
  * @description Toolbar section displayed above the table grid, housing filters, search input, reload button, view controls, and action buttons.
  */
 
-import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Plus, RotateCw } from "lucide-react"
+import { Search, Plus, RotateCw, X } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
 import { BulkActions } from "./bulk-actions"
 import { ProjectFilters } from "../filters"
@@ -30,6 +29,8 @@ export function ProjectToolbar<TData>({
   const user = useAuthStore((state) => state.user)
   const permissions = getPermissions(user?.role, projectSlug)
   const canCreate = permissions.create
+
+  const isFiltered = table.getState().columnFilters.length > 0 || !!table.getState().globalFilter
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -54,6 +55,20 @@ export function ProjectToolbar<TData>({
               />
             </div>
             <ProjectFilters projectSlug={projectSlug} table={table} />
+            {isFiltered && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  table.setColumnFilters([])
+                  table.setGlobalFilter("")
+                }}
+                className="h-9 px-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors gap-1.5 self-start sm:self-center"
+                title="Clear all active filters and search"
+              >
+                Clear all
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2 justify-end">
             <Button
