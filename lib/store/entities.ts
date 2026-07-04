@@ -31,6 +31,8 @@ interface EntitiesState {
   loadCommodities: () => Promise<void>
   villages: Village[]
   loadVillages: () => Promise<void>
+  factories: IdNamePair[]
+  loadFactories: () => Promise<void>
   weighmentFiltersData: {
     centers: IdNamePair[]
     profiles: IdNamePair[]
@@ -49,6 +51,8 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     [ProjectSlug.WEIGHMENTS]: true,
     [ProjectSlug.RATES]: true,
     [ProjectSlug.CUSTOMERS]: true,
+    [ProjectSlug.CENTERS]: true,
+    [ProjectSlug.FACTORIES]: true,
   },
   setFiltersLoading: (slug, loading) => set((state) => ({
     filtersLoading: { ...state.filtersLoading, [slug]: loading }
@@ -80,11 +84,19 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   villages: [],
   loadVillages: async () => {
     set((state) => ({
-      filtersLoading: { ...state.filtersLoading, [ProjectSlug.CUSTOMERS]: true }
+      filtersLoading: {
+        ...state.filtersLoading,
+        [ProjectSlug.CUSTOMERS]: true,
+        [ProjectSlug.FACTORIES]: true,
+      }
     }))
     if (get().villages.length > 0) {
       set((state) => ({
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CUSTOMERS]: false }
+        filtersLoading: {
+          ...state.filtersLoading,
+          [ProjectSlug.CUSTOMERS]: false,
+          [ProjectSlug.FACTORIES]: false,
+        }
       }))
       return
     }
@@ -93,12 +105,45 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       if (error) throw error
       set((state) => ({
         villages: (data as Village[]) || [],
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CUSTOMERS]: false }
+        filtersLoading: {
+          ...state.filtersLoading,
+          [ProjectSlug.CUSTOMERS]: false,
+          [ProjectSlug.FACTORIES]: false,
+        }
       }))
     } catch (err) {
       console.error("Failed to fetch villages for store:", err)
       set((state) => ({
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CUSTOMERS]: false }
+        filtersLoading: {
+          ...state.filtersLoading,
+          [ProjectSlug.CUSTOMERS]: false,
+          [ProjectSlug.FACTORIES]: false,
+        }
+      }))
+    }
+  },
+  factories: [],
+  loadFactories: async () => {
+    set((state) => ({
+      filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: true }
+    }))
+    if (get().factories.length > 0) {
+      set((state) => ({
+        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: false }
+      }))
+      return
+    }
+    try {
+      const { data, error } = await supabase.from(ProjectSlug.FACTORIES).select("id, name").order("name")
+      if (error) throw error
+      set((state) => ({
+        factories: (data as IdNamePair[]) || [],
+        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: false }
+      }))
+    } catch (err) {
+      console.error("Failed to fetch factories for store:", err)
+      set((state) => ({
+        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: false }
       }))
     }
   },

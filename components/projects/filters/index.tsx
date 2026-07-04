@@ -12,6 +12,8 @@ import { RatesFilters } from "./rates"
 import { ProfilesFilters } from "./profiles"
 import { CustomersFilters } from "./customers"
 import { WeighmentsFilters } from "./weighments"
+import { FactoriesFilters } from "./factories"
+import { CentersFilters } from "./centers"
 
 interface ProjectFiltersProps<TData> {
   projectSlug: string
@@ -28,6 +30,10 @@ export function ProjectFilters<TData>({ projectSlug, table }: ProjectFiltersProp
       return <CustomersFilters table={table} />
     case ProjectSlug.WEIGHMENTS:
       return <WeighmentsFilters table={table} />
+    case ProjectSlug.FACTORIES:
+      return <FactoriesFilters table={table} />
+    case ProjectSlug.CENTERS:
+      return <CentersFilters table={table} />
     default:
       return null
   }

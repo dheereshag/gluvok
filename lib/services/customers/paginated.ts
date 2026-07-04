@@ -8,6 +8,7 @@ import { type Customer } from "@/types"
 import { buildPaginatedQuery, enrichCustomers } from "./query"
 import { supabase } from "@/lib/supabase"
 import { TABLE_NAME as VILLAGES_TABLE } from "../villages"
+import { EntityKey } from "@/lib/constants/enums"
 
 export async function fetchCustomersPaginated(params: PaginatedParams): Promise<{ data: Customer[]; count: number }> {
   const { search, filters = {} } = params
@@ -17,21 +18,21 @@ export async function fetchCustomersPaginated(params: PaginatedParams): Promise<
 
 
   if (search) {
-    const { data: villages } = await supabase.from(VILLAGES_TABLE).select("id").ilike("name", `%${search}%`)
+    const { data: villages } = await supabase.from(VILLAGES_TABLE).select(EntityKey.ID).ilike(EntityKey.NAME, `%${search}%`)
     const villageIds = (villages || []).map((v: { id: number }) => v.id)
     if (villageIds.length > 0) {
-      query = query.or(`name.ilike.%${search}%,father_name.ilike.%${search}%,village_id.in.(${villageIds.join(",")})`)
+      query = query.or(`${EntityKey.NAME}.ilike.%${search}%,${EntityKey.FATHER_NAME}.ilike.%${search}%,${EntityKey.VILLAGE_ID}.in.(${villageIds.join(",")})`)
     } else {
-      query = query.or(`name.ilike.%${search}%,father_name.ilike.%${search}%`)
+      query = query.or(`${EntityKey.NAME}.ilike.%${search}%,${EntityKey.FATHER_NAME}.ilike.%${search}%`)
     }
   }
 
   // Apply column filters
-  if (filters.village_id) query = query.eq("village_id", filters.village_id as number)
+  if (filters.village_id) query = query.eq(EntityKey.VILLAGE_ID, filters.village_id as number)
 
   query = applyPaginationAndSorting(query, params, {
-    village_name: "village_id",
-    user_email: "user_id",
+    [EntityKey.VILLAGE_NAME]: EntityKey.VILLAGE_ID,
+    [EntityKey.USER_EMAIL]: EntityKey.USER_ID,
   })
 
   const { data, count } = await executePaginatedQuery(query)

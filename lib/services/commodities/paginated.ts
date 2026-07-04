@@ -7,6 +7,8 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Commodity } from "@/types"
 import { buildPaginatedQuery } from "./query"
 
+import { EntityKey } from "@/lib/constants/enums"
+
 export async function fetchCommoditiesPaginated(params: PaginatedParams): Promise<{ data: Commodity[]; count: number }> {
   const { search } = params
 
@@ -15,7 +17,7 @@ export async function fetchCommoditiesPaginated(params: PaginatedParams): Promis
 
 
   if (search) {
-    query = query.ilike("name", `%${search}%`)
+    query = query.ilike(EntityKey.NAME, `%${search}%`)
   }
 
   query = applyPaginationAndSorting(query, params)

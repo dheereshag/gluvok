@@ -210,7 +210,11 @@ export function useProjectTable({
         store.loadCommodities()
         break
       case ProjectSlug.CUSTOMERS:
+      case ProjectSlug.FACTORIES:
         store.loadVillages()
+        break
+      case ProjectSlug.CENTERS:
+        store.loadFactories()
         break
       default:
         break

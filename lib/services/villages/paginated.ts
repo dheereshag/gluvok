@@ -7,6 +7,8 @@ import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams 
 import { type Village } from "@/types"
 import { buildPaginatedQuery } from "./query"
 
+import { EntityKey } from "@/lib/constants/enums"
+
 export async function fetchVillagesPaginated(params: PaginatedParams): Promise<{ data: Village[]; count: number }> {
   const { search } = params
 
@@ -14,7 +16,7 @@ export async function fetchVillagesPaginated(params: PaginatedParams): Promise<{
 
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,state.ilike.%${search}%`)
+    query = query.or(`${EntityKey.NAME}.ilike.%${search}%,${EntityKey.STATE}.ilike.%${search}%`)
   }
 
   query = applyPaginationAndSorting(query, params)
