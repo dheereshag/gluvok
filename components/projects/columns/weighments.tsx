@@ -1,10 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users } from "lucide-react"
-import { EntityKey } from "@/lib/constants/enums"
+import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowLeftRight } from "lucide-react"
+import { EntityKey, WeighmentType } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { cn } from "@/lib/utils"
 import { type Weighment } from "@/types"
-import { createTextColumn, createBaseColumn, createCustomColumn, createIdColumn } from "./helpers"
+import { createTextColumn, createBaseColumn, createCustomColumn, createIdColumn, badgeBaseClass } from "./helpers"
 import { WeighmentImagesCell } from "./weighments-cell"
 
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
@@ -47,12 +47,25 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
       const isActive = val === "true"
       return (
         <span className={cn(
-          "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold shadow-sm",
+          badgeBaseClass,
           isActive
             ? "bg-emerald-50 text-emerald-700 border border-emerald-200/50 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/30"
             : "bg-muted text-muted-foreground border border-border"
         )}>
           {isActive ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE}
+        </span>
+      )
+    }),
+    createCustomColumn(EntityKey.TYPE, ColumnLabel.TYPE, ArrowLeftRight, (val) => {
+      const isOut = val === WeighmentType.OUT
+      return (
+        <span className={cn(
+          badgeBaseClass,
+          isOut
+            ? "bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800/30"
+            : "bg-blue-50 text-blue-700 border border-blue-200/50 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/30"
+        )}>
+          {isOut ? "Out" : "In"}
         </span>
       )
     }),

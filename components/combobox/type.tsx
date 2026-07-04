@@ -1,0 +1,39 @@
+"use client"
+
+/**
+ * @file components/combobox/type.tsx
+ * @description Weighment type selector combobox component (in, out).
+ */
+
+import { ArrowLeftRight } from "lucide-react"
+import { BaseCombobox } from "./base"
+import { WeighmentType } from "@/lib/constants/enums"
+
+interface TypeComboboxProps {
+  value: string
+  onChange: (value: string) => void
+  id?: string
+}
+
+const data = [
+  { value: WeighmentType.IN, label: "In" },
+  { value: WeighmentType.OUT, label: "Out" },
+]
+
+/**
+ * TypeCombobox Component
+ * Renders a dropdown to select a weighment transaction type (incoming vs outgoing).
+ */
+export function TypeCombobox({ value, onChange, id }: TypeComboboxProps) {
+  return (
+    <BaseCombobox
+      value={value}
+      onChange={onChange}
+      data={data}
+      type="type"
+      icon={ArrowLeftRight}
+      placeholder="Select type..."
+      id={id}
+    />
+  )
+}

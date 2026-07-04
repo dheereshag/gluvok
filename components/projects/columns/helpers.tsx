@@ -70,3 +70,5 @@ export function createIdColumn<T>(
     meta: { icon: Icon, label },
   }
 }
+
+export const badgeBaseClass = "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold shadow-sm"

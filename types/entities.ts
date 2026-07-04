@@ -4,7 +4,7 @@
  * Includes flattened and computed fields used across views and forms.
  */
 
-import { Role, State, Unit } from "@/lib/constants/enums"
+import { Role, State, Unit, WeighmentType } from "@/lib/constants/enums"
 
 /**
  * Center Entity
@@ -83,6 +83,7 @@ export interface Weighment {
   vehicle_number: string
   weight: string
   unit: Unit
+  type: WeighmentType
   images: string[]
   rate_id: number
   center_id: number

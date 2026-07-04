@@ -100,6 +100,7 @@ Details of human resources/users linked to login accounts.
 | `weight` | `DECIMAL` | Not Null | Precise measured weight. |
 | `images` | `JSONB` | Nullable | Array of object-storage paths. |
 | `unit` | `unit_enum` | Not Null, Default: `'kg'` | Price unit (e.g. 'kg', 'q', 'gal'). |
+| `type` | `ENUM('in', 'out')` | Not Null, Default: `'in'` | Whether the weighment is incoming or outgoing. |
 | `rate_id` | `INTEGER` | FK → `rates.id`, Not Null | Link to the specific commodity price rate. |
 | `center_id` | `INTEGER` | FK → `centers.id`, Not Null | Physical location where weighing occurred. |
 | `profile_id` | `INTEGER` | FK → `profiles.id`, Not Null | Profile who managed the scale/vehicle. |

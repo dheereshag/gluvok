@@ -27,6 +27,12 @@ CREATE TYPE unit_enum AS ENUM (
   'gal'
 );
 
+-- Weighment transaction direction (incoming vs outgoing)
+CREATE TYPE weighment_type AS ENUM (
+  'in',
+  'out'
+);
+
 -- 2. AUTOMATIC UPDATED_AT TRIGGER FUNCTION
 -- -----------------------------------------
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
@@ -205,6 +211,7 @@ CREATE TABLE public.weighments (
   weight DECIMAL(12, 3) NOT NULL,
   images JSONB DEFAULT '[]'::jsonb,
   unit unit_enum NOT NULL DEFAULT 'kg',
+  type weighment_type NOT NULL DEFAULT 'in',
   rate_id INTEGER NOT NULL,
   center_id INTEGER NOT NULL,
   profile_id INTEGER NOT NULL,

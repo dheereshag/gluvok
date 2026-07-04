@@ -53,6 +53,11 @@ export enum Unit {
   GAL = "gal",
 }
 
+export enum WeighmentType {
+  IN = "in",
+  OUT = "out",
+}
+
 export enum RoleLabel {
   SUPER_ADMIN = "SUPER ADMIN",
   ADMIN = "ADMIN",
@@ -71,6 +76,7 @@ export enum ColumnLabel {
   FACTORY_ID = "Factory ID",
   UNIT_PRICE = "Unit Price",
   UNIT = "Unit",
+  TYPE = "Type",
   FATHER_NAME = "Father's Name",
   VILLAGE_ID = "Village ID",
   VEHICLE_NUMBER = "Vehicle Number",
@@ -140,6 +146,7 @@ export enum FieldType {
   IMAGES = "images",
   ROLE = "role",
   UNIT = "unit",
+  TYPE = "type",
   CHECKBOX = "checkbox",
 }
 
@@ -150,6 +157,7 @@ export enum EntityKey {
   FACTORY_ID = "factory_id",
   UNIT_PRICE = "unit_price",
   UNIT = "unit",
+  TYPE = "type",
   FATHER_NAME = "father_name",
   VILLAGE_ID = "village_id",
   VEHICLE_NUMBER = "vehicle_number",

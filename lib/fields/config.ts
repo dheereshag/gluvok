@@ -19,6 +19,7 @@ import {
   Fingerprint,
   Globe,
   Hash,
+  ArrowLeftRight,
 } from "lucide-react"
 
 export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
@@ -56,6 +57,7 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.IMAGES, label: ColumnLabel.IMAGES, placeholder: "Upload weighment photos...", type: FieldType.IMAGES, icon: Image },
     { key: EntityKey.WEIGHT, label: ColumnLabel.WEIGHT, placeholder: "e.g. 15.5", type: FieldType.NUMBER, icon: Weight, editVisibleRoles: [Role.SUPER_ADMIN, Role.ADMIN] },
     { key: EntityKey.UNIT, label: ColumnLabel.UNIT, placeholder: "Select unit...", type: FieldType.UNIT, icon: Weight, editVisibleRoles: [Role.SUPER_ADMIN, Role.ADMIN] },
+    { key: EntityKey.TYPE, label: ColumnLabel.TYPE, placeholder: "Select type...", type: FieldType.TYPE, icon: ArrowLeftRight },
     { key: EntityKey.RATE_ID, label: ColumnLabel.RATE, placeholder: getSelectPlaceholder(SingularEntityName.RATE), type: FieldType.TEXT, icon: Package },
     { key: EntityKey.CENTER_ID, label: ColumnLabel.CENTER, placeholder: getSelectPlaceholder(SingularEntityName.CENTER), type: FieldType.TEXT, icon: Building },
     {
