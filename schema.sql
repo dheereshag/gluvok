@@ -185,7 +185,6 @@ CREATE TABLE public.profiles (
   aadhar_number CHAR(12) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   role role_enum NOT NULL DEFAULT 'base',
-  preferences JSONB NOT NULL DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
