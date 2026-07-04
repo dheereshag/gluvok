@@ -11,6 +11,7 @@ import { getPrimaryIdKey } from "@/lib/fields"
 import { DataTablePagination } from "@/components/data-table"
 import { ProjectToolbar, ProjectDialogs, ProjectTable, useProjectTable } from "@/components/projects"
 import { Spinner } from "@/components/kibo-ui/spinner"
+import { useEntitiesStore } from "@/lib/store"
 
 interface ProjectClientProps {
   projectName: string;
@@ -28,16 +29,18 @@ export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) 
   const pt = useProjectTable({ projectSlug, primaryIdKey, projectName })
   const { table, isLoading, isReady, creating, setCreating, editingItem, setEditingItem, deletingItem, setDeletingItem, handleReload } = pt
 
+  const isFiltersLoading = useEntitiesStore((state) => !!state.filtersLoading[projectSlug])
+
   const [hasLoadedOnce, setHasLoadedOnce] = React.useState(false)
 
   React.useEffect(() => {
-    if (!isLoading && isReady) {
+    if (!isLoading && isReady && !isFiltersLoading) {
       const timer = setTimeout(() => {
         setHasLoadedOnce(true)
       }, 0)
       return () => clearTimeout(timer)
     }
-  }, [isLoading, isReady])
+  }, [isLoading, isReady, isFiltersLoading])
 
   if (!isReady || !hasLoadedOnce) {
     return (

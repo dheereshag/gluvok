@@ -1,10 +1,10 @@
 "use client"
 
 import { create } from "zustand"
-import { type Profile } from "@/types"
+import { type Profile, type Commodity } from "@/types"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { useAuthStore } from "./auth"
-import { insertRow, updateRow, deleteRow } from "@/lib/services"
+import { insertRow, updateRow, deleteRow, fetchCommodities } from "@/lib/services"
 import { getPermissions } from "./access"
 
 interface EntitiesState {
@@ -15,11 +15,29 @@ interface EntitiesState {
   updateFilterPreferences: (profileId: number, projectSlug: string, filters: Record<string, unknown>) => Promise<void>
   entitiesUpdatedTrigger: number
   triggerEntitiesUpdate: () => void
+  commodities: Commodity[]
+  loadCommodities: () => Promise<void>
+  filtersLoading: Record<string, boolean>
+  setFiltersLoading: (slug: string, loading: boolean) => void
 }
 
 export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   entitiesUpdatedTrigger: 0,
   triggerEntitiesUpdate: () => set((state) => ({ entitiesUpdatedTrigger: state.entitiesUpdatedTrigger + 1 })),
+  filtersLoading: {},
+  setFiltersLoading: (slug, loading) => set((state) => ({
+    filtersLoading: { ...state.filtersLoading, [slug]: loading }
+  })),
+  commodities: [],
+  loadCommodities: async () => {
+    if (get().commodities.length > 0) return
+    try {
+      const list = await fetchCommodities()
+      set({ commodities: list as Commodity[] })
+    } catch (err) {
+      console.error("Failed to fetch commodities for store:", err)
+    }
+  },
 
   addEntity: async (slug, key, newE) => {
     await insertRow(slug, newE)

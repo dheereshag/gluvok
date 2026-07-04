@@ -8,9 +8,8 @@
 import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { Unit, EntityKey } from "@/lib/constants/enums"
-import { fetchCommodities } from "@/lib/services"
+import { useEntitiesStore } from "@/lib/store"
 import { getCommodityIcon } from "@/lib/fields"
-import { type Commodity } from "@/types"
 import {
   Select,
   SelectContent,
@@ -26,25 +25,20 @@ interface RatesFiltersProps<TData> {
 }
 
 export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
-  const [commodities, setCommodities] = React.useState<Commodity[]>([])
+  const commodities = useEntitiesStore((state) => state.commodities)
+  const loadCommodities = useEntitiesStore((state) => state.loadCommodities)
+  const setFiltersLoading = useEntitiesStore((state) => state.setFiltersLoading)
 
   React.useEffect(() => {
-    let active = true
-    async function load() {
-      try {
-        const list = await fetchCommodities()
-        if (active) {
-          setCommodities(list as Commodity[])
-        }
-      } catch (err) {
-        console.error("Failed to fetch commodities for filter:", err)
-      }
-    }
-    load()
+    loadCommodities()
+  }, [loadCommodities])
+
+  React.useEffect(() => {
+    setFiltersLoading("rates", commodities.length === 0)
     return () => {
-      active = false
+      setFiltersLoading("rates", false)
     }
-  }, [])
+  }, [commodities.length, setFiltersLoading])
 
   const columnFilters = table.getState().columnFilters
   const currentCommodityId = columnFilters.find((f) => f.id === EntityKey.COMMODITY_ID)?.value
