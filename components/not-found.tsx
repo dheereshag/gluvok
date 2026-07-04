@@ -45,7 +45,7 @@ export function NotFoundIllustration() {
     <div className="relative">
       <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl scale-110" />
       <div className="relative flex h-24 w-24 items-center justify-center rounded-2xl bg-card border shadow-sm">
-        <Compass className="h-12 w-12 text-primary" />
+        <Compass className="h-12 w-12 text-primary animate-pulse" />
       </div>
     </div>
   )
