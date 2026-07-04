@@ -26,19 +26,7 @@ interface RatesFiltersProps<TData> {
 
 export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
   const commodities = useEntitiesStore((state) => state.commodities)
-  const loadCommodities = useEntitiesStore((state) => state.loadCommodities)
-  const setFiltersLoading = useEntitiesStore((state) => state.setFiltersLoading)
 
-  React.useEffect(() => {
-    loadCommodities()
-  }, [loadCommodities])
-
-  React.useEffect(() => {
-    setFiltersLoading("rates", commodities.length === 0)
-    return () => {
-      setFiltersLoading("rates", false)
-    }
-  }, [commodities.length, setFiltersLoading])
 
   const columnFilters = table.getState().columnFilters
   const currentCommodityId = columnFilters.find((f) => f.id === EntityKey.COMMODITY_ID)?.value

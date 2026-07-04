@@ -8,7 +8,6 @@
 import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
-import { supabase } from "@/lib/supabase"
 import { useEntitiesStore } from "@/lib/store"
 import {
   Select,
@@ -20,30 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-interface Village { id: number; name: string }
-
 interface CustomersFiltersProps<TData> {
   table: Table<TData>
 }
 
 export function CustomersFilters<TData>({ table }: CustomersFiltersProps<TData>) {
-  const [villages, setVillages] = React.useState<Village[]>([])
-  const setFiltersLoading = useEntitiesStore((state) => state.setFiltersLoading)
+  const villages = useEntitiesStore((state) => state.villages)
 
-  React.useEffect(() => {
-    let active = true
-    setFiltersLoading("customers", true)
-    supabase.from("villages").select("id, name").order("name").then(({ data }) => {
-      if (active) {
-        setVillages((data as Village[]) || [])
-        setFiltersLoading("customers", false)
-      }
-    })
-    return () => {
-      active = false
-      setFiltersLoading("customers", false)
-    }
-  }, [setFiltersLoading])
 
   const columnFilters = table.getState().columnFilters
   const currentVillageId = columnFilters.find((f) => f.id === EntityKey.VILLAGE_ID)?.value

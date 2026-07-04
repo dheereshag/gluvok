@@ -11,15 +11,19 @@ import { ProjectTableEmpty } from "./empty"
 interface ProjectTableProps<TData> {
   table: Table<TData>
   isLoading: boolean
-  columnsCount: number
 }
 
 /**
  * ProjectTable Component
  * Generates the header rows and cell renders for each entity page. Handles loading states.
  */
-export function ProjectTable<TData>({ table, isLoading, columnsCount }: ProjectTableProps<TData>) {
+export function ProjectTable<TData>({ table, isLoading }: ProjectTableProps<TData>) {
   if (isLoading) return <ProjectTableLoading />
+
+  if (!table.getRowModel().rows?.length) {
+    return <ProjectTableEmpty />
+  }
+
 
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden transition-all duration-300">
@@ -36,25 +40,22 @@ export function ProjectTable<TData>({ table, isLoading, columnsCount }: ProjectT
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="hover:bg-muted/10 transition-colors duration-150 border-b last:border-b-0"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-3 text-xs">
-                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <ProjectTableEmpty columnsCount={columnsCount} />
-          )}
+          {table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+              className="hover:bg-muted/10 transition-colors duration-150 border-b last:border-b-0"
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id} className="py-3 text-xs">
+                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableBody>
       </TableGrid>
     </div>
   )
 }
+

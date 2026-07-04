@@ -64,12 +64,16 @@ export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) 
       />
 
       {/* Main data representation grid/table */}
-      <ProjectTable table={table} isLoading={isLoading} columnsCount={table.getAllColumns().length} />
+      <ProjectTable table={table} isLoading={isLoading} />
+
 
       {/* Pagination controls */}
-      <div className="pt-2">
-        <DataTablePagination table={table} />
-      </div>
+      {table.getRowModel().rows?.length > 0 && (
+        <div className="pt-2">
+          <DataTablePagination table={table} />
+        </div>
+      )}
+
 
       {/* Dialog overlays for CUD operations (Create, Update, Delete) */}
       <ProjectDialogs

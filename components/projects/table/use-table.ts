@@ -200,6 +200,23 @@ export function useProjectTable({
     return () => clearTimeout(timer)
   }, [])
 
+  React.useEffect(() => {
+    const store = useEntitiesStore.getState()
+    switch (projectSlug) {
+      case ProjectSlug.WEIGHMENTS:
+        store.loadWeighmentFiltersData()
+        break
+      case ProjectSlug.RATES:
+        store.loadCommodities()
+        break
+      case ProjectSlug.CUSTOMERS:
+        store.loadVillages()
+        break
+      default:
+        break
+    }
+  }, [projectSlug])
+
   return {
     table,
     isLoading: localLoading,
@@ -209,3 +226,4 @@ export function useProjectTable({
     ...dialogStates
   }
 }
+

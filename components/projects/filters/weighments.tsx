@@ -8,7 +8,6 @@
 import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
-import { supabase } from "@/lib/supabase"
 import { useEntitiesStore } from "@/lib/store"
 import {
   Select,
@@ -20,50 +19,21 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-interface IdNamePair { id: number; name: string }
-interface RateOption { id: number; label: string }
-
 interface WeighmentsFiltersProps<TData> {
   table: Table<TData>
 }
 
 function useWeighmentsFilterData() {
-  const [centers, setCenters] = React.useState<IdNamePair[]>([])
-  const [profiles, setProfiles] = React.useState<IdNamePair[]>([])
-  const [customers, setCustomers] = React.useState<IdNamePair[]>([])
-  const [rates, setRates] = React.useState<RateOption[]>([])
-  const setFiltersLoading = useEntitiesStore((state) => state.setFiltersLoading)
+  const weighmentFiltersData = useEntitiesStore((state) => state.weighmentFiltersData)
 
-  React.useEffect(() => {
-    let active = true
-    setFiltersLoading("weighments", true)
-
-    Promise.all([
-      supabase.from("centers").select("id, name").order("name"),
-      supabase.from("profiles").select("id, name").order("name"),
-      supabase.from("customers").select("id, name").order("name"),
-      supabase.from("rates").select("id, unit_price, unit, commodity:commodities(name)").order("id"),
-    ]).then(([c, p, cu, r]) => {
-      if (!active) return
-      setCenters((c.data as IdNamePair[]) || [])
-      setProfiles((p.data as IdNamePair[]) || [])
-      setCustomers((cu.data as IdNamePair[]) || [])
-      const rateOpts = ((r.data || []) as unknown as Array<{ id: number; unit_price: number; unit: string; commodity: { name: string } | null }>).map((rate) => ({
-        id: rate.id,
-        label: `${rate.commodity?.name ?? "—"} · ₹${rate.unit_price}/${rate.unit} (ID: ${rate.id})`,
-      }))
-      setRates(rateOpts)
-      setFiltersLoading("weighments", false)
-    })
-
-    return () => {
-      active = false
-      setFiltersLoading("weighments", false)
-    }
-  }, [setFiltersLoading])
-
-  return { centers, profiles, customers, rates }
+  return {
+    centers: weighmentFiltersData?.centers || [],
+    profiles: weighmentFiltersData?.profiles || [],
+    customers: weighmentFiltersData?.customers || [],
+    rates: weighmentFiltersData?.rates || [],
+  }
 }
+
 
 export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData>) {
   const { centers, profiles, customers, rates } = useWeighmentsFilterData()

@@ -1,24 +1,20 @@
 /**
  * @file components/projects/table/empty.tsx
- * @description Fallback component rendered inside the table row when no records match filter criteria.
+ * @description Standalone card component rendered when no records match filter criteria.
  */
 
 import { SearchX } from "lucide-react"
-import { TableRow, TableCell } from "@/components/ui/table"
 
 /**
  * ProjectTableEmpty Component
- * Renders an empty search state indicator taking up the full width of the table.
+ * Renders an empty search state indicator as a card instead of inside a table.
  */
-export function ProjectTableEmpty({ columnsCount }: { columnsCount: number }) {
+export function ProjectTableEmpty() {
   return (
-    <TableRow>
-      <TableCell colSpan={columnsCount} className="h-32 text-center text-xs text-muted-foreground">
-        <div className="flex flex-col items-center justify-center gap-2">
-          <SearchX className="h-8 w-8 text-muted-foreground/40 animate-pulse" />
-          <span className="font-medium">No results found.</span>
-        </div>
-      </TableCell>
-    </TableRow>
+    <div className="flex flex-col items-center justify-center gap-2.5 h-48 border rounded-xl bg-card text-card-foreground shadow-sm text-xs text-muted-foreground transition-all duration-300">
+      <SearchX className="h-8 w-8 text-muted-foreground/30 animate-pulse" />
+      <span className="font-medium text-muted-foreground/75">No results found.</span>
+    </div>
   )
 }
+
