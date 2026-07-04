@@ -17,76 +17,78 @@ export interface Permission {
   create: boolean
   /** Whether this role should see this entity page in the dashboard/sidebar */
   show: boolean
+  /** Whether this role can use filters in the table toolbar */
+  filter: boolean
 }
 
 export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   [Role.SUPER_ADMIN]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.FACTORIES]:   { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.CENTERS]:     { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.COMMODITIES]: { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.RATES]:       { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true, delete: true,  create: true,  show: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true, delete: true,  create: true,  show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.CENTERS]:     { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.COMMODITIES]: { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
   },
   [Role.ADMIN]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: true,  create: true,  show: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: true },
-    [ProjectSlug.FACTORIES]:   { read: true, write: true,  delete: true,  create: false, show: true }, // Can edit/delete, but not create new factories
-    [ProjectSlug.CENTERS]:     { read: true, write: true,  delete: true,  create: true,  show: true },
-    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: true },
-    [ProjectSlug.RATES]:       { read: true, write: true,  delete: true,  create: true,  show: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: true,  create: true,  show: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: true,  create: true,  show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: true,  filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: true,  delete: true,  create: false, show: true,  filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: true,  delete: true,  create: true,  show: true,  filter: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
   },
   [Role.MANAGER]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: false, create: true,  show: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.RATES]:       { read: true, write: true,  delete: false, create: true,  show: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
   },
   [Role.OPERATOR]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
   },
   [Role.BASE]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: true,  filter: true },
   },
   [Role.HARDWARE]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: true,  show: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: true,  show: true,  filter: true },
   },
 }
 
 export function getPermissions(role: Role | null | undefined, projectSlug: string): Permission {
   if (!role) {
-    return { read: false, write: false, delete: false, create: false, show: false }
+    return { read: false, write: false, delete: false, create: false, show: false, filter: false }
   }
-  return RBAC_MATRIX[role]?.[projectSlug as ProjectSlug] || { read: false, write: false, delete: false, create: false, show: false }
+  return RBAC_MATRIX[role]?.[projectSlug as ProjectSlug] || { read: false, write: false, delete: false, create: false, show: false, filter: false }
 }
 
 /**

@@ -5,7 +5,7 @@ import { getPermissions, hasPageAccess, hasCreateAccess, hasDeleteAccess } from 
 describe("RBAC Access Controls", () => {
   describe("getPermissions", () => {
     it("should return default denied permissions when role is null or undefined", () => {
-      const defaultDenied = { read: false, write: false, delete: false, create: false, show: false }
+      const defaultDenied = { read: false, write: false, delete: false, create: false, show: false, filter: false }
       expect(getPermissions(null, ProjectSlug.WEIGHMENTS)).toEqual(defaultDenied)
       expect(getPermissions(undefined, ProjectSlug.WEIGHMENTS)).toEqual(defaultDenied)
     })
@@ -20,6 +20,7 @@ describe("RBAC Access Controls", () => {
           delete: true,
           create: true,
           show: true,
+          filter: true,
         })
       }
     })
@@ -32,6 +33,7 @@ describe("RBAC Access Controls", () => {
         delete: false,
         create: false,
         show: true,
+        filter: true,
       })
 
       const factoryPerms = getPermissions(Role.ADMIN, ProjectSlug.FACTORIES)
@@ -41,6 +43,7 @@ describe("RBAC Access Controls", () => {
         delete: true,
         create: false,
         show: true,
+        filter: false,
       })
 
       const weighmentPerms = getPermissions(Role.ADMIN, ProjectSlug.WEIGHMENTS)
@@ -50,6 +53,7 @@ describe("RBAC Access Controls", () => {
         delete: true,
         create: true,
         show: true,
+        filter: true,
       })
     })
 
@@ -61,6 +65,7 @@ describe("RBAC Access Controls", () => {
         delete: false,
         create: true,
         show: true,
+        filter: true,
       })
 
       // Cannot see villages, factories, centers, commodities on dashboard
@@ -78,6 +83,7 @@ describe("RBAC Access Controls", () => {
         delete: false,
         create: true,
         show: true,
+        filter: true,
       })
 
       const ratePerms = getPermissions(Role.OPERATOR, ProjectSlug.RATES)
@@ -87,6 +93,7 @@ describe("RBAC Access Controls", () => {
         delete: false,
         create: false,
         show: false,
+        filter: true,
       })
     })
 
@@ -98,6 +105,7 @@ describe("RBAC Access Controls", () => {
         delete: false,
         create: true,
         show: true,
+        filter: true,
       })
 
       const customerPerms = getPermissions(Role.HARDWARE, ProjectSlug.CUSTOMERS)
@@ -114,6 +122,7 @@ describe("RBAC Access Controls", () => {
           delete: false,
           create: false,
           show: slug === ProjectSlug.WEIGHMENTS,
+          filter: slug !== ProjectSlug.CENTERS && slug !== ProjectSlug.FACTORIES,
         })
       }
     })

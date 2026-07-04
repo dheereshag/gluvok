@@ -91,7 +91,7 @@ export function ProjectToolbar<TData>({
           </div>
 
           {/* Bottom Row: Filter Controls */}
-          <ProjectFilters projectSlug={projectSlug} table={table} />
+          {permissions.filter && <ProjectFilters projectSlug={projectSlug} table={table} />}
         </>
       )}
     </div>
