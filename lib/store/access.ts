@@ -68,7 +68,7 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false },
     [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false },
     [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: false },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: true },
   },
   [Role.HARDWARE]: {
     [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false },

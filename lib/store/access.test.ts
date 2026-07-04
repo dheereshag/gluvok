@@ -104,7 +104,7 @@ describe("RBAC Access Controls", () => {
       expect(customerPerms.show).toBe(false)
     })
 
-    it("should grant Base role read only access to all but show: false to all", () => {
+    it("should grant Base role read only access to all but show: false to all except weighments", () => {
       const allSlugs = Object.values(ProjectSlug)
       for (const slug of allSlugs) {
         const perms = getPermissions(Role.BASE, slug)
@@ -113,7 +113,7 @@ describe("RBAC Access Controls", () => {
           write: false,
           delete: false,
           create: false,
-          show: false,
+          show: slug === ProjectSlug.WEIGHMENTS,
         })
       }
     })
@@ -125,8 +125,8 @@ describe("RBAC Access Controls", () => {
       expect(hasPageAccess(Role.OPERATOR, ProjectSlug.WEIGHMENTS)).toBe(true)
       expect(hasPageAccess(Role.OPERATOR, ProjectSlug.RATES)).toBe(false)
 
-      // Base should see no pages on dashboard
-      expect(hasPageAccess(Role.BASE, ProjectSlug.WEIGHMENTS)).toBe(false)
+      // Base should see weighments page on dashboard
+      expect(hasPageAccess(Role.BASE, ProjectSlug.WEIGHMENTS)).toBe(true)
     })
   })
 
