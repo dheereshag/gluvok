@@ -57,6 +57,7 @@ describe("Auth Store (Zustand)", () => {
     // Setup default mock subscription
     vi.mocked(supabase.auth.onAuthStateChange).mockImplementation(((cb: (event: string, session: unknown) => Promise<unknown>) => {
       authCallback = cb
+      cb("INITIAL_SESSION", null)
       return { data: { subscription: { unsubscribe: vi.fn() } } }
     }) as unknown as typeof supabase.auth.onAuthStateChange)
   })

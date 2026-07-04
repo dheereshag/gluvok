@@ -123,15 +123,19 @@ export const useAuthStore = create<AuthStore>()(
           return () => {}
         }
 
+        let isInitial = true
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
           if (session?.user) {
             await fetchAndSetProfile(session.user, set)
           } else {
             set({ user: null })
           }
+          if (isInitial) {
+            isInitial = false
+            set({ initialized: true })
+          }
         })
 
-        set({ initialized: true })
         return () => {
           subscription.unsubscribe()
         }

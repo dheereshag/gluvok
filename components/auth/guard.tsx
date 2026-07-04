@@ -36,6 +36,7 @@ function FullScreenStatus({ message }: { message: string }) {
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user)
   const authHydrated = useAuthStore((state) => state.hydrated)
+  const initialized = useAuthStore((state) => state.initialized)
 
   const router = useRouter()
   const pathname = usePathname()
@@ -74,12 +75,16 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, authHydrated, isAuthPage, pathname, projectSlug, isAuthorized, router])
 
-  // Show loading during initial rehydration to prevent UI flash
-  if (!authHydrated) {
-    return <FullScreenStatus message="Loading..." />
+  // Show loading during initial rehydration or before auth initialized to prevent UI flash
+  if (!authHydrated || !initialized) {
+    return <FullScreenStatus message="Redirecting..." />
   }
 
   if (!user && !isAuthPage) {
+    return <FullScreenStatus message="Redirecting..." />
+  }
+
+  if (user && isAuthPage && pathname !== AppRoutes.RESET_PASSWORD) {
     return <FullScreenStatus message="Redirecting..." />
   }
 
