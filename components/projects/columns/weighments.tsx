@@ -10,19 +10,19 @@ import { WeighmentImagesCell } from "./weighments-cell"
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
-    {
-      ...createBaseColumn(
-        EntityKey.IMAGES,
-        ColumnLabel.IMAGES,
-        Image,
-        ({ row }) => {
-          const images = row.getValue(EntityKey.IMAGES) as string[] | undefined
-          const vehicleNumber = row.getValue(EntityKey.VEHICLE_NUMBER) as string
-          return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
-        }
-      ),
-      enableGlobalFilter: false,
-    },
+    createCustomColumn(EntityKey.TYPE, ColumnLabel.TYPE, ArrowLeftRight, (val) => {
+      const isOut = val === WeighmentType.OUT
+      return (
+        <span className={cn(
+          badgeBaseClass,
+          isOut
+            ? "bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800/30"
+            : "bg-blue-50 text-blue-700 border border-blue-200/50 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/30"
+        )}>
+          {isOut ? "Out" : "In"}
+        </span>
+      )
+    }),
     createBaseColumn(
       EntityKey.WEIGHT,
       ColumnLabel.WEIGHT,
@@ -38,13 +38,26 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     ),
     createIdColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package),
     createIdColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building),
-    createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User),
-    createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users),
     createTextColumn(EntityKey.CENTER_NAME, ColumnLabel.CENTER_NAME, Building),
-    createTextColumn(EntityKey.PROFILE_AADHAR, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
+    createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User),
     createTextColumn(EntityKey.PROFILE_NAME, ColumnLabel.PROFILE_NAME, User),
-    createTextColumn(EntityKey.CUSTOMER_GOVT_ID, ColumnLabel.GOVT_ID, ShieldCheck, "font-mono text-muted-foreground text-xs"),
+    createTextColumn(EntityKey.PROFILE_AADHAR, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
+    createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users),
     createTextColumn(EntityKey.CUSTOMER_NAME, ColumnLabel.CUSTOMER_NAME, Users),
+    createTextColumn(EntityKey.CUSTOMER_GOVT_ID, ColumnLabel.GOVT_ID, ShieldCheck, "font-mono text-muted-foreground text-xs"),
+    {
+      ...createBaseColumn(
+        EntityKey.IMAGES,
+        ColumnLabel.IMAGES,
+        Image,
+        ({ row }) => {
+          const images = row.getValue(EntityKey.IMAGES) as string[] | undefined
+          const vehicleNumber = row.getValue(EntityKey.VEHICLE_NUMBER) as string
+          return <WeighmentImagesCell images={images} vehicleNumber={vehicleNumber} />
+        }
+      ),
+      enableGlobalFilter: false,
+    },
     createCustomColumn(EntityKey.IS_ACTIVE, ColumnLabel.IS_ACTIVE, Power, (val) => {
       const isActive = val === "true"
       return (
@@ -55,19 +68,6 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
             : "bg-muted text-muted-foreground border border-border"
         )}>
           {isActive ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE}
-        </span>
-      )
-    }),
-    createCustomColumn(EntityKey.TYPE, ColumnLabel.TYPE, ArrowLeftRight, (val) => {
-      const isOut = val === WeighmentType.OUT
-      return (
-        <span className={cn(
-          badgeBaseClass,
-          isOut
-            ? "bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800/30"
-            : "bg-blue-50 text-blue-700 border border-blue-200/50 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/30"
-        )}>
-          {isOut ? "Out" : "In"}
         </span>
       )
     }),
