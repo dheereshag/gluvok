@@ -10,6 +10,15 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
     commodity:commodities(id, name),
     factory:factories(id, name)
   `, { count: "exact" })
+
+  if (params.filters) {
+    Object.entries(params.filters).forEach(([key, val]) => {
+      if (val !== undefined && val !== null && val !== "") {
+        query = query.eq(key, val)
+      }
+    })
+  }
+
   if (search) {
     const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
     const commodityIds = (commodities || []).map((c: { id: number }) => c.id)

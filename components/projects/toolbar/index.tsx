@@ -3,12 +3,14 @@
  * @description Toolbar section displayed above the table grid, housing filters, search input, reload button, view controls, and action buttons.
  */
 
+import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Plus, RotateCw } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
 import { BulkActions } from "./bulk-actions"
+import { ProjectFilters } from "../filters"
 
 import { useAuthStore, getPermissions } from "@/lib/store"
 
@@ -40,15 +42,18 @@ export function ProjectToolbar<TData>({
         />
       ) : (
         <>
-          <div className="relative w-full sm:max-w-xs md:max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              id={`search-input-${projectSlug}`}
-              placeholder="Search..."
-              value={(table.getState().globalFilter as string) ?? ""}
-              onChange={(event) => table.setGlobalFilter(event.target.value)}
-              className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
-            />
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
+            <div className="relative w-full sm:max-w-xs md:max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id={`search-input-${projectSlug}`}
+                placeholder="Search..."
+                value={(table.getState().globalFilter as string) ?? ""}
+                onChange={(event) => table.setGlobalFilter(event.target.value)}
+                className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
+              />
+            </div>
+            <ProjectFilters projectSlug={projectSlug} table={table} />
           </div>
           <div className="flex items-center gap-2 justify-end">
             <Button

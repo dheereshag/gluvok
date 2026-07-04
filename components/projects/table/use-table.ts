@@ -9,7 +9,7 @@ import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRo
 import { useReactTable } from "@/lib/utils"
 import { getProjectColumns } from "@/components/projects/columns"
 import { ProjectSlug } from "@/lib/constants/enums"
-import { useProjectDialogStates } from "./use-helpers"
+import { useProjectDialogStates, parseColumnFilters, areFiltersEqual, getVisibleColumnsList, isStringArrayEqual } from "./use-helpers"
 import { useAuthStore, getPermissions, useEntitiesStore } from "@/lib/store"
 import { fetchEntityListPaginated } from "@/lib/services"
 
@@ -42,6 +42,29 @@ export function useProjectTable({
   const savedVisibleColumns = React.useMemo(() => {
     return profile?.preferences?.[projectSlug]
   }, [profile?.preferences, projectSlug])
+
+  const savedFilters = React.useMemo(() => {
+    return (profile?.preferences?.[`${projectSlug}_filters`] || {}) as Record<string, unknown>
+  }, [profile?.preferences, projectSlug])
+
+  const updateFilterPreferences = useEntitiesStore((state) => state.updateFilterPreferences)
+
+  const hasSyncedInitialFilters = React.useRef(false)
+  React.useEffect(() => {
+    if (profile?.id && !hasSyncedInitialFilters.current && Object.keys(savedFilters).length > 0) {
+      setColumnFilters(Object.entries(savedFilters).map(([id, value]) => ({ id, value })))
+      hasSyncedInitialFilters.current = true
+    }
+  }, [savedFilters, profile?.id])
+
+  React.useEffect(() => {
+    if (!profile?.id) return
+
+    const filtersObj = parseColumnFilters(columnFilters)
+    if (!areFiltersEqual(filtersObj, savedFilters)) {
+      updateFilterPreferences(profile.id, projectSlug, filtersObj)
+    }
+  }, [columnFilters, profile?.id, projectSlug, savedFilters, updateFilterPreferences])
 
   const permissions = React.useMemo(() => getPermissions(user?.role, projectSlug), [user?.role, projectSlug])
 
@@ -102,12 +125,15 @@ export function useProjectTable({
     async function load() {
       try {
         setLocalLoading(true)
+        const filtersObj = parseColumnFilters(columnFilters)
+
         const result = await fetchEntityListPaginated(projectSlug as ProjectSlug, {
           page: pagination.pageIndex,
           pageSize: pagination.pageSize,
           sortColumn: sorting[0]?.id,
           sortDesc: sorting[0]?.desc,
           search: debouncedFilter,
+          filters: filtersObj,
         })
         if (!cancelled) {
           setLocalData(result.data)
@@ -123,7 +149,7 @@ export function useProjectTable({
     return () => {
       cancelled = true
     }
-  }, [projectSlug, pagination.pageIndex, pagination.pageSize, sorting, debouncedFilter, entitiesUpdatedTrigger])
+  }, [projectSlug, pagination.pageIndex, pagination.pageSize, sorting, debouncedFilter, columnFilters, entitiesUpdatedTrigger])
 
   const table = useReactTable({
     data: localData,
@@ -156,17 +182,8 @@ export function useProjectTable({
   React.useEffect(() => {
     if (!profile?.id) return
 
-    const visibleColumnsList = table
-      .getAllLeafColumns()
-      .filter((col) => col.getIsVisible())
-      .map((col) => col.id)
-      .filter((id) => id !== "actions")
-
-    const hasDiff = !savedVisibleColumns ||
-      savedVisibleColumns.length !== visibleColumnsList.length ||
-      visibleColumnsList.some(colId => !savedVisibleColumns.includes(colId))
-
-    if (hasDiff) {
+    const visibleColumnsList = getVisibleColumnsList(table)
+    if (!isStringArrayEqual(savedVisibleColumns, visibleColumnsList)) {
       updateColumnPreferences(profile.id, projectSlug, visibleColumnsList)
     }
   }, [columnVisibility, profile?.id, projectSlug, savedVisibleColumns, table, updateColumnPreferences])
@@ -176,6 +193,7 @@ export function useProjectTable({
     setPagination({ pageIndex: 0, pageSize: pagination.pageSize })
     setSorting([])
     setGlobalFilter("")
+    setColumnFilters([])
     useEntitiesStore.getState().triggerEntitiesUpdate()
   }, [pagination.pageSize])
 

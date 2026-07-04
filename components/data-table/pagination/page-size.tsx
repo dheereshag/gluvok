@@ -58,7 +58,7 @@ export function DataTablePaginationPageSize<TData>({ table }: { table: Table<TDa
       <List className="h-4 w-4 text-muted-foreground" />
       <p className="text-xs font-medium">Rows per page</p>
       <Select value={`${pageSize}`} onValueChange={(value) => table.setPageSize(Number(value))}>
-        <SelectTrigger className="h-8 w-[70px] text-xs">
+        <SelectTrigger className="h-8 text-xs">
           <SelectValue placeholder={`${pageSize}`} />
         </SelectTrigger>
         <SelectContent side="top">

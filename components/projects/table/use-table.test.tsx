@@ -111,6 +111,7 @@ describe("useProjectTable Hook", () => {
       sortColumn: undefined,
       sortDesc: undefined,
       search: "",
+      filters: {},
     })
   })
 

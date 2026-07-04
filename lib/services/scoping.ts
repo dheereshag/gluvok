@@ -45,6 +45,7 @@ export interface PaginatedParams {
   sortColumn?: string
   sortDesc?: boolean
   search?: string
+  filters?: Record<string, unknown>
 }
 
 export async function getScopingFilter(): Promise<ScopingFilter | null> {
