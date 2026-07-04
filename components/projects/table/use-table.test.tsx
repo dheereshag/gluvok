@@ -8,14 +8,19 @@ const mockTriggerEntitiesUpdate = vi.fn()
 interface MockAuthStoreState {
   user: {
     role: string
-    profile: { id: number; preferences: Record<string, string[]> }
   }
 }
 
 interface MockEntitiesStoreState {
   entitiesUpdatedTrigger: number
-  updateColumnPreferences: () => void
   triggerEntitiesUpdate: () => void
+}
+
+interface MockPreferencesStoreState {
+  columns: Record<string, string[]>
+  filters: Record<string, Record<string, unknown>>
+  setColumnPreferences: () => void
+  setFilterPreferences: () => void
 }
 
 // Mock dependencies
@@ -24,7 +29,6 @@ vi.mock("@/lib/store", () => {
     getState: () => ({
       user: {
         role: "admin",
-        profile: { id: 1, preferences: {} },
       },
     }),
     subscribe: () => () => {},
@@ -33,8 +37,17 @@ vi.mock("@/lib/store", () => {
   const mockEntitiesStore = {
     getState: () => ({
       entitiesUpdatedTrigger: 0,
-      updateColumnPreferences: () => {},
       triggerEntitiesUpdate: mockTriggerEntitiesUpdate,
+    }),
+    subscribe: () => () => {},
+  }
+
+  const mockPreferencesStore = {
+    getState: () => ({
+      columns: {},
+      filters: {},
+      setColumnPreferences: () => {},
+      setFilterPreferences: () => {},
     }),
     subscribe: () => () => {},
   }
@@ -49,9 +62,15 @@ vi.mock("@/lib/store", () => {
     mockEntitiesStore
   )
 
+  const usePreferencesStoreMock = Object.assign(
+    (selector: (state: MockPreferencesStoreState) => unknown) => selector(mockPreferencesStore.getState()),
+    mockPreferencesStore
+  )
+
   return {
     useAuthStore: useAuthStoreMock,
     useEntitiesStore: useEntitiesStoreMock,
+    usePreferencesStore: usePreferencesStoreMock,
     getPermissions: () => ({
       read: true,
       write: true,

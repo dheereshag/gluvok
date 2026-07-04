@@ -34,7 +34,7 @@ async function fetchAndSetProfile(
   try {
     const { data: profile, error } = await supabase
       .from("profiles")
-      .select("id, user_id, name, role, aadhar_number, factory_id, preferences, created_at, updated_at")
+      .select("id, user_id, name, role, aadhar_number, factory_id, created_at, updated_at")
       .eq("user_id", sessionUser.id)
       .maybeSingle()
 
