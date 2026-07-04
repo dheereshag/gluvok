@@ -236,30 +236,37 @@ WITH CHECK (current_user_role() = 'super_admin');
 
 
 -- ============================================================================
--- IMPORTANT FIX: Recreate the 'profiles_with_email' view WITHOUT security_invoker.
--- This allows it to run as Owner (Security Definer) so it has access to 'auth.users'
--- via the get_user_email SECURITY DEFINER function.
--- To keep it secure and enforce tenant isolation, we add the WHERE clause filter.
+-- 'profiles_with_email' view with security_invoker=on (Supabase recommended).
+-- The view runs as the calling user, so the profiles table RLS policies apply
+-- as a second layer of protection. All functions used inside (get_user_email,
+-- current_user_role, current_user_factory_id, auth.uid) are SECURITY DEFINER
+-- themselves, so they continue to work correctly under the invoker's context.
 -- ============================================================================
 DROP VIEW IF EXISTS profiles_with_email CASCADE;
 
-CREATE OR REPLACE VIEW profiles_with_email AS
-SELECT p.*, get_user_email(p.user_id) AS email
+CREATE OR REPLACE VIEW profiles_with_email WITH (security_invoker = on) AS
+SELECT
+  p.id,
+  p.user_id,
+  p.aadhar_number,
+  p.name,
+  p.created_at,
+  p.updated_at,
+  p.role,
+  p.preferences,
+  p.factory_id,
+  get_user_email(p.user_id) AS email
 FROM profiles p
-WHERE (
+WHERE
   current_user_role() = 'super_admin'
   OR (
     p.factory_id = current_user_factory_id()
     AND (
       p.user_id = auth.uid()
-      OR (
-        current_user_role() = 'admin' AND p.role::text IN ('manager', 'operator', 'base')
-      )
-      OR (
-        current_user_role() = 'manager' AND p.role::text IN ('operator', 'base')
-      )
+      OR (current_user_role() = 'admin' AND p.role::text = ANY (ARRAY['manager', 'operator', 'base']))
+      OR (current_user_role() = 'manager' AND p.role::text = ANY (ARRAY['operator', 'base']))
     )
-  )
-);
+  );
 
 GRANT SELECT ON public.profiles_with_email TO authenticated;
+
