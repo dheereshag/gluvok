@@ -41,8 +41,8 @@ export function ProjectClient({ projectName, projectSlug }: ProjectClientProps) 
 
   if (!isReady || !hasLoadedOnce) {
     return (
-      <div className="min-h-[250px] flex flex-col items-center justify-center gap-3 bg-card border rounded-xl shadow-sm">
-        <Spinner variant="circle-filled" className="size-5 text-primary" />
+      <div className="min-h-96 flex flex-col items-center justify-center gap-3 bg-card border rounded-xl shadow-sm">
+        <Spinner />
         <span className="text-xs font-medium text-muted-foreground/70">Loading {projectName.toLowerCase()}...</span>
       </div>
     )
