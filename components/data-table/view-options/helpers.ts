@@ -59,15 +59,15 @@ export function getColumnLabel(id: string): string {
     case EntityKey.CUSTOMER_NAME: return ColumnLabel.CUSTOMER
     case EntityKey.CENTER_NAME: return ColumnLabel.CENTER
     case EntityKey.CUSTOMER_GOVT_ID: return ColumnLabel.GOVT_ID
-    case "commodity": return ColumnLabel.COMMODITY
-    case "factory": return ColumnLabel.FACTORY
-    case "user": return ColumnLabel.USER
-    case "village": return ColumnLabel.VILLAGE
-    case "rate": return ColumnLabel.RATE
-    case "center": return ColumnLabel.CENTER
-    case "profile": return ColumnLabel.PROFILE
-    case "customer": return ColumnLabel.CUSTOMER
-    case "user_email": return ColumnLabel.USER_EMAIL
+    case EntityKey.COMMODITY: return ColumnLabel.COMMODITY
+    case EntityKey.FACTORY: return ColumnLabel.FACTORY
+    case EntityKey.USER: return ColumnLabel.USER
+    case EntityKey.VILLAGE: return ColumnLabel.VILLAGE
+    case EntityKey.RATE: return ColumnLabel.RATE
+    case EntityKey.CENTER: return ColumnLabel.CENTER
+    case EntityKey.PROFILE: return ColumnLabel.PROFILE
+    case EntityKey.CUSTOMER: return ColumnLabel.CUSTOMER
+    case EntityKey.USER_EMAIL: return ColumnLabel.USER_EMAIL
     default:
       return id
   }
