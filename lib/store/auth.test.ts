@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { useAuthStore } from "./auth"
 import { supabase } from "@/lib/supabase"
+import { TABLE_NAME as PROFILES_TABLE } from "@/lib/services/profiles"
 import { Role } from "@/lib/constants/enums"
 import { toast } from "sonner"
 
@@ -92,7 +93,7 @@ describe("Auth Store (Zustand)", () => {
       const mockSession = { user: { id: "user-123", email: "test@gluvok.com" } }
       await authCallback("SIGNED_IN", mockSession)
 
-      expect(supabase.from).toHaveBeenCalledWith("profiles")
+      expect(supabase.from).toHaveBeenCalledWith(PROFILES_TABLE)
       expect(mockEq).toHaveBeenCalledWith("user_id", "user-123")
       expect(useAuthStore.getState().user).toEqual({
         id: "user-123",
@@ -152,7 +153,8 @@ describe("Auth Store (Zustand)", () => {
         profile: undefined,
       })
       expect(toast.error).toHaveBeenCalledWith(
-        expect.stringContaining("Unable to load your profile")
+        expect.stringContaining("Unable to load your profile"),
+        expect.objectContaining({ id: "profile-permission-error" })
       )
     })
   })

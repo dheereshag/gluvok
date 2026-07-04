@@ -5,4 +5,5 @@
 
 export { fetchRates, fetchRateById } from "./list"
 export { fetchRatesPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 

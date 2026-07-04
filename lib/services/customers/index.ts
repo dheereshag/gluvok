@@ -5,4 +5,5 @@
 
 export { fetchCustomers, fetchCustomerById } from "./list"
 export { fetchCustomersPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 

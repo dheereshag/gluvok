@@ -5,4 +5,5 @@
 
 export { fetchProfiles, fetchProfileById } from "./list"
 export { fetchProfilesPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 

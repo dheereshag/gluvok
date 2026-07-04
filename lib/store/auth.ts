@@ -9,6 +9,8 @@ import { toast } from "sonner"
 import { Role } from "@/lib/constants/enums"
 import { DEFAULT_AVATAR } from "@/lib/constants"
 import { type Profile, type Customer } from "@/types"
+import { TABLE_NAME as PROFILES_TABLE } from "@/lib/services/profiles"
+import { TABLE_NAME as CUSTOMERS_TABLE } from "@/lib/services/customers"
 
 export interface AuthUser {
   id: string
@@ -38,7 +40,7 @@ async function fetchAndSetProfile(
 ): Promise<boolean> {
   try {
     const { data: profile, error } = await supabase
-      .from("profiles")
+      .from(PROFILES_TABLE)
       .select("id, user_id, name, role, aadhar_number, factory_id, created_at, updated_at")
       .eq("user_id", sessionUser.id)
       .maybeSingle()
@@ -57,7 +59,7 @@ async function fetchAndSetProfile(
           profile: undefined,
         }
       })
-      toast.error("Unable to load your profile. You may not have permission to view it. Please contact an administrator.")
+      toast.error("Unable to load your profile. You may not have permission to view it. Please contact an administrator.", { id: "profile-permission-error" })
       return false
     }
 
@@ -65,7 +67,7 @@ async function fetchAndSetProfile(
     if (!profile) {
       // Fallback: check if the user is a customer
       const { data: customer, error: customerError } = await supabase
-        .from("customers")
+        .from(CUSTOMERS_TABLE)
         .select("id, name, govt_id, father_name, village_id, factory_id, user_id, created_at, updated_at")
         .eq("user_id", sessionUser.id)
         .maybeSingle()
@@ -95,7 +97,7 @@ async function fetchAndSetProfile(
           profile: undefined,
         }
       })
-      toast.error("No profile linked to this account. Please contact an administrator to link your account.")
+      toast.error("No profile linked to this account. Please contact an administrator to link your account.", { id: "no-profile-error" })
       return false
     }
 
@@ -128,7 +130,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     let isInitial = true
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        await fetchAndSetProfile(session.user, set)
+        const currentUser = get().user
+        const isUserChanged = !currentUser || currentUser.id !== session.user.id
+        const shouldFetch = isUserChanged || event === "USER_UPDATED"
+        if (shouldFetch) {
+          await fetchAndSetProfile(session.user, set)
+        }
       } else {
         set({ user: null })
       }
@@ -161,6 +168,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   logout: async () => {
     await supabase.auth.signOut()
     set({ user: null })
+    toast.success("Successfully logged out")
   },
   registerUser: async (user) => {
     if (!user.password) {

@@ -5,4 +5,5 @@
 
 export { fetchCommodities, fetchCommodityById } from "./list"
 export { fetchCommoditiesPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 

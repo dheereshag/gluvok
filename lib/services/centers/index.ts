@@ -5,4 +5,5 @@
 
 export { fetchCenters, fetchCenterById } from "./list"
 export { fetchCentersPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 

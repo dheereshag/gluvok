@@ -5,4 +5,5 @@
 
 export { fetchVillages, fetchVillageById } from "./list"
 export { fetchVillagesPaginated } from "./paginated"
+export { TABLE_NAME } from "./query"
 
