@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/rates.ts
+ * @description Zod schema and validation rules for Rates entities.
+ */
+
 import * as z from "zod"
 import { EntityKey, Unit } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"

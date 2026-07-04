@@ -1,3 +1,8 @@
+/**
+ * @file lib/fields/types.ts
+ * @description Helper definitions or configuration for entity table fields (types).
+ */
+
 import { ComponentType } from "react"
 import { EntityKey, FieldType, InputMode, Role } from "@/lib/constants/enums"
 

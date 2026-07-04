@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/villages.ts
+ * @description Zod schema and validation rules for Villages entities.
+ */
+
 import * as z from "zod"
 import { State, ColumnLabel } from "@/lib/constants/enums"
 import { EntityKey } from "@/lib/constants/enums"

@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/commodities.tsx
+ * @description Column definitions and rendering helpers for the Commodities entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Tag } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

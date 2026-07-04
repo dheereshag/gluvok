@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/dialog/types.ts
+ * @description Dialog component or hook for managing types actions.
+ */
+
 import { type FieldValues, type UseFormReturn } from "react-hook-form"
 import { type FieldConfig } from "@/lib/fields"
 import { DialogMode } from "@/lib/constants/enums"

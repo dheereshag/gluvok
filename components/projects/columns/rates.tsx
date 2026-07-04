@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/rates.tsx
+ * @description Column definitions and rendering helpers for the Rates entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { IndianRupee, Weight, Tag, Factory } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

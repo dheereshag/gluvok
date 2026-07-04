@@ -1,3 +1,8 @@
+/**
+ * @file lib/csv/exporter.ts
+ * @description CSV export utilities for table records (exporter).
+ */
+
 import { type Table } from "@tanstack/react-table"
 import { printPdf } from "../pdf/exporter"
 import { generatePdfHtml } from "../pdf/template"

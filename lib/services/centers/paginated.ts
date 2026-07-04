@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/centers/paginated.ts
+ * @description Database service logic for paginated fetching of centers.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"

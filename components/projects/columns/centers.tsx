@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/centers.tsx
+ * @description Column definitions and rendering helpers for the Centers entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Tag, Factory } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

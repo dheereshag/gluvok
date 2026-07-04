@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/dialog/use-entity-form.ts
+ * @description Dialog component or hook for managing use entity form actions.
+ */
+
 "use client"
 
 import * as React from "react"

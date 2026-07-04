@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/factories.tsx
+ * @description Column definitions and rendering helpers for the Factories entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Tag, Home } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

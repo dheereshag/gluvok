@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/select.tsx
+ * @description Column definitions and rendering helpers for the Select entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 

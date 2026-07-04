@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/helpers.tsx
+ * @description Column definitions and rendering helpers for the Helpers entity table.
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"

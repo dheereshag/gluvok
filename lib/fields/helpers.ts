@@ -1,3 +1,8 @@
+/**
+ * @file lib/fields/helpers.ts
+ * @description Helper definitions or configuration for entity table fields (helpers).
+ */
+
 import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName } from "@/lib/constants/enums"
 import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, type LucideIcon } from "lucide-react"
 

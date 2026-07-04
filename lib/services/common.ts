@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/common.ts
+ * @description Database service logic for CRUD operations of services.
+ */
+
 
 import { supabase } from "@/lib/supabase"
 import { ProjectSlug } from "@/lib/constants/enums"

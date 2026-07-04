@@ -1,3 +1,8 @@
+/**
+ * @file lib/pdf/styles.ts
+ * @description PDF generation template or style definition for exports (styles).
+ */
+
 export const PDF_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
   body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #0f172a; margin: 0; padding: 40px; line-height: 1.5; background-color: #ffffff; }

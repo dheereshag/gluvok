@@ -1,3 +1,8 @@
+/**
+ * @file lib/pdf/exporter.ts
+ * @description PDF generation template or style definition for exports (exporter).
+ */
+
 import { toast } from "sonner"
 
 export function printPdf(htmlContent: string) {

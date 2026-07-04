@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/villages.tsx
+ * @description Column definitions and rendering helpers for the Villages entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Globe, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

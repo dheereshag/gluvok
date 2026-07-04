@@ -1,3 +1,8 @@
+/**
+ * @file lib/projects/registry.ts
+ * @description Helper component or configuration for project dashboards (registry).
+ */
+
 import {
   Building,
   IndianRupee,

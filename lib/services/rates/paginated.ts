@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/rates/paginated.ts
+ * @description Service for fetching paginated rates with search and filters.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
@@ -20,16 +25,20 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
   }
 
   if (search) {
-    const { data: commodities } = await supabase.from("commodities").select("id").ilike("name", `%${search}%`)
-    const commodityIds = (commodities || []).map((c: { id: number }) => c.id)
-    const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
-    const factoryIds = (factories || []).map((f: { id: number }) => f.id)
+    const [commoditiesRes, factoriesRes] = await Promise.all([
+      supabase.from("commodities").select("id").ilike("name", `%${search}%`),
+      supabase.from("factories").select("id").ilike("name", `%${search}%`),
+    ])
+
+    const commodityIds = (commoditiesRes.data || []).map((c: { id: number }) => c.id)
+    const factoryIds = (factoriesRes.data || []).map((f: { id: number }) => f.id)
 
     const orConditions: string[] = [`unit.ilike.%${search}%`]
     if (commodityIds.length > 0) orConditions.push(`commodity_id.in.(${commodityIds.join(",")})`)
     if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
     query = query.or(orConditions.join(","))
   }
+
 
   query = applyPaginationAndSorting(query, params, {
     factory_name: "factory_id",

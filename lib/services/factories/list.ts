@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/factories/list.ts
+ * @description Database service logic for listing of factories.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeAndOrderList } from "../scoping"

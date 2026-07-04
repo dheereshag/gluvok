@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/registry.ts
+ * @description Zod schema and validation rules for Registry entities.
+ */
+
 import { ProjectSlug } from "@/lib/constants/enums"
 import { addCenterSchema, editCenterSchema } from "./centers"
 import { addCommoditySchema, editCommoditySchema } from "./commodities"

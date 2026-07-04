@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/profiles.ts
+ * @description Zod schema and validation rules for Profiles entities.
+ */
+
 import * as z from "zod"
 import { EntityKey, Role, ColumnLabel } from "@/lib/constants/enums"
 import { nameSchema, uuidSchema } from "./helpers"

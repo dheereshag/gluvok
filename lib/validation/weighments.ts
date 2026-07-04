@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/weighments.ts
+ * @description Zod schema and validation rules for Weighments entities.
+ */
+
 import * as z from "zod"
 import { State, ColumnLabel, Unit, WeighmentType } from "@/lib/constants/enums"
 import { EntityKey } from "@/lib/constants/enums"

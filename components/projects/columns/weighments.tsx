@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/weighments.tsx
+ * @description Column definitions and rendering helpers for the Weighments entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowLeftRight } from "lucide-react"
 import { EntityKey, WeighmentType } from "@/lib/constants/enums"

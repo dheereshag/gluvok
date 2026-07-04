@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/dialog/delete-content.tsx
+ * @description Dialog component or hook for managing delete content actions.
+ */
+
 "use client"
 
 import { toast } from "sonner"

@@ -1,3 +1,8 @@
+/**
+ * @file lib/fields/config.ts
+ * @description Helper definitions or configuration for entity table fields (config).
+ */
+
 import { ProjectSlug, EntityKey, FieldType, InputMode, Role, SingularEntityName } from "@/lib/constants/enums"
 import { type FieldConfig } from "./types"
 import { ColumnLabel } from "@/lib/constants/enums"

@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/system.tsx
+ * @description Column definitions and rendering helpers for the System entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { ShieldCheck, Hash, Calendar, CalendarClock, Fingerprint, Tag, type LucideIcon } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

@@ -1,3 +1,8 @@
+/**
+ * @file lib/store/index.ts
+ * @description Zustand state store or helper for managing index data.
+ */
+
 export * from "./helpers"
 export * from "./auth"
 export * from "./access"

@@ -1,3 +1,8 @@
+/**
+ * @file lib/projects/data.tsx
+ * @description Helper component or configuration for project dashboards (data).
+ */
+
 import {
   Building,
   IndianRupee,

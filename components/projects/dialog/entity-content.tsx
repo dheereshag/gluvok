@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/dialog/entity-content.tsx
+ * @description Dialog component or hook for managing entity content actions.
+ */
+
 "use client"
 
 import { Pencil, Plus, Save, X, Loader2 } from "lucide-react"

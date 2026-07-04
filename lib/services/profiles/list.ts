@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/profiles/list.ts
+ * @description Database service logic for listing of profiles.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { executeAndOrderList } from "../scoping"

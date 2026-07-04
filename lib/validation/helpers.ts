@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/helpers.ts
+ * @description Zod schema and validation rules for Helpers entities.
+ */
+
 import * as z from "zod"
 
 export const integerIdSchema = (fieldName: string) =>

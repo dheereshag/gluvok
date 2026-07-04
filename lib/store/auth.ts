@@ -1,3 +1,8 @@
+/**
+ * @file lib/store/auth.ts
+ * @description Zustand state store or helper for managing auth data.
+ */
+
 import { create } from "zustand"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"

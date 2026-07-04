@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/weighments/paginated.ts
+ * @description Service for fetching paginated weighments with search and filters.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
@@ -16,12 +21,15 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
   `, { count: "exact" })
 
   if (search) {
-    const { data: centers } = await supabase.from("centers").select("id").ilike("name", `%${search}%`)
-    const centerIds = (centers || []).map((c: { id: number }) => c.id)
-    const { data: profiles } = await supabase.from("profiles").select("id").ilike("name", `%${search}%`)
-    const profileIds = (profiles || []).map((p: { id: number }) => p.id)
-    const { data: customers } = await supabase.from("customers").select("id").ilike("name", `%${search}%`)
-    const customerIds = (customers || []).map((c: { id: number }) => c.id)
+    const [centersRes, profilesRes, customersRes] = await Promise.all([
+      supabase.from("centers").select("id").ilike("name", `%${search}%`),
+      supabase.from("profiles").select("id").ilike("name", `%${search}%`),
+      supabase.from("customers").select("id").ilike("name", `%${search}%`),
+    ])
+
+    const centerIds = (centersRes.data || []).map((c: { id: number }) => c.id)
+    const profileIds = (profilesRes.data || []).map((p: { id: number }) => p.id)
+    const customerIds = (customersRes.data || []).map((c: { id: number }) => c.id)
 
     const orConditions: string[] = [`vehicle_number.ilike.%${search}%`]
     if (centerIds.length > 0) orConditions.push(`center_id.in.(${centerIds.join(",")})`)
@@ -29,6 +37,7 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
     if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
     query = query.or(orConditions.join(","))
   }
+
 
   // Apply column filters — only use actual DB columns
   if (filters.rate_id)     query = query.eq("rate_id",     filters.rate_id     as number)

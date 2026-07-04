@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/index.ts
+ * @description Database service logic for CRUD operations of services.
+ */
+
 export * from "./common"
 export * from "./centers"
 export * from "./commodities"

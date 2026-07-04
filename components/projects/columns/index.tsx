@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/index.tsx
+ * @description Column definitions and rendering helpers for the Index entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { type EntityRecord } from "@/types"
 import { ProjectSlug } from "@/lib/constants/enums"

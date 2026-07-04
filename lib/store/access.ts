@@ -1,3 +1,8 @@
+/**
+ * @file lib/store/access.ts
+ * @description Zustand state store or helper for managing access data.
+ */
+
 import { Role } from "@/lib/constants/enums"
 import { ProjectSlug } from "@/lib/constants/enums"
 

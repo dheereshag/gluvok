@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/villages/paginated.ts
+ * @description Database service logic for paginated fetching of villages.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"

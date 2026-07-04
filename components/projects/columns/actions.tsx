@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/actions.tsx
+ * @description Column definitions and rendering helpers for the Actions entity table.
+ */
+
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"

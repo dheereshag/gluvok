@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/uniqueness.ts
+ * @description Zod schema and validation rules for Uniqueness entities.
+ */
+
 export interface UniquenessError {
   field: string
   message: string

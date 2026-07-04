@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/customers.ts
+ * @description Zod schema and validation rules for Customers entities.
+ */
+
 import * as z from "zod"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"

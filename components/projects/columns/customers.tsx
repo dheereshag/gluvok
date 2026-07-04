@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/customers.tsx
+ * @description Column definitions and rendering helpers for the Customers entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { User, Mail, ShieldCheck, Tag, Home } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

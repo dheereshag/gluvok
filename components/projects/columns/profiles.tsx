@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/profiles.tsx
+ * @description Column definitions and rendering helpers for the Profiles entity table.
+ */
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Mail, Fingerprint, Tag, Factory, ShieldCheck } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"

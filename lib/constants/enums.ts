@@ -1,3 +1,8 @@
+/**
+ * @file lib/constants/enums.ts
+ * @description Constants registry and configuration values for enums.
+ */
+
 export enum State {
   AN = "Andaman and Nicobar Islands",
   AP = "Andhra Pradesh",

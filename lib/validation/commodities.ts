@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/commodities.ts
+ * @description Zod schema and validation rules for Commodities entities.
+ */
+
 import * as z from "zod"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"

@@ -1,3 +1,8 @@
+/**
+ * @file lib/pdf/template.ts
+ * @description PDF generation template or style definition for exports (template).
+ */
+
 import { PDF_STYLES } from "./styles"
 
 export function generatePdfHtml(

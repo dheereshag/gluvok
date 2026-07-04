@@ -1,3 +1,8 @@
+/**
+ * @file lib/validation/index.ts
+ * @description Zod schema and validation rules for Index entities.
+ */
+
 export * from "./helpers"
 export * from "./centers"
 export * from "./commodities"

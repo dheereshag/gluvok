@@ -1,3 +1,8 @@
+/**
+ * @file components/projects/columns/weighments-cell.tsx
+ * @description Column definitions and rendering helpers for the Weighments-cell entity table.
+ */
+
 "use client"
 
 import * as React from "react"

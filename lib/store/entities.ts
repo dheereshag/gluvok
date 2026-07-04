@@ -1,3 +1,8 @@
+/**
+ * @file lib/store/entities.ts
+ * @description Zustand state store or helper for managing entities data.
+ */
+
 "use client"
 
 import { create } from "zustand"

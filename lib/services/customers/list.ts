@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/customers/list.ts
+ * @description Database service logic for listing of customers.
+ */
+
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
 

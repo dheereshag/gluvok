@@ -1,3 +1,8 @@
+/**
+ * @file lib/services/scoping.ts
+ * @description Database service logic for CRUD operations of services.
+ */
+
 import { useAuthStore } from "@/lib/store/auth"
 import { Role } from "@/lib/constants/enums"
 import type { PostgrestFilterBuilder } from "@supabase/supabase-js"
