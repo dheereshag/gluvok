@@ -82,7 +82,13 @@ export function useProjectTable({
         if (colId === "actions" || colId === "select") {
           visibility[colId] = true
         } else {
-          visibility[colId] = savedVisibleColumns.includes(colId)
+          // If a column is defined in the code but is completely missing from the saved columns list,
+          // it means it's a new column. We default it to visible (true) so it renders for existing users.
+          if (!savedVisibleColumns.includes(colId)) {
+            visibility[colId] = true
+          } else {
+            visibility[colId] = savedVisibleColumns.includes(colId)
+          }
         }
       }
     })

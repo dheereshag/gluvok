@@ -33,7 +33,7 @@ export function ProjectToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0 || !!table.getState().globalFilter
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3">
       {selectedRows.length > 0 ? (
         <BulkActions
           table={table}
@@ -43,7 +43,8 @@ export function ProjectToolbar<TData>({
         />
       ) : (
         <>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center w-full sm:w-auto">
+          {/* Top Row: Search and Actions */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between w-full">
             <div className="relative w-full sm:max-w-xs md:max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -54,42 +55,45 @@ export function ProjectToolbar<TData>({
                 className="pl-9 pr-4 h-9 text-xs bg-background border border-input focus-visible:ring-1 focus-visible:ring-primary/50 transition-shadow"
               />
             </div>
-            <ProjectFilters projectSlug={projectSlug} table={table} />
-            {isFiltered && (
+
+            <div className="flex items-center gap-2 justify-end">
+              {isFiltered && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    table.setColumnFilters([])
+                    table.setGlobalFilter("")
+                  }}
+                  className="h-9 px-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors gap-1.5"
+                  title="Clear all active filters and search"
+                >
+                  Clear all
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              )}
               <Button
-                variant="ghost"
-                onClick={() => {
-                  table.setColumnFilters([])
-                  table.setGlobalFilter("")
-                }}
-                className="h-9 px-2.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors gap-1.5 self-start sm:self-center"
-                title="Clear all active filters and search"
+                variant="outline"
+                size="icon"
+                onClick={onReload}
+                className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50 shadow-sm"
+                title="Reload and Reset Data"
               >
-                Clear all
-                <X className="h-3.5 w-3.5" />
+                <RotateCw className="h-4 w-4" />
               </Button>
-            )}
+              {canCreate && (
+                <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
+                  <Plus className="h-4 w-4" />
+                  Add {projectName}
+                </Button>
+              )}
+              <DataTableViewOptions table={table} />
+            </div>
           </div>
-          <div className="flex items-center gap-2 justify-end">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={onReload}
-              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50 shadow-sm"
-              title="Reload and Reset Data"
-            >
-              <RotateCw className="h-4 w-4" />
-            </Button>
-            {canCreate && (
-              <Button onClick={() => setCreating(true)} size="sm" className="h-9 gap-1.5 shadow-sm">
-                <Plus className="h-4 w-4" />
-                Add {projectName}
-              </Button>
-            )}
-            <DataTableViewOptions table={table} />
-          </div>
+
+          {/* Bottom Row: Filter Controls */}
+          <ProjectFilters projectSlug={projectSlug} table={table} />
         </>
       )}
     </div>
-  )
+  );
 }

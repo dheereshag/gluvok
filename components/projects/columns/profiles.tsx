@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { Mail, Fingerprint, Tag, Factory } from "lucide-react"
+import { Mail, Fingerprint, Tag, Factory, ShieldCheck } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel, Role } from "@/lib/constants/enums"
 import { createTextColumn, createCustomColumn } from "./helpers"
@@ -12,6 +12,7 @@ export function getProfilesColumns<T>(): ColumnDef<T>[] {
     createTextColumn(EntityKey.AADHAR_NUMBER, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
     createTextColumn(EntityKey.EMAIL, ColumnLabel.EMAIL, Mail),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
+    createTextColumn(EntityKey.ROLE, ColumnLabel.ROLE, ShieldCheck, "text-xs text-muted-foreground uppercase tracking-wide"),
   ]
 
   if (isSuperAdmin) {

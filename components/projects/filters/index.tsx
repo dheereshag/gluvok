@@ -9,6 +9,9 @@ import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { RatesFilters } from "./rates"
+import { ProfilesFilters } from "./profiles"
+import { CustomersFilters } from "./customers"
+import { WeighmentsFilters } from "./weighments"
 
 interface ProjectFiltersProps<TData> {
   projectSlug: string
@@ -19,6 +22,12 @@ export function ProjectFilters<TData>({ projectSlug, table }: ProjectFiltersProp
   switch (projectSlug) {
     case ProjectSlug.RATES:
       return <RatesFilters table={table} />
+    case ProjectSlug.PROFILES:
+      return <ProfilesFilters table={table} />
+    case ProjectSlug.CUSTOMERS:
+      return <CustomersFilters table={table} />
+    case ProjectSlug.WEIGHMENTS:
+      return <WeighmentsFilters table={table} />
     default:
       return null
   }

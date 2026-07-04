@@ -38,6 +38,8 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
     ),
     createIdColumn(EntityKey.RATE_ID, ColumnLabel.RATE_ID, Package),
     createIdColumn(EntityKey.CENTER_ID, ColumnLabel.CENTER_ID, Building),
+    createIdColumn(EntityKey.PROFILE_ID, ColumnLabel.PROFILE_ID, User),
+    createIdColumn(EntityKey.CUSTOMER_ID, ColumnLabel.CUSTOMER_ID, Users),
     createTextColumn(EntityKey.CENTER_NAME, ColumnLabel.CENTER_NAME, Building),
     createTextColumn(EntityKey.PROFILE_AADHAR, ColumnLabel.AADHAR_NUMBER, Fingerprint, "font-mono text-muted-foreground text-xs"),
     createTextColumn(EntityKey.PROFILE_NAME, ColumnLabel.PROFILE_NAME, User),

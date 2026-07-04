@@ -3,7 +3,7 @@ import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
-  const { search } = params
+  const { search, filters = {} } = params
 
   let query = supabase.from("profiles_with_email").select(`
     *,
@@ -27,7 +27,13 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
     query = query.or(orConditions.join(","))
   }
 
-  query = applyPaginationAndSorting(query, params, { factory_name: "factory_id" })
+  // Apply column filters
+  if (filters.role) query = query.eq("role", filters.role as string)
+
+  query = applyPaginationAndSorting(query, params, {
+    factory_name: "factory_id",
+    email: "user_id",
+  })
 
   const { data, count } = await executePaginatedQuery(query)
 
@@ -38,3 +44,4 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
   return { data: enrichedData, count }
 }
+

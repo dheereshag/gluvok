@@ -3,12 +3,13 @@ import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
 export async function fetchCustomersPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
-  const { search } = params
+  const { search, filters = {} } = params
 
   let query = supabase.from("customers").select(`
     *,
     village:villages(id, name)
   `, { count: "exact" })
+
   if (search) {
     const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
     const villageIds = (villages || []).map((v: { id: number }) => v.id)
@@ -19,7 +20,13 @@ export async function fetchCustomersPaginated(params: PaginatedParams): Promise<
     }
   }
 
-  query = applyPaginationAndSorting(query, params, { village_name: "village_id" })
+  // Apply column filters
+  if (filters.village_id) query = query.eq("village_id", filters.village_id as number)
+
+  query = applyPaginationAndSorting(query, params, {
+    village_name: "village_id",
+    user_email: "user_id",
+  })
 
   const { data, count } = await executePaginatedQuery(query)
 
@@ -44,3 +51,4 @@ export async function fetchCustomersPaginated(params: PaginatedParams): Promise<
 
   return { data: enrichedData, count }
 }
+
