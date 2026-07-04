@@ -54,8 +54,8 @@ export function LogoVertical({ size = 64, className, ...props }: LogoVerticalPro
     <Image
       src="/logo-vertical.png"
       alt="Gluvok logo"
-      width={0}
-      height={size}
+      width={size}
+      height={0}
       className={cn("object-contain w-auto h-auto", className)}
       {...props}
     />
