@@ -5,21 +5,33 @@
 
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { executeAndOrderList } from "../scoping"
+import { executeListQuery, executeSingleQuery } from "../scoping"
 
-export async function fetchProfiles(id?: number): Promise<EntityRecord[]> {
+export async function fetchProfiles(): Promise<EntityRecord[]> {
   const query = supabase.from("profiles_with_email").select(`
     *,
     factory:factories(name)
   `)
 
+  const data = await executeListQuery(query)
 
-  const data = await executeAndOrderList(query, id)
-
-  return data.map((item) => {
-    return {
-      ...item,
-      factory_name: item.factory?.name || "",
-    }
-  })
+  return data.map((item) => ({
+    ...item,
+    factory_name: item.factory?.name || "",
+  }))
 }
+
+export async function fetchProfileById(id: number): Promise<EntityRecord> {
+  const query = supabase.from("profiles_with_email").select(`
+    *,
+    factory:factories(name)
+  `)
+
+  const item = await executeSingleQuery(query, id)
+
+  return {
+    ...item,
+    factory_name: item.factory?.name || "",
+  }
+}
+

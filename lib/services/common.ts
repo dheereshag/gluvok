@@ -7,14 +7,14 @@
 import { supabase } from "@/lib/supabase"
 import { ProjectSlug } from "@/lib/constants/enums"
 import { type EntityRecord } from "@/types"
-import { fetchCenters, fetchCentersPaginated } from "./centers"
-import { fetchCommodities, fetchCommoditiesPaginated } from "./commodities"
-import { fetchRates, fetchRatesPaginated } from "./rates"
-import { fetchCustomers, fetchCustomersPaginated } from "./customers"
-import { fetchWeighments, fetchWeighmentsPaginated } from "./weighments"
-import { fetchFactories, fetchFactoriesPaginated } from "./factories"
-import { fetchProfiles, fetchProfilesPaginated } from "./profiles"
-import { fetchVillages, fetchVillagesPaginated } from "./villages"
+import { fetchCenters, fetchCentersPaginated, fetchCenterById } from "./centers"
+import { fetchCommodities, fetchCommoditiesPaginated, fetchCommodityById } from "./commodities"
+import { fetchRates, fetchRatesPaginated, fetchRateById } from "./rates"
+import { fetchCustomers, fetchCustomersPaginated, fetchCustomerById } from "./customers"
+import { fetchWeighments, fetchWeighmentsPaginated, fetchWeighmentById } from "./weighments"
+import { fetchFactories, fetchFactoriesPaginated, fetchFactoryById } from "./factories"
+import { fetchProfiles, fetchProfilesPaginated, fetchProfileById } from "./profiles"
+import { fetchVillages, fetchVillagesPaginated, fetchVillageById } from "./villages"
 import { type PaginatedParams } from "./scoping"
 
 export function slugToTable(slug: ProjectSlug | string): string {
@@ -41,42 +41,28 @@ export function slugToTable(slug: ProjectSlug | string): string {
 }
 
 export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<EntityRecord> {
-  let list: EntityRecord[] = []
   switch (slug) {
     case ProjectSlug.CENTERS:
-      list = await fetchCenters(id)
-      break
+      return fetchCenterById(id)
     case ProjectSlug.COMMODITIES:
-      list = await fetchCommodities(id)
-      break
+      return fetchCommodityById(id)
     case ProjectSlug.RATES:
-      list = await fetchRates(id)
-      break
+      return fetchRateById(id)
     case ProjectSlug.CUSTOMERS:
-      list = await fetchCustomers(id)
-      break
+      return fetchCustomerById(id)
     case ProjectSlug.WEIGHMENTS:
-      list = await fetchWeighments(id)
-      break
+      return fetchWeighmentById(id)
     case ProjectSlug.FACTORIES:
-      list = await fetchFactories(id)
-      break
+      return fetchFactoryById(id)
     case ProjectSlug.PROFILES:
-      list = await fetchProfiles(id)
-      break
+      return fetchProfileById(id)
     case ProjectSlug.VILLAGES:
-      list = await fetchVillages(id)
-      break
-
+      return fetchVillageById(id)
     default:
       throw new Error(`No fetch configured for single entity slug: ${slug}`)
   }
-
-  if (list.length === 0) {
-    throw new Error(`Record with id ${id} not found in ${slug}`)
-  }
-  return list[0]
 }
+
 
 export async function fetchEntityList(slug: ProjectSlug | string): Promise<EntityRecord[]> {
   switch (slug) {

@@ -5,9 +5,15 @@
 
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { executeAndOrderList } from "../scoping"
+import { executeListQuery, executeSingleQuery } from "../scoping"
 
-export async function fetchVillages(id?: number): Promise<EntityRecord[]> {
+export async function fetchVillages(): Promise<EntityRecord[]> {
   const query = supabase.from("villages").select("*")
-  return executeAndOrderList(query, id)
+  return executeListQuery(query)
 }
+
+export async function fetchVillageById(id: number): Promise<EntityRecord> {
+  const query = supabase.from("villages").select("*")
+  return executeSingleQuery(query, id)
+}
+

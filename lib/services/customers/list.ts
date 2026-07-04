@@ -5,19 +5,9 @@
 
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
+import { executeListQuery, executeSingleQuery } from "../scoping"
 
-import { executeAndOrderList } from "../scoping"
-
-export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
-  const query = supabase.from("customers").select(`
-    *,
-    village:villages(id, name)
-  `)
-
-  if (id === undefined) {
-  }
-
-  const data = await executeAndOrderList(query, id)
+async function enrichCustomers(data: any[]): Promise<EntityRecord[]> {
   const userIds = data.map((item) => item.user_id).filter(Boolean)
   let profiles: { user_id: string; email: string }[] = []
   if (userIds.length > 0) {
@@ -37,3 +27,26 @@ export async function fetchCustomers(id?: number): Promise<EntityRecord[]> {
     }
   })
 }
+
+
+export async function fetchCustomers(): Promise<EntityRecord[]> {
+  const query = supabase.from("customers").select(`
+    *,
+    village:villages(id, name)
+  `)
+
+  const data = await executeListQuery(query)
+  return enrichCustomers(data)
+}
+
+export async function fetchCustomerById(id: number): Promise<EntityRecord> {
+  const query = supabase.from("customers").select(`
+    *,
+    village:villages(id, name)
+  `)
+
+  const item = await executeSingleQuery(query, id)
+  const enriched = await enrichCustomers([item])
+  return enriched[0]
+}
+

@@ -5,9 +5,15 @@
 
 import { supabase } from "@/lib/supabase"
 import { type EntityRecord } from "@/types"
-import { executeAndOrderList } from "../scoping"
+import { executeListQuery, executeSingleQuery } from "../scoping"
 
-export async function fetchCommodities(id?: number): Promise<EntityRecord[]> {
+export async function fetchCommodities(): Promise<EntityRecord[]> {
   const query = supabase.from("commodities").select("*")
-  return executeAndOrderList(query, id)
+  return executeListQuery(query)
 }
+
+export async function fetchCommodityById(id: number): Promise<EntityRecord> {
+  const query = supabase.from("commodities").select("*")
+  return executeSingleQuery(query, id)
+}
+

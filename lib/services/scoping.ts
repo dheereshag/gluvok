@@ -98,6 +98,27 @@ export async function executeAndOrderList<T extends Record<string, unknown>>(
   return data || []
 }
 
+export async function executeListQuery<T extends Record<string, unknown>>(
+  query: AnyQuery<T>,
+  defaultOrder = "updated_at"
+): Promise<T[]> {
+  const { data, error } = await query.order(defaultOrder, { ascending: false })
+  if (error) throw new Error(error.message)
+  return data || []
+}
+
+export async function executeSingleQuery<T extends Record<string, unknown>>(
+  query: AnyQuery<T>,
+  id: number
+): Promise<T> {
+  const { data, error } = await query.eq("id" as never, id).maybeSingle()
+  if (error) throw new Error(error.message)
+  if (!data) {
+    throw new Error(`Record with ID ${id} not found`)
+  }
+  return data as T
+}
+
 export async function executePaginatedQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>
 ): Promise<{ data: T[]; count: number }> {
@@ -105,3 +126,4 @@ export async function executePaginatedQuery<T extends Record<string, unknown>>(
   if (error) throw new Error(error.message)
   return { data: data || [], count: count || 0 }
 }
+
