@@ -3,18 +3,14 @@
  * @description Database service logic for listing of commodities.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
+import { type Commodity } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
+import { buildListQuery } from "./query"
 
-const buildQuery = () => supabase.from("commodities").select("*")
-
-export async function fetchCommodities(): Promise<EntityRecord[]> {
-  return executeListQuery(buildQuery())
+export async function fetchCommodities(): Promise<Commodity[]> {
+  return executeListQuery(buildListQuery())
 }
 
-export async function fetchCommodityById(id: number): Promise<EntityRecord> {
-  return executeSingleQuery(buildQuery(), id)
+export async function fetchCommodityById(id: number): Promise<Commodity> {
+  return executeSingleQuery(buildListQuery(), id)
 }
-
-

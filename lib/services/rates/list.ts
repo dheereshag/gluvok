@@ -3,35 +3,16 @@
  * @description Database service logic for listing of rates.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
+import { type Rate } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
+import { buildListQuery, enrichRate } from "./query"
 
-const SELECT_QUERY = `
-  *,
-  commodity:commodities(id, name),
-  factory:factories(id, name)
-`
-
-const buildQuery = () => supabase.from("rates").select(SELECT_QUERY)
-
-function enrichRate<
-  T extends { commodity?: { id: number; name: string } | null; factory?: { id: number; name: string } | null }
->(item: T): EntityRecord {
-  return {
-    ...item,
-    commodity_name: item.commodity?.name,
-    factory_name: item.factory?.name,
-  } as unknown as EntityRecord
-}
-
-
-export async function fetchRates(): Promise<EntityRecord[]> {
-  const data = await executeListQuery(buildQuery())
+export async function fetchRates(): Promise<Rate[]> {
+  const data = await executeListQuery(buildListQuery())
   return data.map(enrichRate)
 }
 
-export async function fetchRateById(id: number): Promise<EntityRecord> {
-  const item = await executeSingleQuery(buildQuery(), id)
+export async function fetchRateById(id: number): Promise<Rate> {
+  const item = await executeSingleQuery(buildListQuery(), id)
   return enrichRate(item)
 }

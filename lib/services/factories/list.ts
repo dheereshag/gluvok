@@ -3,33 +3,16 @@
  * @description Database service logic for listing of factories.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
+import { type Factory } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
+import { buildListQuery, enrichFactory } from "./query"
 
-const SELECT_QUERY = `
-  *,
-  village:villages(id, name)
-`
-
-const buildQuery = () => supabase.from("factories").select(SELECT_QUERY)
-
-function enrichFactory<T extends { village?: { id: number; name: string } | null }>(
-  item: T
-): EntityRecord {
-  return {
-    ...item,
-    village_name: item.village?.name,
-  } as unknown as EntityRecord
-}
-
-
-export async function fetchFactories(): Promise<EntityRecord[]> {
-  const data = await executeListQuery(buildQuery())
+export async function fetchFactories(): Promise<Factory[]> {
+  const data = await executeListQuery(buildListQuery())
   return data.map(enrichFactory)
 }
 
-export async function fetchFactoryById(id: number): Promise<EntityRecord> {
-  const item = await executeSingleQuery(buildQuery(), id)
+export async function fetchFactoryById(id: number): Promise<Factory> {
+  const item = await executeSingleQuery(buildListQuery(), id)
   return enrichFactory(item)
 }

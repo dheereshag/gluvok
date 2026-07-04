@@ -4,7 +4,9 @@
  */
 
 import * as React from "react"
-import { ENTITY_EXTRACTORS, type Entity } from "./entity-extractors"
+import { ENTITY_EXTRACTORS, type Entity } from "@/lib/utils/entity-extractors"
+
+
 import { fetchEntityList } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
 import { SystemSlug } from "@/lib/constants/enums"

@@ -8,7 +8,8 @@
 
 import { MapPin } from "lucide-react"
 import { BaseCombobox } from "./base"
-import { STATES_DATA } from "./states-data"
+import { STATES_DATA } from "@/lib/constants"
+
 
 interface StateComboboxProps {
   value: string

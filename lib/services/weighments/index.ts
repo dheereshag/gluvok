@@ -3,5 +3,6 @@
  * @description Database service logic for CRUD operations of weighments.
  */
 
-export * from "./list"
-export * from "./paginated"
+export { fetchWeighments, fetchWeighmentById } from "./list"
+export { fetchWeighmentsPaginated } from "./paginated"
+

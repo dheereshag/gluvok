@@ -3,18 +3,17 @@
  * @description Database service logic for listing of villages.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
+import { type Village } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
+import { buildListQuery } from "./query"
 
-const buildQuery = () => supabase.from("villages").select("*")
-
-export async function fetchVillages(): Promise<EntityRecord[]> {
-  return executeListQuery(buildQuery())
+export async function fetchVillages(): Promise<Village[]> {
+  return executeListQuery(buildListQuery())
 }
 
-export async function fetchVillageById(id: number): Promise<EntityRecord> {
-  return executeSingleQuery(buildQuery(), id)
+export async function fetchVillageById(id: number): Promise<Village> {
+  return executeSingleQuery(buildListQuery(), id)
 }
+
 
 

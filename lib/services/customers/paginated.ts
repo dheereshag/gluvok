@@ -3,17 +3,17 @@
  * @description Database service logic for paginated fetching of customers.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Customer } from "@/types"
+import { buildPaginatedQuery, enrichCustomers } from "./query"
+import { supabase } from "@/lib/supabase"
 
-export async function fetchCustomersPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchCustomersPaginated(params: PaginatedParams): Promise<{ data: Customer[]; count: number }> {
   const { search, filters = {} } = params
 
-  let query = supabase.from("customers").select(`
-    *,
-    village:villages(id, name)
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
+
 
   if (search) {
     const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
@@ -35,25 +35,9 @@ export async function fetchCustomersPaginated(params: PaginatedParams): Promise<
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const userIds = data.map((item) => item.user_id).filter(Boolean)
-  let profiles: { user_id: string; email: string }[] = []
-  if (userIds.length > 0) {
-    const { data: profileData } = await supabase
-      .from("profiles_with_email")
-      .select("user_id, email")
-      .in("user_id", userIds)
-    profiles = (profileData || []) as { user_id: string; email: string }[]
-  }
-
-  const enrichedData = data.map((item) => {
-    const profile = item.user_id ? profiles.find((p) => p.user_id === item.user_id) : null
-    return {
-      ...item,
-      village_name: item.village?.name,
-      user_email: profile?.email || item.user_id || undefined,
-    }
-  })
+  const enrichedData = await enrichCustomers(data)
 
   return { data: enrichedData, count }
 }
+
 

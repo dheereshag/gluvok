@@ -3,18 +3,17 @@
  * @description Service for fetching paginated rates with search and filters.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Rate } from "@/types"
+import { buildPaginatedQuery, enrichRate } from "./query"
+import { supabase } from "@/lib/supabase"
 
-export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: Rate[]; count: number }> {
   const { search } = params
 
-  let query = supabase.from("rates").select(`
-    *,
-    commodity:commodities(id, name),
-    factory:factories(id, name)
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
+
 
   if (params.filters) {
     Object.entries(params.filters).forEach(([key, val]) => {
@@ -39,7 +38,6 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
     query = query.or(orConditions.join(","))
   }
 
-
   query = applyPaginationAndSorting(query, params, {
     factory_name: "factory_id",
     commodity_name: "commodity_id",
@@ -47,11 +45,6 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = data.map((item) => ({
-    ...item,
-    commodity_name: item.commodity?.name,
-    factory_name: item.factory?.name,
-  }))
-
-  return { data: enrichedData, count }
+  return { data: data.map(enrichRate), count }
 }
+

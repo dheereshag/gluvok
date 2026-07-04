@@ -3,17 +3,19 @@
  * @description Database service logic for paginated fetching of centers.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
 
-export async function fetchCentersPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+import { type Center } from "@/types"
+import { buildPaginatedQuery, enrichCenter } from "./query"
+import { supabase } from "@/lib/supabase"
+
+export async function fetchCentersPaginated(params: PaginatedParams): Promise<{ data: Center[]; count: number }> {
   const { search } = params
 
-  let query = supabase.from("centers").select(`
-    *,
-    factory:factories(id, name)
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
+
+
   if (search) {
     const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
     const factoryIds = (factories || []).map((f: { id: number }) => f.id)
@@ -28,10 +30,6 @@ export async function fetchCentersPaginated(params: PaginatedParams): Promise<{ 
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = data.map((item) => ({
-    ...item,
-    factory_name: item.factory?.name,
-  }))
-
-  return { data: enrichedData, count }
+  return { data: data.map(enrichCenter), count }
 }
+

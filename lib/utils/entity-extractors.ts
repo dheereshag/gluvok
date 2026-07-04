@@ -1,14 +1,11 @@
 /**
- * @file components/combobox/entity-extractors.ts
+ * @file lib/utils/entity-extractors.ts
  * @description Helpers for mapping raw database records of different types (customers, rates, users)
  * to a standardized `{ id, name }` shape.
  */
 
 import { ProjectSlug, SystemSlug } from "@/lib/constants/enums"
-import {
-  type Rate,
-  type EntityRecord,
-} from "@/types"
+import { type Rate, type EntityRecord } from "@/types"
 
 export type Entity = EntityRecord | { id: string; email: string }
 
@@ -41,14 +38,11 @@ export const ENTITY_EXTRACTORS: Record<
     const u = item as { id: string; email: string }
     return { id: u.id, name: u.email }
   },
-
   [ProjectSlug.RATES]: (item) => {
     const p = item as Rate
     return {
       id: String(p.id),
-      name: `${p.commodity_name} (${p.factory_name}) (₹${parseFloat(p.unit_price)})`
+      name: `${p.commodity_name} (${p.factory_name}) (₹${parseFloat(p.unit_price)})`,
     }
   },
 }
-
-

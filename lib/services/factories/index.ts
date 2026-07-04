@@ -3,5 +3,6 @@
  * @description Database service logic for CRUD operations of factories.
  */
 
-export * from "./list"
-export * from "./paginated"
+export { fetchFactories, fetchFactoryById } from "./list"
+export { fetchFactoriesPaginated } from "./paginated"
+

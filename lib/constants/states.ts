@@ -1,9 +1,9 @@
 /**
- * @file components/combobox/states-data.ts
+ * @file lib/constants/states.ts
  * @description Static array mapping State enum properties into label-value configurations.
  */
 
-import { State } from "@/lib/constants/enums"
+import { State } from "./enums"
 
 /**
  * STATES_DATA list

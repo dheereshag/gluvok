@@ -1,5 +1,5 @@
 /**
- * @file lib/utils.ts
+ * @file lib/utils/index.ts
  * @description General utility helper functions for class merging, date formatting, and string splitting.
  */
 

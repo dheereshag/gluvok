@@ -3,5 +3,6 @@
  * @description Database service logic for CRUD operations of villages.
  */
 
-export * from "./list"
-export * from "./paginated"
+export { fetchVillages, fetchVillageById } from "./list"
+export { fetchVillagesPaginated } from "./paginated"
+

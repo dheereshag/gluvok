@@ -3,5 +3,6 @@
  * @description Database service logic for CRUD operations of commodities.
  */
 
-export * from "./list"
-export * from "./paginated"
+export { fetchCommodities, fetchCommodityById } from "./list"
+export { fetchCommoditiesPaginated } from "./paginated"
+

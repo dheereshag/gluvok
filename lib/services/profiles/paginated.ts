@@ -3,17 +3,16 @@
  * @description Service for fetching paginated profiles with search and filters.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Profile } from "@/types"
+import { buildPaginatedQuery, enrichProfile } from "./query"
+import { supabase } from "@/lib/supabase"
 
-export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{ data: Profile[]; count: number }> {
   const { search, filters = {} } = params
 
-  let query = supabase.from("profiles_with_email").select(`
-    *,
-    factory:factories(name)
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
 
   if (search) {
     const { data: factories } = await supabase.from("factories").select("id").ilike("name", `%${search}%`)
@@ -21,12 +20,11 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
     const orConditions: string[] = [
       `name.ilike.%${search}%`,
-      `aadhar_number.ilike.%${search}%`
+      `aadhar_number.ilike.%${search}%`,
     ]
     if (factoryIds.length > 0) orConditions.push(`factory_id.in.(${factoryIds.join(",")})`)
     query = query.or(orConditions.join(","))
   }
-
 
   // Apply column filters
   if (filters.role) query = query.eq("role", filters.role as string)
@@ -38,11 +36,7 @@ export async function fetchProfilesPaginated(params: PaginatedParams): Promise<{
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = data.map((item) => ({
-    ...item,
-    factory_name: item.factory?.name || "",
-  }))
-
-  return { data: enrichedData, count }
+  return { data: data.map(enrichProfile), count }
 }
+
 

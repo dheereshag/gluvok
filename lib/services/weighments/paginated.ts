@@ -3,22 +3,17 @@
  * @description Service for fetching paginated weighments with search and filters.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Weighment } from "@/types"
+import { buildPaginatedQuery, enrichWeighments } from "./query"
+import { supabase } from "@/lib/supabase"
 
-export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise<{ data: Weighment[]; count: number }> {
   const { search, filters = {} } = params
 
-  let query = supabase.from("weighments").select(`
-    *,
-    center:centers(id, name),
-    profile:profiles(id, name, aadhar_number),
-    customer:customers(id, name, govt_id),
-    rate:rates(id, unit_price, unit,
-      commodity:commodities(id, name)
-    )
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
+
 
   if (search) {
     const [centersRes, profilesRes, customersRes] = await Promise.all([
@@ -37,7 +32,6 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
     if (customerIds.length > 0) orConditions.push(`customer_id.in.(${customerIds.join(",")})`)
     query = query.or(orConditions.join(","))
   }
-
 
   // Apply column filters — only use actual DB columns
   if (filters.rate_id)     query = query.eq("rate_id",     filters.rate_id     as number)
@@ -58,20 +52,6 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = data.map((item) => ({
-    ...item,
-    center_name: item.center?.name,
-    profile_id: item.profile?.id,
-    profile_name: item.profile?.name,
-    profile_aadhar: item.profile?.aadhar_number,
-    customer_id: item.customer?.id,
-    customer_name: item.customer?.name,
-    customer_govt_id: item.customer?.govt_id,
-    commodity_id: item.rate?.commodity?.id,
-    commodity_name: item.rate?.commodity?.name,
-    unit_price: item.rate?.unit_price,
-    unit: item.unit ?? item.rate?.unit,
-  }))
-
-  return { data: enrichedData, count }
+  return { data: enrichWeighments(data), count }
 }
+

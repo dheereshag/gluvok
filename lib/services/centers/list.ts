@@ -3,33 +3,17 @@
  * @description Database service logic for listing of centers.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
+import { type Center } from "@/types"
 import { executeListQuery, executeSingleQuery } from "../scoping"
+import { buildListQuery, enrichCenter } from "./query"
 
-const SELECT_QUERY = `
-  *,
-  factory:factories(id, name)
-`
-
-const buildQuery = () => supabase.from("centers").select(SELECT_QUERY)
-
-function enrichCenter<T extends { factory?: { id: number; name: string } | null }>(
-  item: T
-): EntityRecord {
-  return {
-    ...item,
-    factory_name: item.factory?.name,
-  } as unknown as EntityRecord
-}
-
-
-export async function fetchCenters(): Promise<EntityRecord[]> {
-  const data = await executeListQuery(buildQuery())
+export async function fetchCenters(): Promise<Center[]> {
+  const data = await executeListQuery(buildListQuery())
   return data.map(enrichCenter)
 }
 
-export async function fetchCenterById(id: number): Promise<EntityRecord> {
-  const item = await executeSingleQuery(buildQuery(), id)
+export async function fetchCenterById(id: number): Promise<Center> {
+  const item = await executeSingleQuery(buildListQuery(), id)
   return enrichCenter(item)
 }
+

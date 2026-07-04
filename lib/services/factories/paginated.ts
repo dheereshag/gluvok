@@ -3,17 +3,16 @@
  * @description Database service logic for paginated fetching of factories.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Factory } from "@/types"
+import { buildPaginatedQuery, enrichFactory } from "./query"
+import { supabase } from "@/lib/supabase"
 
-export async function fetchFactoriesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchFactoriesPaginated(params: PaginatedParams): Promise<{ data: Factory[]; count: number }> {
   const { search } = params
 
-  let query = supabase.from("factories").select(`
-    *,
-    village:villages(id, name)
-  `, { count: "exact" })
+  let query = buildPaginatedQuery()
+
 
   if (search) {
     const { data: villages } = await supabase.from("villages").select("id").ilike("name", `%${search}%`)
@@ -29,10 +28,6 @@ export async function fetchFactoriesPaginated(params: PaginatedParams): Promise<
 
   const { data, count } = await executePaginatedQuery(query)
 
-  const enrichedData = data.map((item) => ({
-    ...item,
-    village_name: item.village?.name,
-  }))
-
-  return { data: enrichedData, count }
+  return { data: data.map(enrichFactory), count }
 }
+

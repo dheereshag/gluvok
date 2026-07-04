@@ -3,14 +3,15 @@
  * @description Database service logic for paginated fetching of villages.
  */
 
-import { supabase } from "@/lib/supabase"
-import { type EntityRecord } from "@/types"
 import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import { type Village } from "@/types"
+import { buildPaginatedQuery } from "./query"
 
-export async function fetchVillagesPaginated(params: PaginatedParams): Promise<{ data: EntityRecord[]; count: number }> {
+export async function fetchVillagesPaginated(params: PaginatedParams): Promise<{ data: Village[]; count: number }> {
   const { search } = params
 
-  let query = supabase.from("villages").select("*", { count: "exact" })
+  let query = buildPaginatedQuery()
+
 
   if (search) {
     query = query.or(`name.ilike.%${search}%,state.ilike.%${search}%`)
@@ -18,5 +19,7 @@ export async function fetchVillagesPaginated(params: PaginatedParams): Promise<{
 
   query = applyPaginationAndSorting(query, params)
 
-  return executePaginatedQuery(query)
+  const { data, count } = await executePaginatedQuery(query)
+  return { data: data as Village[], count }
 }
+
