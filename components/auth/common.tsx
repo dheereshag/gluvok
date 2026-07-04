@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { UseFormRegisterReturn, FieldError as HookFieldError } from "react-hook-form"
-import { Logo } from "@/components/ui/logo"
+import { Logo } from "@/components/logo"
 import Link from "next/link"
 
 interface AuthCardProps {

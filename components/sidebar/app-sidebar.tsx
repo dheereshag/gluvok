@@ -8,7 +8,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Logo } from "@/components/ui/logo"
+import { Logo } from "@/components/logo"
 
 import { NavMain } from "./nav/main"
 import { NavSecondary } from "./nav/secondary"
