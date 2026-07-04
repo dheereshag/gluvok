@@ -98,7 +98,7 @@ describe("Auth Store (Zustand)", () => {
         id: "user-123",
         name: "Test User",
         email: "test@gluvok.com",
-        avatar: "/avatars/profile-default.jpg",
+        avatar: "/avatars/default.jpg",
         role: Role.ADMIN,
         profile: mockProfile,
       })
@@ -128,7 +128,7 @@ describe("Auth Store (Zustand)", () => {
         id: "user-789",
         name: "Customer Bob",
         email: "bob@customer.com",
-        avatar: "/avatars/profile-default.jpg",
+        avatar: "/avatars/default.jpg",
         role: Role.BASE,
         profile: undefined,
         customer: mockCustomer,
@@ -147,7 +147,7 @@ describe("Auth Store (Zustand)", () => {
         id: "user-123",
         name: "Test",
         email: "test@gluvok.com",
-        avatar: "/avatars/profile-default.jpg",
+        avatar: "/avatars/default.jpg",
         role: Role.BASE,
         profile: undefined,
       })

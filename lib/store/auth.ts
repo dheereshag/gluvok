@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { Role } from "@/lib/constants/enums"
@@ -112,95 +111,84 @@ async function fetchAndSetProfile(
   }
 }
 
-export const useAuthStore = create<AuthStore>()(
-  persist(
-    (set, get) => ({
-      user: null,
-      hydrated: false,
-      initialized: false,
-      initAuth: () => {
-        if (get().initialized) {
-          return () => {}
-        }
-
-        let isInitial = true
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-          if (session?.user) {
-            await fetchAndSetProfile(session.user, set)
-          } else {
-            set({ user: null })
-          }
-          if (isInitial) {
-            isInitial = false
-            set({ initialized: true })
-          }
-        })
-
-        return () => {
-          subscription.unsubscribe()
-        }
-      },
-      login: async (email, password) => {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-        if (error || !data.user) {
-          toast.error(error?.message || "Invalid email or password.")
-          return false
-        }
-
-        // We fetch and set the profile to ensure login returns true/false when completed
-        await fetchAndSetProfile(data.user, set)
-        // Login itself is successful (auth-wise), but we return true regardless of profile presence 
-        // to let the user enter the site with the fallback role
-        return true
-      },
-      logout: async () => {
-        await supabase.auth.signOut()
-        set({ user: null })
-      },
-      registerUser: async (user) => {
-        if (!user.password) {
-          toast.error("Password is required")
-          return { success: false, requiresVerification: false }
-        }
-        const { data, error } = await supabase.auth.signUp({
-          email: user.email,
-          password: user.password,
-          options: {
-            data: {
-              name: user.name,
-            }
-          }
-        })
-        if (error || !data.user) {
-          toast.error(error?.message || "Failed to register user")
-          return { success: false, requiresVerification: false }
-        }
-        return { success: true, requiresVerification: !data.session }
-      },
-      resetPassword: async (_email, newPassword) => {
-        // NOTE: supabase.auth.updateUser requires an active session.
-        // This is called from /reset-password after Supabase exchanges the
-        // magic-link token for a session automatically via onAuthStateChange.
-        const { error } = await supabase.auth.updateUser({
-          password: newPassword,
-        })
-        if (error) {
-          toast.error(error.message)
-          return false
-        }
-        return true
-      },
-      setHydrated: (state) => set({ hydrated: state }),
-    }),
-    {
-      name: "gluvok-auth-storage",
-      storage: createJSONStorage(() => localStorage),
-      // Persist nothing — Supabase SDK manages its own session token in storage.
-      // Storing role/profile here risks client-side privilege escalation via DevTools.
-      partialize: () => ({}),
+export const useAuthStore = create<AuthStore>((set, get) => ({
+  user: null,
+  hydrated: false,
+  initialized: false,
+  initAuth: () => {
+    if (get().initialized) {
+      return () => {}
     }
-  )
-)
+
+    let isInitial = true
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        await fetchAndSetProfile(session.user, set)
+      } else {
+        set({ user: null })
+      }
+      if (isInitial) {
+        isInitial = false
+        set({ initialized: true })
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  },
+  login: async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    if (error || !data.user) {
+      toast.error(error?.message || "Invalid email or password.")
+      return false
+    }
+
+    // We fetch and set the profile to ensure login returns true/false when completed
+    await fetchAndSetProfile(data.user, set)
+    // Login itself is successful (auth-wise), but we return true regardless of profile presence 
+    // to let the user enter the site with the fallback role
+    return true
+  },
+  logout: async () => {
+    await supabase.auth.signOut()
+    set({ user: null })
+  },
+  registerUser: async (user) => {
+    if (!user.password) {
+      toast.error("Password is required")
+      return { success: false, requiresVerification: false }
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email: user.email,
+      password: user.password,
+      options: {
+        data: {
+          name: user.name,
+        }
+      }
+    })
+    if (error || !data.user) {
+      toast.error(error?.message || "Failed to register user")
+      return { success: false, requiresVerification: false }
+    }
+    return { success: true, requiresVerification: !data.session }
+  },
+  resetPassword: async (_email, newPassword) => {
+    // NOTE: supabase.auth.updateUser requires an active session.
+    // This is called from /reset-password after Supabase exchanges the
+    // magic-link token for a session automatically via onAuthStateChange.
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    })
+    if (error) {
+      toast.error(error.message)
+      return false
+    }
+    return true
+  },
+  setHydrated: (state) => set({ hydrated: state }),
+}))
