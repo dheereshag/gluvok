@@ -5,7 +5,6 @@ import { TABLE_NAME as PROFILES_TABLE } from "@/lib/services/profiles"
 import { Role } from "@/lib/constants/enums"
 import { toast } from "sonner"
 
-// Mock supabase client
 vi.mock("@/lib/supabase", () => {
   const mockFrom = vi.fn()
   const mockAuth = {
@@ -14,6 +13,7 @@ vi.mock("@/lib/supabase", () => {
     signOut: vi.fn(),
     signUp: vi.fn(),
     updateUser: vi.fn(),
+    getSession: vi.fn(),
   }
   return {
     supabase: {
@@ -55,6 +55,12 @@ describe("Auth Store (Zustand)", () => {
       initialized: false,
     })
 
+    // Mock getSession default implementation
+    vi.mocked(supabase.auth.getSession).mockResolvedValue({
+      data: { session: null },
+      error: null,
+    } as any)
+
     // Setup default mock subscription
     vi.mocked(supabase.auth.onAuthStateChange).mockImplementation(((cb: (event: string, session: unknown) => Promise<unknown>) => {
       authCallback = cb
@@ -64,8 +70,9 @@ describe("Auth Store (Zustand)", () => {
   })
 
   describe("initAuth", () => {
-    it("should set initialized flag and register auth state listener", () => {
+    it("should set initialized flag and register auth state listener", async () => {
       const unsubscribe = useAuthStore.getState().initAuth()
+      await new Promise(process.nextTick)
       expect(useAuthStore.getState().initialized).toBe(true)
       expect(supabase.auth.onAuthStateChange).toHaveBeenCalled()
       expect(unsubscribe).toBeDefined()

@@ -132,16 +132,29 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
     let isInitial = true
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
+      let activeSession = session
+      if (event === "INITIAL_SESSION" && !session) {
+        try {
+          const { data: { session: recoveredSession } } = await supabase.auth.getSession()
+          if (recoveredSession) {
+            activeSession = recoveredSession
+          }
+        } catch (err) {
+          console.error("Failed to recover session during auth init:", err)
+        }
+      }
+
+      if (activeSession?.user) {
         const currentUser = get().user
-        const isUserChanged = !currentUser || currentUser.id !== session.user.id
+        const isUserChanged = !currentUser || currentUser.id !== activeSession.user.id
         const shouldFetch = isUserChanged || event === "USER_UPDATED"
         if (shouldFetch) {
-          await fetchAndSetProfile(session.user, set)
+          await fetchAndSetProfile(activeSession.user, set)
         }
       } else {
         set({ user: null })
       }
+
       if (isInitial) {
         isInitial = false
         set({ initialized: true })
