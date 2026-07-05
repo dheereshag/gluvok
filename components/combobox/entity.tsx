@@ -33,7 +33,7 @@ export function EntityCombobox({
   contextSlug,
   fieldKey,
 }: EntityComboboxProps) {
-  const { options, loading } = useEntityOptions(entitySlug, contextSlug, fieldKey)
+  const { options, loading } = useEntityOptions(entitySlug, contextSlug, fieldKey, value)
 
   return (
     <BaseCombobox

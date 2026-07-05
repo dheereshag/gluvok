@@ -9,14 +9,19 @@ import { ENTITY_EXTRACTORS, type Entity } from "@/lib/utils/entity-extractors"
 
 import { fetchEntityList } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
-import { SystemSlug } from "@/lib/constants/enums"
+import { SystemSlug, ProjectSlug } from "@/lib/constants/enums"
 
 /**
  * useEntityOptions Hook
  * Performs API or RPC request depending on the entity type, pulls rows,
  * extracts display attributes using custom mappings, and manages loading state.
  */
-export function useEntityOptions(entitySlug: string, contextSlug?: string, fieldKey?: string) {
+export function useEntityOptions(
+  entitySlug: string,
+  contextSlug?: string,
+  fieldKey?: string,
+  currentValue?: string
+) {
   const [options, setOptions] = React.useState<{ value: string; label: string }[]>([])
   const [loading, setLoading] = React.useState(true)
 
@@ -26,12 +31,23 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
       try {
         setLoading(true)
         let rawList: Entity[] = []
-        if (entitySlug === SystemSlug.USERS) {
-          const { data, error } = await supabase.rpc("get_users")
-          if (error) throw new Error(error.message)
-          rawList = data || []
-        } else {
-          rawList = await fetchEntityList(entitySlug)
+        switch (entitySlug) {
+          case SystemSlug.USERS: {
+            const params: Record<string, unknown> = {}
+            if (contextSlug === ProjectSlug.CUSTOMERS || contextSlug === ProjectSlug.PROFILES) {
+              params.filter_context = contextSlug
+              if (currentValue) {
+                params.exclude_current_id = currentValue
+              }
+            }
+            const { data, error } = await supabase.rpc("get_users", params)
+            if (error) throw new Error(error.message)
+            rawList = data || []
+            break
+          }
+          default:
+            rawList = await fetchEntityList(entitySlug)
+            break
         }
 
         if (!active) return
@@ -61,7 +77,7 @@ export function useEntityOptions(entitySlug: string, contextSlug?: string, field
     return () => {
       active = false
     }
-  }, [entitySlug, contextSlug, fieldKey])
+  }, [entitySlug, contextSlug, fieldKey, currentValue])
 
   return { options, loading }
 }

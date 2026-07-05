@@ -51,7 +51,10 @@ GRANT EXECUTE ON FUNCTION public.get_user_email(uuid) TO authenticated;
 -- Only returns users who are registered in the system (have a profile or customer record).
 -- Ghost auth accounts (no profile, no customer) are never returned.
 -- super_admin and hardware role accounts are always excluded.
-CREATE OR REPLACE FUNCTION get_users()
+CREATE OR REPLACE FUNCTION get_users(
+  exclude_current_id uuid DEFAULT NULL,
+  filter_context text DEFAULT NULL
+)
 RETURNS TABLE (id uuid, email text) AS $$
 BEGIN
   IF (SELECT public.current_user_role() = 'super_admin') THEN
@@ -59,14 +62,31 @@ BEGIN
     RETURN QUERY
     SELECT u.id, u.email::text
     FROM auth.users u
-    WHERE EXISTS (
-      SELECT 1 FROM public.profiles p
-      WHERE p.user_id = u.id
-      AND p.role::text NOT IN ('super_admin', 'hardware')
+    WHERE (
+      EXISTS (
+        SELECT 1 FROM public.profiles p
+        WHERE p.user_id = u.id
+        AND p.role::text NOT IN ('super_admin', 'hardware')
+      )
+      OR EXISTS (
+        SELECT 1 FROM public.customers c
+        WHERE c.user_id = u.id
+      )
     )
-    OR EXISTS (
-      SELECT 1 FROM public.customers c
-      WHERE c.user_id = u.id
+    AND (
+      filter_context IS NULL
+      OR (
+        filter_context = 'customers' AND (
+          u.id = exclude_current_id
+          OR NOT EXISTS (SELECT 1 FROM public.customers c WHERE c.user_id = u.id)
+        )
+      )
+      OR (
+        filter_context = 'profiles' AND (
+          u.id = exclude_current_id
+          OR NOT EXISTS (SELECT 1 FROM public.profiles p WHERE p.user_id = u.id)
+        )
+      )
     );
   ELSE
     -- Non-super-admin sees only their factory's users (non-excluded roles)
@@ -85,19 +105,55 @@ BEGIN
         WHERE c.user_id = u.id
         AND c.factory_id = public.current_user_factory_id()
       )
+    )
+    AND (
+      filter_context IS NULL
+      OR (
+        filter_context = 'customers' AND (
+          u.id = exclude_current_id
+          OR NOT EXISTS (SELECT 1 FROM public.customers c WHERE c.user_id = u.id)
+        )
+      )
+      OR (
+        filter_context = 'profiles' AND (
+          u.id = exclude_current_id
+          OR NOT EXISTS (SELECT 1 FROM public.profiles p WHERE p.user_id = u.id)
+        )
+      )
     );
   END IF;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-GRANT EXECUTE ON FUNCTION public.get_users() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_users(uuid, text) TO authenticated;
 
 
 -- 2. Profiles
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "profiles_isolation_policy" ON profiles;
-CREATE POLICY "profiles_isolation_policy" ON profiles
+DROP POLICY IF EXISTS "profiles_select_policy" ON profiles;
+DROP POLICY IF EXISTS "profiles_modify_policy" ON profiles;
+
+CREATE POLICY "profiles_select_policy" ON profiles
+FOR SELECT TO authenticated
+USING (
+  current_user_role() = 'super_admin'
+  OR (
+    factory_id = current_user_factory_id()
+    AND (
+      user_id = auth.uid()
+      OR (
+        current_user_role() = 'admin' AND role::text IN ('admin', 'manager', 'operator', 'base')
+      )
+      OR (
+        current_user_role() = 'manager' AND role::text IN ('operator', 'base')
+      )
+    )
+  )
+);
+
+CREATE POLICY "profiles_modify_policy" ON profiles
 FOR ALL TO authenticated
 USING (
   current_user_role() = 'super_admin'
@@ -234,7 +290,6 @@ SELECT
   p.created_at,
   p.updated_at,
   p.role,
-  p.preferences,
   p.factory_id,
   get_user_email(p.user_id) AS email
 FROM profiles p
@@ -244,7 +299,7 @@ WHERE
     p.factory_id = current_user_factory_id()
     AND (
       p.user_id = auth.uid()
-      OR (current_user_role() = 'admin' AND p.role::text = ANY (ARRAY['manager', 'operator', 'base']))
+      OR (current_user_role() = 'admin' AND p.role::text = ANY (ARRAY['admin', 'manager', 'operator', 'base']))
       OR (current_user_role() = 'manager' AND p.role::text = ANY (ARRAY['operator', 'base']))
     )
   );
