@@ -58,12 +58,6 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     set((state) => ({
       filtersLoading: { ...state.filtersLoading, [ProjectSlug.RATES]: true }
     }))
-    if (get().commodities.length > 0) {
-      set((state) => ({
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.RATES]: false }
-      }))
-      return
-    }
     try {
       const list = await fetchCommodities()
       set((state) => ({
@@ -83,14 +77,8 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     set((state) => ({
       filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: true }
     }))
-    if (get().factories.length > 0) {
-      set((state) => ({
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.CENTERS]: false }
-      }))
-      return
-    }
     try {
-      const { data, error } = await supabase.from(ProjectSlug.FACTORIES).select("id, name").order("name")
+      const { data, error } = await supabase.from(ProjectSlug.FACTORIES).select(`id, ${EntityKey.NAME}`).order(EntityKey.NAME)
       if (error) throw error
       set((state) => ({
         factories: (data as IdNamePair[]) || [],
@@ -108,17 +96,11 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     set((state) => ({
       filtersLoading: { ...state.filtersLoading, [ProjectSlug.WEIGHMENTS]: true }
     }))
-    if (get().weighmentFiltersData !== null) {
-      set((state) => ({
-        filtersLoading: { ...state.filtersLoading, [ProjectSlug.WEIGHMENTS]: false }
-      }))
-      return
-    }
     try {
       const [c, p, cu, r] = await Promise.all([
-        supabase.from(ProjectSlug.CENTERS).select(CENTERS_SELECT_FIELDS).order("name"),
-        supabase.from(ProjectSlug.PROFILES).select(PROFILES_SELECT_FIELDS).order("name"),
-        supabase.from(ProjectSlug.CUSTOMERS).select(CUSTOMERS_SELECT_FIELDS).order("name"),
+        supabase.from(ProjectSlug.CENTERS).select(CENTERS_SELECT_FIELDS).order(EntityKey.NAME),
+        supabase.from(ProjectSlug.PROFILES).select(PROFILES_SELECT_FIELDS).order(EntityKey.NAME),
+        supabase.from(ProjectSlug.CUSTOMERS).select(CUSTOMERS_SELECT_FIELDS).order(EntityKey.NAME),
         supabase.from(ProjectSlug.RATES).select(RATES_SELECT_FIELDS).order("id"),
       ])
 
