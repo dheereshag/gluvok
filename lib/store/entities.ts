@@ -46,9 +46,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
   filtersLoading: {
     [ProjectSlug.WEIGHMENTS]: true,
     [ProjectSlug.RATES]: true,
-    [ProjectSlug.CUSTOMERS]: true,
     [ProjectSlug.CENTERS]: true,
-    [ProjectSlug.FACTORIES]: true,
   },
   setFiltersLoading: (slug, loading) => set((state) => ({
     filtersLoading: { ...state.filtersLoading, [slug]: loading }
