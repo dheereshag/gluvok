@@ -3,7 +3,7 @@
  * @description Helpers for mapping column IDs to human-readable names and display icons.
  */
 
-import { Hash, Globe, Calendar, CalendarClock, Image, Tag, Factory } from "lucide-react"
+import { Hash, Calendar, CalendarClock, Image, Tag, Factory } from "lucide-react"
 import { ColumnLabel, EntityKey } from "@/lib/constants/enums"
 
 /**
@@ -13,7 +13,6 @@ import { ColumnLabel, EntityKey } from "@/lib/constants/enums"
 export const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   [EntityKey.ID]: Hash,
   [EntityKey.NAME]: Tag,
-  [EntityKey.STATE]: Globe,
   [EntityKey.CREATED_AT]: Calendar,
   [EntityKey.UPDATED_AT]: CalendarClock,
   [EntityKey.IMAGES]: Image,
@@ -31,12 +30,10 @@ export function getColumnLabel(id: string): string {
     case EntityKey.GOVT_ID: return ColumnLabel.GOVT_ID
     case EntityKey.AADHAR_NUMBER: return ColumnLabel.AADHAR_NUMBER
     case EntityKey.NAME: return ColumnLabel.NAME
-    case EntityKey.STATE: return ColumnLabel.STATE
     case EntityKey.FACTORY_ID: return ColumnLabel.FACTORY_ID
     case EntityKey.UNIT_PRICE: return ColumnLabel.UNIT_PRICE
     case EntityKey.UNIT: return ColumnLabel.UNIT
     case EntityKey.FATHER_NAME: return ColumnLabel.FATHER_NAME
-    case EntityKey.VILLAGE_ID: return ColumnLabel.VILLAGE_ID
     case EntityKey.VEHICLE_NUMBER: return ColumnLabel.VEHICLE_NUMBER
     case EntityKey.WEIGHT: return ColumnLabel.WEIGHT
     case EntityKey.COMMODITY_ID: return ColumnLabel.COMMODITY_ID
@@ -53,7 +50,6 @@ export function getColumnLabel(id: string): string {
     case EntityKey.USER_ID: return ColumnLabel.USER_ID
     case EntityKey.IS_ACTIVE: return ColumnLabel.IS_ACTIVE
     case EntityKey.FACTORY_NAME: return ColumnLabel.FACTORY_NAME
-    case EntityKey.VILLAGE_NAME: return ColumnLabel.VILLAGE_NAME
     case EntityKey.PROFILE_NAME: return ColumnLabel.PROFILE
     case EntityKey.PROFILE_AADHAR: return ColumnLabel.AADHAR_NUMBER
     case EntityKey.CUSTOMER_NAME: return ColumnLabel.CUSTOMER
@@ -62,7 +58,6 @@ export function getColumnLabel(id: string): string {
     case EntityKey.COMMODITY: return ColumnLabel.COMMODITY
     case EntityKey.FACTORY: return ColumnLabel.FACTORY
     case EntityKey.USER: return ColumnLabel.USER
-    case EntityKey.VILLAGE: return ColumnLabel.VILLAGE
     case EntityKey.RATE: return ColumnLabel.RATE
     case EntityKey.CENTER: return ColumnLabel.CENTER
     case EntityKey.PROFILE: return ColumnLabel.PROFILE

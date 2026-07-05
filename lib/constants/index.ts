@@ -4,7 +4,6 @@
  */
 
 export * from "./routes"
-export * from "./states"
 
 /** Default avatar image path used throughout the platform */
 export const DEFAULT_AVATAR = "/avatars/default.jpg"

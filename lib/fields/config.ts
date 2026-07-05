@@ -14,7 +14,6 @@ import {
   Tag,
   IndianRupee,
   User,
-  Home,
   Car,
   Image,
   Weight,
@@ -22,7 +21,6 @@ import {
   Power,
   ShieldCheck,
   Fingerprint,
-  Globe,
   Hash,
   ArrowLeftRight,
 } from "lucide-react"
@@ -46,7 +44,6 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.USER_ID, label: ColumnLabel.USER, placeholder: getSelectPlaceholder(SingularEntityName.USER), type: FieldType.TEXT, icon: Hash },
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ajay Kumar", type: FieldType.TEXT, icon: Tag },
     { key: EntityKey.FATHER_NAME, label: ColumnLabel.FATHER_NAME, placeholder: "e.g. Vijay Kumar", type: FieldType.TEXT, icon: User },
-    { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder(SingularEntityName.VILLAGE), type: FieldType.TEXT, icon: Home },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder(SingularEntityName.FACTORY), type: FieldType.TEXT, icon: Factory, editableRoles: [Role.SUPER_ADMIN] },
   ],
   [ProjectSlug.WEIGHMENTS]: [
@@ -84,7 +81,6 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
   ],
   [ProjectSlug.FACTORIES]: [
     { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Factory C", type: FieldType.TEXT, icon: Tag },
-    { key: EntityKey.VILLAGE_ID, label: ColumnLabel.VILLAGE, placeholder: getSelectPlaceholder(SingularEntityName.VILLAGE), type: FieldType.TEXT, icon: Home },
   ],
   [ProjectSlug.PROFILES]: [
     {
@@ -105,8 +101,5 @@ export const PROJECT_FIELDS: Record<string, FieldConfig[]> = {
     { key: EntityKey.ROLE, label: ColumnLabel.ROLE, placeholder: "Select role...", type: FieldType.ROLE, icon: ShieldCheck },
     { key: EntityKey.FACTORY_ID, label: ColumnLabel.FACTORY, placeholder: getSelectPlaceholder(SingularEntityName.FACTORY), type: FieldType.TEXT, icon: Factory, editableRoles: [Role.SUPER_ADMIN] },
   ],
-  [ProjectSlug.VILLAGES]: [
-    { key: EntityKey.NAME, label: ColumnLabel.NAME, placeholder: "e.g. Ludhiana", type: FieldType.TEXT, icon: Tag },
-    { key: EntityKey.STATE, label: ColumnLabel.STATE, placeholder: "Select state...", type: FieldType.STATE, icon: Globe },
-  ],
+
 }

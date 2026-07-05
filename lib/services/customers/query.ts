@@ -10,10 +10,7 @@ import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.CUSTOMERS
 
-export const SELECT_QUERY = `
-  *,
-  village:${ProjectSlug.VILLAGES}(${EntityKey.ID}, ${EntityKey.NAME})
-`
+export const SELECT_QUERY = "*"
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
 
@@ -21,7 +18,6 @@ export const buildPaginatedQuery = () => supabase.from(TABLE_NAME).select(SELECT
 
 export async function enrichCustomer(item: {
   user_id?: string | null
-  village?: { id: number; name: string } | null
 }): Promise<Customer> {
   let email: string | undefined = undefined
   if (item.user_id) {
@@ -32,12 +28,11 @@ export async function enrichCustomer(item: {
       .maybeSingle()
     email = data?.email || item.user_id
   }
-  return { ...item, village_name: item.village?.name, user_email: email } as Customer
+  return { ...item, user_email: email } as Customer
 }
 
 export async function enrichCustomers(data: {
   user_id?: string | null
-  village?: { id: number; name: string } | null
 }[]): Promise<Customer[]> {
   const userIds = data.map((item) => item.user_id).filter(Boolean) as string[]
   let profiles: { user_id: string; email: string }[] = []
@@ -53,7 +48,6 @@ export async function enrichCustomers(data: {
     const profile = item.user_id ? profiles.find((p) => p.user_id === item.user_id) : null
     return {
       ...item,
-      village_name: item.village?.name,
       user_email: profile?.email || item.user_id || undefined,
     } as Customer
   })

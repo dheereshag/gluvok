@@ -11,7 +11,6 @@ export * from "./customers"
 export * from "./weighments"
 export * from "./factories"
 export * from "./profiles"
-export * from "./villages"
 export * from "./registry"
 export * from "./uniqueness"
 

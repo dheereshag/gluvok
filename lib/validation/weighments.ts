@@ -4,9 +4,15 @@
  */
 
 import * as z from "zod"
-import { State, ColumnLabel, Unit, WeighmentType } from "@/lib/constants/enums"
+import { ColumnLabel, Unit, WeighmentType } from "@/lib/constants/enums"
 import { EntityKey } from "@/lib/constants/enums"
 import { integerIdSchema } from "./helpers"
+
+const STATE_CODES = [
+  'AN','AP','AR','AS','BR','CH','CG','DD','DL','DN','GA','GJ','HR','HP',
+  'JK','JH','KA','KL','LA','LD','MP','MH','MN','ML','MZ','NL','OD','PY',
+  'PB','RJ','SK','TN','TS','TR','UP','UK','WB'
+]
 
 export const addWeighmentSchema = z.object({
   [EntityKey.VEHICLE_NUMBER]: z
@@ -20,7 +26,7 @@ export const addWeighmentSchema = z.object({
     .refine(
       (val) => {
         if (/^\d{2}BH/.test(val)) return true
-        return Object.keys(State).includes(val.substring(0, 2))
+        return STATE_CODES.includes(val.substring(0, 2))
       },
       {
         message: `First two characters must be a valid Indian state or union territory code`

@@ -33,7 +33,6 @@ export const ENTITY_EXTRACTORS: Record<
   [ProjectSlug.CENTERS]: (item) => extractByIdAndName(item as { id: number; name: string }),
   [ProjectSlug.COMMODITIES]: (item) => extractByIdAndName(item as { id: number; name: string }),
   [ProjectSlug.FACTORIES]: (item) => extractByIdAndName(item as { id: number; name: string }),
-  [ProjectSlug.VILLAGES]: (item) => extractByIdAndName(item as { id: number; name: string }),
   [SystemSlug.USERS]: (item) => {
     const u = item as { id: string; email: string }
     return { id: u.id, name: u.email }

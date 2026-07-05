@@ -3,46 +3,6 @@
  * @description Constants registry and configuration values for enums.
  */
 
-export enum State {
-  AN = "Andaman and Nicobar Islands",
-  AP = "Andhra Pradesh",
-  AR = "Arunachal Pradesh",
-  AS = "Assam",
-  BR = "Bihar",
-  CH = "Chandigarh",
-  CG = "Chhattisgarh",
-  DD = "Daman and Diu",
-  DL = "Delhi",
-  DN = "Dadra and Nagar Haveli and Daman and Diu",
-  GA = "Goa",
-  GJ = "Gujarat",
-  HR = "Haryana",
-  HP = "Himachal Pradesh",
-  JK = "Jammu and Kashmir",
-  JH = "Jharkhand",
-  KA = "Karnataka",
-  KL = "Kerala",
-  LA = "Ladakh",
-  LD = "Lakshadweep",
-  MP = "Madhya Pradesh",
-  MH = "Maharashtra",
-  MN = "Manipur",
-  ML = "Meghalaya",
-  MZ = "Mizoram",
-  NL = "Nagaland",
-  OD = "Odisha",
-  PY = "Puducherry",
-  PB = "Punjab",
-  RJ = "Rajasthan",
-  SK = "Sikkim",
-  TN = "Tamil Nadu",
-  TS = "Telangana",
-  TR = "Tripura",
-  UP = "Uttar Pradesh",
-  UK = "Uttarakhand",
-  WB = "West Bengal",
-}
-
 export enum Role {
   SUPER_ADMIN = "super_admin",
   ADMIN = "admin",
@@ -80,7 +40,6 @@ export const SingularEntityName = {
   WEIGHMENT: "Weighment",
   FACTORY: "Factory",
   PROFILE: "Profile",
-  VILLAGE: "Village",
   USER: "User",
 } as const
 export type SingularEntityName = typeof SingularEntityName[keyof typeof SingularEntityName]
@@ -91,13 +50,11 @@ export const ColumnLabel = {
   GOVT_ID: "Govt ID",
   AADHAR_NUMBER: "Aadhar Number",
   NAME: "Name",
-  STATE: "State",
   FACTORY_ID: "Factory ID",
   UNIT_PRICE: "Unit Price",
   UNIT: "Unit",
   TYPE: "Type",
   FATHER_NAME: "Father's Name",
-  VILLAGE_ID: "Village ID",
   VEHICLE_NUMBER: "Vehicle Number",
   WEIGHT: "Weight",
   COMMODITY_ID: "Commodity ID",
@@ -114,7 +71,6 @@ export const ColumnLabel = {
   USER_ID: "User ID",
   IS_ACTIVE: "Status",
   FACTORY_NAME: "Factory Name",
-  VILLAGE_NAME: "Village Name",
   PROFILE_NAME: "Profile Name",
   CUSTOMER_NAME: "Customer Name",
   CENTER_NAME: "Center Name",
@@ -148,13 +104,11 @@ export enum ProjectSlug {
   WEIGHMENTS = "weighments",
   FACTORIES = "factories",
   PROFILES = "profiles",
-  VILLAGES = "villages",
 }
 
 export enum FieldType {
   TEXT = "text",
   NUMBER = "number",
-  STATE = "state",
   IMAGES = "images",
   ROLE = "role",
   UNIT = "unit",
@@ -165,13 +119,11 @@ export enum FieldType {
 export enum EntityKey {
   ID = "id",
   NAME = "name",
-  STATE = "state",
   FACTORY_ID = "factory_id",
   UNIT_PRICE = "unit_price",
   UNIT = "unit",
   TYPE = "type",
   FATHER_NAME = "father_name",
-  VILLAGE_ID = "village_id",
   VEHICLE_NUMBER = "vehicle_number",
   WEIGHT = "weight",
   COMMODITY_ID = "commodity_id",
@@ -191,7 +143,6 @@ export enum EntityKey {
   USER_ID = "user_id",
   IS_ACTIVE = "is_active",
   FACTORY_NAME = "factory_name",
-  VILLAGE_NAME = "village_name",
   PROFILE_NAME = "profile_name",
   PROFILE_AADHAR = "profile_aadhar",
   CUSTOMER_NAME = "customer_name",
@@ -200,7 +151,6 @@ export enum EntityKey {
   COMMODITY = "commodity",
   FACTORY = "factory",
   USER = "user",
-  VILLAGE = "village",
   RATE = "rate",
   CENTER = "center",
   PROFILE = "profile",
@@ -235,7 +185,6 @@ export enum ProjectName {
   WEIGHMENTS = "Weighments",
   FACTORIES = "Factories",
   PROFILES = "Profiles",
-  VILLAGES = "Villages",
 }
 
 export enum SystemSlug {

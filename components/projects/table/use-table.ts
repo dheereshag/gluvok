@@ -209,10 +209,6 @@ export function useProjectTable({
       case ProjectSlug.RATES:
         store.loadCommodities()
         break
-      case ProjectSlug.CUSTOMERS:
-      case ProjectSlug.FACTORIES:
-        store.loadVillages()
-        break
       case ProjectSlug.CENTERS:
         store.loadFactories()
         break

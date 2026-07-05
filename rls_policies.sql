@@ -195,25 +195,6 @@ USING (
 );
 
 
--- 8. Villages
--- Read: Anyone who is authenticated and has a profile/customer record (factory_id is not null) or SUPER_ADMIN
--- Write: SUPER_ADMIN only
-ALTER TABLE villages ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "villages_select_policy" ON villages;
-CREATE POLICY "villages_select_policy" ON villages
-FOR SELECT TO authenticated
-USING (
-  current_user_factory_id() IS NOT NULL
-  OR current_user_role() = 'super_admin'
-);
-
-DROP POLICY IF EXISTS "villages_all_policy" ON villages;
-CREATE POLICY "villages_all_policy" ON villages
-FOR ALL TO authenticated
-USING (current_user_role() = 'super_admin')
-WITH CHECK (current_user_role() = 'super_admin');
-
 
 -- 9. Commodities
 -- Read: Anyone who is authenticated and has a profile/customer record or SUPER_ADMIN

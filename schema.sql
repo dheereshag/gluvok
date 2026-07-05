@@ -3,13 +3,6 @@
 -- ==========================================
 
 
--- State codes as ENUM matching Indian state/UT abbreviations
-CREATE TYPE state_enum AS ENUM (
-  'AN','AP','AR','AS','BR','CH','CG','DD','DL','DN','GA','GJ','HR','HP',
-  'JK','JH','KA','KL','LA','LD','MP','MH','MN','ML','MZ','NL','OD','PY',
-  'PB','RJ','SK','TN','TS','TR','UP','UK','WB'
-);
-
 -- User roles within the application
 CREATE TYPE role_enum AS ENUM (
   'super_admin',
@@ -46,33 +39,12 @@ $$ LANGUAGE plpgsql;
 -- 3. TABLES DEFINITIONS
 -- -----------------------------------------
 
--- A. villages table
-CREATE TABLE public.villages (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  state state_enum NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TRIGGER set_timestamp_villages
-  BEFORE UPDATE ON public.villages
-  FOR EACH ROW
-  EXECUTE FUNCTION trigger_set_timestamp();
-
-
 -- B. factories table
 CREATE TABLE public.factories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  village_id INTEGER NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  
-  CONSTRAINT fk_factory_village
-    FOREIGN KEY (village_id)
-    REFERENCES public.villages(id)
-    ON DELETE RESTRICT
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TRIGGER set_timestamp_factories
@@ -149,7 +121,6 @@ CREATE TABLE public.customers (
   govt_id INTEGER NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   father_name VARCHAR(255) NOT NULL,
-  village_id INTEGER NOT NULL,
   user_id UUID UNIQUE,
   factory_id INTEGER NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -159,11 +130,6 @@ CREATE TABLE public.customers (
     FOREIGN KEY (user_id)
     REFERENCES auth.users(id)
     ON DELETE SET NULL,
-    
-  CONSTRAINT fk_customer_village
-    FOREIGN KEY (village_id)
-    REFERENCES public.villages(id)
-    ON DELETE RESTRICT,
     
   CONSTRAINT fk_customer_factory
     FOREIGN KEY (factory_id)
@@ -301,7 +267,6 @@ CREATE TRIGGER set_timestamp_assignments
 -- 4. ROW LEVEL SECURITY (RLS) & POLICIES
 -- ---------------------------------------
 -- Enable RLS on all tables
-ALTER TABLE public.villages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.factories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.centers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.commodities ENABLE ROW LEVEL SECURITY;
@@ -324,16 +289,6 @@ BEGIN
   RETURN COALESCE(user_role, 'base');
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- A. villages policies
-CREATE POLICY "villages_select" ON public.villages
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "villages_insert" ON public.villages
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
-CREATE POLICY "villages_update" ON public.villages
-  FOR UPDATE TO authenticated USING (public.get_user_role() = 'super_admin');
-CREATE POLICY "villages_delete" ON public.villages
-  FOR DELETE TO authenticated USING (public.get_user_role() = 'super_admin');
 
 -- B. factories policies
 CREATE POLICY "factories_select" ON public.factories

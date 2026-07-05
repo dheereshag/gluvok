@@ -40,7 +40,6 @@ vi.mock("@/lib/store", () => {
       triggerEntitiesUpdate: mockTriggerEntitiesUpdate,
       loadWeighmentFiltersData: vi.fn(),
       loadCommodities: vi.fn(),
-      loadVillages: vi.fn(),
       loadFactories: vi.fn(),
     }),
     subscribe: () => () => {},

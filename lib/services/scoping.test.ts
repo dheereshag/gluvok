@@ -51,7 +51,7 @@ describe("Query Scoping Services", () => {
         user: {
           role: Role.MANAGER,
           profile: { factory_id: 12, id: 34, user_id: "u1", aadhar_number: "a1", name: "n1", created_at: "", updated_at: "" },
-          customer: { id: 56, govt_id: 1, name: "c1", father_name: "f1", village_id: 1, factory_id: 1, created_at: "", updated_at: "" },
+          customer: { id: 56, govt_id: 1, name: "c1", father_name: "f1", factory_id: 1, created_at: "", updated_at: "" },
           id: "u1",
           name: "n1",
           email: "e1",

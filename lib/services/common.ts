@@ -14,7 +14,6 @@ import { fetchCustomers, fetchCustomersPaginated, fetchCustomerById } from "./cu
 import { fetchWeighments, fetchWeighmentsPaginated, fetchWeighmentById } from "./weighments"
 import { fetchFactories, fetchFactoriesPaginated, fetchFactoryById } from "./factories"
 import { fetchProfiles, fetchProfilesPaginated, fetchProfileById } from "./profiles"
-import { fetchVillages, fetchVillagesPaginated, fetchVillageById } from "./villages"
 import { type PaginatedParams } from "./scoping"
 
 
@@ -34,8 +33,6 @@ export async function fetchSingleEntity(slug: ProjectSlug, id: number): Promise<
       return fetchFactoryById(id)
     case ProjectSlug.PROFILES:
       return fetchProfileById(id)
-    case ProjectSlug.VILLAGES:
-      return fetchVillageById(id)
     default:
       throw new Error(`No fetch configured for single entity slug: ${slug}`)
   }
@@ -58,8 +55,6 @@ export async function fetchEntityList(slug: ProjectSlug | string): Promise<Entit
       return fetchFactories()
     case ProjectSlug.PROFILES:
       return fetchProfiles()
-    case ProjectSlug.VILLAGES:
-      return fetchVillages()
 
     default:
       throw new Error(`Unknown project slug: ${slug}`)
@@ -83,8 +78,6 @@ export async function fetchEntityListPaginated(
       return fetchFactoriesPaginated(params)
     case ProjectSlug.PROFILES:
       return fetchProfilesPaginated(params)
-    case ProjectSlug.VILLAGES:
-      return fetchVillagesPaginated(params)
     case ProjectSlug.COMMODITIES:
       return fetchCommoditiesPaginated(params)
     default:

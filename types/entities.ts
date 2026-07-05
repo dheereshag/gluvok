@@ -4,7 +4,7 @@
  * Includes flattened and computed fields used across views and forms.
  */
 
-import { Role, State, Unit, WeighmentType } from "@/lib/constants/enums"
+import { Role, Unit, WeighmentType } from "@/lib/constants/enums"
 
 /**
  * Center Entity
@@ -49,34 +49,21 @@ export interface Customer {
   govt_id: number
   name: string
   father_name: string
-  village_id: number
   user_id?: string
   factory_id: number
   created_at: string
   updated_at: string
   // Flattened join fields
-  village_name?: string
   user_email?: string
 }
 
 export interface Factory {
   id: number
   name: string
-  village_id: number
-  created_at: string
-  updated_at: string
-  // Flattened join fields
-  village_name?: string
-}
-
-
-export interface Village {
-  id: number
-  name: string
-  state: State
   created_at: string
   updated_at: string
 }
+
 
 export interface Weighment {
   id: number
@@ -128,5 +115,4 @@ export type EntityRecord =
   | Weighment
   | Factory
   | Profile
-  | Village
 

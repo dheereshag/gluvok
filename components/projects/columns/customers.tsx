@@ -4,10 +4,10 @@
  */
 
 import { ColumnDef } from "@tanstack/react-table"
-import { User, Mail, ShieldCheck, Tag, Home } from "lucide-react"
+import { User, Mail, ShieldCheck, Tag } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
-import { createTextColumn, createIdColumn, createCustomColumn } from "./helpers"
+import { createTextColumn, createCustomColumn } from "./helpers"
 
 export function getCustomersColumns<T>(): ColumnDef<T>[] {
   return [
@@ -18,8 +18,6 @@ export function getCustomersColumns<T>(): ColumnDef<T>[] {
     }),
     createTextColumn(EntityKey.NAME, ColumnLabel.NAME, Tag),
     createTextColumn(EntityKey.FATHER_NAME, ColumnLabel.FATHER_NAME, User, "text-muted-foreground text-xs"),
-    createIdColumn(EntityKey.VILLAGE_ID, ColumnLabel.VILLAGE_ID, Home),
-    createTextColumn(EntityKey.VILLAGE_NAME, ColumnLabel.VILLAGE_NAME, Home),
   ]
 }
 

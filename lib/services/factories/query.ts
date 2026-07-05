@@ -5,24 +5,16 @@
 
 import { supabase } from "@/lib/supabase"
 import { type Factory } from "@/types"
-import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { ProjectSlug } from "@/lib/constants/enums"
 
 export const TABLE_NAME = ProjectSlug.FACTORIES
 
-export const SELECT_QUERY = `
-  *,
-  village:${ProjectSlug.VILLAGES}(${EntityKey.ID}, ${EntityKey.NAME})
-`
+export const SELECT_QUERY = "*"
 
 export const buildListQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY)
 
 export const buildPaginatedQuery = () => supabase.from(TABLE_NAME).select(SELECT_QUERY, { count: "exact" })
 
-export function enrichFactory(item: {
-  village?: { id: number; name: string } | null
-}): Factory {
-  return {
-    ...item,
-    village_name: item.village?.name,
-  } as Factory
+export function enrichFactory(item: unknown): Factory {
+  return item as Factory
 }

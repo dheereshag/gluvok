@@ -11,7 +11,6 @@ import { ProjectSlug, EntityKey } from "@/lib/constants/enums"
 import { insertRow, updateRow, deleteRow, fetchCommodities } from "@/lib/services"
 import { supabase } from "@/lib/supabase"
 
-export const VILLAGES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
 export const CENTERS_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
 export const PROFILES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
 export const CUSTOMERS_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.NAME}`
@@ -19,7 +18,6 @@ export const RATES_SELECT_FIELDS = `${EntityKey.ID}, ${EntityKey.UNIT_PRICE}, ${
 
 export interface IdNamePair { id: number; name: string }
 export interface RateOption { id: number; label: string }
-export interface Village { id: number; name: string }
 
 interface EntitiesState {
   addEntity: (slug: ProjectSlug, key: string, newE: Record<string, unknown>) => Promise<void>
@@ -29,8 +27,6 @@ interface EntitiesState {
   triggerEntitiesUpdate: () => void
   commodities: Commodity[]
   loadCommodities: () => Promise<void>
-  villages: Village[]
-  loadVillages: () => Promise<void>
   factories: IdNamePair[]
   loadFactories: () => Promise<void>
   weighmentFiltersData: {
@@ -81,47 +77,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
       }))
     }
   },
-  villages: [],
-  loadVillages: async () => {
-    set((state) => ({
-      filtersLoading: {
-        ...state.filtersLoading,
-        [ProjectSlug.CUSTOMERS]: true,
-        [ProjectSlug.FACTORIES]: true,
-      }
-    }))
-    if (get().villages.length > 0) {
-      set((state) => ({
-        filtersLoading: {
-          ...state.filtersLoading,
-          [ProjectSlug.CUSTOMERS]: false,
-          [ProjectSlug.FACTORIES]: false,
-        }
-      }))
-      return
-    }
-    try {
-      const { data, error } = await supabase.from(ProjectSlug.VILLAGES).select(VILLAGES_SELECT_FIELDS).order("name")
-      if (error) throw error
-      set((state) => ({
-        villages: (data as Village[]) || [],
-        filtersLoading: {
-          ...state.filtersLoading,
-          [ProjectSlug.CUSTOMERS]: false,
-          [ProjectSlug.FACTORIES]: false,
-        }
-      }))
-    } catch (err) {
-      console.error("Failed to fetch villages for store:", err)
-      set((state) => ({
-        filtersLoading: {
-          ...state.filtersLoading,
-          [ProjectSlug.CUSTOMERS]: false,
-          [ProjectSlug.FACTORIES]: false,
-        }
-      }))
-    }
-  },
+
   factories: [],
   loadFactories: async () => {
     set((state) => ({

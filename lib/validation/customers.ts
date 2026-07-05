@@ -13,7 +13,6 @@ const baseCustomerSchema = z.object({
   [EntityKey.USER_ID]: z.uuid(`${ColumnLabel.USER} must be a valid User selection`).optional().or(z.literal("")).transform((v) => v === "" ? undefined : v),
   [EntityKey.NAME]: nameSchema(ColumnLabel.NAME),
   [EntityKey.FATHER_NAME]: nameSchema(ColumnLabel.FATHER_NAME),
-  [EntityKey.VILLAGE_ID]: integerIdSchema(ColumnLabel.VILLAGE),
   [EntityKey.FACTORY_ID]: integerIdSchema(ColumnLabel.FACTORY),
 })
 

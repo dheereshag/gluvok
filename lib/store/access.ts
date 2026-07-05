@@ -24,7 +24,6 @@ export interface Permission {
 export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   [Role.SUPER_ADMIN]: {
     [ProjectSlug.PROFILES]:    { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
     [ProjectSlug.CENTERS]:     { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
     [ProjectSlug.COMMODITIES]: { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
@@ -34,7 +33,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   },
   [Role.ADMIN]: {
     [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: true,  filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: true,  delete: true,  create: false, show: true,  filter: false },
     [ProjectSlug.CENTERS]:     { read: true, write: true,  delete: true,  create: true,  show: true,  filter: false },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: true,  filter: true },
@@ -44,7 +42,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   },
   [Role.MANAGER]: {
     [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
@@ -54,7 +51,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   },
   [Role.OPERATOR]: {
     [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
@@ -64,7 +60,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   },
   [Role.BASE]: {
     [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
@@ -74,7 +69,6 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   },
   [Role.HARDWARE]: {
     [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.VILLAGES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },

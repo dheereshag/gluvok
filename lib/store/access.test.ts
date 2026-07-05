@@ -25,16 +25,7 @@ describe("RBAC Access Controls", () => {
       }
     })
 
-    it("should grant Admin access correct permissions (no village edits, can edit/delete but not create factories)", () => {
-      const villagePerms = getPermissions(Role.ADMIN, ProjectSlug.VILLAGES)
-      expect(villagePerms).toEqual({
-        read: true,
-        write: false,
-        delete: false,
-        create: false,
-        show: true,
-        filter: true,
-      })
+    it("should grant Admin access correct permissions (can edit/delete but not create factories)", () => {
 
       const factoryPerms = getPermissions(Role.ADMIN, ProjectSlug.FACTORIES)
       expect(factoryPerms).toEqual({
@@ -68,8 +59,7 @@ describe("RBAC Access Controls", () => {
         filter: true,
       })
 
-      // Cannot see villages, factories, centers, commodities on dashboard
-      expect(getPermissions(Role.MANAGER, ProjectSlug.VILLAGES).show).toBe(false)
+      // Cannot see factories, centers, commodities on dashboard
       expect(getPermissions(Role.MANAGER, ProjectSlug.FACTORIES).show).toBe(false)
       expect(getPermissions(Role.MANAGER, ProjectSlug.CENTERS).show).toBe(false)
       expect(getPermissions(Role.MANAGER, ProjectSlug.COMMODITIES).show).toBe(false)

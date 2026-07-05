@@ -59,7 +59,7 @@ describe("Auth Store (Zustand)", () => {
     vi.mocked(supabase.auth.getSession).mockResolvedValue({
       data: { session: null },
       error: null,
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof supabase.auth.getSession>>)
 
     // Setup default mock subscription
     vi.mocked(supabase.auth.onAuthStateChange).mockImplementation(((cb: (event: string, session: unknown) => Promise<unknown>) => {

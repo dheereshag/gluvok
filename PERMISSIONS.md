@@ -10,7 +10,6 @@ Source: [lib/store/access.ts](lib/store/access.ts) (RBAC_MATRIX)
 |---|---:|---:|---:|---:|---:|
 | Users (users) | R, W, D | R | R | R | R |
 | Profiles (profiles) | R, W, D | R, W, D | R, W | R | R |
-| Villages (villages) | R, W, D | R | R | R | R |
 | Factories (factories) | R, W, D | R, W, D | R | R | R |
 | Centers (centers) | R, W, D | R, W, D | R | R | R |
 | Commodities (commodities) | R, W, D | R | R | R | R |

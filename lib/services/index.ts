@@ -13,4 +13,3 @@ export { fetchCustomers, fetchCustomerById, fetchCustomersPaginated } from "./cu
 export { fetchWeighments, fetchWeighmentById, fetchWeighmentsPaginated } from "./weighments"
 export { fetchFactories, fetchFactoryById, fetchFactoriesPaginated } from "./factories"
 export { fetchProfiles, fetchProfileById, fetchProfilesPaginated } from "./profiles"
-export { fetchVillages, fetchVillageById, fetchVillagesPaginated } from "./villages"

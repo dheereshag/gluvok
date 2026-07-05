@@ -18,8 +18,6 @@ export function getReferencedEntitySlug(key: string | EntityKey): string | null 
   switch (key) {
     case EntityKey.FACTORY_ID:
       return ProjectSlug.FACTORIES
-    case EntityKey.VILLAGE_ID:
-      return ProjectSlug.VILLAGES
     case EntityKey.COMMODITY_ID:
     case EntityKey.COMMODITY_NAME:
       return ProjectSlug.COMMODITIES
@@ -89,8 +87,7 @@ export function getSingularName(name: string): string {
       return SingularEntityName.FACTORY
     case ProjectName.PROFILES:
       return SingularEntityName.PROFILE
-    case ProjectName.VILLAGES:
-      return SingularEntityName.VILLAGE
+
     default:
       if (name.endsWith("ies")) {
         return name.slice(0, -3) + "y"
