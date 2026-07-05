@@ -102,13 +102,13 @@ export function useEntityForm({
           const originalImages = (getField(item, EntityKey.IMAGES) || []) as string[]
           values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], originalImages)
         }
-        await updateEntity(projectSlug as ProjectSlug, primaryIdKey, String(getField(item, primaryIdKey)), values)
+        await updateEntity(projectSlug as ProjectSlug, String(getField(item, primaryIdKey)), values)
         toast.success(`${singularName} updated successfully`)
       } else {
         if (Array.isArray(values[EntityKey.IMAGES])) {
           values[EntityKey.IMAGES] = await processImageUploadsAndDeletions(values[EntityKey.IMAGES], [])
         }
-        await addEntity(projectSlug as ProjectSlug, primaryIdKey, values)
+        await addEntity(projectSlug as ProjectSlug, values)
         toast.success(`${singularName} created successfully`)
       }
       onOpenChange(false)

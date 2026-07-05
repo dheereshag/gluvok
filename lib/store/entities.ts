@@ -20,9 +20,9 @@ export interface IdNamePair { id: number; name: string }
 export interface RateOption { id: number; label: string }
 
 interface EntitiesState {
-  addEntity: (slug: ProjectSlug, key: string, newE: Record<string, unknown>) => Promise<void>
-  updateEntity: (slug: ProjectSlug, key: string, id: string | number, fields: Record<string, unknown>) => Promise<void>
-  deleteEntity: (slug: ProjectSlug, key: string, id: string | number) => Promise<void>
+  addEntity: (slug: ProjectSlug, newE: Record<string, unknown>) => Promise<void>
+  updateEntity: (slug: ProjectSlug, id: string | number, fields: Record<string, unknown>) => Promise<void>
+  deleteEntity: (slug: ProjectSlug, id: string | number) => Promise<void>
   entitiesUpdatedTrigger: number
   triggerEntitiesUpdate: () => void
   commodities: Commodity[]
@@ -124,17 +124,17 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
     }
   },
 
-  addEntity: async (slug, key, newE) => {
+  addEntity: async (slug, newE) => {
     await insertRow(slug, newE)
     get().triggerEntitiesUpdate()
   },
 
-  updateEntity: async (slug, key, id, fields) => {
+  updateEntity: async (slug, id, fields) => {
     await updateRow(slug, Number(id), fields)
     get().triggerEntitiesUpdate()
   },
 
-  deleteEntity: async (slug, idKey, id) => {
+  deleteEntity: async (slug, id) => {
     await deleteRow(slug, Number(id))
     get().triggerEntitiesUpdate()
   },

@@ -33,13 +33,13 @@ export function DeleteEntityDialogContent({
       } else if (isBulk) {
         await Promise.all(items.map(i => {
           const idVal = getField(i, primaryIdKey!)
-          return deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, idVal as string | number)
+          return deleteEntity(projectSlug as ProjectSlug, idVal as string | number)
         }))
         toast.success(`${projectName} records deleted successfully`)
       } else {
         const idVal = getField(item!, primaryIdKey!)
         const primaryKeyValue = String(idVal || "")
-        await deleteEntity(projectSlug as ProjectSlug, primaryIdKey!, idVal as string | number)
+        await deleteEntity(projectSlug as ProjectSlug, idVal as string | number)
         const singularName = getSingularName(projectName || "Item")
         toast.success(`${singularName} "${primaryKeyValue}" deleted successfully`)
       }
