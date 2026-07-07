@@ -37,6 +37,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user)
   const authHydrated = useAuthStore((state) => state.hydrated)
   const initialized = useAuthStore((state) => state.initialized)
+  const profileLoading = useAuthStore((state) => state.profileLoading)
 
   const router = useRouter()
   const pathname = usePathname()
@@ -57,7 +58,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!authHydrated || !initialized) return
+    if (!authHydrated || !initialized || profileLoading) return
 
     switch (true) {
       // 1. Unauthenticated users trying to access protected pages
@@ -73,11 +74,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       default:
         break
     }
-  }, [user, authHydrated, initialized, isAuthPage, pathname, projectSlug, isAuthorized, router])
+  }, [user, authHydrated, initialized, profileLoading, isAuthPage, pathname, projectSlug, isAuthorized, router])
 
-  // Show loading during initial rehydration or before auth initialized to prevent UI flash
-  if (!authHydrated || !initialized) {
-    return <FullScreenStatus message="Redirecting..." />
+  // Show loading during initial rehydration, before auth initialized, or while profile is being fetched
+  if (!authHydrated || !initialized || profileLoading) {
+    return <FullScreenStatus message="Loading..." />
   }
 
   if (!user && !isAuthPage) {

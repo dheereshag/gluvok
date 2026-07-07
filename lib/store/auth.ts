@@ -29,6 +29,8 @@ interface AuthStore {
   user: AuthUser | null
   hydrated: boolean
   initialized: boolean
+  /** True while a profile DB fetch is in-flight (session is known but user data not yet loaded). */
+  profileLoading: boolean
   initAuth: () => () => void
   login: (email: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
@@ -125,6 +127,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   hydrated: false,
   initialized: false,
+  profileLoading: false,
   initAuth: () => {
     if (get().initialized) {
       return () => {}
@@ -148,16 +151,27 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         const currentUser = get().user
         const isUserChanged = !currentUser || currentUser.id !== activeSession.user.id
         const shouldFetch = isUserChanged || event === "USER_UPDATED"
+
+        // Mark as initialized immediately once we know the session state so the
+        // auth guard can unblock the UI without waiting for DB profile queries.
+        if (isInitial) {
+          isInitial = false
+          set({ initialized: true })
+        }
+
         if (shouldFetch) {
+          set({ profileLoading: true })
           await fetchAndSetProfile(activeSession.user, set)
+          set({ profileLoading: false })
         }
       } else {
         set({ user: null })
-      }
 
-      if (isInitial) {
-        isInitial = false
-        set({ initialized: true })
+        // No session — still mark initialized so the guard can redirect to login.
+        if (isInitial) {
+          isInitial = false
+          set({ initialized: true })
+        }
       }
     })
 
