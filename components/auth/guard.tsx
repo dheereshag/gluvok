@@ -10,7 +10,7 @@ import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore, hasPageAccess } from "@/lib/store"
 import { AppRoutes } from "@/lib/constants/enums"
-import { AUTH_ROUTES } from "@/lib/constants"
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/lib/constants"
 import NotFound from "@/app/not-found"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/sidebar"
@@ -44,10 +44,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isAuthPage = AUTH_ROUTES.includes(pathname as AppRoutes)
+  const isPublicPage = PUBLIC_ROUTES.includes(pathname as AppRoutes)
   const projectMatch = pathname.match(/^\/projects\/([^/]+)/)
   const projectSlug = projectMatch ? projectMatch[1] : null
 
-  const isAuthorized = !user || !projectSlug || hasPageAccess(user.role, projectSlug)
+  const isAuthorized = !user || isPublicPage || !projectSlug || hasPageAccess(user.role, projectSlug)
 
   // Mark auth store as hydrated after mount (avoids React 19 state-update-before-mount warning)
   useEffect(() => {
@@ -63,7 +64,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     switch (true) {
       // 1. Unauthenticated users trying to access protected pages
-      case !user && !isAuthPage: {
+      case !user && !isAuthPage && !isPublicPage: {
         router.push(getNextRedirectUrl(AppRoutes.LOGIN, pathname))
         break
       }
@@ -77,14 +78,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       default:
         break
     }
-  }, [user, authHydrated, initialized, profileLoading, isAuthPage, pathname, projectSlug, isAuthorized, router])
+  }, [user, authHydrated, initialized, profileLoading, isAuthPage, isPublicPage, pathname, projectSlug, isAuthorized, router])
 
   // Show loading during initial rehydration, before auth initialized, or while profile is being fetched
   if (!authHydrated || !initialized || profileLoading) {
     return <FullScreenStatus message="Loading..." />
   }
 
-  if (!user && !isAuthPage) {
+  if (!user && !isAuthPage && !isPublicPage) {
     return <FullScreenStatus message="Redirecting..." />
   }
 

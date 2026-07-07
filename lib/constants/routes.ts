@@ -11,3 +11,8 @@ export const AUTH_ROUTES = [
   AppRoutes.FORGOT_PASSWORD,
   AppRoutes.RESET_PASSWORD,
 ]
+
+export const PUBLIC_ROUTES = [
+  AppRoutes.SERVICES,
+]
+

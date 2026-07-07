@@ -41,7 +41,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthGuard>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={!!user}>
         <AppSidebar />
         <SidebarInset>
           {children}
