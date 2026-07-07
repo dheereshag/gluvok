@@ -59,6 +59,38 @@ export function splitFileName(filename: string): [string, string] {
   return [filename.slice(0, lastDotIndex), filename.slice(lastDotIndex)]
 }
 
+/**
+ * getNextParam utility
+ * Extracts the 'next' parameter value from the current window location search parameters safely.
+ */
+export function getNextParam(): string | null {
+  if (typeof window === "undefined") return null
+  const searchParams = new URLSearchParams(window.location.search)
+  return searchParams.get("next")
+}
+
+/**
+ * getNextRedirectUrl utility
+ * Generates a URL string that appends the current path and query parameters as a 'next' redirect query parameter.
+ */
+export function getNextRedirectUrl(baseUrl: string, pathname: string): string {
+  if (typeof window === "undefined" || !pathname) return baseUrl
+  const nextParamValue = pathname + window.location.search
+  return `${baseUrl}?next=${encodeURIComponent(nextParamValue)}`
+}
+
+/**
+ * appendNextParam utility
+ * Appends the current 'next' parameter to a given base URL, preserving it for the next destination.
+ */
+export function appendNextParam(baseUrl: string): string {
+  const nextParam = getNextParam()
+  if (!nextParam) return baseUrl
+  const separator = baseUrl.includes("?") ? "&" : "?"
+  return `${baseUrl}${separator}next=${encodeURIComponent(nextParam)}`
+}
+
 export { getSingularName } from "@/lib/fields"
 
 export { useReactTable } from "@tanstack/react-table"
+

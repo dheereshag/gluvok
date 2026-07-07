@@ -14,6 +14,7 @@ import { AUTH_ROUTES } from "@/lib/constants"
 import NotFound from "@/app/not-found"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/sidebar"
+import { getNextParam, getNextRedirectUrl } from "@/lib/utils"
 
 /**
  * FullScreenStatus Component
@@ -62,14 +63,16 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     switch (true) {
       // 1. Unauthenticated users trying to access protected pages
-      case !user && !isAuthPage:
-        router.push(AppRoutes.LOGIN)
+      case !user && !isAuthPage: {
+        router.push(getNextRedirectUrl(AppRoutes.LOGIN, pathname))
         break
+      }
 
       // 2. Authenticated users trying to access general auth pages (except password reset)
-      case !!user && isAuthPage && pathname !== AppRoutes.RESET_PASSWORD:
-        router.push(AppRoutes.HOME)
+      case !!user && isAuthPage && pathname !== AppRoutes.RESET_PASSWORD: {
+        router.push(getNextParam() || AppRoutes.HOME)
         break
+      }
 
       default:
         break

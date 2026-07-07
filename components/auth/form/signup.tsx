@@ -16,7 +16,7 @@ import { FieldGroup, FieldDescription, Field } from "@/components/ui/field"
 import { AuthCard, AuthInput } from "../common"
 import { useAuthStore } from "@/lib/store"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { cn, getNextParam, appendNextParam } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
 import Link from "next/link"
@@ -44,6 +44,11 @@ export function SignupForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const registerUser = useAuthStore((state) => state.registerUser)
+  const [signInLink, setSignInLink] = React.useState<string>(AppRoutes.LOGIN)
+
+  React.useEffect(() => {
+    setSignInLink(appendNextParam(AppRoutes.LOGIN))
+  }, [])
 
   const form = useForm<SignupInput>({
     resolver: standardSchemaResolver(signupSchema),
@@ -56,6 +61,7 @@ export function SignupForm({
   })
 
   const onSubmit = async (data: SignupInput) => {
+    const targetRedirect = getNextParam() || AppRoutes.HOME
     const { success, requiresVerification } = await registerUser({
       name: data.name,
       email: data.email,
@@ -65,10 +71,10 @@ export function SignupForm({
     if (success) {
       if (requiresVerification) {
         toast.success("Account created! Please check your email to verify your account.")
-        router.push(AppRoutes.LOGIN)
+        router.push(appendNextParam(AppRoutes.LOGIN))
       } else {
         toast.success("Successfully created account!")
-        router.push(AppRoutes.HOME)
+        router.push(targetRedirect)
       }
     }
   }
@@ -80,7 +86,7 @@ export function SignupForm({
         description="Enter your details below to create your account"
         footer={
           <FieldDescription className="text-center mt-4">
-            Already have an account? <Link href={AppRoutes.LOGIN} className="underline underline-offset-4 hover:text-primary">Sign in</Link>
+            Already have an account? <Link href={signInLink} className="underline underline-offset-4 hover:text-primary">Sign in</Link>
           </FieldDescription>
         }
       >

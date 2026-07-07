@@ -6,6 +6,7 @@
  * Integrates with standard authentication schemas and the auth store.
  */
 
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
@@ -15,7 +16,7 @@ import { FieldGroup, FieldDescription } from "@/components/ui/field"
 import { AuthCard, AuthInput } from "../common"
 import { useAuthStore } from "@/lib/store"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { cn, getNextParam, appendNextParam } from "@/lib/utils"
 import { AppRoutes } from "@/lib/constants/enums"
 
 import Link from "next/link"
@@ -38,6 +39,11 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const login = useAuthStore((state) => state.login)
+  const [signUpLink, setSignUpLink] = useState<string>(AppRoutes.SIGNUP)
+
+  useEffect(() => {
+    setSignUpLink(appendNextParam(AppRoutes.SIGNUP))
+  }, [])
 
   const form = useForm<LoginInput>({
     resolver: standardSchemaResolver(loginSchema),
@@ -48,11 +54,12 @@ export function LoginForm({
   })
 
   const onSubmit = async (data: LoginInput) => {
+    const targetRedirect = getNextParam() || AppRoutes.HOME
     const success = await login(data.email, data.password)
 
     if (success) {
       toast.success("Successfully logged in!")
-      router.push(AppRoutes.HOME)
+      router.push(targetRedirect)
     }
   }
 
@@ -63,7 +70,7 @@ export function LoginForm({
         description="Enter your email below to login to your account"
         footer={
           <FieldDescription className="text-center mt-4">
-            Don&apos;t have an account? <Link href={AppRoutes.SIGNUP} className="underline underline-offset-4 hover:text-primary">Sign up</Link>
+            Don&apos;t have an account? <Link href={signUpLink} className="underline underline-offset-4 hover:text-primary">Sign up</Link>
           </FieldDescription>
         }
       >
