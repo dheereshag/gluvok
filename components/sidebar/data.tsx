@@ -3,9 +3,10 @@
  * @description Static navigation configuration data for mapping user profiles and project routes in the sidebar.
  */
 
-import { LifeBuoy, Send } from "lucide-react"
+import { LifeBuoy, Send, Layers } from "lucide-react"
 import { PROJECTS } from "@/lib/projects"
 import { DEFAULT_AVATAR } from "@/lib/constants"
+import { AppRoutes } from "@/lib/constants/enums"
 
 /**
  * SIDEBAR_DATA configuration
@@ -27,6 +28,11 @@ export const SIDEBAR_DATA = {
       title: "Feedback",
       url: "#",
       icon: <Send />,
+    },
+    {
+      title: "Services",
+      url: AppRoutes.SERVICES,
+      icon: <Layers />,
     },
   ],
   navMain: PROJECTS.map((project) => {

@@ -94,6 +94,7 @@ export enum AppRoutes {
   SIGNUP = "/signup",
   FORGOT_PASSWORD = "/forgot-password",
   RESET_PASSWORD = "/reset-password",
+  SERVICES = "/services",
 }
 
 export enum ProjectSlug {
