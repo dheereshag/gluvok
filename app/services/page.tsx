@@ -9,8 +9,8 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Layers, Database, Server, Cloud, ShieldAlert, HardDrive, PackageCheck } from "lucide-react"
-import { outfit, inter } from "@/lib/fonts"
+import { Layers, Database, Server, Cloud, ShieldAlert, HardDrive, Check, ShieldCheck } from "lucide-react"
+import { jakarta, inter } from "@/lib/fonts"
 
 interface ServiceCardProps {
   icon: React.ReactNode
@@ -29,7 +29,7 @@ function ServiceCard({ icon, title, description, features, caveat, successNote }
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             {icon}
           </div>
-          <h2 className={`${outfit.className} text-lg font-bold leading-snug text-foreground`}>{title}</h2>
+          <h2 className={`${jakarta.className} text-lg font-bold leading-snug text-foreground`}>{title}</h2>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ function ServiceCard({ icon, title, description, features, caveat, successNote }
       <ul className="space-y-2">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-            <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
             <span>{f}</span>
           </li>
         ))}
@@ -53,7 +53,7 @@ function ServiceCard({ icon, title, description, features, caveat, successNote }
 
       {successNote && (
         <div className="flex items-start gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-4 py-3 mt-auto">
-          <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
           <p className="text-xs leading-relaxed text-emerald-700 dark:text-emerald-400">{successNote}</p>
         </div>
       )}
@@ -68,9 +68,9 @@ const SERVICES: ServiceCardProps[] = [
     description:
       "Connect your own database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
     features: [
-      "Integrate your database directly into our backend platform layer.",
-      "Support custom storage buckets or use our managed storage space.",
-      "Retain complete ownership over your scaling and query performance.",
+      "Integrate your database directly into our backend platform.",
+      "Support custom storage buckets or use managed storage.",
+      "Retain complete control over scaling performance.",
     ],
     caveat:
       "Your database health is your responsibility. Any service interruptions, slow queries, or data issues resulting from your database performance are not covered by our platform support.",
@@ -81,9 +81,9 @@ const SERVICES: ServiceCardProps[] = [
     description:
       "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while still choosing exactly how your tables and fields are structured.",
     features: [
-      "Host your database and backend server directly within our systems.",
-      "Deploy instantly without any server setup or maintenance workloads.",
-      "Ensure high availability with continuous updates and configuration.",
+      "Host your database and backend server within our systems.",
+      "Deploy instantly without server setup or maintenance.",
+      "Guarantee high availability with system updates.",
     ],
     successNote:
       "We take full responsibility for database scaling, performance, security, and backups. Enjoy complete peace of mind with our fully monitored, highly available, and updated hosting services.",
@@ -92,11 +92,11 @@ const SERVICES: ServiceCardProps[] = [
     title: "Bring Your Own Private Application Server Host",
     icon: <Server className="h-5 w-5" />,
     description:
-      "Host frontend and backend on your server using private Docker images with your database. Keep full deployment privacy and control without ever accessing the proprietary, underlying business logic source code.",
+      "Host frontend and backend on your own server using private Docker images with your database. Keep full deployment privacy and control without ever accessing the proprietary, underlying business logic source code.",
     features: [
-      "Deploy pre-built Docker containers on your local server machines.",
-      "Connect to either our storage space or your own storage bucket.",
-      "Isolate all application traffic completely within your network.",
+      "Deploy our Docker containers directly on local servers.",
+      "Connect to either our storage or your storage bucket.",
+      "Isolate application traffic within local networks.",
     ],
     caveat:
       "Any server crashes, hardware bottlenecks, configuration errors, or log issues arising from your self-hosted infrastructure are your sole responsibility. We do not provide server maintenance.",
@@ -128,7 +128,7 @@ export default function ServicesPage() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-stretch rounded-2xl border bg-muted/30 p-6 md:p-8">
           {/* Left Column - Intro copy explaining deployment models */}
           <div className="flex flex-col justify-center space-y-4">
-            <h1 className={`${outfit.className} text-3xl font-extrabold tracking-tight text-foreground`}>
+            <h1 className={`${jakarta.className} text-3xl font-extrabold tracking-tight text-foreground`}>
               How We Work With You
             </h1>
             <p className={`${inter.className} text-muted-foreground text-sm leading-relaxed max-w-xl`}>
@@ -139,18 +139,18 @@ export default function ServicesPage() {
 
           {/* Right Column - Highlight box explaining the two common features */}
           <div className="flex flex-col justify-center space-y-4 border-t pt-6 md:border-t-0 md:pt-0 md:border-l md:pl-8 border-border">
-            <h2 className={`${outfit.className} text-xs font-bold uppercase tracking-wider text-muted-foreground`}>
+            <h2 className={`${jakarta.className} text-xs font-bold uppercase tracking-wider text-muted-foreground`}>
               Standard Capabilities Across All Models
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5 p-4 rounded-xl border bg-card shadow-sm">
-                <h3 className={`${outfit.className} text-sm font-bold text-foreground`}>Granular Fields</h3>
+                <h3 className={`${jakarta.className} text-sm font-bold text-foreground`}>Granular Fields</h3>
                 <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
                   Hide specific fields per entity (e.g., exclude govt_id for customers so it won't appear).
                 </p>
               </div>
               <div className="space-y-1.5 p-4 rounded-xl border bg-card shadow-sm">
-                <h3 className={`${outfit.className} text-sm font-bold text-foreground`}>Entity Opt-outs</h3>
+                <h3 className={`${jakarta.className} text-sm font-bold text-foreground`}>Entity Opt-outs</h3>
                 <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
                   Opt out of tables completely (e.g., disable rates table entirely if you don't use it).
                 </p>
