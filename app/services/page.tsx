@@ -66,7 +66,7 @@ const SERVICES: ServiceCardProps[] = [
     title: "Bring Your Own Database and/or Object Storage",
     icon: <Database className="h-5 w-5" />,
     description:
-      "Connect your own database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
+      "Connect your database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
     features: [
       "Integrate your database directly into our backend platform.",
       "Support custom storage buckets or use managed storage.",
@@ -79,7 +79,7 @@ const SERVICES: ServiceCardProps[] = [
     title: "Everything Fully Managed And Coordinated By Us",
     icon: <Cloud className="h-5 w-5" />,
     description:
-      "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while still choosing exactly how your tables and fields are structured.",
+      "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while choosing how your tables and fields are structured.",
     features: [
       "Host your database and backend server within our systems.",
       "Deploy instantly without server setup or maintenance.",
@@ -92,7 +92,7 @@ const SERVICES: ServiceCardProps[] = [
     title: "Bring Your Own Private Application Server Host",
     icon: <Server className="h-5 w-5" />,
     description:
-      "Host frontend and backend on your own server using private Docker images with your database. Keep full deployment privacy and control without ever accessing the proprietary, underlying business logic source code.",
+      "Host frontend and backend on your server using private Docker images with your database. Keep full deployment privacy and control without accessing the underlying business logic source code.",
     features: [
       "Deploy our Docker containers directly on local servers.",
       "Connect to either our storage or your storage bucket.",
@@ -169,7 +169,7 @@ export default function ServicesPage() {
           <HardDrive className="mt-0.5 h-4 w-4 shrink-0" />
           <p className={inter.className}>
             Not sure which model is right for you? Reach out via <strong className="text-foreground">Support</strong> and
-            our team will help you decide based on your current infrastructure and scale requirements.
+            our team will help you decide based on your infrastructure and scale requirements.
           </p>
         </div>
       </main>
