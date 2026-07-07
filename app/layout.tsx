@@ -5,16 +5,12 @@
  */
 
 import type { Metadata } from "next";
-import { Geist, Outfit } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout-wrapper";
-
-// Configured fonts via Next.js Google Fonts optimization
-const geist = Geist({ subsets: ['latin'], display: 'swap' });
-const outfit = Outfit({ subsets: ['latin'], display: 'swap' });
+import { geist, outfit } from "@/lib/fonts";
 
 /**
  * Root metadata settings for SEO and browser representation.

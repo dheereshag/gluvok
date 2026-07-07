@@ -10,10 +10,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/co
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Layers, Database, Server, Cloud, ShieldAlert, HardDrive, PackageCheck } from "lucide-react"
+import { outfit, inter } from "@/lib/fonts"
 
 interface ServiceCardProps {
   icon: React.ReactNode
-  badge: string
   title: string
   description: string
   features: string[]
@@ -21,18 +21,15 @@ interface ServiceCardProps {
   successNote?: string
 }
 
-function ServiceCard({ icon, badge, title, description, features, caveat, successNote }: ServiceCardProps) {
+function ServiceCard({ icon, title, description, features, caveat, successNote }: ServiceCardProps) {
   return (
-    <div className="relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
+    <div className={`relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md ${inter.className}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             {icon}
           </div>
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{badge}</p>
-            <h2 className="text-lg font-bold leading-snug text-foreground">{title}</h2>
-          </div>
+          <h2 className={`${outfit.className} text-lg font-bold leading-snug text-foreground`}>{title}</h2>
         </div>
       </div>
 
@@ -66,8 +63,7 @@ function ServiceCard({ icon, badge, title, description, features, caveat, succes
 
 const SERVICES: ServiceCardProps[] = [
   {
-    badge: "Self-managed infrastructure",
-    title: "Bring Your Own Database Storage",
+    title: "Bring Your Own Database and/or Object Storage",
     icon: <Database className="h-5 w-5" />,
     description:
       "Connect your own database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
@@ -80,8 +76,7 @@ const SERVICES: ServiceCardProps[] = [
       "Your database health is your responsibility. Any service interruptions, slow queries, or data issues resulting from your database performance are not covered by our platform support.",
   },
   {
-    badge: "Zero infrastructure",
-    title: "Everything Fully Managed By Us",
+    title: "Everything Fully Managed And Coordinated By Us",
     icon: <Cloud className="h-5 w-5" />,
     description:
       "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while still choosing exactly how your tables and fields are structured.",
@@ -94,8 +89,7 @@ const SERVICES: ServiceCardProps[] = [
       "We take full responsibility for database scaling, performance, security, and backups. Enjoy complete peace of mind with our fully monitored, highly available, and updated hosting services.",
   },
   {
-    badge: "Self-hosted deployment",
-    title: "Bring Your Own Application Server",
+    title: "Bring Your Own Private Application Server Host",
     icon: <Server className="h-5 w-5" />,
     description:
       "Host frontend and backend on your server using private Docker images with your database. Keep full deployment privacy and control without ever accessing the proprietary, underlying business logic source code.",
@@ -130,12 +124,39 @@ export default function ServicesPage() {
       </header>
 
       <main className="p-8 w-full min-w-0 space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">How We Work With You</h1>
-          <p className="text-muted-foreground text-sm max-w-2xl">
-            Choose the deployment model that fits your team. Whether you own your infrastructure, want us to handle
-            everything, or need a self-hosted setup — we have an option for you. All models support granular field-level exposure (e.g. hiding specific fields like govt_id for customers) and entity-level opt-outs (e.g. disabling the weighments table completely).
-          </p>
+        {/* Split Section Layout */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-stretch rounded-2xl border bg-muted/30 p-6 md:p-8">
+          {/* Left Column - Intro copy explaining deployment models */}
+          <div className="flex flex-col justify-center space-y-4">
+            <h1 className={`${outfit.className} text-3xl font-extrabold tracking-tight text-foreground`}>
+              How We Work With You
+            </h1>
+            <p className={`${inter.className} text-muted-foreground text-sm leading-relaxed max-w-xl`}>
+              Choose the deployment model that fits your team. Whether you own your infrastructure, want us to handle
+              everything, or need a self-hosted setup — we have an option for you.
+            </p>
+          </div>
+
+          {/* Right Column - Highlight box explaining the two common features */}
+          <div className="flex flex-col justify-center space-y-4 border-t pt-6 md:border-t-0 md:pt-0 md:border-l md:pl-8 border-border">
+            <h2 className={`${outfit.className} text-xs font-bold uppercase tracking-wider text-muted-foreground`}>
+              Standard Capabilities Across All Models
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5 p-4 rounded-xl border bg-card shadow-sm">
+                <h3 className={`${outfit.className} text-sm font-bold text-foreground`}>Granular Fields</h3>
+                <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
+                  Hide specific fields per entity (e.g., exclude govt_id for customers so it won't appear).
+                </p>
+              </div>
+              <div className="space-y-1.5 p-4 rounded-xl border bg-card shadow-sm">
+                <h3 className={`${outfit.className} text-sm font-bold text-foreground`}>Entity Opt-outs</h3>
+                <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
+                  Opt out of tables completely (e.g., disable rates table entirely if you don't use it).
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
@@ -146,7 +167,7 @@ export default function ServicesPage() {
 
         <div className="flex items-start gap-3 rounded-xl border bg-muted/40 px-5 py-4 text-sm text-muted-foreground">
           <HardDrive className="mt-0.5 h-4 w-4 shrink-0" />
-          <p>
+          <p className={inter.className}>
             Not sure which model is right for you? Reach out via <strong className="text-foreground">Support</strong> and
             our team will help you decide based on your current infrastructure and scale requirements.
           </p>
