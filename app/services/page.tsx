@@ -41,11 +41,11 @@ import { cn } from "@/lib/utils"
 const cardContainerStyles = "relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-1"
 const badgeBaseStyles = "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider w-fit shadow-sm"
 
-// Icon wrappers with background fill removed
-const iconWrapperBase = "flex shrink-0 items-center justify-center text-primary"
+// Icon wrappers with background fill removed and border style added
+const iconWrapperBase = "flex shrink-0 items-center justify-center text-primary border border-primary/20"
 const serviceIconWrapper = cn(iconWrapperBase, "h-10 w-10 rounded-lg")
 const featureIconWrapper = cn(iconWrapperBase, "h-5 w-5 rounded mt-0.5")
-const capabilityIconWrapper = cn(iconWrapperBase, "h-8 w-8 rounded-lg border border-primary/20")
+const capabilityIconWrapper = cn(iconWrapperBase, "h-8 w-8 rounded-lg")
 
 // Capability card styles
 const capabilityCardStyles = "flex items-start gap-3.5 p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-200"

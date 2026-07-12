@@ -6,7 +6,7 @@
  * Integrates with standard authentication schemas and the auth store.
  */
 
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { z } from "zod"
@@ -39,11 +39,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const login = useAuthStore((state) => state.login)
-  const [signUpLink, setSignUpLink] = useState<string>(AppRoutes.SIGNUP)
-
-  useEffect(() => {
-    setSignUpLink(appendNextParam(AppRoutes.SIGNUP))
-  }, [])
+  const signUpLink = useMemo(() => appendNextParam(AppRoutes.SIGNUP), [])
 
   const form = useForm<LoginInput>({
     resolver: standardSchemaResolver(loginSchema),

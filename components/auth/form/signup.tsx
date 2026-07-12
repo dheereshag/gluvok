@@ -13,7 +13,7 @@ import { z } from "zod"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { FieldGroup, FieldDescription, Field } from "@/components/ui/field"
-import { AuthCard, AuthInput } from "../common"
+import { AuthCard, AuthInput } from "@/components/auth/common"
 import { useAuthStore } from "@/lib/store"
 import { toast } from "sonner"
 import { cn, getNextParam, appendNextParam } from "@/lib/utils"
@@ -44,11 +44,7 @@ export function SignupForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const registerUser = useAuthStore((state) => state.registerUser)
-  const [signInLink, setSignInLink] = React.useState<string>(AppRoutes.LOGIN)
-
-  React.useEffect(() => {
-    setSignInLink(appendNextParam(AppRoutes.LOGIN))
-  }, [])
+  const signInLink = React.useMemo(() => appendNextParam(AppRoutes.LOGIN), [])
 
   const form = useForm<SignupInput>({
     resolver: standardSchemaResolver(signupSchema),
