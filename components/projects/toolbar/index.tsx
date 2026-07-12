@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Search, Plus, RotateCw, X } from "lucide-react"
 import { DataTableViewOptions } from "@/components/data-table"
 import { BulkActions } from "./bulk-actions"
-import { ProjectFilters } from "../filters"
+import { ProjectFilters } from "@/components/projects/filters"
 
 import { useAuthStore, getPermissions } from "@/lib/store"
 

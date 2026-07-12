@@ -52,6 +52,17 @@ const capabilityCardStyles = "flex items-start gap-3.5 p-4 rounded-xl border bg-
 const capabilityTitleStyles = cn(jakarta.className, "text-sm font-bold text-foreground")
 const capabilityDescStyles = cn(inter.className, "text-xs text-muted-foreground leading-relaxed")
 
+// Icon size shorthands reused inside SERVICES data
+const serviceIconCls = "h-5 w-5"
+const featureIconCls = "h-3 w-3"
+const badgeIconCls = "h-3 w-3"
+
+// Helpers to build the per-card accent border and badge background from a single color token
+const accentBorder = (color: string) =>
+  `border-t-2 border-t-${color}-500 dark:border-t-${color}-600`
+const badgeBg = (color: string) =>
+  `bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 border-${color}-500/20`
+
 interface FeatureItem {
   text: string
   icon: React.ReactNode
@@ -148,82 +159,55 @@ function ServiceCard({
 const SERVICES: ServiceCardProps[] = [
   {
     title: "Bring Your Own Database and/or Object Storage",
-    icon: <Database className="h-5 w-5" />,
+    icon: <Database className={serviceIconCls} />,
     description:
       "Connect your database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
     features: [
-      {
-        text: "Integrate your database directly into our backend platform.",
-        icon: <Link className="h-3 w-3" />,
-      },
-      {
-        text: "Support custom storage buckets or use managed storage.",
-        icon: <HardDrive className="h-3 w-3" />,
-      },
-      {
-        text: "Retain complete control over scaling performance.",
-        icon: <TrendingUp className="h-3 w-3" />,
-      },
+      { text: "Integrate your database directly into our backend platform.", icon: <Link className={featureIconCls} /> },
+      { text: "Support custom storage buckets or use managed storage.",      icon: <HardDrive className={featureIconCls} /> },
+      { text: "Retain complete control over scaling performance.",            icon: <TrendingUp className={featureIconCls} /> },
     ],
     caveat:
       "Your database health is your responsibility. Any service interruptions, slow queries, or data issues resulting from your database performance are not covered by our platform support.",
     caveatType: "warning",
-    accentClass: "border-t-2 border-t-blue-500 dark:border-t-blue-600",
+    accentClass: accentBorder("blue"),
     badgeText: "Flexible Control",
-    badgeIcon: <Settings className="h-3 w-3" />,
-    badgeBgClass: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+    badgeIcon: <Settings className={badgeIconCls} />,
+    badgeBgClass: badgeBg("blue"),
   },
   {
     title: "Everything Fully Managed And Coordinated By Us",
-    icon: <Cloud className="h-5 w-5" />,
+    icon: <Cloud className={serviceIconCls} />,
     description:
       "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while choosing how your tables and fields are structured.",
     features: [
-      {
-        text: "Host your database and backend server within our systems.",
-        icon: <Cpu className="h-3 w-3" />,
-      },
-      {
-        text: "Deploy instantly without server setup or maintenance.",
-        icon: <Zap className="h-3 w-3" />,
-      },
-      {
-        text: "Guarantee high availability with system updates.",
-        icon: <Clock className="h-3 w-3" />,
-      },
+      { text: "Host your database and backend server within our systems.", icon: <Cpu className={featureIconCls} /> },
+      { text: "Deploy instantly without server setup or maintenance.",      icon: <Zap className={featureIconCls} /> },
+      { text: "Guarantee high availability with system updates.",           icon: <Clock className={featureIconCls} /> },
     ],
     successNote:
       "We take full responsibility for database scaling, performance, security, and backups. Enjoy complete peace of mind with our fully monitored, highly available, and updated hosting services.",
-    accentClass: "border-t-2 border-t-emerald-500 dark:border-t-emerald-600",
+    accentClass: accentBorder("emerald"),
     badgeText: "Zero DevOps",
-    badgeIcon: <CheckCircle2 className="h-3 w-3" />,
-    badgeBgClass: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+    badgeIcon: <CheckCircle2 className={badgeIconCls} />,
+    badgeBgClass: badgeBg("emerald"),
   },
   {
     title: "Bring Your Own Private Application Server Host",
-    icon: <Server className="h-5 w-5" />,
+    icon: <Server className={serviceIconCls} />,
     description:
       "Host frontend and backend on your server using private Docker images with your database. Keep full deployment privacy and control without accessing the underlying business logic source code.",
     features: [
-      {
-        text: "Deploy our Docker containers directly on local servers.",
-        icon: <Box className="h-3 w-3" />,
-      },
-      {
-        text: "Connect to either our storage or your storage bucket.",
-        icon: <HardDrive className="h-3 w-3" />,
-      },
-      {
-        text: "Isolate application traffic within local networks.",
-        icon: <Lock className="h-3 w-3" />,
-      },
+      { text: "Deploy our Docker containers directly on local servers.",    icon: <Box className={featureIconCls} /> },
+      { text: "Connect to either our storage or your storage bucket.",      icon: <HardDrive className={featureIconCls} /> },
+      { text: "Isolate application traffic within local networks.",         icon: <Lock className={featureIconCls} /> },
     ],
     caveat:
       "Any server crashes, hardware bottlenecks, configuration errors, or log issues arising from your self-hosted infrastructure are your sole responsibility. We do not provide server maintenance.",
-    accentClass: "border-t-2 border-t-indigo-500 dark:border-t-indigo-600",
+    accentClass: accentBorder("indigo"),
     badgeText: "Maximum Privacy",
-    badgeIcon: <Shield className="h-3 w-3" />,
-    badgeBgClass: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-500/20",
+    badgeIcon: <Shield className={badgeIconCls} />,
+    badgeBgClass: badgeBg("indigo"),
   },
 ]
 
