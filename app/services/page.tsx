@@ -41,10 +41,10 @@ import { cn } from "@/lib/utils"
 const cardContainerStyles = "relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-1"
 const badgeBaseStyles = "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider w-fit shadow-sm"
 
-// Icon wrappers with background fill removed and border style added
+// Icon wrappers — service/capability keep border, feature list icons are borderless
 const iconWrapperBase = "flex shrink-0 items-center justify-center text-primary border border-primary/20"
 const serviceIconWrapper = cn(iconWrapperBase, "h-10 w-10 rounded-lg")
-const featureIconWrapper = cn(iconWrapperBase, "h-5 w-5 rounded mt-0.5")
+const featureIconWrapper = "flex shrink-0 items-center justify-center h-5 w-5 rounded mt-0.5 text-muted-foreground"
 const capabilityIconWrapper = cn(iconWrapperBase, "h-8 w-8 rounded-lg")
 
 // Capability card styles
@@ -163,8 +163,8 @@ const SERVICES: ServiceCardProps[] = [
     description:
       "Connect your database to our platform via our custom backend integration layer. Enjoy granular control over your fields and tables while keeping full ownership of your data hosting and performance management.",
     features: [
-      { text: "Integrate your database directly into our backend platform.", icon: <Link className={featureIconCls} /> },
-      { text: "Support custom storage buckets or use managed storage.",      icon: <HardDrive className={featureIconCls} /> },
+      { text: "Integrate your database directly into our backend platform.", icon: <Link      className={featureIconCls} /> },
+      { text: "Support custom storage buckets or use managed storage.",      icon: <HardDrive  className={featureIconCls} /> },
       { text: "Retain complete control over scaling performance.",            icon: <TrendingUp className={featureIconCls} /> },
     ],
     caveat:
@@ -181,8 +181,8 @@ const SERVICES: ServiceCardProps[] = [
     description:
       "Let us handle the infrastructure, from databases and server hosting to object storage setups. Get started instantly without DevOps overhead, while choosing how your tables and fields are structured.",
     features: [
-      { text: "Host your database and backend server within our systems.", icon: <Cpu className={featureIconCls} /> },
-      { text: "Deploy instantly without server setup or maintenance.",      icon: <Zap className={featureIconCls} /> },
+      { text: "Host your database and backend server within our systems.", icon: <Cpu   className={featureIconCls} /> },
+      { text: "Deploy instantly without server setup or maintenance.",      icon: <Zap   className={featureIconCls} /> },
       { text: "Guarantee high availability with system updates.",           icon: <Clock className={featureIconCls} /> },
     ],
     successNote:
@@ -198,9 +198,9 @@ const SERVICES: ServiceCardProps[] = [
     description:
       "Host frontend and backend on your server using private Docker images with your database. Keep full deployment privacy and control without accessing the underlying business logic source code.",
     features: [
-      { text: "Deploy our Docker containers directly on local servers.",    icon: <Box className={featureIconCls} /> },
+      { text: "Deploy our Docker containers directly on local servers.",    icon: <Box      className={featureIconCls} /> },
       { text: "Connect to either our storage or your storage bucket.",      icon: <HardDrive className={featureIconCls} /> },
-      { text: "Isolate application traffic within local networks.",         icon: <Lock className={featureIconCls} /> },
+      { text: "Isolate application traffic within local networks.",         icon: <Lock     className={featureIconCls} /> },
     ],
     caveat:
       "Any server crashes, hardware bottlenecks, configuration errors, or log issues arising from your self-hosted infrastructure are your sole responsibility. We do not provide server maintenance.",
