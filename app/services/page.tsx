@@ -16,7 +16,6 @@ import {
   Cloud,
   ShieldAlert,
   HardDrive,
-  Check,
   ShieldCheck,
   AlertTriangle,
   SlidersHorizontal,
@@ -29,7 +28,6 @@ import {
   Box,
   Lock,
   Cpu,
-  MessageSquare,
   Compass,
   HelpCircle,
   CheckCircle2,
@@ -37,6 +35,22 @@ import {
   Shield,
 } from "lucide-react"
 import { jakarta, inter } from "@/lib/fonts"
+import { cn } from "@/lib/utils"
+
+// Consolidated styles using the cn utility function
+const cardContainerStyles = "relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-1"
+const badgeBaseStyles = "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider w-fit shadow-sm"
+
+// Icon wrappers with background fill removed
+const iconWrapperBase = "flex shrink-0 items-center justify-center text-primary"
+const serviceIconWrapper = cn(iconWrapperBase, "h-10 w-10 rounded-lg")
+const featureIconWrapper = cn(iconWrapperBase, "h-5 w-5 rounded mt-0.5")
+const capabilityIconWrapper = cn(iconWrapperBase, "h-8 w-8 rounded-lg border border-primary/20")
+
+// Capability card styles
+const capabilityCardStyles = "flex items-start gap-3.5 p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-200"
+const capabilityTitleStyles = cn(jakarta.className, "text-sm font-bold text-foreground")
+const capabilityDescStyles = cn(inter.className, "text-xs text-muted-foreground leading-relaxed")
 
 interface FeatureItem {
   text: string
@@ -71,19 +85,19 @@ function ServiceCard({
   badgeBgClass,
 }: ServiceCardProps) {
   return (
-    <div className={`relative flex flex-col gap-5 rounded-xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-1 ${accentClass} ${inter.className}`}>
+    <div className={cn(cardContainerStyles, accentClass, inter.className)}>
       <div className="flex flex-col gap-3">
         {/* Category/Status Badge */}
-        <div className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider w-fit shadow-sm ${badgeBgClass}`}>
+        <div className={cn(badgeBaseStyles, badgeBgClass)}>
           {badgeIcon}
           <span>{badgeText}</span>
         </div>
 
         <div className="flex items-start gap-3 mt-1">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className={serviceIconWrapper}>
             {icon}
           </div>
-          <h2 className={`${jakarta.className} text-lg font-bold leading-snug text-foreground`}>{title}</h2>
+          <h2 className={cn(jakarta.className, "text-lg font-bold leading-snug text-foreground")}>{title}</h2>
         </div>
       </div>
 
@@ -92,7 +106,7 @@ function ServiceCard({
       <ul className="space-y-3 my-2">
         {features.map((f, idx) => (
           <li key={idx} className="flex items-start gap-2.5 text-sm text-foreground">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-muted/60 text-primary mt-0.5">
+            <span className={featureIconWrapper}>
               {f.icon}
             </span>
             <span className="leading-relaxed">{f.text}</span>
@@ -101,21 +115,23 @@ function ServiceCard({
       </ul>
 
       {caveat && (
-        <div className={`flex items-start gap-2.5 rounded-lg border px-4 py-3 mt-auto transition-colors ${
+        <div className={cn(
+          "flex items-start gap-2.5 rounded-lg border px-4 py-3 mt-auto transition-colors",
           caveatType === "warning"
             ? "border-amber-500/30 bg-amber-500/5"
             : "border-destructive/30 bg-destructive/5"
-        }`}>
+        )}>
           {caveatType === "warning" ? (
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-500" />
           ) : (
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           )}
-          <p className={`text-xs leading-relaxed ${
+          <p className={cn(
+            "text-xs leading-relaxed",
             caveatType === "warning"
               ? "text-amber-800 dark:text-amber-300"
               : "text-destructive/90"
-          }`}>{caveat}</p>
+          )}>{caveat}</p>
         </div>
       )}
 
@@ -241,11 +257,11 @@ export default function ServicesPage() {
               <span>Deployment Options</span>
             </div>
             <div className="space-y-2.5">
-              <h1 className={`${jakarta.className} text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5`}>
+              <h1 className={cn(jakarta.className, "text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2.5")}>
                 <Compass className="h-7 w-7 text-primary/80 shrink-0" />
                 How We Work With You
               </h1>
-              <p className={`${inter.className} text-muted-foreground text-sm leading-relaxed max-w-xl`}>
+              <p className={cn(inter.className, "text-muted-foreground text-sm leading-relaxed max-w-xl")}>
                 Choose the deployment model that fits your team. Whether you own your infrastructure, want us to handle
                 everything, or need a self-hosted setup — we have an option for you.
               </p>
@@ -254,29 +270,29 @@ export default function ServicesPage() {
 
           {/* Right Column - Highlight box explaining the two common features */}
           <div className="flex flex-col justify-center space-y-4 border-t pt-6 md:border-t-0 md:pt-0 md:border-l md:pl-8 border-border">
-            <h2 className={`${jakarta.className} text-xs font-bold uppercase tracking-wider text-muted-foreground`}>
+            <h2 className={cn(jakarta.className, "text-xs font-bold uppercase tracking-wider text-muted-foreground")}>
               Standard Capabilities Across All Models
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="flex items-start gap-3.5 p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-200">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+              <div className={capabilityCardStyles}>
+                <div className={capabilityIconWrapper}>
                   <SlidersHorizontal className="h-4 w-4" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className={`${jakarta.className} text-sm font-bold text-foreground`}>Granular Fields</h3>
-                  <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
-                    Hide specific fields per entity (e.g., exclude govt_id for customers so it won't appear).
+                  <h3 className={capabilityTitleStyles}>Granular Fields</h3>
+                  <p className={capabilityDescStyles}>
+                    Hide specific fields per entity (e.g., exclude govt_id for customers so it won&apos;t appear).
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3.5 p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all duration-200">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary">
+              <div className={capabilityCardStyles}>
+                <div className={capabilityIconWrapper}>
                   <TableProperties className="h-4 w-4" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className={`${jakarta.className} text-sm font-bold text-foreground`}>Entity Opt-outs</h3>
-                  <p className={`${inter.className} text-xs text-muted-foreground leading-relaxed`}>
-                    Opt out of tables completely (e.g., disable rates table entirely if you don't use it).
+                  <h3 className={capabilityTitleStyles}>Entity Opt-outs</h3>
+                  <p className={capabilityDescStyles}>
+                    Opt out of tables completely (e.g., disable rates table entirely if you don&apos;t use it).
                   </p>
                 </div>
               </div>
