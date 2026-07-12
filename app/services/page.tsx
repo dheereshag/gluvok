@@ -233,7 +233,7 @@ export default function ServicesPage() {
 
       <main className="p-8 w-full min-w-0 space-y-8">
         {/* Split Section Layout */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-stretch rounded-2xl border bg-gradient-to-br from-muted/40 via-muted/20 to-background p-6 md:p-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 items-stretch rounded-2xl border bg-gradient-to-br from-muted/40 via-muted/20 to-background p-6 md:p-8">
           {/* Left Column - Intro copy explaining deployment models */}
           <div className="flex flex-col justify-center space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs font-semibold text-primary w-fit shadow-sm">
@@ -253,11 +253,11 @@ export default function ServicesPage() {
           </div>
 
           {/* Right Column - Highlight box explaining the two common features */}
-          <div className="flex flex-col justify-center space-y-4 border-t pt-6 md:border-t-0 md:pt-0 md:border-l md:pl-8 border-border">
+          <div className="flex flex-col justify-center space-y-4 border-t pt-6 lg:border-t-0 lg:pt-0 lg:border-l lg:pl-8 border-border">
             <h2 className={cn(jakarta.className, "text-xs font-bold uppercase tracking-wider text-muted-foreground")}>
               Standard Capabilities Across All Models
             </h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               <div className={capabilityCardStyles}>
                 <div className={capabilityIconWrapper}>
                   <SlidersHorizontal className="h-4 w-4" />
@@ -284,9 +284,11 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((service, idx) => (
-            <ServiceCard key={idx} {...service} />
+            <div key={idx} className={idx === 2 ? "md:col-span-2 lg:col-span-1" : ""}>
+              <ServiceCard {...service} />
+            </div>
           ))}
         </div>
 
