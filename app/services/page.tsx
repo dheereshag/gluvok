@@ -58,10 +58,31 @@ const featureIconCls = "h-3 w-3"
 const badgeIconCls = "h-3 w-3"
 
 // Helpers to build the per-card accent border and badge background from a single color token
-const accentBorder = (color: string) =>
-  `border-t-2 border-t-${color}-500 dark:border-t-${color}-600`
-const badgeBg = (color: string) =>
-  `bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 border-${color}-500/20`
+const accentBorder = (color: string) => {
+  switch (color) {
+    case "blue":
+      return "border-t-2 border-t-blue-500 dark:border-t-blue-600"
+    case "emerald":
+      return "border-t-2 border-t-emerald-500 dark:border-t-emerald-600"
+    case "indigo":
+      return "border-t-2 border-t-indigo-500 dark:border-t-indigo-600"
+    default:
+      return ""
+  }
+}
+
+const badgeBg = (color: string) => {
+  switch (color) {
+    case "blue":
+      return "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20"
+    case "emerald":
+      return "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+    case "indigo":
+      return "bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-500/20"
+    default:
+      return ""
+  }
+}
 
 interface FeatureItem {
   text: string
