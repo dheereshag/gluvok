@@ -42,6 +42,7 @@ export function LogoHorizontal({ size = 64, className, ...props }: LogoHorizonta
       height={0}
       className={cn("object-contain w-auto h-auto", className)}
       {...props}
+      loading="eager"
     />
   )
 }
@@ -58,6 +59,7 @@ export function LogoVertical({ size = 64, className, ...props }: LogoVerticalPro
       height={0}
       className={cn("object-contain w-auto h-auto", className)}
       {...props}
+      loading="eager"
     />
-  )
+  );
 }

@@ -104,56 +104,72 @@ function ServiceCard({
           <span>{badgeText}</span>
         </div>
 
-        <div className="flex items-start gap-3 mt-1">
-          <div className={serviceIconWrapper}>
-            {icon}
-          </div>
-          <h2 className={cn(jakarta.className, "text-lg font-bold leading-snug text-foreground")}>{title}</h2>
+        <div className="flex items-center gap-3 mt-1">
+          <div className={serviceIconWrapper}>{icon}</div>
+          <h2
+            className={cn(
+              jakarta.className,
+              "text-lg font-bold leading-snug text-foreground",
+            )}
+          >
+            {title}
+          </h2>
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        {description}
+      </p>
 
       <ul className="space-y-3 my-2">
         {features.map((f, idx) => (
-          <li key={idx} className="flex items-start gap-2.5 text-sm text-foreground">
-            <span className={featureIconWrapper}>
-              {f.icon}
-            </span>
+          <li
+            key={idx}
+            className="flex items-start gap-2.5 text-sm text-foreground"
+          >
+            <span className={featureIconWrapper}>{f.icon}</span>
             <span className="leading-relaxed">{f.text}</span>
           </li>
         ))}
       </ul>
 
       {caveat && (
-        <div className={cn(
-          "flex items-start gap-2.5 rounded-lg border px-4 py-3 mt-auto transition-colors",
-          caveatType === "warning"
-            ? "border-amber-500/30 bg-amber-500/5"
-            : "border-destructive/30 bg-destructive/5"
-        )}>
+        <div
+          className={cn(
+            "flex items-start gap-2.5 rounded-lg border px-4 py-3 mt-auto transition-colors",
+            caveatType === "warning"
+              ? "border-amber-500/30 bg-amber-500/5"
+              : "border-destructive/30 bg-destructive/5",
+          )}
+        >
           {caveatType === "warning" ? (
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-500" />
           ) : (
             <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           )}
-          <p className={cn(
-            "text-xs leading-relaxed",
-            caveatType === "warning"
-              ? "text-amber-800 dark:text-amber-300"
-              : "text-destructive/90"
-          )}>{caveat}</p>
+          <p
+            className={cn(
+              "text-xs leading-relaxed",
+              caveatType === "warning"
+                ? "text-amber-800 dark:text-amber-300"
+                : "text-destructive/90",
+            )}
+          >
+            {caveat}
+          </p>
         </div>
       )}
 
       {successNote && (
         <div className="flex items-start gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-4 py-3 mt-auto">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-          <p className="text-xs leading-relaxed text-emerald-700 dark:text-emerald-400">{successNote}</p>
+          <p className="text-xs leading-relaxed text-emerald-700 dark:text-emerald-400">
+            {successNote}
+          </p>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 const SERVICES: ServiceCardProps[] = [
@@ -233,7 +249,7 @@ export default function ServicesPage() {
 
       <main className="p-8 w-full min-w-0 space-y-8">
         {/* Split Section Layout */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 items-stretch rounded-2xl border bg-gradient-to-br from-muted/40 via-muted/20 to-background p-6 md:p-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 items-stretch rounded-2xl border bg-linear-to-br from-muted/40 via-muted/20 to-background p-6 md:p-8">
           {/* Left Column - Intro copy explaining deployment models */}
           <div className="flex flex-col justify-center space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border bg-background px-3 py-1 text-xs font-semibold text-primary w-fit shadow-sm">
