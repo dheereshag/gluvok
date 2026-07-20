@@ -4,7 +4,7 @@
  */
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowLeftRight } from "lucide-react"
+import { Car, Weight, Ruler, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowLeftRight } from "lucide-react"
 import { EntityKey, WeighmentType } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
 import { cn } from "@/lib/utils"
@@ -41,7 +41,7 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         )
       }
     ),
-    createTextColumn(EntityKey.UNIT, ColumnLabel.UNIT, Weight),
+    createTextColumn(EntityKey.UNIT, ColumnLabel.UNIT, Ruler),
     {
       ...createBaseColumn(
         EntityKey.IMAGES,

@@ -5,7 +5,6 @@
  * @description Unit selector combobox component (kg, quintals, gallons).
  */
 
-import { Weight } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { Unit } from "@/lib/constants/enums"
 
@@ -32,7 +31,6 @@ export function UnitCombobox({ value, onChange, id }: UnitComboboxProps) {
       onChange={onChange}
       data={data}
       type="unit"
-      icon={Weight}
       placeholder="Select unit..."
       id={id}
     />

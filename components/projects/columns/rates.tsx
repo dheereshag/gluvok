@@ -4,7 +4,7 @@
  */
 
 import { ColumnDef } from "@tanstack/react-table"
-import { IndianRupee, Weight, Tag, Factory } from "lucide-react"
+import { IndianRupee, Ruler, Tag, Factory } from "lucide-react"
 import { EntityKey } from "@/lib/constants/enums"
 import { ColumnLabel } from "@/lib/constants/enums"
 import { createCustomColumn, createTextColumn, createIdColumn } from "./helpers"
@@ -31,6 +31,6 @@ export function getRatesColumns<T>(): ColumnDef<T>[] {
       }).format(price)
       return <div className="font-medium text-xs text-emerald-600 dark:text-emerald-500 font-mono">{formatted}</div>
     }),
-    createTextColumn(EntityKey.UNIT, ColumnLabel.UNIT, Weight),
+    createTextColumn(EntityKey.UNIT, ColumnLabel.UNIT, Ruler),
   ]
 }

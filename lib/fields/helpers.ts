@@ -3,8 +3,8 @@
  * @description Helper definitions or configuration for entity table fields (helpers).
  */
 
-import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName, FieldType } from "@/lib/constants/enums"
-import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, Weight, type LucideIcon } from "lucide-react"
+import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName } from "@/lib/constants/enums"
+import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
@@ -37,7 +37,7 @@ export function getReferencedEntitySlug(key: string | EntityKey): string | null 
 }
 
 export function isCommoditySlug(slug: string | ProjectSlug): boolean {
-  return slug === ProjectSlug.COMMODITIES || slug === "commodities"
+  return slug === ProjectSlug.COMMODITIES
 }
 
 const COMMODITY_ICON_MAP: Record<CommodityName, LucideIcon> = {
@@ -51,21 +51,14 @@ const COMMODITY_ICON_MAP: Record<CommodityName, LucideIcon> = {
 
 export function getCommodityIcon(name: string): LucideIcon {
   if (!name) return Package
-  const cleanName = name.split(" (ID:")[0].trim().toLowerCase()
-  const entry = Object.entries(COMMODITY_ICON_MAP).find(
-    ([key]) => key.toLowerCase() === cleanName
-  )
-  return entry ? entry[1] : Package
+  const baseName = name.split(" (ID:")[0].trim()
+  return COMMODITY_ICON_MAP[baseName as CommodityName] ?? Package
 }
 
 export function getItemIcon(type: string | ProjectSlug, label: string): LucideIcon | null {
-  switch (type as ProjectSlug | string) {
+  switch (type) {
     case ProjectSlug.COMMODITIES:
-    case "commodities":
       return getCommodityIcon(label)
-    case FieldType.UNIT:
-    case "unit":
-      return Weight
     default:
       return null
   }
