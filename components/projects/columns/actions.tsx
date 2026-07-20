@@ -63,7 +63,6 @@ interface ActionCellProps<T extends EntityRecord> {
   item: T
   projectSlug: string
   primaryIdKey: string
-  projectName: string
   callbacks: ColumnActionsCallbacks<T>
   canWrite: boolean
   canDelete: boolean
@@ -73,7 +72,6 @@ function ActionCell<T extends EntityRecord>({
   item,
   projectSlug,
   primaryIdKey,
-  projectName,
   callbacks,
   canWrite,
   canDelete,
@@ -105,7 +103,7 @@ function ActionCell<T extends EntityRecord>({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem id={`actions-edit-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2" onClick={() => callbacks.onEdit(item)}>
-                <Pencil className="h-3.5 w-3.5 text-muted-foreground" /> Edit {projectName}
+                <Pencil className="h-3.5 w-3.5 text-muted-foreground" /> Edit
               </DropdownMenuItem>
             </>
           )}
@@ -113,7 +111,7 @@ function ActionCell<T extends EntityRecord>({
             <>
               {!hasRowWrite && <DropdownMenuSeparator />}
               <DropdownMenuItem id={`actions-delete-${projectSlug}-${itemId}`} className="text-xs cursor-pointer gap-2 py-2 text-destructive focus:text-destructive focus:bg-destructive/10" onClick={() => callbacks.onDelete(item)}>
-                <Trash2 className="h-3.5 w-3.5 text-destructive" /> Delete {projectName}
+                <Trash2 className="h-3.5 w-3.5 text-destructive" /> Delete
               </DropdownMenuItem>
             </>
           )}
@@ -126,7 +124,7 @@ function ActionCell<T extends EntityRecord>({
 export function getActionsColumn<T extends EntityRecord>(
   projectSlug: string,
   primaryIdKey: string,
-  projectName: string,
+  _projectName: string,
   callbacks: ColumnActionsCallbacks<T>,
   permissions?: Permission
 ): ColumnDef<T> {
@@ -140,7 +138,6 @@ export function getActionsColumn<T extends EntityRecord>(
         item={row.original}
         projectSlug={projectSlug}
         primaryIdKey={primaryIdKey}
-        projectName={projectName}
         callbacks={callbacks}
         canWrite={canWrite}
         canDelete={canDelete}
