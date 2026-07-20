@@ -82,13 +82,7 @@ export function useProjectTable({
         if (colId === "actions" || colId === "select") {
           visibility[colId] = true
         } else {
-          // If a column is defined in the code but is completely missing from the saved columns list,
-          // it means it's a new column. We default it to visible (true) so it renders for existing users.
-          if (!savedVisibleColumns.includes(colId)) {
-            visibility[colId] = true
-          } else {
-            visibility[colId] = savedVisibleColumns.includes(colId)
-          }
+          visibility[colId] = savedVisibleColumns.includes(colId)
         }
       }
     })
@@ -96,6 +90,12 @@ export function useProjectTable({
   }, [savedVisibleColumns, columns])
 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialColumnVisibility)
+  const [prevSavedColumns, setPrevSavedColumns] = React.useState(savedVisibleColumns)
+
+  if (savedVisibleColumns !== prevSavedColumns) {
+    setPrevSavedColumns(savedVisibleColumns)
+    setColumnVisibility(initialColumnVisibility)
+  }
 
   const [localData, setLocalData] = React.useState<EntityRecord[]>([])
   const [localCount, setLocalCount] = React.useState(0)

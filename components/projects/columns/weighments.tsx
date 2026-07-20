@@ -36,11 +36,12 @@ export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
         const val = row.original as Weighment
         return (
           <div className="font-mono text-xs font-semibold text-foreground">
-            {val.weight} {val.unit || "kg"}
+            {val.weight}
           </div>
         )
       }
     ),
+    createTextColumn(EntityKey.UNIT, ColumnLabel.UNIT, Weight),
     {
       ...createBaseColumn(
         EntityKey.IMAGES,

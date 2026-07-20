@@ -5,7 +5,6 @@
  * @description Weighment type selector combobox component (in, out).
  */
 
-import { ArrowLeftRight } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { WeighmentType } from "@/lib/constants/enums"
 
@@ -31,7 +30,6 @@ export function TypeCombobox({ value, onChange, id }: TypeComboboxProps) {
       onChange={onChange}
       data={data}
       type="type"
-      icon={ArrowLeftRight}
       placeholder="Select type..."
       id={id}
     />
