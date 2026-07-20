@@ -47,9 +47,10 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="text-xs flex items-center gap-2"
+                className="text-xs flex items-center gap-2 cursor-pointer"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                onSelect={(e) => e.preventDefault()}
               >
                 <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
                 <span>{label}</span>

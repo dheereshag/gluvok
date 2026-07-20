@@ -11,9 +11,9 @@ export function generatePdfHtml(
   rowsHtml: string,
   selectedCount: number
 ): string {
-  const logoUrl = typeof window !== "undefined" ? `${window.location.origin}/logo.png` : "/logo.png"
+  const logoUrl = typeof window !== "undefined" ? `${window.location.origin}/logo-horizontal.png` : "/logo-horizontal.png"
   const logoHtml = `
-    <img src="${logoUrl}" width="32" height="32" alt="gluvok logo" style="object-fit: contain; border-radius: 8px;" />
+    <img src="${logoUrl}" height="36" alt="gluvok logo" style="object-fit: contain;" />
   `
   return `
     <!DOCTYPE html>
@@ -26,10 +26,6 @@ export function generatePdfHtml(
         <header>
           <div class="brand">
             ${logoHtml}
-            <div class="brand-text">
-              <h1>gluvok</h1>
-              <div class="subtitle">Scale Management Platform</div>
-            </div>
           </div>
           <div class="meta">
             Document: <span class="meta-value">${projectName} Export</span><br>
