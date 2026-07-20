@@ -17,6 +17,26 @@ import { fetchEntityListPaginated } from "@/lib/services"
 /** Stable empty object — avoids creating a new reference on every render in Zustand selectors */
 const EMPTY_FILTERS: Record<string, unknown> = {}
 
+/** Declarative map for entity-specific metadata pre-loading actions */
+const ENTITY_METADATA_LOADERS: Partial<Record<ProjectSlug | string, (store: ReturnType<typeof useEntitiesStore.getState>) => void>> = {
+  [ProjectSlug.WEIGHMENTS]: (store) => store.loadWeighmentFiltersData(),
+  [ProjectSlug.RATES]: (store) => store.loadCommodities(),
+  [ProjectSlug.CENTERS]: (store) => store.loadFactories(),
+}
+
+/** Computes initial or updated column visibility map based on saved preferences */
+function computeColumnVisibility(columns: ColumnDef<EntityRecord>[], savedVisibleColumns?: string[]): VisibilityState {
+  if (!savedVisibleColumns) return {}
+  const visibility: VisibilityState = {}
+  columns.forEach((col) => {
+    const colId = col.id || ('accessorKey' in col ? String(col.accessorKey) : undefined)
+    if (colId) {
+      visibility[colId] = colId === "actions" || colId === "select" ? true : savedVisibleColumns.includes(colId)
+    }
+  })
+  return visibility
+}
+
 interface UseProjectTableProps {
   projectSlug: string
   primaryIdKey: string
@@ -35,20 +55,24 @@ export function useProjectTable({
   const dialogStates = useProjectDialogStates()
   const user = useAuthStore((state) => state.user)
 
-  // Read preferences from localStorage-backed store
+  // Preferences state & selectors from Zustand localStorage-backed store
   const savedFilters = usePreferencesStore((state) => state.filters[projectSlug] ?? EMPTY_FILTERS)
   const savedVisibleColumns = usePreferencesStore((state) => state.columns[projectSlug])
   const setColumnPreferences = usePreferencesStore((state) => state.setColumnPreferences)
   const setFilterPreferences = usePreferencesStore((state) => state.setFilterPreferences)
 
+  // Local table controls state
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(() => {
-    return Object.entries(savedFilters).map(([id, value]) => ({ id, value }))
-  })
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(() =>
+    Object.entries(savedFilters).map(([id, value]) => ({ id, value }))
+  )
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState("")
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
+
   const { setEditingItem, setDeletingItem } = dialogStates
 
+  // Sync initial saved filters when rehydrated
   const hasSyncedInitialFilters = React.useRef(Object.keys(savedFilters).length > 0)
   React.useEffect(() => {
     if (!hasSyncedInitialFilters.current && Object.keys(savedFilters).length > 0) {
@@ -57,6 +81,7 @@ export function useProjectTable({
     }
   }, [savedFilters])
 
+  // Persist filter changes to store
   React.useEffect(() => {
     const filtersObj = parseColumnFilters(columnFilters)
     if (!areFiltersEqual(filtersObj, savedFilters)) {
@@ -64,6 +89,7 @@ export function useProjectTable({
     }
   }, [columnFilters, projectSlug, savedFilters, setFilterPreferences])
 
+  // Table columns & permissions calculation
   const permissions = React.useMemo(() => getPermissions(user?.role, projectSlug), [user?.role, projectSlug])
 
   const columns = React.useMemo<ColumnDef<EntityRecord>[]>(() => {
@@ -73,21 +99,11 @@ export function useProjectTable({
     }, permissions)
   }, [projectSlug, primaryIdKey, projectName, setEditingItem, setDeletingItem, permissions])
 
-  const initialColumnVisibility = React.useMemo(() => {
-    if (!savedVisibleColumns) return {}
-    const visibility: VisibilityState = {}
-    columns.forEach((col) => {
-      const colId = col.id || ('accessorKey' in col ? String(col.accessorKey) : undefined)
-      if (colId) {
-        if (colId === "actions" || colId === "select") {
-          visibility[colId] = true
-        } else {
-          visibility[colId] = savedVisibleColumns.includes(colId)
-        }
-      }
-    })
-    return visibility
-  }, [savedVisibleColumns, columns])
+  // Column visibility state synchronization
+  const initialColumnVisibility = React.useMemo(
+    () => computeColumnVisibility(columns, savedVisibleColumns),
+    [savedVisibleColumns, columns]
+  )
 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialColumnVisibility)
   const [prevSavedColumns, setPrevSavedColumns] = React.useState(savedVisibleColumns)
@@ -97,30 +113,21 @@ export function useProjectTable({
     setColumnVisibility(initialColumnVisibility)
   }
 
+  // Data fetching & search debouncing
   const [localData, setLocalData] = React.useState<EntityRecord[]>([])
   const [localCount, setLocalCount] = React.useState(0)
   const [localLoading, setLocalLoading] = React.useState(true)
-
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [debouncedFilter, setDebouncedFilter] = React.useState(globalFilter)
 
   const entitiesUpdatedTrigger = useEntitiesStore((state) => state.entitiesUpdatedTrigger)
-
-  // Debounced search logic to prevent spamming Supabase requests
-  const [debouncedFilter, setDebouncedFilter] = React.useState(globalFilter)
 
   React.useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedFilter(globalFilter)
-      // Reset to first page when search filter changes
       setPagination((prev) => ({ ...prev, pageIndex: 0 }))
     }, 300)
 
-    return () => {
-      clearTimeout(handler)
-    }
+    return () => clearTimeout(handler)
   }, [globalFilter])
 
   React.useEffect(() => {
@@ -154,6 +161,7 @@ export function useProjectTable({
     }
   }, [projectSlug, pagination.pageIndex, pagination.pageSize, sorting, debouncedFilter, columnFilters, entitiesUpdatedTrigger])
 
+  // TanStack Table Instance
   const table = useReactTable({
     data: localData,
     columns,
@@ -182,6 +190,7 @@ export function useProjectTable({
     },
   })
 
+  // Persist column visibility changes to store
   React.useEffect(() => {
     const visibleColumnsList = getVisibleColumnsList(table)
     if (!isStringArrayEqual(savedVisibleColumns, visibleColumnsList)) {
@@ -200,20 +209,11 @@ export function useProjectTable({
     return () => clearTimeout(timer)
   }, [])
 
+  // Pre-load required entity dropdown/filter data
   React.useEffect(() => {
-    const store = useEntitiesStore.getState()
-    switch (projectSlug) {
-      case ProjectSlug.WEIGHMENTS:
-        store.loadWeighmentFiltersData()
-        break
-      case ProjectSlug.RATES:
-        store.loadCommodities()
-        break
-      case ProjectSlug.CENTERS:
-        store.loadFactories()
-        break
-      default:
-        break
+    const loader = ENTITY_METADATA_LOADERS[projectSlug]
+    if (loader) {
+      loader(useEntitiesStore.getState())
     }
   }, [projectSlug])
 
@@ -223,7 +223,7 @@ export function useProjectTable({
     isReady,
     permissions,
     handleReload,
-    ...dialogStates
+    ...dialogStates,
   }
 }
 
