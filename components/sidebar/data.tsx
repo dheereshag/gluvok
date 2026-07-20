@@ -21,12 +21,12 @@ export const SIDEBAR_DATA = {
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: AppRoutes.SUPPORT,
       icon: <LifeBuoy />,
     },
     {
       title: "Feedback",
-      url: "#",
+      url: AppRoutes.FEEDBACK,
       icon: <Send />,
     },
     {
