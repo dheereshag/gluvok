@@ -129,7 +129,7 @@ describe("useProjectTable Hook", () => {
 
     expect(fetchEntityListPaginated).toHaveBeenCalledWith("centers", {
       page: 0,
-      pageSize: 10,
+      pageSize: 5,
       sortColumn: undefined,
       sortDesc: undefined,
       search: "",

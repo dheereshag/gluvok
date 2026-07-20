@@ -68,7 +68,7 @@ export function useProjectTable({
   )
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState("")
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 5 })
 
   const { setEditingItem, setDeletingItem } = dialogStates
 
