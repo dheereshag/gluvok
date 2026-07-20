@@ -37,12 +37,10 @@ export function BulkActions<TData>({ table, projectSlug, projectName, primaryIdK
 
   const handleDownloadPDF = () => {
     downloadPDF(table, projectName)
-    table.resetRowSelection()
   }
 
   const handleDownloadCSV = () => {
     downloadCSV(table, projectName)
-    table.resetRowSelection()
   }
 
 
