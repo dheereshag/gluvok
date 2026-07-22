@@ -5,18 +5,12 @@
  * @description Filter controls for the Centers entity table.
  */
 
+import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { Factory } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-} from "@/components/ui/select"
+import { BaseCombobox } from "@/components/combobox/base"
 
 interface CentersFiltersProps<TData> {
   table: Table<TData>
@@ -28,8 +22,6 @@ export function CentersFilters<TData>({ table }: CentersFiltersProps<TData>) {
   const columnFilters = table.getState().columnFilters
   const currentFactoryId = columnFilters.find((f) => f.id === EntityKey.FACTORY_ID)?.value
 
-  const selectedFactory = factories.find((f) => f.id === Number(currentFactoryId))
-
   const setColumnFilter = (id: string, value: unknown) => {
     table.setColumnFilters((prev) => {
       const filtered = prev.filter((f) => f.id !== id)
@@ -40,42 +32,29 @@ export function CentersFilters<TData>({ table }: CentersFiltersProps<TData>) {
     })
   }
 
+  const factoryOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Factories" },
+      ...factories.map((f) => ({
+        value: String(f.id),
+        label: `${f.name} (ID: ${f.id})`,
+      })),
+    ]
+  }, [factories])
+
   return (
     <div className="flex items-center gap-2">
-      <Select
+      <BaseCombobox
+        type="factory"
         value={currentFactoryId ? String(currentFactoryId) : "all"}
-        onValueChange={(val) =>
-          setColumnFilter(EntityKey.FACTORY_ID, val === "all" ? undefined : Number(val))
-        }
-      >
-        <SelectTrigger aria-label="Filter by Factory" className="h-9 text-xs bg-background shadow-sm">
-          <div className="flex items-center gap-1.5 truncate">
-            <Factory className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-            <span className="truncate">
-              {selectedFactory ? (
-                <>
-                  {selectedFactory.name} <span className="text-muted-foreground">(ID: {selectedFactory.id})</span>
-                </>
-              ) : (
-                "All Factories"
-              )}
-            </span>
-          </div>
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectLabel>Factory</SelectLabel>
-            <SelectItem value="all" className="text-xs">
-              All Factories
-            </SelectItem>
-            {factories.map((f) => (
-              <SelectItem key={f.id} value={String(f.id)} className="text-xs">
-                {f.name} <span className="text-muted-foreground ml-1">(ID: {f.id})</span>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onChange={(val) => setColumnFilter(EntityKey.FACTORY_ID, val === "all" ? undefined : Number(val))}
+        data={factoryOptions}
+        placeholder="All Factories"
+        searchPlaceholder="Search factory..."
+        icon={Factory}
+        className="w-auto"
+        id="filter-factory-combobox"
+      />
     </div>
   )
 }

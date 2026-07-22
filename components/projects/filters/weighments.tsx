@@ -5,18 +5,12 @@
  * @description Filter controls for the Weighments entity table.
  */
 
+import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { IndianRupee, Building, Users, User } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-} from "@/components/ui/select"
+import { BaseCombobox } from "@/components/combobox/base"
 import { DateRangeFilter } from "./date-range-filter"
 
 interface WeighmentsFiltersProps<TData> {
@@ -43,11 +37,6 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
   const currentCustomerId = columnFilters.find((f) => f.id === EntityKey.CUSTOMER_ID)?.value
   const currentProfileId = columnFilters.find((f) => f.id === EntityKey.PROFILE_ID)?.value
 
-  const selectedRate = rates.find((r) => r.id === Number(currentRateId))
-  const selectedCenter = centers.find((c) => c.id === Number(currentCenterId))
-  const selectedCustomer = customers.find((c) => c.id === Number(currentCustomerId))
-  const selectedProfile = profiles.find((p) => p.id === Number(currentProfileId))
-
   const setColumnFilter = (id: string, value: unknown) => {
     table.setColumnFilters((prev) => {
       const filtered = prev.filter((f) => f.id !== id)
@@ -58,140 +47,102 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
     })
   }
 
+  const rateOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Rates" },
+      ...rates.map((r) => ({
+        value: String(r.id),
+        label: r.label,
+      })),
+    ]
+  }, [rates])
+
+  const centerOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Centers" },
+      ...centers.map((c) => ({
+        value: String(c.id),
+        label: `${c.name} (ID: ${c.id})`,
+      })),
+    ]
+  }, [centers])
+
+  const customerOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Customers" },
+      ...customers.map((c) => ({
+        value: String(c.id),
+        label: `${c.name} (ID: ${c.id})`,
+      })),
+    ]
+  }, [customers])
+
+  const profileOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Profiles" },
+      ...profiles.map((p) => ({
+        value: String(p.id),
+        label: `${p.name} (ID: ${p.id})`,
+      })),
+    ]
+  }, [profiles])
+
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {/* Date Range */}
       <DateRangeFilter table={table} />
 
       {/* Rate */}
-      <Select
+      <BaseCombobox
+        type="rate"
         value={currentRateId ? String(currentRateId) : "all"}
-        onValueChange={(val) => setColumnFilter(EntityKey.RATE_ID, val === "all" ? undefined : Number(val))}
-      >
-        <SelectTrigger aria-label="Filter by Rate" className="h-9 text-xs bg-background shadow-sm">
-          <div className="flex items-center gap-1.5 truncate">
-            <IndianRupee className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-            <span className="truncate">
-              {selectedRate ? selectedRate.label : "All Rates"}
-            </span>
-          </div>
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectLabel>Rate</SelectLabel>
-            <SelectItem value="all" className="text-xs">
-              All Rates
-            </SelectItem>
-            {rates.map((r) => (
-              <SelectItem key={r.id} value={String(r.id)} className="text-xs">
-                {r.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onChange={(val) => setColumnFilter(EntityKey.RATE_ID, val === "all" ? undefined : Number(val))}
+        data={rateOptions}
+        placeholder="All Rates"
+        searchPlaceholder="Search rate..."
+        icon={IndianRupee}
+        className="w-auto"
+        id="filter-rate-combobox"
+      />
 
       {/* Center */}
-      <Select
+      <BaseCombobox
+        type="center"
         value={currentCenterId ? String(currentCenterId) : "all"}
-        onValueChange={(val) => setColumnFilter(EntityKey.CENTER_ID, val === "all" ? undefined : Number(val))}
-      >
-        <SelectTrigger aria-label="Filter by Center" className="h-9 text-xs bg-background shadow-sm">
-          <div className="flex items-center gap-1.5 truncate">
-            <Building className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-            <span className="truncate">
-              {selectedCenter ? (
-                <>
-                  {selectedCenter.name} <span className="text-muted-foreground">(ID: {selectedCenter.id})</span>
-                </>
-              ) : (
-                "All Centers"
-              )}
-            </span>
-          </div>
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectLabel>Center</SelectLabel>
-            <SelectItem value="all" className="text-xs">
-              All Centers
-            </SelectItem>
-            {centers.map((c) => (
-              <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onChange={(val) => setColumnFilter(EntityKey.CENTER_ID, val === "all" ? undefined : Number(val))}
+        data={centerOptions}
+        placeholder="All Centers"
+        searchPlaceholder="Search center..."
+        icon={Building}
+        className="w-auto"
+        id="filter-center-combobox"
+      />
 
       {/* Customer */}
-      <Select
+      <BaseCombobox
+        type="customer"
         value={currentCustomerId ? String(currentCustomerId) : "all"}
-        onValueChange={(val) => setColumnFilter(EntityKey.CUSTOMER_ID, val === "all" ? undefined : Number(val))}
-      >
-        <SelectTrigger aria-label="Filter by Customer" className="h-9 text-xs bg-background shadow-sm">
-          <div className="flex items-center gap-1.5 truncate">
-            <Users className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-            <span className="truncate">
-              {selectedCustomer ? (
-                <>
-                  {selectedCustomer.name} <span className="text-muted-foreground">(ID: {selectedCustomer.id})</span>
-                </>
-              ) : (
-                "All Customers"
-              )}
-            </span>
-          </div>
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectLabel>Customer</SelectLabel>
-            <SelectItem value="all" className="text-xs">
-              All Customers
-            </SelectItem>
-            {customers.map((c) => (
-              <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onChange={(val) => setColumnFilter(EntityKey.CUSTOMER_ID, val === "all" ? undefined : Number(val))}
+        data={customerOptions}
+        placeholder="All Customers"
+        searchPlaceholder="Search customer..."
+        icon={Users}
+        className="w-auto"
+        id="filter-customer-combobox"
+      />
 
       {/* Profile */}
-      <Select
+      <BaseCombobox
+        type="profile"
         value={currentProfileId ? String(currentProfileId) : "all"}
-        onValueChange={(val) => setColumnFilter(EntityKey.PROFILE_ID, val === "all" ? undefined : Number(val))}
-      >
-        <SelectTrigger aria-label="Filter by Profile" className="h-9 text-xs bg-background shadow-sm">
-          <div className="flex items-center gap-1.5 truncate">
-            <User className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-            <span className="truncate">
-              {selectedProfile ? (
-                <>
-                  {selectedProfile.name} <span className="text-muted-foreground">(ID: {selectedProfile.id})</span>
-                </>
-              ) : (
-                "All Profiles"
-              )}
-            </span>
-          </div>
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectGroup>
-            <SelectLabel>Profile</SelectLabel>
-            <SelectItem value="all" className="text-xs">
-              All Profiles
-            </SelectItem>
-            {profiles.map((p) => (
-              <SelectItem key={p.id} value={String(p.id)} className="text-xs">
-                {p.name} <span className="text-muted-foreground ml-1">(ID: {p.id})</span>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onChange={(val) => setColumnFilter(EntityKey.PROFILE_ID, val === "all" ? undefined : Number(val))}
+        data={profileOptions}
+        placeholder="All Profiles"
+        searchPlaceholder="Search profile..."
+        icon={User}
+        className="w-auto"
+        id="filter-profile-combobox"
+      />
     </div>
   )
 }
