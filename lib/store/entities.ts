@@ -99,7 +99,7 @@ export const useEntitiesStore = create<EntitiesState>((set, get) => ({
         supabase.from(ProjectSlug.CENTERS).select(CENTERS_SELECT_FIELDS).order(EntityKey.NAME),
         supabase.from(ProjectSlug.PROFILES).select(PROFILES_SELECT_FIELDS).order(EntityKey.NAME),
         supabase.from(ProjectSlug.CUSTOMERS).select(CUSTOMERS_SELECT_FIELDS).order(EntityKey.NAME),
-        supabase.from(ProjectSlug.RATES).select(RATES_SELECT_FIELDS).order("id"),
+        supabase.from(ProjectSlug.RATES).select(RATES_SELECT_FIELDS).order(EntityKey.ID),
       ])
 
       const centers = (c.data as IdNamePair[]) || []
