@@ -12,11 +12,24 @@ import { type ColumnFiltersState, type Table } from "@tanstack/react-table"
 /**
  * useProjectDialogStates hook
  * Manages open states and references to active entities for edit, delete, and create dialog overlays.
+ * Handlers are memoized via React.useCallback for referential stability in table columns.
  */
 export function useProjectDialogStates() {
-  const [editingItem, setEditingItem] = React.useState<EntityRecord | null>(null)
-  const [deletingItem, setDeletingItem] = React.useState<EntityRecord | null>(null)
-  const [creating, setCreating] = React.useState(false)
+  const [editingItem, setEditingItemState] = React.useState<EntityRecord | null>(null)
+  const [deletingItem, setDeletingItemState] = React.useState<EntityRecord | null>(null)
+  const [creating, setCreatingState] = React.useState(false)
+
+  const setEditingItem = React.useCallback((item: EntityRecord | null) => {
+    setEditingItemState(item)
+  }, [])
+
+  const setDeletingItem = React.useCallback((item: EntityRecord | null) => {
+    setDeletingItemState(item)
+  }, [])
+
+  const setCreating = React.useCallback((isCreating: boolean) => {
+    setCreatingState(isCreating)
+  }, [])
 
   return {
     editingItem,

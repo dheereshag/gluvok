@@ -64,6 +64,7 @@ export function DateRangeFilter<TData>({
           <Button
             variant="outline"
             id="date-picker-range"
+            aria-label="Filter by Date Range"
             className="h-9 text-xs justify-between font-normal bg-background shadow-sm px-2.5"
           >
             <span className="flex items-center truncate">

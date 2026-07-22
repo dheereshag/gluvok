@@ -48,7 +48,7 @@ export function CentersFilters<TData>({ table }: CentersFiltersProps<TData>) {
           setColumnFilter(EntityKey.FACTORY_ID, val === "all" ? undefined : Number(val))
         }
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Factory" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <Factory className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">

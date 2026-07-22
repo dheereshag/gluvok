@@ -51,7 +51,7 @@ export function ProfilesFilters<TData>({ table }: ProfilesFiltersProps<TData>) {
         value={currentRole ?? "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.ROLE, val === "all" ? undefined : val)}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Role" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">

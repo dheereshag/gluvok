@@ -5,7 +5,6 @@
  * @description Filter controls for the Rates entity table.
  */
 
-import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { Unit, EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
@@ -23,6 +22,11 @@ import { DateRangeFilter } from "./date-range-filter"
 
 interface RatesFiltersProps<TData> {
   table: Table<TData>
+}
+
+function renderCommodityIcon(name?: string) {
+  const Icon = name ? getCommodityIcon(name) : Package
+  return <Icon className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
 }
 
 export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
@@ -44,8 +48,6 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
     })
   }
 
-  const CommodityIcon = selectedCommodity ? getCommodityIcon(selectedCommodity.name) : Package
-
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {/* Date Range */}
@@ -56,9 +58,9 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
         value={currentCommodityId ? String(currentCommodityId) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.COMMODITY_ID, val === "all" ? undefined : Number(val))}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Commodity" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
-            <CommodityIcon className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+            {renderCommodityIcon(selectedCommodity?.name)}
             <span className="truncate">
               {selectedCommodity ? selectedCommodity.name : "All Commodities"}
             </span>
@@ -84,7 +86,7 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
         value={currentUnit ? String(currentUnit) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.UNIT, val === "all" ? undefined : val)}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Unit" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <Ruler className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">

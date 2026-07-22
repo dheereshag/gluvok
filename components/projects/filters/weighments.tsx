@@ -5,7 +5,6 @@
  * @description Filter controls for the Weighments entity table.
  */
 
-import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
@@ -69,7 +68,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
         value={currentRateId ? String(currentRateId) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.RATE_ID, val === "all" ? undefined : Number(val))}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Rate" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <IndianRupee className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
@@ -97,7 +96,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
         value={currentCenterId ? String(currentCenterId) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.CENTER_ID, val === "all" ? undefined : Number(val))}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Center" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <Building className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
@@ -131,7 +130,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
         value={currentCustomerId ? String(currentCustomerId) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.CUSTOMER_ID, val === "all" ? undefined : Number(val))}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Customer" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <Users className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
@@ -165,7 +164,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
         value={currentProfileId ? String(currentProfileId) : "all"}
         onValueChange={(val) => setColumnFilter(EntityKey.PROFILE_ID, val === "all" ? undefined : Number(val))}
       >
-        <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
+        <SelectTrigger aria-label="Filter by Profile" className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
             <User className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
