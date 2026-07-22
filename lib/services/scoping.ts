@@ -4,7 +4,7 @@
  */
 
 import { useAuthStore } from "@/lib/store/auth"
-import { Role } from "@/lib/constants/enums"
+import { Role, EntityKey } from "@/lib/constants/enums"
 import type { PostgrestFilterBuilder } from "@supabase/supabase-js"
 
 interface MockSchema {
@@ -69,7 +69,7 @@ export function applyPaginationAndSorting<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
   params: PaginatedParams,
   sortMap: Record<string, string> = {},
-  defaultSort = "updated_at"
+  defaultSort: string = EntityKey.UPDATED_AT
 ): AnyQuery<T> {
   const { page, pageSize, sortColumn, sortDesc } = params
   const from = page * pageSize
@@ -85,7 +85,7 @@ export function applyPaginationAndSorting<T extends Record<string, unknown>>(
 export function applyDateRangeFilter<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
   filters?: Record<string, unknown>,
-  dateColumn = "created_at"
+  dateColumn: string = EntityKey.CREATED_AT
 ): AnyQuery<T> {
   if (!filters) return query
 
@@ -125,13 +125,28 @@ export function applyColumnFilters<T extends Record<string, unknown>>(
   return q
 }
 
+/**
+ * Extract record IDs from query response and push Postgres `.in()` OR condition to conditions array
+ */
+export function addInCondition(
+  orConditions: string[],
+  key: string,
+  data: Array<{ id: number }> | null | undefined
+): void {
+  if (!data || data.length === 0) return
+  const ids = data.map((item) => item.id)
+  if (ids.length > 0) {
+    orConditions.push(`${key}.in.(${ids.join(",")})`)
+  }
+}
+
 function checkError(error: { message: string } | null): void {
   if (error) throw new Error(error.message)
 }
 
 export async function executeListQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
-  defaultOrder = "updated_at"
+  defaultOrder: string = EntityKey.UPDATED_AT
 ): Promise<T[]> {
   const { data, error } = await query.order(defaultOrder, { ascending: false })
   checkError(error)
@@ -142,7 +157,7 @@ export async function executeSingleQuery<T extends Record<string, unknown>>(
   query: AnyQuery<T>,
   id: number
 ): Promise<T> {
-  const { data, error } = await query.eq("id" as never, id).maybeSingle()
+  const { data, error } = await query.eq(EntityKey.ID as never, id).maybeSingle()
   checkError(error)
   if (!data) {
     throw new Error(`Record with ID ${id} not found`)
@@ -157,5 +172,3 @@ export async function executePaginatedQuery<T extends Record<string, unknown>>(
   checkError(error)
   return { data: data || [], count: count || 0 }
 }
-
-

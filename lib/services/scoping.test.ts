@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { useAuthStore } from "@/lib/store/auth"
-import { Role } from "@/lib/constants/enums"
+import { Role, EntityKey } from "@/lib/constants/enums"
 import {
   getScopingFilter,
   applyPaginationAndSorting,
@@ -119,7 +119,7 @@ describe("Query Scoping Services", () => {
         mockQuery as unknown as AnyQuery<Record<string, unknown>>,
         params,
         {},
-        "created_at"
+        EntityKey.CREATED_AT
       )
 
       // Page 2, PageSize 15 => from = 30, to = 44
@@ -143,11 +143,11 @@ describe("Query Scoping Services", () => {
         mockQuery as unknown as AnyQuery<Record<string, unknown>>,
         params,
         {},
-        "updated_at"
+        EntityKey.UPDATED_AT
       )
 
       expect(mockQuery.range).toHaveBeenCalledWith(0, 9)
-      expect(mockQuery.order).toHaveBeenCalledWith("updated_at", { ascending: false })
+      expect(mockQuery.order).toHaveBeenCalledWith(EntityKey.UPDATED_AT, { ascending: false })
     })
 
     it("should use mapped sort column if provided in sortMap", () => {
@@ -168,7 +168,7 @@ describe("Query Scoping Services", () => {
         mockQuery as unknown as AnyQuery<Record<string, unknown>>,
         params,
         sortMap,
-        "updated_at"
+        EntityKey.UPDATED_AT
       )
 
       expect(mockQuery.order).toHaveBeenCalledWith("factory_id", { ascending: true })
@@ -307,8 +307,8 @@ describe("Query Scoping Services", () => {
       expect(mockQuery.eq).not.toHaveBeenCalledWith("start_date", expect.anything())
 
       applyDateRangeFilter(mockQuery as unknown as AnyQuery<Record<string, unknown>>, filters)
-      expect(mockQuery.gte).toHaveBeenCalledWith("created_at", expect.any(String))
-      expect(mockQuery.lte).toHaveBeenCalledWith("created_at", expect.any(String))
+      expect(mockQuery.gte).toHaveBeenCalledWith(EntityKey.CREATED_AT, expect.any(String))
+      expect(mockQuery.lte).toHaveBeenCalledWith(EntityKey.CREATED_AT, expect.any(String))
     })
   })
 })

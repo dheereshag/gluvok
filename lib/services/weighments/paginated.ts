@@ -7,6 +7,7 @@ import {
   applyPaginationAndSorting,
   applyColumnFilters,
   applyDateRangeFilter,
+  addInCondition,
   executePaginatedQuery,
   type PaginatedParams,
 } from "../scoping"
@@ -44,14 +45,10 @@ export async function fetchWeighmentsPaginated(
       supabase.from(CUSTOMERS_TABLE).select(EntityKey.ID).ilike(EntityKey.NAME, `%${search}%`),
     ])
 
-    const centerIds = (centersRes.data || []).map((c: { id: number }) => c.id)
-    const profileIds = (profilesRes.data || []).map((p: { id: number }) => p.id)
-    const customerIds = (customersRes.data || []).map((c: { id: number }) => c.id)
-
     const orConditions: string[] = [`${EntityKey.VEHICLE_NUMBER}.ilike.%${search}%`]
-    if (centerIds.length > 0) orConditions.push(`${EntityKey.CENTER_ID}.in.(${centerIds.join(",")})`)
-    if (profileIds.length > 0) orConditions.push(`${EntityKey.PROFILE_ID}.in.(${profileIds.join(",")})`)
-    if (customerIds.length > 0) orConditions.push(`${EntityKey.CUSTOMER_ID}.in.(${customerIds.join(",")})`)
+    addInCondition(orConditions, EntityKey.CENTER_ID, centersRes.data)
+    addInCondition(orConditions, EntityKey.PROFILE_ID, profilesRes.data)
+    addInCondition(orConditions, EntityKey.CUSTOMER_ID, customersRes.data)
     query = query.or(orConditions.join(","))
   }
 

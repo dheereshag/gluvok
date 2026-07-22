@@ -7,6 +7,7 @@ import {
   applyPaginationAndSorting,
   applyColumnFilters,
   applyDateRangeFilter,
+  addInCondition,
   executePaginatedQuery,
   type PaginatedParams,
 } from "../scoping"
@@ -33,12 +34,10 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
       supabase.from(COMMODITIES_TABLE).select(EntityKey.ID).ilike(EntityKey.NAME, `%${search}%`),
       supabase.from(FACTORIES_TABLE).select(EntityKey.ID).ilike(EntityKey.NAME, `%${search}%`),
     ])
-    const cIds = (cRes.data || []).map((c: { id: number }) => c.id)
-    const fIds = (fRes.data || []).map((f: { id: number }) => f.id)
 
     const orConditions: string[] = [`${EntityKey.UNIT}.ilike.%${search}%`]
-    if (cIds.length > 0) orConditions.push(`${EntityKey.COMMODITY_ID}.in.(${cIds.join(",")})`)
-    if (fIds.length > 0) orConditions.push(`${EntityKey.FACTORY_ID}.in.(${fIds.join(",")})`)
+    addInCondition(orConditions, EntityKey.COMMODITY_ID, cRes.data)
+    addInCondition(orConditions, EntityKey.FACTORY_ID, fRes.data)
     query = query.or(orConditions.join(","))
   }
 
