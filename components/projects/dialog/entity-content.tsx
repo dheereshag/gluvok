@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button"
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
-import { FieldType, Role } from "@/lib/constants/enums"
-import { getSingularName } from "@/lib/fields"
+import { FieldType, Role, FieldSpan } from "@/lib/constants/enums"
+import { type FieldConfig, getSingularName } from "@/lib/fields"
 import { useAuthStore } from "@/lib/store"
 
 export function EntityDialogContent({
@@ -26,6 +26,96 @@ export function EntityDialogContent({
 
   const originalText = isEdit ? "Save changes" : `Save ${singularName}`
 
+  const renderField = (field: FieldConfig) => {
+    const disabled = (isEdit && field.key === primaryIdKey) ||
+                     (field.editableRoles && !field.editableRoles.includes(currentUser?.role as Role))
+
+    switch (field.type) {
+      case FieldType.CHECKBOX:
+        return (
+          <div key={field.key} className="flex flex-col gap-1.5 justify-end">
+            <span className="text-xs font-semibold text-muted-foreground opacity-0 select-none hidden sm:block">&nbsp;</span>
+            <div className="flex items-center gap-2 h-9 px-1">
+              <FormFieldInput
+                field={field}
+                form={form}
+                idPrefix={`${mode}-entity`}
+                disabled={disabled}
+                projectSlug={projectSlug}
+              />
+              <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none flex items-center gap-1.5">
+                {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+                {field.label}
+              </label>
+              {form.formState.errors[field.key] && (
+                <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
+              )}
+            </div>
+          </div>
+        )
+      default:
+        return (
+          <div key={field.key} className="flex flex-col gap-1.5 min-w-0 flex-1">
+            <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+              {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
+              {field.label}
+            </label>
+            <FormFieldInput
+              field={field}
+              form={form}
+              idPrefix={`${mode}-entity`}
+              disabled={disabled}
+              projectSlug={projectSlug}
+            />
+            {form.formState.errors[field.key] && (
+              <span className="text-destructive text-[11px] font-medium">{form.formState.errors[field.key]?.message as string}</span>
+            )}
+          </div>
+        )
+    }
+  }
+
+  const visibleFields = fields.filter((field) => {
+    const role = currentUser?.role as Role
+    if (field.visibleRoles && !field.visibleRoles.includes(role)) {
+      return false
+    }
+    if (isEdit && field.editVisibleRoles && !field.editVisibleRoles.includes(role)) {
+      return false
+    }
+    return true
+  })
+
+  type GroupItem = { span: FieldSpan; fields: FieldConfig[] }
+  const fieldGroups: GroupItem[] = []
+  let currentGroupSpan: FieldSpan | null = null
+  let currentGroup: FieldConfig[] = []
+
+  const flushGroup = () => {
+    if (currentGroup.length > 0 && currentGroupSpan) {
+      fieldGroups.push({ span: currentGroupSpan, fields: [...currentGroup] })
+      currentGroup = []
+      currentGroupSpan = null
+    }
+  }
+
+  visibleFields.forEach((field) => {
+    const fieldSpan: FieldSpan = field.span || (field.halfWidth ? FieldSpan.HALF : FieldSpan.FULL)
+    const maxInGroup = fieldSpan === FieldSpan.THIRD ? 3 : fieldSpan === FieldSpan.HALF ? 2 : 1
+
+    if (fieldSpan === FieldSpan.FULL) {
+      flushGroup()
+      fieldGroups.push({ span: FieldSpan.FULL, fields: [field] })
+    } else {
+      if (currentGroupSpan !== fieldSpan || currentGroup.length >= maxInGroup) {
+        flushGroup()
+      }
+      currentGroupSpan = fieldSpan
+      currentGroup.push(field)
+    }
+  })
+  flushGroup()
+
   return (
     <>
       <DialogHeader>
@@ -35,65 +125,19 @@ export function EntityDialogContent({
         <DialogDescription>{desc}</DialogDescription>
       </DialogHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-        {fields.map((field) => {
-          const isFieldVisible = (() => {
-            const role = currentUser?.role as Role
-            if (field.visibleRoles && !field.visibleRoles.includes(role)) {
-              return false
-            }
-            if (isEdit && field.editVisibleRoles && !field.editVisibleRoles.includes(role)) {
-              return false
-            }
-            return true
-          })()
-
-          if (!isFieldVisible) {
-            return null
+        {fieldGroups.map((group, groupIdx) => {
+          if (group.span === FieldSpan.FULL) {
+            return renderField(group.fields[0])
           }
+          const gridClass = group.span === FieldSpan.THIRD
+            ? "grid grid-cols-1 sm:grid-cols-3 gap-3"
+            : "grid grid-cols-2 gap-3"
 
-          const disabled = (isEdit && field.key === primaryIdKey) ||
-                           (field.editableRoles && !field.editableRoles.includes(currentUser?.role as Role))
-
-          switch (field.type) {
-            case FieldType.CHECKBOX:
-              return (
-                <div key={field.key} className="flex items-center gap-2 py-1">
-                  <FormFieldInput
-                    field={field}
-                    form={form}
-                    idPrefix={`${mode}-entity`}
-                    disabled={disabled}
-                    projectSlug={projectSlug}
-                  />
-                  <label htmlFor={`${mode}-entity-field-${field.key}`} className="text-xs font-semibold text-muted-foreground cursor-pointer select-none flex items-center gap-1.5">
-                    {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
-                    {field.label}
-                  </label>
-                  {form.formState.errors[field.key] && (
-                    <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
-                  )}
-                </div>
-              )
-            default:
-              return (
-                <div key={field.key} className="flex flex-col gap-1.5">
-                  <label htmlFor={`field-${field.key}`} className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    {field.icon && <field.icon className="h-3.5 w-3.5 text-muted-foreground/75" />}
-                    {field.label}
-                  </label>
-                  <FormFieldInput
-                    field={field}
-                    form={form}
-                    idPrefix={`${mode}-entity`}
-                    disabled={disabled}
-                    projectSlug={projectSlug}
-                  />
-                  {form.formState.errors[field.key] && (
-                    <span className="text-destructive text-[11px] font-medium">{form.formState.errors[field.key]?.message as string}</span>
-                  )}
-                </div>
-              )
-          }
+          return (
+            <div key={`group-${groupIdx}`} className={gridClass}>
+              {group.fields.map((field) => renderField(field))}
+            </div>
+          )
         })}
         <DialogFooter className="bg-transparent border-t-0 p-0 pt-4 mx-0 mb-0 flex flex-row items-center justify-end gap-3">
           <Button id={`${mode}-entity-cancel`} type="button" variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="gap-1.5 h-8 px-3 text-xs" disabled={form.formState.isSubmitting}>

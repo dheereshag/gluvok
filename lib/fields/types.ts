@@ -4,7 +4,9 @@
  */
 
 import { ComponentType } from "react"
-import { EntityKey, FieldType, InputMode, Role } from "@/lib/constants/enums"
+import { EntityKey, FieldType, InputMode, Role, FieldSpan } from "@/lib/constants/enums"
+
+export { FieldSpan }
 
 export interface FieldConfig {
   key: EntityKey
@@ -18,4 +20,6 @@ export interface FieldConfig {
   visibleRoles?: Role[]
   editVisibleRoles?: Role[]
   editableRoles?: Role[]
+  halfWidth?: boolean
+  span?: FieldSpan
 }

@@ -60,6 +60,12 @@ export function useEntityOptions(
 
         const opts = rawList.map((item) => {
           const { id, name } = extractor(item)
+          if (entitySlug === SystemSlug.USERS) {
+            return {
+              value: id,
+              label: name || id,
+            }
+          }
           const displayId = id.length > 8 ? `${id.substring(0, 8)}...` : id
           return {
             value: id,

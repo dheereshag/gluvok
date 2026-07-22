@@ -16,6 +16,13 @@ export enum Unit {
   KG = "kg",
   Q = "q",
   GAL = "gal",
+  T = "t",
+}
+
+export enum FieldSpan {
+  FULL = "full",
+  HALF = "half",
+  THIRD = "third",
 }
 
 export enum WeighmentType {
