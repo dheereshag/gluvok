@@ -63,17 +63,11 @@ export function ProfilesFilters<TData>({ table }: ProfilesFiltersProps<TData>) {
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Roles</span>
-              </div>
+              All Roles
             </SelectItem>
             {ROLE_OPTIONS.map((r) => (
               <SelectItem key={r.value} value={r.value} className="text-xs uppercase tracking-wide">
-                <div className="flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>{r.label}</span>
-                </div>
+                {r.label}
               </SelectItem>
             ))}
           </SelectGroup>

@@ -29,7 +29,7 @@ export function DateRangeFilter<TData>({
   table,
   startKey = "start_date",
   endKey = "end_date",
-  className = "w-64",
+  className = "w-auto",
 }: DateRangeFilterProps<TData>) {
   const columnFilters = table.getState().columnFilters
   const currentStartDateVal = columnFilters.find((f) => f.id === startKey)?.value as string | undefined
@@ -64,7 +64,7 @@ export function DateRangeFilter<TData>({
           <Button
             variant="outline"
             id="date-picker-range"
-            className="h-9 text-xs justify-between font-normal bg-background shadow-sm w-full px-2.5"
+            className="h-9 text-xs justify-between font-normal bg-background shadow-sm px-2.5"
           >
             <span className="flex items-center truncate">
               <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />

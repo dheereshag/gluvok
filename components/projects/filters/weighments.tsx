@@ -9,7 +9,7 @@ import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
-import { Receipt, Building, UserCheck, User } from "lucide-react"
+import { IndianRupee, Building, Users, User } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -71,7 +71,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
       >
         <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
-            <Receipt className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+            <IndianRupee className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
               {selectedRate ? selectedRate.label : "All Rates"}
             </span>
@@ -81,17 +81,11 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
           <SelectGroup>
             <SelectLabel>Rate</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Receipt className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Rates</span>
-              </div>
+              All Rates
             </SelectItem>
             {rates.map((r) => (
               <SelectItem key={r.id} value={String(r.id)} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <Receipt className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>{r.label}</span>
-                </div>
+                {r.label}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -121,19 +115,11 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
           <SelectGroup>
             <SelectLabel>Center</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Building className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Centers</span>
-              </div>
+              All Centers
             </SelectItem>
             {centers.map((c) => (
               <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <Building className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>
-                    {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
-                  </span>
-                </div>
+                {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -147,7 +133,7 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
       >
         <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
-            <UserCheck className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+            <Users className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
               {selectedCustomer ? (
                 <>
@@ -163,19 +149,11 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
           <SelectGroup>
             <SelectLabel>Customer</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <UserCheck className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Customers</span>
-              </div>
+              All Customers
             </SelectItem>
             {customers.map((c) => (
               <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <UserCheck className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>
-                    {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
-                  </span>
-                </div>
+                {c.name} <span className="text-muted-foreground ml-1">(ID: {c.id})</span>
               </SelectItem>
             ))}
           </SelectGroup>
@@ -205,19 +183,11 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
           <SelectGroup>
             <SelectLabel>Profile</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Profiles</span>
-              </div>
+              All Profiles
             </SelectItem>
             {profiles.map((p) => (
               <SelectItem key={p.id} value={String(p.id)} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <User className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>
-                    {p.name} <span className="text-muted-foreground ml-1">(ID: {p.id})</span>
-                  </span>
-                </div>
+                {p.name} <span className="text-muted-foreground ml-1">(ID: {p.id})</span>
               </SelectItem>
             ))}
           </SelectGroup>

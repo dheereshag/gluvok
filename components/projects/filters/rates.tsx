@@ -10,7 +10,7 @@ import { Table } from "@tanstack/react-table"
 import { Unit, EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
 import { getCommodityIcon } from "@/lib/fields"
-import { Package, Scale } from "lucide-react"
+import { Package, Ruler } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -68,22 +68,13 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
           <SelectGroup>
             <SelectLabel>Commodity</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Package className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Commodities</span>
-              </div>
+              All Commodities
             </SelectItem>
-            {commodities.map((c) => {
-              const Icon = getCommodityIcon(c.name)
-              return (
-                <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <Icon className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                    <span>{c.name}</span>
-                  </div>
-                </SelectItem>
-              )
-            })}
+            {commodities.map((c) => (
+              <SelectItem key={c.id} value={String(c.id)} className="text-xs">
+                {c.name}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -95,7 +86,7 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
       >
         <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
           <div className="flex items-center gap-1.5 truncate">
-            <Scale className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+            <Ruler className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
             <span className="truncate">
               {currentUnit ? String(currentUnit) : "All Units"}
             </span>
@@ -105,17 +96,11 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
           <SelectGroup>
             <SelectLabel>Unit</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Scale className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Units</span>
-              </div>
+              All Units
             </SelectItem>
             {Object.values(Unit).map((u) => (
               <SelectItem key={u} value={u} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <Scale className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>{u}</span>
-                </div>
+                {u}
               </SelectItem>
             ))}
           </SelectGroup>

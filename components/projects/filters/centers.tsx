@@ -5,7 +5,6 @@
  * @description Filter controls for the Centers entity table.
  */
 
-import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { EntityKey } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
@@ -67,19 +66,11 @@ export function CentersFilters<TData>({ table }: CentersFiltersProps<TData>) {
           <SelectGroup>
             <SelectLabel>Factory</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              <div className="flex items-center gap-1.5">
-                <Factory className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                <span>All Factories</span>
-              </div>
+              All Factories
             </SelectItem>
             {factories.map((f) => (
               <SelectItem key={f.id} value={String(f.id)} className="text-xs">
-                <div className="flex items-center gap-1.5">
-                  <Factory className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
-                  <span>
-                    {f.name} <span className="text-muted-foreground ml-1">(ID: {f.id})</span>
-                  </span>
-                </div>
+                {f.name} <span className="text-muted-foreground ml-1">(ID: {f.id})</span>
               </SelectItem>
             ))}
           </SelectGroup>
