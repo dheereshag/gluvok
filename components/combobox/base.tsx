@@ -80,7 +80,7 @@ export function BaseCombobox({
       <ComboboxContent
         className={cn("max-h-72", contentClassName)}
         popoverOptions={{
-          style: { width: "max-content" },
+          style: { minWidth: "var(--radix-popover-trigger-width)", width: "max-content" },
         }}
       >
         <ComboboxInput
