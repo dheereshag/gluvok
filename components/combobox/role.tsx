@@ -6,9 +6,9 @@
  * Limits option lists depending on the current user's role/value.
  */
 
-import { Shield } from "lucide-react"
 import { BaseCombobox } from "./base"
 import { Role, RoleLabel } from "@/lib/constants/enums"
+import { getRoleIcon } from "@/lib/fields/helpers"
 
 interface RoleComboboxProps {
   value: string
@@ -30,13 +30,15 @@ export function RoleCombobox({ value, onChange, id }: RoleComboboxProps) {
     { value: Role.BASE, label: RoleLabel.BASE },
   ]
 
+  const ActiveIcon = getRoleIcon(value)
+
   return (
     <BaseCombobox
       value={value}
       onChange={onChange}
       data={data}
       type="role"
-      icon={Shield}
+      icon={ActiveIcon}
       placeholder="Select role..."
       id={id}
     />

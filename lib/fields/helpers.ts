@@ -3,8 +3,8 @@
  * @description Helper definitions or configuration for entity table fields (helpers).
  */
 
-import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName } from "@/lib/constants/enums"
-import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, type LucideIcon } from "lucide-react"
+import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName, Role, RoleLabel } from "@/lib/constants/enums"
+import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, Crown, ShieldCheck, Briefcase, HardHat, User, Cpu, Shield, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
@@ -55,10 +55,40 @@ export function getCommodityIcon(name: string): LucideIcon {
   return COMMODITY_ICON_MAP[baseName as CommodityName] ?? Package
 }
 
+export function getRoleIcon(role?: string): LucideIcon {
+  if (!role) return Shield
+  const normalized = role.toLowerCase().replace(/[\s_-]+/g, "_").trim()
+  switch (normalized) {
+    case Role.SUPER_ADMIN:
+    case RoleLabel.SUPER_ADMIN.toLowerCase().replace(/\s+/g, "_"):
+      return Crown
+    case Role.ADMIN:
+    case RoleLabel.ADMIN.toLowerCase():
+      return ShieldCheck
+    case Role.MANAGER:
+    case RoleLabel.MANAGER.toLowerCase():
+      return Briefcase
+    case Role.OPERATOR:
+    case RoleLabel.OPERATOR.toLowerCase():
+      return HardHat
+    case Role.BASE:
+    case RoleLabel.BASE.toLowerCase():
+      return User
+    case Role.HARDWARE:
+    case RoleLabel.HARDWARE.toLowerCase():
+      return Cpu
+    default:
+      return Shield
+  }
+}
+
 export function getItemIcon(type: string | ProjectSlug, label: string): LucideIcon | null {
   switch (type) {
     case ProjectSlug.COMMODITIES:
       return getCommodityIcon(label)
+    case "role":
+    case "roles":
+      return getRoleIcon(label)
     default:
       return null
   }
