@@ -140,6 +140,19 @@ export function addInCondition(
   }
 }
 
+/**
+ * Loop over multiple [key, queryResult] tuples to push Postgres `.in()` OR conditions
+ */
+export function addInConditions(
+  orConditions: string[],
+  items: Array<[string, { data?: Array<{ id: number }> | null } | Array<{ id: number }> | null | undefined]>
+): void {
+  for (const [key, raw] of items) {
+    const data = Array.isArray(raw) ? raw : raw?.data
+    addInCondition(orConditions, key, data)
+  }
+}
+
 function checkError(error: { message: string } | null): void {
   if (error) throw new Error(error.message)
 }

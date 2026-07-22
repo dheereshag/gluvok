@@ -7,7 +7,7 @@ import {
   applyPaginationAndSorting,
   applyColumnFilters,
   applyDateRangeFilter,
-  addInCondition,
+  addInConditions,
   executePaginatedQuery,
   type PaginatedParams,
 } from "../scoping"
@@ -36,8 +36,10 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
     ])
 
     const orConditions: string[] = [`${EntityKey.UNIT}.ilike.%${search}%`]
-    addInCondition(orConditions, EntityKey.COMMODITY_ID, cRes.data)
-    addInCondition(orConditions, EntityKey.FACTORY_ID, fRes.data)
+    addInConditions(orConditions, [
+      [EntityKey.COMMODITY_ID, cRes],
+      [EntityKey.FACTORY_ID, fRes],
+    ])
     query = query.or(orConditions.join(","))
   }
 

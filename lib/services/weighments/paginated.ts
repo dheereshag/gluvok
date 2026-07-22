@@ -7,7 +7,7 @@ import {
   applyPaginationAndSorting,
   applyColumnFilters,
   applyDateRangeFilter,
-  addInCondition,
+  addInConditions,
   executePaginatedQuery,
   type PaginatedParams,
 } from "../scoping"
@@ -46,9 +46,11 @@ export async function fetchWeighmentsPaginated(
     ])
 
     const orConditions: string[] = [`${EntityKey.VEHICLE_NUMBER}.ilike.%${search}%`]
-    addInCondition(orConditions, EntityKey.CENTER_ID, centersRes.data)
-    addInCondition(orConditions, EntityKey.PROFILE_ID, profilesRes.data)
-    addInCondition(orConditions, EntityKey.CUSTOMER_ID, customersRes.data)
+    addInConditions(orConditions, [
+      [EntityKey.CENTER_ID, centersRes],
+      [EntityKey.PROFILE_ID, profilesRes],
+      [EntityKey.CUSTOMER_ID, customersRes],
+    ])
     query = query.or(orConditions.join(","))
   }
 
