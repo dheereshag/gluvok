@@ -43,6 +43,22 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
   if (filters.customer_id) query = query.eq(EntityKey.CUSTOMER_ID, filters.customer_id as number)
   if (filters.profile_id)  query = query.eq(EntityKey.PROFILE_ID,  filters.profile_id  as number)
 
+  if (filters.start_date) {
+    const startDate = new Date(filters.start_date as string)
+    if (!isNaN(startDate.getTime())) {
+      startDate.setHours(0, 0, 0, 0)
+      query = query.gte(EntityKey.CREATED_AT, startDate.toISOString())
+    }
+  }
+
+  if (filters.end_date) {
+    const endDate = new Date(filters.end_date as string)
+    if (!isNaN(endDate.getTime())) {
+      endDate.setHours(23, 59, 59, 999)
+      query = query.lte(EntityKey.CREATED_AT, endDate.toISOString())
+    }
+  }
+
   query = applyPaginationAndSorting(query, params, {
     [EntityKey.CENTER_NAME]: EntityKey.CENTER_ID,
     [EntityKey.PROFILE_NAME]: EntityKey.PROFILE_ID,
