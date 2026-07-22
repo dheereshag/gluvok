@@ -25,6 +25,7 @@ export function DeleteEntityDialogContent({
   const deleteEntity = useEntitiesStore((state) => state.deleteEntity)
   const isBulk = !!items && items.length > 0
   const count = items?.length || 0
+  const singularName = getSingularName(projectName || "Item")
 
   const onDeleteConfirm = async () => {
     try {
@@ -62,7 +63,7 @@ export function DeleteEntityDialogContent({
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2 text-destructive">
           <div className="p-1.5 rounded-lg bg-destructive/10"><AlertTriangle className="h-4 w-4 text-destructive" /></div>
-          Delete {isBulk ? "Selected" : (projectName || "Item")}
+          Delete {isBulk ? "Selected" : singularName}
         </DialogTitle>
         <DialogDescription className="pt-2 text-xs leading-relaxed text-muted-foreground text-left">
           Are you sure you want to delete <span className="font-semibold text-foreground">{displayName}</span>? This action cannot be undone.
