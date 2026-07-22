@@ -70,13 +70,22 @@ export function RatesFilters<TData>({ table }: RatesFiltersProps<TData>) {
           <SelectGroup>
             <SelectLabel>Commodity</SelectLabel>
             <SelectItem value="all" className="text-xs">
-              All Commodities
+              <div className="flex items-center gap-1.5">
+                <Package className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+                <span>All Commodities</span>
+              </div>
             </SelectItem>
-            {commodities.map((c) => (
-              <SelectItem key={c.id} value={String(c.id)} className="text-xs">
-                {c.name}
-              </SelectItem>
-            ))}
+            {commodities.map((c) => {
+              const Icon = getCommodityIcon(c.name)
+              return (
+                <SelectItem key={c.id} value={String(c.id)} className="text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Icon className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+                    <span>{c.name}</span>
+                  </div>
+                </SelectItem>
+              )
+            })}
           </SelectGroup>
         </SelectContent>
       </Select>
