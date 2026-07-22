@@ -3,8 +3,8 @@
  * @description Helper definitions or configuration for entity table fields (helpers).
  */
 
-import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName, Role, RoleLabel } from "@/lib/constants/enums"
-import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, Crown, ShieldCheck, Briefcase, HardHat, User, Cpu, Shield, type LucideIcon } from "lucide-react"
+import { ProjectSlug, EntityKey, CommodityName, ProjectName, SystemSlug, SingularEntityName, Role, RoleLabel, WeighmentType } from "@/lib/constants/enums"
+import { Sprout, Wheat, Droplet, Hammer, Package, Leaf, Wine, Crown, ShieldCheck, Briefcase, HardHat, User, Cpu, Shield, ArrowDownLeft, ArrowUpRight, ArrowUpDown, type LucideIcon } from "lucide-react"
 
 export function getPrimaryIdKey(slug: string | ProjectSlug): EntityKey {
   switch (slug) {
@@ -82,6 +82,19 @@ export function getRoleIcon(role?: string): LucideIcon {
   }
 }
 
+export function getTypeIcon(typeVal?: string): LucideIcon {
+  if (!typeVal) return ArrowUpDown
+  const normalized = typeVal.toLowerCase().trim()
+  switch (normalized) {
+    case WeighmentType.IN:
+      return ArrowDownLeft
+    case WeighmentType.OUT:
+      return ArrowUpRight
+    default:
+      return ArrowUpDown
+  }
+}
+
 export function getItemIcon(type: string | ProjectSlug, label: string): LucideIcon | null {
   switch (type) {
     case ProjectSlug.COMMODITIES:
@@ -89,6 +102,9 @@ export function getItemIcon(type: string | ProjectSlug, label: string): LucideIc
     case "role":
     case "roles":
       return getRoleIcon(label)
+    case "type":
+    case "types":
+      return getTypeIcon(label)
     default:
       return null
   }

@@ -16,7 +16,6 @@ export enum Unit {
   KG = "kg",
   Q = "q",
   GAL = "gal",
-  T = "t",
 }
 
 export enum FieldSpan {

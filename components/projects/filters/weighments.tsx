@@ -7,10 +7,11 @@
 
 import * as React from "react"
 import { Table } from "@tanstack/react-table"
-import { EntityKey } from "@/lib/constants/enums"
+import { EntityKey, Unit, WeighmentType } from "@/lib/constants/enums"
 import { useEntitiesStore } from "@/lib/store"
-import { IndianRupee, Building, Users, User } from "lucide-react"
+import { IndianRupee, Building, Users, User, Ruler } from "lucide-react"
 import { BaseCombobox } from "@/components/combobox/base"
+import { getTypeIcon } from "@/lib/fields/helpers"
 import { DateRangeFilter } from "./date-range-filter"
 
 interface WeighmentsFiltersProps<TData> {
@@ -32,6 +33,8 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
   const { centers, profiles, customers, rates } = useWeighmentsFilterData()
 
   const columnFilters = table.getState().columnFilters
+  const currentType = columnFilters.find((f) => f.id === EntityKey.TYPE)?.value
+  const currentUnit = columnFilters.find((f) => f.id === EntityKey.UNIT)?.value
   const currentRateId = columnFilters.find((f) => f.id === EntityKey.RATE_ID)?.value
   const currentCenterId = columnFilters.find((f) => f.id === EntityKey.CENTER_ID)?.value
   const currentCustomerId = columnFilters.find((f) => f.id === EntityKey.CUSTOMER_ID)?.value
@@ -46,6 +49,24 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
       return filtered
     })
   }
+
+  const typeOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Types" },
+      { value: WeighmentType.IN, label: "In" },
+      { value: WeighmentType.OUT, label: "Out" },
+    ]
+  }, [])
+
+  const unitOptions = React.useMemo(() => {
+    return [
+      { value: "all", label: "All Units" },
+      ...Object.values(Unit).map((u) => ({
+        value: u,
+        label: u,
+      })),
+    ]
+  }, [])
 
   const rateOptions = React.useMemo(() => {
     return [
@@ -91,6 +112,32 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
     <div className="flex items-center gap-2 flex-wrap">
       {/* Date Range */}
       <DateRangeFilter table={table} />
+
+      {/* Type */}
+      <BaseCombobox
+        type="type"
+        value={currentType ? String(currentType) : "all"}
+        onChange={(val) => setColumnFilter(EntityKey.TYPE, val === "all" ? undefined : val)}
+        data={typeOptions}
+        placeholder="All Types"
+        searchPlaceholder="Search type..."
+        icon={getTypeIcon(currentType as string)}
+        className="w-auto"
+        id="filter-type-combobox"
+      />
+
+      {/* Unit */}
+      <BaseCombobox
+        type="unit"
+        value={currentUnit ? String(currentUnit) : "all"}
+        onChange={(val) => setColumnFilter(EntityKey.UNIT, val === "all" ? undefined : val)}
+        data={unitOptions}
+        placeholder="All Units"
+        searchPlaceholder="Search unit..."
+        icon={Ruler}
+        className="w-auto"
+        id="filter-unit-combobox"
+      />
 
       {/* Rate */}
       <BaseCombobox

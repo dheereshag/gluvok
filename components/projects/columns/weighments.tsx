@@ -4,9 +4,10 @@
  */
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Car, Weight, Ruler, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowLeftRight } from "lucide-react"
+import { Car, Weight, Ruler, Power, Image, Package, Building, Fingerprint, User, ShieldCheck, Users, ArrowUpDown } from "lucide-react"
 import { EntityKey, WeighmentType } from "@/lib/constants/enums"
 import { ColumnLabel, ActiveStatus } from "@/lib/constants/enums"
+import { getTypeIcon } from "@/lib/fields/helpers"
 import { cn } from "@/lib/utils"
 import { type Weighment } from "@/types"
 import { createTextColumn, createBaseColumn, createCustomColumn, createIdColumn, badgeBaseClass } from "./helpers"
@@ -15,16 +16,19 @@ import { WeighmentImagesCell } from "./weighments-cell"
 export function getWeighmentsColumns<T>(): ColumnDef<T>[] {
   return [
     createTextColumn(EntityKey.VEHICLE_NUMBER, ColumnLabel.VEHICLE_NUMBER, Car),
-    createCustomColumn(EntityKey.TYPE, ColumnLabel.TYPE, ArrowLeftRight, (val) => {
+    createCustomColumn(EntityKey.TYPE, ColumnLabel.TYPE, ArrowUpDown, (val) => {
       const isOut = val === WeighmentType.OUT
+      const TypeIcon = getTypeIcon(String(val))
       return (
         <span className={cn(
           badgeBaseClass,
+          "gap-1",
           isOut
             ? "bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800/30"
             : "bg-blue-50 text-blue-700 border border-blue-200/50 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/30"
         )}>
-          {isOut ? "Out" : "In"}
+          <TypeIcon className="h-3 w-3 shrink-0" />
+          <span>{isOut ? "Out" : "In"}</span>
         </span>
       )
     }),

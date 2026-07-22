@@ -7,6 +7,7 @@
 
 import { BaseCombobox } from "./base"
 import { WeighmentType } from "@/lib/constants/enums"
+import { getTypeIcon } from "@/lib/fields/helpers"
 
 interface TypeComboboxProps {
   value: string
@@ -24,12 +25,15 @@ const data = [
  * Renders a dropdown to select a weighment transaction type (incoming vs outgoing).
  */
 export function TypeCombobox({ value, onChange, id }: TypeComboboxProps) {
+  const ActiveIcon = getTypeIcon(value)
+
   return (
     <BaseCombobox
       value={value}
       onChange={onChange}
       data={data}
       type="type"
+      icon={ActiveIcon}
       placeholder="Select type..."
       id={id}
     />

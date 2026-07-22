@@ -18,7 +18,6 @@ const data = [
   { value: Unit.KG, label: Unit.KG },
   { value: Unit.Q, label: Unit.Q },
   { value: Unit.GAL, label: Unit.GAL },
-  { value: Unit.T, label: Unit.T },
 ]
 
 /**
