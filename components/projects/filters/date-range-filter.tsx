@@ -11,7 +11,6 @@ import { type DateRange } from "react-day-picker"
 import { Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Field, FieldLabel } from "@/components/ui/field"
 import {
   Popover,
   PopoverContent,
@@ -21,7 +20,6 @@ import { Calendar as CalendarIcon } from "lucide-react"
 
 interface DateRangeFilterProps<TData> {
   table: Table<TData>
-  label?: string
   startKey?: string
   endKey?: string
   className?: string
@@ -29,7 +27,6 @@ interface DateRangeFilterProps<TData> {
 
 export function DateRangeFilter<TData>({
   table,
-  label = "Date Range",
   startKey = "start_date",
   endKey = "end_date",
   className = "w-64",
@@ -61,10 +58,7 @@ export function DateRangeFilter<TData>({
   }
 
   return (
-    <Field className={className}>
-      <FieldLabel htmlFor="date-picker-range" className="text-xs font-medium text-muted-foreground mb-1">
-        {label}
-      </FieldLabel>
+    <div className={className}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -99,6 +93,6 @@ export function DateRangeFilter<TData>({
           />
         </PopoverContent>
       </Popover>
-    </Field>
+    </div>
   )
 }

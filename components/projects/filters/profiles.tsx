@@ -8,6 +8,7 @@
 import * as React from "react"
 import { Table } from "@tanstack/react-table"
 import { Role, RoleLabel, EntityKey } from "@/lib/constants/enums"
+import { Shield } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 
 interface ProfilesFiltersProps<TData> {
@@ -32,6 +32,8 @@ const ROLE_OPTIONS: { value: Role; label: string }[] = [
 export function ProfilesFilters<TData>({ table }: ProfilesFiltersProps<TData>) {
   const columnFilters = table.getState().columnFilters
   const currentRole = columnFilters.find((f) => f.id === EntityKey.ROLE)?.value as string | undefined
+
+  const selectedRoleOption = ROLE_OPTIONS.find((r) => r.value === currentRole)
 
   const setColumnFilter = (id: string, value: unknown) => {
     table.setColumnFilters((prev) => {
@@ -50,15 +52,28 @@ export function ProfilesFilters<TData>({ table }: ProfilesFiltersProps<TData>) {
         onValueChange={(val) => setColumnFilter(EntityKey.ROLE, val === "all" ? undefined : val)}
       >
         <SelectTrigger className="h-9 text-xs bg-background shadow-sm">
-          <SelectValue placeholder="All Roles" />
+          <div className="flex items-center gap-1.5 truncate">
+            <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+            <span className="truncate">
+              {selectedRoleOption ? selectedRoleOption.label : "All Roles"}
+            </span>
+          </div>
         </SelectTrigger>
         <SelectContent position="popper">
           <SelectGroup>
             <SelectLabel>Role</SelectLabel>
-            <SelectItem value="all" className="text-xs">All Roles</SelectItem>
+            <SelectItem value="all" className="text-xs">
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+                <span>All Roles</span>
+              </div>
+            </SelectItem>
             {ROLE_OPTIONS.map((r) => (
               <SelectItem key={r.value} value={r.value} className="text-xs uppercase tracking-wide">
-                {r.label}
+                <div className="flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5 text-muted-foreground/75 shrink-0" />
+                  <span>{r.label}</span>
+                </div>
               </SelectItem>
             ))}
           </SelectGroup>
