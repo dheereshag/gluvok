@@ -48,7 +48,7 @@ export function EntityDialogContent({
                 {field.label}
               </label>
               {form.formState.errors[field.key] && (
-                <span className="text-destructive text-[11px] font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
+                <span className="text-destructive text-xs font-medium ml-2">{form.formState.errors[field.key]?.message as string}</span>
               )}
             </div>
           </div>

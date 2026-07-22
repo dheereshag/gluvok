@@ -101,14 +101,14 @@ export function BaseCombobox({
                   className="text-xs cursor-pointer py-2 hover:bg-muted transition-colors flex items-center justify-between whitespace-nowrap gap-2"
                 >
                   <span className="flex items-center gap-2 font-medium text-foreground whitespace-nowrap">
-                    {itemIcon && React.createElement(itemIcon, { className: "h-3.5 w-3.5 text-muted-foreground/80 shrink-0" })}
+                    {itemIcon && React.createElement(itemIcon, { className: "h-3.5 w-3.5 text-muted-foreground/80" })}
                     <span className="whitespace-nowrap">{item.label}</span>
                   </span>
                   {item.rightLabel && (
-                    <span className="text-xs text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded shrink-0 ml-2">{item.rightLabel}</span>
+                    <span className="text-xs text-muted-foreground font-semibold bg-muted px-1.5 py-0.5 rounded">{item.rightLabel}</span>
                   )}
                   {String(value) === String(item.value) && !item.rightLabel && (
-                    <Check className="h-3.5 w-3.5 text-primary shrink-0 ml-2" />
+                    <Check className="h-3.5 w-3.5 text-primary" />
                   )}
                 </ComboboxItem>
               )
