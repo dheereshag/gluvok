@@ -82,6 +82,49 @@ export function applyPaginationAndSorting<T extends Record<string, unknown>>(
     .range(from, to)
 }
 
+export function applyDateRangeFilter<T extends Record<string, unknown>>(
+  query: AnyQuery<T>,
+  filters?: Record<string, unknown>,
+  dateColumn = "created_at"
+): AnyQuery<T> {
+  if (!filters) return query
+
+  let q = query
+  if (filters.start_date) {
+    const startDate = new Date(filters.start_date as string)
+    if (!isNaN(startDate.getTime())) {
+      startDate.setHours(0, 0, 0, 0)
+      q = q.gte(dateColumn as never, startDate.toISOString())
+    }
+  }
+
+  if (filters.end_date) {
+    const endDate = new Date(filters.end_date as string)
+    if (!isNaN(endDate.getTime())) {
+      endDate.setHours(23, 59, 59, 999)
+      q = q.lte(dateColumn as never, endDate.toISOString())
+    }
+  }
+
+  return q
+}
+
+export function applyColumnFilters<T extends Record<string, unknown>>(
+  query: AnyQuery<T>,
+  filters?: Record<string, unknown>,
+  ignoredKeys: string[] = ["start_date", "end_date"]
+): AnyQuery<T> {
+  if (!filters) return query
+
+  let q = query
+  Object.entries(filters).forEach(([key, val]) => {
+    if (!ignoredKeys.includes(key) && val !== undefined && val !== null && val !== "") {
+      q = q.eq(key as never, val)
+    }
+  })
+  return q
+}
+
 function checkError(error: { message: string } | null): void {
   if (error) throw new Error(error.message)
 }

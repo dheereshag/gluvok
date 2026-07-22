@@ -4,6 +4,8 @@ import { Role } from "@/lib/constants/enums"
 import {
   getScopingFilter,
   applyPaginationAndSorting,
+  applyColumnFilters,
+  applyDateRangeFilter,
   executeListQuery,
   executeSingleQuery,
   executePaginatedQuery,
@@ -283,5 +285,32 @@ describe("Query Scoping Services", () => {
       ).rejects.toThrow("Paginated Fail")
     })
   })
+
+  describe("applyColumnFilters & applyDateRangeFilter", () => {
+    it("should apply column equality filters ignoring specified date keys", () => {
+      const mockQuery = {
+        eq: vi.fn().mockReturnThis(),
+        gte: vi.fn().mockReturnThis(),
+        lte: vi.fn().mockReturnThis(),
+      }
+
+      const filters = {
+        rate_id: 5,
+        center_id: 10,
+        start_date: "2026-07-01T00:00:00.000Z",
+        end_date: "2026-07-22T23:59:59.999Z",
+      }
+
+      applyColumnFilters(mockQuery as unknown as AnyQuery<Record<string, unknown>>, filters)
+      expect(mockQuery.eq).toHaveBeenCalledWith("rate_id", 5)
+      expect(mockQuery.eq).toHaveBeenCalledWith("center_id", 10)
+      expect(mockQuery.eq).not.toHaveBeenCalledWith("start_date", expect.anything())
+
+      applyDateRangeFilter(mockQuery as unknown as AnyQuery<Record<string, unknown>>, filters)
+      expect(mockQuery.gte).toHaveBeenCalledWith("created_at", expect.any(String))
+      expect(mockQuery.lte).toHaveBeenCalledWith("created_at", expect.any(String))
+    })
+  })
 })
+
 

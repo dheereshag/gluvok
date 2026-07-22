@@ -2,7 +2,7 @@
 
 /**
  * @file components/projects/filters/weighments.tsx
- * @description Filter controls for the Weighments entity table including Start Date & End Date date pickers.
+ * @description Filter controls for the Weighments entity table.
  */
 
 import * as React from "react"
@@ -18,15 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Field, FieldLabel } from "@/components/ui/field"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar as CalendarIcon, X } from "lucide-react"
+import { DateRangeFilter } from "./date-range-filter"
 
 interface WeighmentsFiltersProps<TData> {
   table: Table<TData>
@@ -51,14 +44,6 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
   const currentCenterId = columnFilters.find((f) => f.id === EntityKey.CENTER_ID)?.value
   const currentCustomerId = columnFilters.find((f) => f.id === EntityKey.CUSTOMER_ID)?.value
   const currentProfileId = columnFilters.find((f) => f.id === EntityKey.PROFILE_ID)?.value
-  const currentStartDateVal = columnFilters.find((f) => f.id === "start_date")?.value as string | undefined
-  const currentEndDateVal = columnFilters.find((f) => f.id === "end_date")?.value as string | undefined
-
-  const startDate = currentStartDateVal ? new Date(currentStartDateVal) : undefined
-  const endDate = currentEndDateVal ? new Date(currentEndDateVal) : undefined
-
-  const [startOpen, setStartOpen] = React.useState(false)
-  const [endOpen, setEndOpen] = React.useState(false)
 
   const setColumnFilter = (id: string, value: unknown) => {
     table.setColumnFilters((prev) => {
@@ -72,85 +57,8 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
 
   return (
     <div className="flex items-end gap-3 flex-wrap">
-      {/* Start Date */}
-      <Field className="w-44">
-        <FieldLabel htmlFor="start-date" className="text-xs font-medium text-muted-foreground mb-1">Start Date</FieldLabel>
-        <Popover open={startOpen} onOpenChange={setStartOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              id="start-date"
-              className="h-9 text-xs justify-between font-normal bg-background shadow-sm w-full"
-            >
-              <span className="flex items-center truncate">
-                <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
-                {startDate ? startDate.toLocaleDateString() : "Select start date"}
-              </span>
-              {startDate && (
-                <X
-                  className="h-3.5 w-3.5 shrink-0 text-muted-foreground hover:text-foreground ml-1"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setColumnFilter("start_date", undefined)
-                  }}
-                />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={startDate}
-              defaultMonth={startDate}
-              captionLayout="dropdown"
-              onSelect={(date) => {
-                setColumnFilter("start_date", date ? date.toISOString() : undefined)
-                setStartOpen(false)
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </Field>
-
-      {/* End Date */}
-      <Field className="w-44">
-        <FieldLabel htmlFor="end-date" className="text-xs font-medium text-muted-foreground mb-1">End Date</FieldLabel>
-        <Popover open={endOpen} onOpenChange={setEndOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              id="end-date"
-              className="h-9 text-xs justify-between font-normal bg-background shadow-sm w-full"
-            >
-              <span className="flex items-center truncate">
-                <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
-                {endDate ? endDate.toLocaleDateString() : "Select end date"}
-              </span>
-              {endDate && (
-                <X
-                  className="h-3.5 w-3.5 shrink-0 text-muted-foreground hover:text-foreground ml-1"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setColumnFilter("end_date", undefined)
-                  }}
-                />
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={endDate}
-              defaultMonth={endDate}
-              captionLayout="dropdown"
-              onSelect={(date) => {
-                setColumnFilter("end_date", date ? date.toISOString() : undefined)
-                setEndOpen(false)
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-      </Field>
+      {/* Date Range */}
+      <DateRangeFilter table={table} />
 
       {/* Rate */}
       <Field className="w-36">
@@ -248,4 +156,6 @@ export function WeighmentsFilters<TData>({ table }: WeighmentsFiltersProps<TData
     </div>
   )
 }
+
+
 

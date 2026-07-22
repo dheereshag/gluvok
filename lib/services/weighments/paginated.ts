@@ -3,7 +3,13 @@
  * @description Service for fetching paginated weighments with search and filters.
  */
 
-import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import {
+  applyPaginationAndSorting,
+  applyColumnFilters,
+  applyDateRangeFilter,
+  executePaginatedQuery,
+  type PaginatedParams,
+} from "../scoping"
 import { type Weighment } from "@/types"
 import { buildPaginatedQuery, enrichWeighments } from "./query"
 import { supabase } from "@/lib/supabase"
@@ -12,12 +18,24 @@ import { TABLE_NAME as PROFILES_TABLE } from "../profiles"
 import { TABLE_NAME as CUSTOMERS_TABLE } from "../customers"
 import { EntityKey } from "@/lib/constants/enums"
 
-export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise<{ data: Weighment[]; count: number }> {
-  const { search, filters = {} } = params
+/** Sort column mapping for Weighments table columns */
+const WEIGHMENTS_SORT_MAP: Record<string, string> = {
+  [EntityKey.CENTER_NAME]: EntityKey.CENTER_ID,
+  [EntityKey.PROFILE_NAME]: EntityKey.PROFILE_ID,
+  [EntityKey.PROFILE_AADHAR]: EntityKey.PROFILE_ID,
+  [EntityKey.CUSTOMER_NAME]: EntityKey.CUSTOMER_ID,
+  [EntityKey.CUSTOMER_GOVT_ID]: EntityKey.CUSTOMER_ID,
+  [EntityKey.COMMODITY_NAME]: EntityKey.RATE_ID,
+  [EntityKey.UNIT_PRICE]: EntityKey.RATE_ID,
+  [EntityKey.UNIT]: EntityKey.RATE_ID,
+}
+
+export async function fetchWeighmentsPaginated(
+  params: PaginatedParams
+): Promise<{ data: Weighment[]; count: number }> {
+  const { search, filters } = params
 
   let query = buildPaginatedQuery()
-
-
 
   if (search) {
     const [centersRes, profilesRes, customersRes] = await Promise.all([
@@ -37,41 +55,14 @@ export async function fetchWeighmentsPaginated(params: PaginatedParams): Promise
     query = query.or(orConditions.join(","))
   }
 
-  // Apply column filters — only use actual DB columns
-  if (filters.rate_id)     query = query.eq(EntityKey.RATE_ID,     filters.rate_id     as number)
-  if (filters.center_id)   query = query.eq(EntityKey.CENTER_ID,   filters.center_id   as number)
-  if (filters.customer_id) query = query.eq(EntityKey.CUSTOMER_ID, filters.customer_id as number)
-  if (filters.profile_id)  query = query.eq(EntityKey.PROFILE_ID,  filters.profile_id  as number)
+  // Apply general column filters and date range filters
+  query = applyColumnFilters(query, filters)
+  query = applyDateRangeFilter(query, filters)
 
-  if (filters.start_date) {
-    const startDate = new Date(filters.start_date as string)
-    if (!isNaN(startDate.getTime())) {
-      startDate.setHours(0, 0, 0, 0)
-      query = query.gte(EntityKey.CREATED_AT, startDate.toISOString())
-    }
-  }
-
-  if (filters.end_date) {
-    const endDate = new Date(filters.end_date as string)
-    if (!isNaN(endDate.getTime())) {
-      endDate.setHours(23, 59, 59, 999)
-      query = query.lte(EntityKey.CREATED_AT, endDate.toISOString())
-    }
-  }
-
-  query = applyPaginationAndSorting(query, params, {
-    [EntityKey.CENTER_NAME]: EntityKey.CENTER_ID,
-    [EntityKey.PROFILE_NAME]: EntityKey.PROFILE_ID,
-    [EntityKey.PROFILE_AADHAR]: EntityKey.PROFILE_ID,
-    [EntityKey.CUSTOMER_NAME]: EntityKey.CUSTOMER_ID,
-    [EntityKey.CUSTOMER_GOVT_ID]: EntityKey.CUSTOMER_ID,
-    [EntityKey.COMMODITY_NAME]: EntityKey.RATE_ID,
-    [EntityKey.UNIT_PRICE]: EntityKey.RATE_ID,
-    [EntityKey.UNIT]: EntityKey.RATE_ID,
-  })
+  // Apply pagination and sorting
+  query = applyPaginationAndSorting(query, params, WEIGHMENTS_SORT_MAP)
 
   const { data, count } = await executePaginatedQuery(query)
 
   return { data: enrichWeighments(data), count }
 }
-

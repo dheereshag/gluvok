@@ -3,7 +3,13 @@
  * @description Service for fetching paginated rates with search and filters.
  */
 
-import { applyPaginationAndSorting, executePaginatedQuery, type PaginatedParams } from "../scoping"
+import {
+  applyPaginationAndSorting,
+  applyColumnFilters,
+  applyDateRangeFilter,
+  executePaginatedQuery,
+  type PaginatedParams,
+} from "../scoping"
 import { type Rate } from "@/types"
 import { buildPaginatedQuery, enrichRate } from "./query"
 import { supabase } from "@/lib/supabase"
@@ -11,8 +17,14 @@ import { TABLE_NAME as COMMODITIES_TABLE } from "../commodities"
 import { TABLE_NAME as FACTORIES_TABLE } from "../factories"
 import { EntityKey } from "@/lib/constants/enums"
 
+/** Sort column mapping for Rates table columns */
+const RATES_SORT_MAP: Record<string, string> = {
+  [EntityKey.FACTORY_NAME]: EntityKey.FACTORY_ID,
+  [EntityKey.COMMODITY_NAME]: EntityKey.COMMODITY_ID,
+}
+
 export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ data: Rate[]; count: number }> {
-  const { search } = params
+  const { search, filters } = params
 
   let query = buildPaginatedQuery()
 
@@ -30,21 +42,14 @@ export async function fetchRatesPaginated(params: PaginatedParams): Promise<{ da
     query = query.or(orConditions.join(","))
   }
 
-  if (params.filters) {
-    Object.entries(params.filters).forEach(([key, val]) => {
-      if (val !== undefined && val !== null && val !== "") {
-        query = query.eq(key, val)
-      }
-    })
-  }
+  // Apply general column filters and date range filters
+  query = applyColumnFilters(query, filters)
+  query = applyDateRangeFilter(query, filters)
 
-  query = applyPaginationAndSorting(query, params, {
-    [EntityKey.FACTORY_NAME]: EntityKey.FACTORY_ID,
-    [EntityKey.COMMODITY_NAME]: EntityKey.COMMODITY_ID,
-  })
+  // Apply pagination and sorting
+  query = applyPaginationAndSorting(query, params, RATES_SORT_MAP)
 
   const { data, count } = await executePaginatedQuery(query)
 
   return { data: data.map(enrichRate), count }
 }
-
