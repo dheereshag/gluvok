@@ -133,46 +133,49 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       return () => {}
     }
 
-    let isInitial = true
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      let activeSession = session
-      if (event === "INITIAL_SESSION" && !session) {
-        try {
-          const { data: { session: recoveredSession } } = await supabase.auth.getSession()
-          if (recoveredSession) {
-            activeSession = recoveredSession
+    // Immediately resolve initial session from Supabase storage cache
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        if (!get().user) {
+          set({ profileLoading: true })
+          try {
+            await fetchAndSetProfile(session.user, set)
+          } catch (err) {
+            console.error("Profile load error during getSession:", err)
+          } finally {
+            set({ profileLoading: false, initialized: true })
           }
-        } catch (err) {
-          console.error("Failed to recover session during auth init:", err)
-        }
-      }
-
-      if (activeSession?.user) {
-        const currentUser = get().user
-        const isUserChanged = !currentUser || currentUser.id !== activeSession.user.id
-        const shouldFetch = isUserChanged || event === "USER_UPDATED"
-
-        // Mark as initialized immediately once we know the session state so the
-        // auth guard can unblock the UI without waiting for DB profile queries.
-        if (isInitial) {
-          isInitial = false
+        } else {
           set({ initialized: true })
         }
+      } else {
+        set({ user: null, initialized: true, profileLoading: false })
+      }
+    }).catch((err) => {
+      console.error("Failed to fetch initial session:", err)
+      set({ user: null, initialized: true, profileLoading: false })
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const currentUser = get().user
+        const isUserChanged = !currentUser || currentUser.id !== session.user.id
+        const shouldFetch = isUserChanged || event === "USER_UPDATED"
 
         if (shouldFetch) {
           set({ profileLoading: true })
-          await fetchAndSetProfile(activeSession.user, set)
-          set({ profileLoading: false })
+          try {
+            await fetchAndSetProfile(session.user, set)
+          } catch (err) {
+            console.error("Profile load error during auth state change:", err)
+          } finally {
+            set({ profileLoading: false })
+          }
         }
       } else {
-        set({ user: null })
-
-        // No session — still mark initialized so the guard can redirect to login.
-        if (isInitial) {
-          isInitial = false
-          set({ initialized: true })
-        }
+        set({ user: null, profileLoading: false })
       }
+      set({ initialized: true })
     })
 
     return () => {

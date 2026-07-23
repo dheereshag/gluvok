@@ -80,6 +80,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, authHydrated, initialized, profileLoading, isAuthPage, isPublicPage, pathname, projectSlug, isAuthorized, router])
 
+  // Public pages can render immediately without blocking on auth initialization or profile loading
+  if (isPublicPage) {
+    return <>{children}</>
+  }
+
   // Show loading during initial rehydration, before auth initialized, or while profile is being fetched
   if (!authHydrated || !initialized || profileLoading) {
     return <FullScreenStatus message="Loading..." />
