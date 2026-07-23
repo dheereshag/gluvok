@@ -112,7 +112,7 @@ export function DateRangeFilter<TData>({
               className={`h-9 text-xs justify-between font-normal bg-background shadow-sm px-2.5 w-full ${dateRange?.from ? "pr-8" : ""}`}
             >
               <span className="flex items-center truncate">
-                <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+                <CalendarIcon className="mr-1 h-3.5 w-3.5 shrink-0 opacity-50" />
                 {dateRange?.from ? (
                   dateRange.to ? (
                     <>
@@ -180,7 +180,7 @@ export function DateRangeFilter<TData>({
                 className="h-6 text-2xs px-2.5 font-medium bg-background hover:bg-accent text-primary border-primary/30 gap-1.5 shadow-2xs transition-all hover:border-primary/50"
                 id="set-end-to-today"
               >
-                <CalendarCheck className="h-3.5 w-3.5 text-primary" />
+                <CalendarCheck data-icon="inline-start" />
                 Select Today as End Date
               </Button>
               <Button
