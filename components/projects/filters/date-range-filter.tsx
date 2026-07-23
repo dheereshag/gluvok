@@ -110,6 +110,8 @@ export function DateRangeFilter<TData>({
             selected={dateRange}
             onSelect={handleRangeSelect}
             numberOfMonths={2}
+            disabled={{ after: new Date() }}
+            endMonth={new Date()}
           />
           {dateRange?.from && (
             <div className="flex items-center justify-between border-t border-border px-3 py-2 bg-muted/30">
