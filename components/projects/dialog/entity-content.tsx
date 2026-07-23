@@ -12,7 +12,7 @@ import { FormFieldInput } from "@/components/form"
 import { type EntityDialogContentProps } from "./types"
 import { FieldType, Role, FieldSpan } from "@/lib/constants/enums"
 import { type FieldConfig, getSingularName } from "@/lib/fields"
-import { useAuthStore } from "@/lib/store"
+import { useAuthStore, isFieldVisible } from "@/lib/store"
 
 export function EntityDialogContent({
   mode, onOpenChange, projectName, projectSlug, isEdit, fields, form, onSubmit, primaryIdKey
@@ -77,6 +77,9 @@ export function EntityDialogContent({
 
   const visibleFields = fields.filter((field) => {
     const role = currentUser?.role as Role
+    if (!isFieldVisible(role, projectSlug, field.key)) {
+      return false
+    }
     if (field.visibleRoles && !field.visibleRoles.includes(role)) {
       return false
     }
@@ -126,7 +129,7 @@ export function EntityDialogContent({
       </DialogHeader>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
         {fieldGroups.map((group, groupIdx) => {
-          if (group.span === FieldSpan.FULL) {
+          if (group.span === FieldSpan.FULL || group.fields.length === 1) {
             return renderField(group.fields[0])
           }
           const gridClass = group.span === FieldSpan.THIRD

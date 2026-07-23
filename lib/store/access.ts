@@ -1,10 +1,9 @@
 /**
  * @file lib/store/access.ts
- * @description Zustand state store or helper for managing access data.
+ * @description Role-based access control (RBAC) matrix and permission helper functions.
  */
 
-import { Role } from "@/lib/constants/enums"
-import { ProjectSlug } from "@/lib/constants/enums"
+import { Role, ProjectSlug, EntityKey } from "@/lib/constants/enums"
 
 export interface Permission {
   /** Whether this role can query records from this entity table */
@@ -19,7 +18,14 @@ export interface Permission {
   show: boolean
   /** Whether this role can use filters in the table toolbar */
   filter: boolean
+  /** List of hidden column keys for data tables. If undefined or empty, all columns are shown. */
+  hiddenColumns?: string[]
+  /** List of hidden field keys for add/edit form dialogs. If undefined or empty, all fields are shown. */
+  hiddenFields?: string[]
 }
+
+const NON_SUPER_ADMIN_FACTORY_COLUMNS = [EntityKey.FACTORY_ID, EntityKey.FACTORY_NAME]
+const NON_SUPER_ADMIN_FACTORY_FIELDS = [EntityKey.FACTORY_ID]
 
 export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
   [Role.SUPER_ADMIN]: {
@@ -32,49 +38,49 @@ export const RBAC_MATRIX: Record<Role, Record<ProjectSlug, Permission>> = {
     [ProjectSlug.WEIGHMENTS]:  { read: true, write: true, delete: true,  create: true,  show: true, filter: true },
   },
   [Role.ADMIN]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
-    [ProjectSlug.FACTORIES]:   { read: true, write: true,  delete: true,  create: false, show: true,  filter: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: true,  delete: true,  create: true,  show: true,  filter: false },
+    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.FACTORIES]:   { read: true, write: true,  delete: true,  create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: true,  delete: true,  create: true,  show: true,  filter: false, hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: true,  filter: true },
-    [ProjectSlug.RATES]:       { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: true,  create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
   },
   [Role.MANAGER]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false, hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.RATES]:       { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
   },
   [Role.OPERATOR]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false, hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: true,  delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
   },
   [Role.BASE]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false, hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: false, show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
   },
   [Role.HARDWARE]: {
-    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true },
+    [ProjectSlug.PROFILES]:    { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.FACTORIES]:   { read: true, write: false, delete: false, create: false, show: false, filter: false },
-    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false },
+    [ProjectSlug.CENTERS]:     { read: true, write: false, delete: false, create: false, show: false, filter: false, hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
     [ProjectSlug.COMMODITIES]: { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true },
-    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: true,  show: true,  filter: true },
+    [ProjectSlug.RATES]:       { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.CUSTOMERS]:   { read: true, write: false, delete: false, create: false, show: false, filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
+    [ProjectSlug.WEIGHMENTS]:  { read: true, write: false, delete: false, create: true,  show: true,  filter: true,  hiddenColumns: NON_SUPER_ADMIN_FACTORY_COLUMNS, hiddenFields: NON_SUPER_ADMIN_FACTORY_FIELDS },
   },
 }
 
@@ -100,4 +106,16 @@ export function hasCreateAccess(role: Role | null | undefined, projectSlug: stri
 
 export function hasDeleteAccess(role: Role | null | undefined, projectSlug: string): boolean {
   return getPermissions(role, projectSlug).delete
+}
+
+export function isColumnVisible(role: Role | null | undefined, projectSlug: string, columnKey: string): boolean {
+  const perms = getPermissions(role, projectSlug)
+  if (!perms.hiddenColumns) return true
+  return !perms.hiddenColumns.includes(columnKey)
+}
+
+export function isFieldVisible(role: Role | null | undefined, projectSlug: string, fieldKey: string): boolean {
+  const perms = getPermissions(role, projectSlug)
+  if (!perms.hiddenFields) return true
+  return !perms.hiddenFields.includes(fieldKey)
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
-import { Role, ProjectSlug } from "@/lib/constants/enums"
-import { getPermissions, hasPageAccess, hasCreateAccess, hasDeleteAccess } from "./access"
+import { Role, ProjectSlug, EntityKey } from "@/lib/constants/enums"
+import { getPermissions, hasPageAccess, hasCreateAccess, hasDeleteAccess, isColumnVisible, isFieldVisible } from "./access"
 
 describe("RBAC Access Controls", () => {
   describe("getPermissions", () => {
@@ -26,19 +26,18 @@ describe("RBAC Access Controls", () => {
     })
 
     it("should grant Admin access correct permissions (can edit/delete but not create factories)", () => {
-
       const factoryPerms = getPermissions(Role.ADMIN, ProjectSlug.FACTORIES)
       expect(factoryPerms).toEqual({
         read: true,
         write: true,
         delete: true,
         create: false,
-        show: true,
+        show: false,
         filter: false,
       })
 
       const weighmentPerms = getPermissions(Role.ADMIN, ProjectSlug.WEIGHMENTS)
-      expect(weighmentPerms).toEqual({
+      expect(weighmentPerms).toMatchObject({
         read: true,
         write: true,
         delete: true,
@@ -50,7 +49,7 @@ describe("RBAC Access Controls", () => {
 
     it("should grant Manager correct permissions (can write/create but not delete rates, customers, weighments)", () => {
       const ratePerms = getPermissions(Role.MANAGER, ProjectSlug.RATES)
-      expect(ratePerms).toEqual({
+      expect(ratePerms).toMatchObject({
         read: true,
         write: true,
         delete: false,
@@ -67,7 +66,7 @@ describe("RBAC Access Controls", () => {
 
     it("should grant Operator write/create access only to customers and weighments", () => {
       const customerPerms = getPermissions(Role.OPERATOR, ProjectSlug.CUSTOMERS)
-      expect(customerPerms).toEqual({
+      expect(customerPerms).toMatchObject({
         read: true,
         write: true,
         delete: false,
@@ -77,7 +76,7 @@ describe("RBAC Access Controls", () => {
       })
 
       const ratePerms = getPermissions(Role.OPERATOR, ProjectSlug.RATES)
-      expect(ratePerms).toEqual({
+      expect(ratePerms).toMatchObject({
         read: true,
         write: false,
         delete: false,
@@ -89,7 +88,7 @@ describe("RBAC Access Controls", () => {
 
     it("should grant Hardware role write/create/show access to weighments only", () => {
       const weighmentPerms = getPermissions(Role.HARDWARE, ProjectSlug.WEIGHMENTS)
-      expect(weighmentPerms).toEqual({
+      expect(weighmentPerms).toMatchObject({
         read: true,
         write: false,
         delete: false,
@@ -106,7 +105,7 @@ describe("RBAC Access Controls", () => {
       const allSlugs = Object.values(ProjectSlug)
       for (const slug of allSlugs) {
         const perms = getPermissions(Role.BASE, slug)
-        expect(perms).toEqual({
+        expect(perms).toMatchObject({
           read: true,
           write: false,
           delete: false,
@@ -140,6 +139,27 @@ describe("RBAC Access Controls", () => {
     it("should return delete permission", () => {
       expect(hasDeleteAccess(Role.ADMIN, ProjectSlug.WEIGHMENTS)).toBe(true)
       expect(hasDeleteAccess(Role.MANAGER, ProjectSlug.WEIGHMENTS)).toBe(false)
+    })
+  })
+
+  describe("isColumnVisible & isFieldVisible", () => {
+    it("should allow Super Admin to view factory_id and factory_name columns and fields", () => {
+      expect(isColumnVisible(Role.SUPER_ADMIN, ProjectSlug.CENTERS, EntityKey.FACTORY_ID)).toBe(true)
+      expect(isColumnVisible(Role.SUPER_ADMIN, ProjectSlug.CENTERS, EntityKey.FACTORY_NAME)).toBe(true)
+      expect(isFieldVisible(Role.SUPER_ADMIN, ProjectSlug.CENTERS, EntityKey.FACTORY_ID)).toBe(true)
+    })
+
+    it("should hide factory_id and factory_name columns and fields for non-Super Admin roles", () => {
+      const nonSuperAdminRoles = [Role.ADMIN, Role.MANAGER, Role.OPERATOR, Role.BASE, Role.HARDWARE]
+      for (const role of nonSuperAdminRoles) {
+        expect(isColumnVisible(role, ProjectSlug.CENTERS, EntityKey.FACTORY_ID)).toBe(false)
+        expect(isColumnVisible(role, ProjectSlug.CENTERS, EntityKey.FACTORY_NAME)).toBe(false)
+        expect(isFieldVisible(role, ProjectSlug.CENTERS, EntityKey.FACTORY_ID)).toBe(false)
+
+        // Non-factory columns and fields should still be visible
+        expect(isColumnVisible(role, ProjectSlug.CENTERS, EntityKey.NAME)).toBe(true)
+        expect(isFieldVisible(role, ProjectSlug.CENTERS, EntityKey.NAME)).toBe(true)
+      }
     })
   })
 })

@@ -5,8 +5,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Tag, Factory } from "lucide-react"
-import { EntityKey } from "@/lib/constants/enums"
-import { ColumnLabel } from "@/lib/constants/enums"
+import { EntityKey, ColumnLabel } from "@/lib/constants/enums"
 import { createTextColumn, createIdColumn } from "./helpers"
 
 export function getCentersColumns<T>(): ColumnDef<T>[] {

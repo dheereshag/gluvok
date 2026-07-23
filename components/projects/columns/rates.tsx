@@ -5,8 +5,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { IndianRupee, Ruler, Tag, Factory } from "lucide-react"
-import { EntityKey } from "@/lib/constants/enums"
-import { ColumnLabel } from "@/lib/constants/enums"
+import { EntityKey, ColumnLabel } from "@/lib/constants/enums"
 import { createCustomColumn, createTextColumn, createIdColumn } from "./helpers"
 import { getCommodityIcon } from "@/lib/fields"
 

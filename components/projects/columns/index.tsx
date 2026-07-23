@@ -6,6 +6,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { type EntityRecord } from "@/types"
 import { ProjectSlug } from "@/lib/constants/enums"
+import { useAuthStore, isColumnVisible, type Permission } from "@/lib/store"
 
 import { getSelectColumn } from "./select"
 import { getSystemColumns } from "./system"
@@ -18,9 +19,6 @@ import { getCustomersColumns } from "./customers"
 import { getWeighmentsColumns } from "./weighments"
 import { getFactoriesColumns } from "./factories"
 import { getProfilesColumns } from "./profiles"
-
-
-import { type Permission } from "@/lib/store"
 
 export interface ColumnActionsCallbacks<T = EntityRecord> {
   onEdit: (item: T) => void
@@ -48,9 +46,10 @@ export function getProjectColumns<T extends EntityRecord = EntityRecord>(
   callbacks: ColumnActionsCallbacks<T>,
   permissions?: Permission
 ): ColumnDef<T>[] {
+  const userRole = useAuthStore.getState().user?.role
   const systemCols = getSystemColumns<T>(primaryIdKey)
 
-  return [
+  const columns: ColumnDef<T>[] = [
     getSelectColumn<T>(),
     systemCols[0], // ID column
     ...getSpecificColumns<T>(projectSlug),
@@ -58,4 +57,9 @@ export function getProjectColumns<T extends EntityRecord = EntityRecord>(
     systemCols[2], // Updated At
     getActionsColumn<T>(projectSlug, primaryIdKey, projectName, callbacks, permissions),
   ]
+
+  return columns.filter((col) => {
+    const colKey = (col.id || (col as { accessorKey?: string }).accessorKey) as string
+    return isColumnVisible(userRole, projectSlug, colKey)
+  })
 }
