@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Calendar as CalendarIcon, X, Zap } from "lucide-react"
+import { Calendar as CalendarIcon, X, Zap, CalendarCheck } from "lucide-react"
 import { DatePreset } from "@/lib/constants/enums"
 
 interface DateRangeFilterProps<TData> {
@@ -172,10 +172,17 @@ export function DateRangeFilter<TData>({
             endMonth={new Date()}
           />
           {dateRange?.from && (
-            <div className="flex items-center justify-between border-t border-border px-3 py-2 bg-muted/30">
-              <span className="text-xs text-muted-foreground">
-                {dateRange.to ? "Range selected" : "Select end date"}
-              </span>
+            <div className="flex items-center justify-between border-t border-border px-3 py-1.5 bg-muted/30 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleRangeSelect({ from: dateRange.from!, to: new Date() })}
+                className="h-6 text-2xs px-2.5 font-medium bg-background hover:bg-accent text-primary border-primary/30 gap-1.5 shadow-2xs transition-all hover:border-primary/50"
+                id="set-end-to-today"
+              >
+                <CalendarCheck className="h-3.5 w-3.5 text-primary" />
+                Select Today as End Date
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
@@ -183,10 +190,10 @@ export function DateRangeFilter<TData>({
                   handleClear()
                   setOpen(false)
                 }}
-                className="h-7 text-xs px-2 gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="h-6 text-xs px-2 gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <X className="h-3.5 w-3.5" />
-                Clear dates
+                Clear
               </Button>
             </div>
           )}
