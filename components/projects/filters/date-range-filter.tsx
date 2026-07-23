@@ -2,11 +2,11 @@
 
 /**
  * @file components/projects/filters/date-range-filter.tsx
- * @description Reusable Date Range filter component with month & year dropdowns for entity tables.
+ * @description Reusable Date Range filter component with quick presets (Today, Yesterday, Last 7 Days, This Month) and disabled future dates.
  */
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, subDays, startOfMonth } from "date-fns"
 import { type DateRange } from "react-day-picker"
 import { Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Calendar as CalendarIcon, X } from "lucide-react"
+import { Calendar as CalendarIcon, X, Zap } from "lucide-react"
+import { DatePreset } from "@/lib/constants/enums"
 
 interface DateRangeFilterProps<TData> {
   table: Table<TData>
@@ -24,6 +25,16 @@ interface DateRangeFilterProps<TData> {
   endKey?: string
   className?: string
 }
+
+const DISPLAY_DATE_FORMAT = "LLL dd, y"
+
+const PRESET_OPTIONS: { id: DatePreset; label: string }[] = [
+  { id: DatePreset.TODAY, label: "Today" },
+  { id: DatePreset.YESTERDAY, label: "Yesterday" },
+  { id: DatePreset.LAST_2_DAYS, label: "Last 2 Days" },
+  { id: DatePreset.LAST_7_DAYS, label: "Last 7 Days" },
+  { id: DatePreset.THIS_MONTH, label: "This Month" },
+]
 
 export function DateRangeFilter<TData>({
   table,
@@ -62,6 +73,33 @@ export function DateRangeFilter<TData>({
     handleRangeSelect(undefined)
   }
 
+  const handlePresetSelect = (preset: DatePreset) => {
+    const now = new Date()
+    let range: DateRange
+
+    switch (preset) {
+      case DatePreset.TODAY:
+        range = { from: now, to: now }
+        break
+      case DatePreset.YESTERDAY: {
+        const yest = subDays(now, 1)
+        range = { from: yest, to: yest }
+        break
+      }
+      case DatePreset.LAST_2_DAYS:
+        range = { from: subDays(now, 1), to: now }
+        break
+      case DatePreset.LAST_7_DAYS:
+        range = { from: subDays(now, 6), to: now }
+        break
+      case DatePreset.THIS_MONTH:
+        range = { from: startOfMonth(now), to: now }
+        break
+    }
+
+    handleRangeSelect(range)
+  }
+
   return (
     <div className={className}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -78,10 +116,10 @@ export function DateRangeFilter<TData>({
                 {dateRange?.from ? (
                   dateRange.to ? (
                     <>
-                      {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
+                      {format(dateRange.from, DISPLAY_DATE_FORMAT)} - {format(dateRange.to, DISPLAY_DATE_FORMAT)}
                     </>
                   ) : (
-                    format(dateRange.from, "LLL dd, y")
+                    format(dateRange.from, DISPLAY_DATE_FORMAT)
                   )
                 ) : (
                   <span>Pick a date range</span>
@@ -103,6 +141,26 @@ export function DateRangeFilter<TData>({
           )}
         </div>
         <PopoverContent className="w-auto p-0 flex flex-col" align="start">
+          {/* Quick Presets Bar */}
+          <div className="flex items-center gap-1.5 p-2 border-b border-border bg-muted/20 flex-wrap">
+            <span className="text-2xs font-medium text-muted-foreground mr-1 flex items-center gap-1">
+              <Zap className="h-3.5 w-3.5 text-amber-500" />
+              Presets:
+            </span>
+            {PRESET_OPTIONS.map((preset) => (
+              <Button
+                key={preset.id}
+                variant="outline"
+                size="sm"
+                onClick={() => handlePresetSelect(preset.id)}
+                className="h-5 text-2xs px-1.5 py-0 font-medium hover:bg-accent"
+                id={`preset-${preset.id}`}
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+
           <Calendar
             mode="range"
             captionLayout="dropdown"

@@ -200,5 +200,13 @@ export enum SystemSlug {
   USERS = "users",
 }
 
+export enum DatePreset {
+  TODAY = "today",
+  YESTERDAY = "yesterday",
+  LAST_2_DAYS = "2days",
+  LAST_7_DAYS = "7days",
+  THIS_MONTH = "thisMonth",
+}
+
 
 
