@@ -263,6 +263,67 @@ CREATE TRIGGER set_timestamp_assignments
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
+-- 3.1. INDEXES FOR SORTING, FILTERING & FOREIGN KEYS
+-- ----------------------------------------------------
+
+-- A. factories table indexes
+CREATE INDEX idx_factories_name ON public.factories (name);
+CREATE INDEX idx_factories_created_at ON public.factories (created_at DESC);
+CREATE INDEX idx_factories_updated_at ON public.factories (updated_at DESC);
+
+-- B. centers table indexes
+CREATE INDEX idx_centers_name ON public.centers (name);
+CREATE INDEX idx_centers_factory_id ON public.centers (factory_id);
+CREATE INDEX idx_centers_created_at ON public.centers (created_at DESC);
+CREATE INDEX idx_centers_updated_at ON public.centers (updated_at DESC);
+
+-- C. commodities table indexes
+-- Note: 'name' is already UNIQUE indexed
+CREATE INDEX idx_commodities_created_at ON public.commodities (created_at DESC);
+CREATE INDEX idx_commodities_updated_at ON public.commodities (updated_at DESC);
+
+-- D. rates table indexes
+CREATE INDEX idx_rates_commodity_id ON public.rates (commodity_id);
+CREATE INDEX idx_rates_factory_id ON public.rates (factory_id);
+CREATE INDEX idx_rates_unit_price ON public.rates (unit_price);
+CREATE INDEX idx_rates_unit ON public.rates (unit);
+CREATE INDEX idx_rates_created_at ON public.rates (created_at DESC);
+CREATE INDEX idx_rates_updated_at ON public.rates (updated_at DESC);
+
+-- E. customers table indexes
+-- Note: 'govt_id' and 'user_id' are already UNIQUE indexed
+CREATE INDEX idx_customers_name ON public.customers (name);
+CREATE INDEX idx_customers_father_name ON public.customers (father_name);
+CREATE INDEX idx_customers_factory_id ON public.customers (factory_id);
+CREATE INDEX idx_customers_created_at ON public.customers (created_at DESC);
+CREATE INDEX idx_customers_updated_at ON public.customers (updated_at DESC);
+
+-- F. profiles table indexes
+-- Note: 'user_id' and 'aadhar_number' are already UNIQUE indexed
+CREATE INDEX idx_profiles_name ON public.profiles (name);
+CREATE INDEX idx_profiles_role ON public.profiles (role);
+CREATE INDEX idx_profiles_created_at ON public.profiles (created_at DESC);
+CREATE INDEX idx_profiles_updated_at ON public.profiles (updated_at DESC);
+
+-- G. weighments table indexes
+-- Note: 'vehicle_number' index idx_weighments_vehicle_number exists above
+CREATE INDEX idx_weighments_weight ON public.weighments (weight);
+CREATE INDEX idx_weighments_type ON public.weighments (type);
+CREATE INDEX idx_weighments_unit ON public.weighments (unit);
+CREATE INDEX idx_weighments_is_active ON public.weighments (is_active);
+CREATE INDEX idx_weighments_rate_id ON public.weighments (rate_id);
+CREATE INDEX idx_weighments_center_id ON public.weighments (center_id);
+CREATE INDEX idx_weighments_profile_id ON public.weighments (profile_id);
+CREATE INDEX idx_weighments_customer_id ON public.weighments (customer_id);
+CREATE INDEX idx_weighments_created_at ON public.weighments (created_at DESC);
+CREATE INDEX idx_weighments_updated_at ON public.weighments (updated_at DESC);
+
+-- H. assignments table indexes
+-- Note: '(factory_id, profile_id)' is already UNIQUE indexed
+CREATE INDEX idx_assignments_created_at ON public.assignments (created_at DESC);
+CREATE INDEX idx_assignments_updated_at ON public.assignments (updated_at DESC);
+
+
 
 -- 4. ROW LEVEL SECURITY (RLS) & POLICIES
 -- ---------------------------------------
