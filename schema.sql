@@ -1,30 +1,39 @@
 -- ==========================================
 -- SUPABASE POSTGRESQL DATABASE SCHEMA (DDL)
+-- Fully Idempotent DDL (Safe to re-run)
 -- ==========================================
 
 
--- User roles within the application
-CREATE TYPE role_enum AS ENUM (
-  'super_admin',
-  'admin',
-  'manager',
-  'operator',
-  'base',
-  'hardware'
-);
+-- 1. CUSTOM ENUM TYPES (Safe Creation)
+-- -------------------------------------
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role_enum') THEN
+    CREATE TYPE role_enum AS ENUM (
+      'super_admin',
+      'admin',
+      'manager',
+      'operator',
+      'base',
+      'hardware'
+    );
+  END IF;
 
--- Commodity rates pricing units
-CREATE TYPE unit_enum AS ENUM (
-  'kg',
-  'q',
-  'gal'
-);
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'unit_enum') THEN
+    CREATE TYPE unit_enum AS ENUM (
+      'kg',
+      'q',
+      'gal'
+    );
+  END IF;
 
--- Weighment transaction direction (incoming vs outgoing)
-CREATE TYPE weighment_type AS ENUM (
-  'in',
-  'out'
-);
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'weighment_type') THEN
+    CREATE TYPE weighment_type AS ENUM (
+      'in',
+      'out'
+    );
+  END IF;
+END $$;
+
 
 -- 2. AUTOMATIC UPDATED_AT TRIGGER FUNCTION
 -- -----------------------------------------
@@ -36,25 +45,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 -- 3. TABLES DEFINITIONS
 -- -----------------------------------------
 
--- B. factories table
-CREATE TABLE public.factories (
+-- A. factories table
+CREATE TABLE IF NOT EXISTS public.factories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_factories ON public.factories;
 CREATE TRIGGER set_timestamp_factories
   BEFORE UPDATE ON public.factories
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- C. centers table
-CREATE TABLE public.centers (
+-- B. centers table
+CREATE TABLE IF NOT EXISTS public.centers (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   factory_id INTEGER NOT NULL,
@@ -67,28 +78,30 @@ CREATE TABLE public.centers (
     ON DELETE RESTRICT
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_centers ON public.centers;
 CREATE TRIGGER set_timestamp_centers
   BEFORE UPDATE ON public.centers
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- D. commodities table
-CREATE TABLE public.commodities (
+-- C. commodities table
+CREATE TABLE IF NOT EXISTS public.commodities (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL UNIQUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_commodities ON public.commodities;
 CREATE TRIGGER set_timestamp_commodities
   BEFORE UPDATE ON public.commodities
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- H. rates table
-CREATE TABLE public.rates (
+-- D. rates table
+CREATE TABLE IF NOT EXISTS public.rates (
   id SERIAL PRIMARY KEY,
   commodity_id INTEGER NOT NULL,
   unit_price DECIMAL(12, 2) NOT NULL,
@@ -109,6 +122,7 @@ CREATE TABLE public.rates (
     ON DELETE RESTRICT
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_rates ON public.rates;
 CREATE TRIGGER set_timestamp_rates
   BEFORE UPDATE ON public.rates
   FOR EACH ROW
@@ -116,7 +130,7 @@ CREATE TRIGGER set_timestamp_rates
 
 
 -- E. customers table
-CREATE TABLE public.customers (
+CREATE TABLE IF NOT EXISTS public.customers (
   id SERIAL PRIMARY KEY,
   govt_id INTEGER NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
@@ -137,6 +151,7 @@ CREATE TABLE public.customers (
     ON DELETE RESTRICT
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_customers ON public.customers;
 CREATE TRIGGER set_timestamp_customers
   BEFORE UPDATE ON public.customers
   FOR EACH ROW
@@ -144,8 +159,7 @@ CREATE TRIGGER set_timestamp_customers
 
 
 -- F. profiles table
--- Note: References Supabase Auth.users(id) table in the 'auth' schema.
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id SERIAL PRIMARY KEY,
   user_id UUID NOT NULL UNIQUE,
   aadhar_number CHAR(12) NOT NULL UNIQUE,
@@ -163,6 +177,7 @@ CREATE TABLE public.profiles (
     CHECK (aadhar_number ~ '^\d{12}$')
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_profiles ON public.profiles;
 CREATE TRIGGER set_timestamp_profiles
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW
@@ -170,7 +185,7 @@ CREATE TRIGGER set_timestamp_profiles
 
 
 -- G. weighments table
-CREATE TABLE public.weighments (
+CREATE TABLE IF NOT EXISTS public.weighments (
   id BIGSERIAL PRIMARY KEY,
   vehicle_number VARCHAR(10) NOT NULL,
   weight DECIMAL(12, 3) NOT NULL,
@@ -206,9 +221,7 @@ CREATE TABLE public.weighments (
     ON DELETE RESTRICT
 );
 
--- Index for heavy weighments query performance on vehicle lookup
-CREATE INDEX idx_weighments_vehicle_number ON public.weighments (vehicle_number);
-
+DROP TRIGGER IF EXISTS set_timestamp_weighments ON public.weighments;
 CREATE TRIGGER set_timestamp_weighments
   BEFORE UPDATE ON public.weighments
   FOR EACH ROW
@@ -227,15 +240,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+DROP TRIGGER IF EXISTS tr_weighments_update_columns ON public.weighments;
 CREATE TRIGGER tr_weighments_update_columns
   BEFORE UPDATE ON public.weighments
   FOR EACH ROW
   EXECUTE FUNCTION public.check_weighments_update_columns();
 
 
-
--- I. assignments table
-CREATE TABLE public.assignments (
+-- H. assignments table
+CREATE TABLE IF NOT EXISTS public.assignments (
   id SERIAL PRIMARY KEY,
   factory_id INTEGER NOT NULL,
   profile_id INTEGER NOT NULL,
@@ -252,82 +265,76 @@ CREATE TABLE public.assignments (
     REFERENCES public.profiles(id)
     ON DELETE RESTRICT,
     
-  -- Unique constraint to avoid duplicate assignments
   CONSTRAINT uq_factory_profile_assignment
     UNIQUE (factory_id, profile_id)
 );
 
+DROP TRIGGER IF EXISTS set_timestamp_assignments ON public.assignments;
 CREATE TRIGGER set_timestamp_assignments
   BEFORE UPDATE ON public.assignments
   FOR EACH ROW
   EXECUTE FUNCTION trigger_set_timestamp();
 
 
--- 3.1. INDEXES FOR SORTING, FILTERING & FOREIGN KEYS
--- ----------------------------------------------------
+-- 3.1. INDEXES FOR SORTING, FILTERING & FOREIGN KEYS (Idempotent)
+-- ------------------------------------------------------------------
 
 -- A. factories table indexes
-CREATE INDEX idx_factories_name ON public.factories (name);
-CREATE INDEX idx_factories_created_at ON public.factories (created_at DESC);
-CREATE INDEX idx_factories_updated_at ON public.factories (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_factories_name ON public.factories (name);
+CREATE INDEX IF NOT EXISTS idx_factories_created_at ON public.factories (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_factories_updated_at ON public.factories (updated_at DESC);
 
 -- B. centers table indexes
-CREATE INDEX idx_centers_name ON public.centers (name);
-CREATE INDEX idx_centers_factory_id ON public.centers (factory_id);
-CREATE INDEX idx_centers_created_at ON public.centers (created_at DESC);
-CREATE INDEX idx_centers_updated_at ON public.centers (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_centers_name ON public.centers (name);
+CREATE INDEX IF NOT EXISTS idx_centers_factory_id ON public.centers (factory_id);
+CREATE INDEX IF NOT EXISTS idx_centers_created_at ON public.centers (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_centers_updated_at ON public.centers (updated_at DESC);
 
 -- C. commodities table indexes
--- Note: 'name' is already UNIQUE indexed
-CREATE INDEX idx_commodities_created_at ON public.commodities (created_at DESC);
-CREATE INDEX idx_commodities_updated_at ON public.commodities (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_commodities_created_at ON public.commodities (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_commodities_updated_at ON public.commodities (updated_at DESC);
 
 -- D. rates table indexes
-CREATE INDEX idx_rates_commodity_id ON public.rates (commodity_id);
-CREATE INDEX idx_rates_factory_id ON public.rates (factory_id);
-CREATE INDEX idx_rates_unit_price ON public.rates (unit_price);
-CREATE INDEX idx_rates_unit ON public.rates (unit);
-CREATE INDEX idx_rates_created_at ON public.rates (created_at DESC);
-CREATE INDEX idx_rates_updated_at ON public.rates (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_rates_commodity_id ON public.rates (commodity_id);
+CREATE INDEX IF NOT EXISTS idx_rates_factory_id ON public.rates (factory_id);
+CREATE INDEX IF NOT EXISTS idx_rates_unit_price ON public.rates (unit_price);
+CREATE INDEX IF NOT EXISTS idx_rates_unit ON public.rates (unit);
+CREATE INDEX IF NOT EXISTS idx_rates_created_at ON public.rates (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_rates_updated_at ON public.rates (updated_at DESC);
 
 -- E. customers table indexes
--- Note: 'govt_id' and 'user_id' are already UNIQUE indexed
-CREATE INDEX idx_customers_name ON public.customers (name);
-CREATE INDEX idx_customers_father_name ON public.customers (father_name);
-CREATE INDEX idx_customers_factory_id ON public.customers (factory_id);
-CREATE INDEX idx_customers_created_at ON public.customers (created_at DESC);
-CREATE INDEX idx_customers_updated_at ON public.customers (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_customers_name ON public.customers (name);
+CREATE INDEX IF NOT EXISTS idx_customers_father_name ON public.customers (father_name);
+CREATE INDEX IF NOT EXISTS idx_customers_factory_id ON public.customers (factory_id);
+CREATE INDEX IF NOT EXISTS idx_customers_created_at ON public.customers (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_customers_updated_at ON public.customers (updated_at DESC);
 
 -- F. profiles table indexes
--- Note: 'user_id' and 'aadhar_number' are already UNIQUE indexed
-CREATE INDEX idx_profiles_name ON public.profiles (name);
-CREATE INDEX idx_profiles_role ON public.profiles (role);
-CREATE INDEX idx_profiles_created_at ON public.profiles (created_at DESC);
-CREATE INDEX idx_profiles_updated_at ON public.profiles (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_profiles_name ON public.profiles (name);
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles (role);
+CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON public.profiles (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_profiles_updated_at ON public.profiles (updated_at DESC);
 
 -- G. weighments table indexes
--- Note: 'vehicle_number' index idx_weighments_vehicle_number exists above
-CREATE INDEX idx_weighments_weight ON public.weighments (weight);
-CREATE INDEX idx_weighments_type ON public.weighments (type);
-CREATE INDEX idx_weighments_unit ON public.weighments (unit);
-CREATE INDEX idx_weighments_is_active ON public.weighments (is_active);
-CREATE INDEX idx_weighments_rate_id ON public.weighments (rate_id);
-CREATE INDEX idx_weighments_center_id ON public.weighments (center_id);
-CREATE INDEX idx_weighments_profile_id ON public.weighments (profile_id);
-CREATE INDEX idx_weighments_customer_id ON public.weighments (customer_id);
-CREATE INDEX idx_weighments_created_at ON public.weighments (created_at DESC);
-CREATE INDEX idx_weighments_updated_at ON public.weighments (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_weighments_vehicle_number ON public.weighments (vehicle_number);
+CREATE INDEX IF NOT EXISTS idx_weighments_weight ON public.weighments (weight);
+CREATE INDEX IF NOT EXISTS idx_weighments_type ON public.weighments (type);
+CREATE INDEX IF NOT EXISTS idx_weighments_unit ON public.weighments (unit);
+CREATE INDEX IF NOT EXISTS idx_weighments_is_active ON public.weighments (is_active);
+CREATE INDEX IF NOT EXISTS idx_weighments_rate_id ON public.weighments (rate_id);
+CREATE INDEX IF NOT EXISTS idx_weighments_center_id ON public.weighments (center_id);
+CREATE INDEX IF NOT EXISTS idx_weighments_profile_id ON public.weighments (profile_id);
+CREATE INDEX IF NOT EXISTS idx_weighments_customer_id ON public.weighments (customer_id);
+CREATE INDEX IF NOT EXISTS idx_weighments_created_at ON public.weighments (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_weighments_updated_at ON public.weighments (updated_at DESC);
 
 -- H. assignments table indexes
--- Note: '(factory_id, profile_id)' is already UNIQUE indexed
-CREATE INDEX idx_assignments_created_at ON public.assignments (created_at DESC);
-CREATE INDEX idx_assignments_updated_at ON public.assignments (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_assignments_created_at ON public.assignments (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_assignments_updated_at ON public.assignments (updated_at DESC);
 
 
-
--- 4. ROW LEVEL SECURITY (RLS) & POLICIES
--- ---------------------------------------
--- Enable RLS on all tables
+-- 4. ROW LEVEL SECURITY (RLS) & POLICIES (Idempotent)
+-- ----------------------------------------------------
 ALTER TABLE public.factories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.centers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.commodities ENABLE ROW LEVEL SECURITY;
@@ -337,7 +344,6 @@ ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.weighments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
 
--- Helper function to extract user role from public.profiles table
 CREATE OR REPLACE FUNCTION public.get_user_role()
 RETURNS text AS $$
 DECLARE
@@ -352,82 +358,105 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- B. factories policies
-CREATE POLICY "factories_select" ON public.factories
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "factories_insert" ON public.factories
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "factories_update" ON public.factories
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "factories_delete" ON public.factories
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "factories_select" ON public.factories;
+CREATE POLICY "factories_select" ON public.factories FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "factories_insert" ON public.factories;
+CREATE POLICY "factories_insert" ON public.factories FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "factories_update" ON public.factories;
+CREATE POLICY "factories_update" ON public.factories FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "factories_delete" ON public.factories;
+CREATE POLICY "factories_delete" ON public.factories FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- C. centers policies
-CREATE POLICY "centers_select" ON public.centers
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "centers_insert" ON public.centers
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "centers_update" ON public.centers
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "centers_delete" ON public.centers
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "centers_select" ON public.centers;
+CREATE POLICY "centers_select" ON public.centers FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "centers_insert" ON public.centers;
+CREATE POLICY "centers_insert" ON public.centers FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "centers_update" ON public.centers;
+CREATE POLICY "centers_update" ON public.centers FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "centers_delete" ON public.centers;
+CREATE POLICY "centers_delete" ON public.centers FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- D. commodities policies
-CREATE POLICY "commodities_select" ON public.commodities
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "commodities_insert" ON public.commodities
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
-CREATE POLICY "commodities_update" ON public.commodities
-  FOR UPDATE TO authenticated USING (public.get_user_role() = 'super_admin');
-CREATE POLICY "commodities_delete" ON public.commodities
-  FOR DELETE TO authenticated USING (public.get_user_role() = 'super_admin');
+DROP POLICY IF EXISTS "commodities_select" ON public.commodities;
+CREATE POLICY "commodities_select" ON public.commodities FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "commodities_insert" ON public.commodities;
+CREATE POLICY "commodities_insert" ON public.commodities FOR INSERT TO authenticated WITH CHECK (public.get_user_role() = 'super_admin');
+
+DROP POLICY IF EXISTS "commodities_update" ON public.commodities;
+CREATE POLICY "commodities_update" ON public.commodities FOR UPDATE TO authenticated USING (public.get_user_role() = 'super_admin');
+
+DROP POLICY IF EXISTS "commodities_delete" ON public.commodities;
+CREATE POLICY "commodities_delete" ON public.commodities FOR DELETE TO authenticated USING (public.get_user_role() = 'super_admin');
 
 -- H. rates policies
-CREATE POLICY "rates_select" ON public.rates
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "rates_insert" ON public.rates
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
-CREATE POLICY "rates_update" ON public.rates
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
-CREATE POLICY "rates_delete" ON public.rates
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "rates_select" ON public.rates;
+CREATE POLICY "rates_select" ON public.rates FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "rates_insert" ON public.rates;
+CREATE POLICY "rates_insert" ON public.rates FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+
+DROP POLICY IF EXISTS "rates_update" ON public.rates;
+CREATE POLICY "rates_update" ON public.rates FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+
+DROP POLICY IF EXISTS "rates_delete" ON public.rates;
+CREATE POLICY "rates_delete" ON public.rates FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- E. customers policies
-CREATE POLICY "customers_select" ON public.customers
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "customers_insert" ON public.customers
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
-CREATE POLICY "customers_update" ON public.customers
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
-CREATE POLICY "customers_delete" ON public.customers
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "customers_select" ON public.customers;
+CREATE POLICY "customers_select" ON public.customers FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "customers_insert" ON public.customers;
+CREATE POLICY "customers_insert" ON public.customers FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+
+DROP POLICY IF EXISTS "customers_update" ON public.customers;
+CREATE POLICY "customers_update" ON public.customers FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+
+DROP POLICY IF EXISTS "customers_delete" ON public.customers;
+CREATE POLICY "customers_delete" ON public.customers FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- F. profiles policies
-CREATE POLICY "profiles_select" ON public.profiles
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "profiles_insert" ON public.profiles
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
-CREATE POLICY "profiles_update" ON public.profiles
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
-CREATE POLICY "profiles_delete" ON public.profiles
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "profiles_select" ON public.profiles;
+CREATE POLICY "profiles_select" ON public.profiles FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "profiles_insert" ON public.profiles;
+CREATE POLICY "profiles_insert" ON public.profiles FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+
+DROP POLICY IF EXISTS "profiles_update" ON public.profiles;
+CREATE POLICY "profiles_update" ON public.profiles FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager'));
+
+DROP POLICY IF EXISTS "profiles_delete" ON public.profiles;
+CREATE POLICY "profiles_delete" ON public.profiles FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- G. weighments policies
-CREATE POLICY "weighments_select" ON public.weighments
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "weighments_insert" ON public.weighments
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator', 'hardware'));
-CREATE POLICY "weighments_update" ON public.weighments
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
-CREATE POLICY "weighments_delete" ON public.weighments
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "weighments_select" ON public.weighments;
+CREATE POLICY "weighments_select" ON public.weighments FOR SELECT TO authenticated USING (true);
+
+DROP POLICY IF EXISTS "weighments_insert" ON public.weighments;
+CREATE POLICY "weighments_insert" ON public.weighments FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator', 'hardware'));
+
+DROP POLICY IF EXISTS "weighments_update" ON public.weighments;
+CREATE POLICY "weighments_update" ON public.weighments FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin', 'manager', 'operator'));
+
+DROP POLICY IF EXISTS "weighments_delete" ON public.weighments;
+CREATE POLICY "weighments_delete" ON public.weighments FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
 
 -- I. assignments policies
-CREATE POLICY "assignments_select" ON public.assignments
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "assignments_insert" ON public.assignments
-  FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "assignments_update" ON public.assignments
-  FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
-CREATE POLICY "assignments_delete" ON public.assignments
-  FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+DROP POLICY IF EXISTS "assignments_select" ON public.assignments;
+CREATE POLICY "assignments_select" ON public.assignments FOR SELECT TO authenticated USING (true);
 
+DROP POLICY IF EXISTS "assignments_insert" ON public.assignments;
+CREATE POLICY "assignments_insert" ON public.assignments FOR INSERT TO authenticated WITH CHECK (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "assignments_update" ON public.assignments;
+CREATE POLICY "assignments_update" ON public.assignments FOR UPDATE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
+
+DROP POLICY IF EXISTS "assignments_delete" ON public.assignments;
+CREATE POLICY "assignments_delete" ON public.assignments FOR DELETE TO authenticated USING (public.get_user_role() IN ('super_admin', 'admin'));
